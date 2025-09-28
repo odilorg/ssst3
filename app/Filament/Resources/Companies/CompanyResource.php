@@ -19,6 +19,28 @@ class CompanyResource extends Resource
     protected static ?string $model = Company::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-rectangle-stack';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'System Management';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 5 ? 'success' : 'primary';
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -19,6 +19,8 @@ class OilChangeResource extends Resource
     protected static ?string $model = OilChange::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-rectangle-stack';
+    protected static ?string $navigationParentItem = 'Транспорт';
 
     public static function getNavigationLabel(): string
     {
@@ -37,7 +39,23 @@ class OilChangeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Tour Items';
+        return 'Transport Management';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 4;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 3 ? 'success' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

@@ -21,6 +21,7 @@ class BookingResource extends Resource
     protected static ?string $model = Booking::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-calendar-days';
 
     public static function getNavigationLabel(): string
     {
@@ -40,6 +41,17 @@ class BookingResource extends Resource
     public static function getNavigationSort(): ?int
     {
         return 2;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 10 ? 'success' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

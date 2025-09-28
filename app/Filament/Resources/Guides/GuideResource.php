@@ -19,6 +19,7 @@ class GuideResource extends Resource
     protected static ?string $model = Guide::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-chat-bubble-left-right';
 
     public static function getNavigationLabel(): string
     {
@@ -32,7 +33,23 @@ class GuideResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Tour Items';
+        return 'Suppliers & Services';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 1;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 5 ? 'success' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

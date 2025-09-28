@@ -19,6 +19,7 @@ class CityResource extends Resource
     protected static ?string $model = City::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-building-library';
 
     public static function getNavigationLabel(): string
     {
@@ -28,6 +29,27 @@ class CityResource extends Resource
     public static function getModelLabel(): string
     {
         return 'Город';
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'System Management';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 1;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 5 ? 'success' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

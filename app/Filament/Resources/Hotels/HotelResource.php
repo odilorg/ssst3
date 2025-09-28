@@ -19,6 +19,7 @@ class HotelResource extends Resource
     protected static ?string $model = Hotel::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-building-office';
 
     public static function getNavigationLabel(): string
     {
@@ -32,7 +33,23 @@ class HotelResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Tour Items';
+        return 'Suppliers & Services';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 3 ? 'success' : 'primary';
     }
 
     public static function form(Schema $schema): Schema

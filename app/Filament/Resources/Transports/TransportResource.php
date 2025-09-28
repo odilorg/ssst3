@@ -19,6 +19,7 @@ class TransportResource extends Resource
     protected static ?string $model = Transport::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
+    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-truck';
 
     public static function getNavigationLabel(): string
     {
@@ -32,7 +33,23 @@ class TransportResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Tour Items';
+        return 'Transport Management';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 1;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()::count();
+        return $count > 10 ? 'success' : 'primary';
     }
 
     public static function getPluralModelLabel(): string
