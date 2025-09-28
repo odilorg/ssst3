@@ -18,6 +18,14 @@ class TransportTypesTable
                     ->label('Тип транспорта')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('transportPrices.price_type')
+                    ->label('Тип цены')
+                    ->searchable()
+                    ->listWithLineBreaks(),
+                TextColumn::make('transportPrices.cost')
+                    ->label('Стоимость')
+                    ->searchable()
+                    ->listWithLineBreaks(),
                 TextColumn::make('category')
                     ->label('Категория')
                     ->searchable()

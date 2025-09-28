@@ -13,6 +13,7 @@ class TransportPrice extends Model
         'transport_type_id',
         'price_type',
         'cost',
+        'currency',
     ];
 
     protected $casts = [

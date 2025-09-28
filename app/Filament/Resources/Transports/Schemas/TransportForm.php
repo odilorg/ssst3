@@ -20,12 +20,12 @@ class TransportForm
                         Select::make('category')
                             ->label('Категория')
                             ->options([
-                                'bus' => 'Автобус',
-                                'car' => 'Автомобиль',
-                                'mikro_bus' => 'Микроавтобус',
-                                'mini_van' => 'Минивэн',
-                                'air' => 'Авиа',
-                                'rail' => 'Железная дорога',
+                                'bus' => 'Bus',
+                                'car' => 'Car',
+                                'mikro_bus' => 'Mikro Bus',
+                                'mini_van' => 'Mini Van',
+                                'air' => 'Air',
+                                'rail' => 'Rail',
                             ])
                             ->required()
                             ->live(),
@@ -49,6 +49,12 @@ class TransportForm
                             ->searchable()
                             ->required()
                             ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                        Select::make('city_id')
+                            ->label('Город')
+                            ->relationship('city', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->required(),
                     ])
                     ->columns(2),
 
@@ -87,7 +93,7 @@ class TransportForm
                             ->options([
                                 'diesel' => 'Дизель',
                                 'benzin/propane' => 'Бензин/Пропан',
-                                'natural_gaz' => 'Природный газ',
+                                'natural_gaz' => 'Газ',
                             ])
                             ->required()
                             ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),

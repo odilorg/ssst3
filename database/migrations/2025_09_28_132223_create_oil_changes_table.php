@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('oil_changes', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->foreignId('transport_id')->constrained()->onDelete('cascade');
             $table->date('oil_change_date');
+            $table->integer('mileage_at_change')->nullable();
+            $table->decimal('cost', 8, 2)->nullable();
+            $table->string('oil_type')->nullable();
+            $table->string('service_center')->nullable();
             $table->text('notes')->nullable();
+            $table->json('other_services')->nullable();
+            $table->date('next_change_date')->nullable();
+            $table->integer('next_change_mileage')->nullable();
+            $table->timestamps();
         });
     }
 

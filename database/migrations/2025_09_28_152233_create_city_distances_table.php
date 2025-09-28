@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transport_prices', function (Blueprint $table) {
+        Schema::create('city_distances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transport_type_id')->constrained()->onDelete('cascade');
-            $table->string('price_type');
-            $table->decimal('cost', 8, 2);
-            $table->string('currency')->default('USD');
+            $table->string('city_from_to', 255);
+            $table->decimal('distance_km', 8, 2);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transport_prices');
+        Schema::dropIfExists('city_distances');
     }
 };

@@ -18,7 +18,7 @@ class TransportTypeResource extends Resource
 {
     protected static ?string $model = TransportType::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function getNavigationLabel(): string
     {
@@ -33,6 +33,11 @@ class TransportTypeResource extends Resource
     public static function getNavigationGroup(): ?string
     {
         return 'Tour Items';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Типы транспорта';
     }
 
     public static function form(Schema $schema): Schema

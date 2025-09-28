@@ -35,6 +35,11 @@ class TransportResource extends Resource
         return 'Tour Items';
     }
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Транспорт';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return TransportForm::configure($schema);
