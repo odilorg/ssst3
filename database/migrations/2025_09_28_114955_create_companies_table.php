@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->integer('inn')->nullable();
-            $table->integer('account_number')->nullable();
+            $table->bigInteger('account_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->integer('bank_mfo')->nullable();
             $table->string('director_name')->nullable();
