@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTransportType extends CreateRecord
 {
     protected static string $resource = TransportTypeResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

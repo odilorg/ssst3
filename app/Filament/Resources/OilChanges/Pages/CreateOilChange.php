@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateOilChange extends CreateRecord
 {
     protected static string $resource = OilChangeResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
