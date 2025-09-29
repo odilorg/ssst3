@@ -5,8 +5,18 @@ namespace App\Filament\Resources\Bookings\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Forms;
+use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Models\Guide;
+use App\Models\Restaurant;
+use App\Models\Hotel;
+use App\Models\Transport;
+use App\Models\Room;
+use App\Models\MealType;
+use Filament\Notifications\Notification;
 
 class BookingsTable
 {
@@ -82,6 +92,91 @@ class BookingsTable
             ])
             ->recordActions([
                 EditAction::make(),
+
+                Action::make('estimate')
+                    ->label('Смета')
+                    ->icon('heroicon-o-calculator')
+                    ->color('info')
+                    ->modalHeading('Смета тура')
+                    ->modalWidth('6xl')
+                    ->modalContent(function ($record) {
+                        $costBreakdown = [];
+                        $totalCost = 0;
+
+                        // Get all itinerary items for this booking
+                        $itineraryItems = $record->itineraryItems()->with('assignments.assignable')->get();
+
+                        foreach ($itineraryItems as $item) {
+                            $assignments = $item->assignments;
+
+                            foreach ($assignments as $assignment) {
+                                $assignable = $assignment->assignable;
+                                $quantity = $assignment->quantity ?? 1;
+                                $unitPrice = 0;
+                                $itemName = '';
+
+                                switch ($assignment->assignable_type) {
+                                    case Guide::class:
+                                        $unitPrice = $assignable?->daily_rate ?? 0;
+                                        $itemName = $assignable?->name ?? 'Гид удален';
+                                        $category = 'guide';
+                                        break;
+
+                                    case Restaurant::class:
+                                        if ($assignment->meal_type_id) {
+                                            $mealType = MealType::find($assignment->meal_type_id);
+                                            $unitPrice = $mealType?->price ?? 0;
+                                            $itemName = $assignable?->name . ' - ' . $mealType?->name ?? 'Ресторан удален';
+                                        } else {
+                                            $unitPrice = $assignable?->average_price ?? 0;
+                                            $itemName = $assignable?->name ?? 'Ресторан удален';
+                                        }
+                                        $category = 'restaurant';
+                                        break;
+
+                                    case Hotel::class:
+                                        if ($assignment->room_id) {
+                                            $room = Room::find($assignment->room_id);
+                                            $unitPrice = $room?->cost_per_night ?? 0;
+                                            $itemName = $assignable?->name . ' - ' . $room?->name ?? 'Гостиница удалена';
+                                        } else {
+                                            $unitPrice = $assignable?->average_price ?? 0;
+                                            $itemName = $assignable?->name ?? 'Гостиница удалена';
+                                        }
+                                        $category = 'hotel';
+                                        break;
+
+                                    case Transport::class:
+                                        $unitPrice = $assignable?->daily_rate ?? 0;
+                                        $itemName = $assignable?->model . ' (' . $assignable?->license_plate . ')' ?? 'Транспорт удален';
+                                        $category = 'transport';
+                                        break;
+
+                                    default:
+                                        $unitPrice = 0;
+                                        $itemName = 'Неизвестный поставщик';
+                                        $category = 'other';
+                                }
+
+                                $itemTotal = $unitPrice * $quantity;
+                                $totalCost += $itemTotal;
+
+                                $costBreakdown[] = [
+                                    'category' => $category,
+                                    'item' => $itemName,
+                                    'quantity' => $quantity,
+                                    'unit_price' => $unitPrice,
+                                    'total_price' => $itemTotal,
+                                ];
+                            }
+                        }
+
+                        return view('filament.pages.booking-estimate', [
+                            'record' => $record,
+                            'costBreakdown' => $costBreakdown,
+                            'totalCost' => $totalCost,
+                        ]);
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
