@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Hotels\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -71,58 +70,6 @@ class HotelForm
                     ])
                     ->columns(2),
 
-                Section::make('Номера гостиницы')
-                    ->schema([
-                        Repeater::make('rooms')
-                            ->label('Номера')
-                            ->relationship()
-                            ->schema([
-                                Select::make('room_type_id')
-                                    ->label('Тип номера')
-                                    ->relationship('roomType', 'type')
-                                    ->preload()
-                                    ->searchable()
-                                    ->createOptionForm([
-                                        TextInput::make('type')
-                                            ->label('Тип номера')
-                                            ->required()
-                                            ->maxLength(255),
-                                    ]),
-                                Select::make('amenities')
-                                    ->label('Удобства')
-                                    ->relationship('amenities', 'name')
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Название удобства')
-                                            ->required()
-                                            ->maxLength(255),
-                                    ]),
-                                TextInput::make('cost_per_night')
-                                    ->label('Стоимость за ночь')
-                                    ->numeric()
-                                    ->prefix('$')
-                                    ->required(),
-                                TextInput::make('room_size')
-                                    ->label('Размер номера (м²)')
-                                    ->numeric()
-                                    ->required(),
-                                Textarea::make('description')
-                                    ->label('Описание номера')
-                                    ->columnSpanFull(),
-                                FileUpload::make('images')
-                                    ->label('Изображения номера')
-                                    ->multiple()
-                                    ->image()
-                                    ->columnSpanFull(),
-                            ])
-                            ->columns(2)
-                            ->defaultItems(1)
-                            ->addActionLabel('Добавить номер')
-                            ->columnSpanFull(),
-                    ]),
             ]);
     }
 }

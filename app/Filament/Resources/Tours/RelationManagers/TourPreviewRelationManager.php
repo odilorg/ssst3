@@ -18,6 +18,9 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkAction;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\KeyValueEntry;
+use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -65,6 +68,12 @@ class TourPreviewRelationManager extends RelationManager
                         if (!$record->default_start_time) return '—';
                         
                         $startTime = $record->default_start_time;
+                        
+                        // Validate time format before processing
+                        if (!preg_match('/^\d{2}:\d{2}$/', $startTime)) {
+                            return 'Invalid time format';
+                        }
+                        
                         $endTime = $this->calculateEndTime($startTime, $record->duration_minutes);
                         
                         return "{$startTime} - {$endTime}";
@@ -116,15 +125,15 @@ class TourPreviewRelationManager extends RelationManager
                     ->icon('heroicon-o-chart-bar')
                     ->color('info')
                     ->infolist([
-                        Infolists\Components\Section::make('Общая информация')
+                        Section::make('Общая информация')
                             ->schema([
-                                Infolists\Components\TextEntry::make('tour_title')
+                                TextEntry::make('tour_title')
                                     ->label('Название тура')
                                     ->getStateUsing(fn () => $this->ownerRecord->title),
-                                Infolists\Components\TextEntry::make('declared_duration')
+                                TextEntry::make('declared_duration')
                                     ->label('Заявленная продолжительность')
                                     ->getStateUsing(fn () => $this->ownerRecord->duration_days . ' дней'),
-                                Infolists\Components\TextEntry::make('calculated_duration')
+                                TextEntry::make('calculated_duration')
                                     ->label('Рассчитанная продолжительность')
                                     ->getStateUsing(function (): string {
                                         $dayCount = $this->ownerRecord->itineraryItems()
@@ -132,23 +141,23 @@ class TourPreviewRelationManager extends RelationManager
                                             ->count();
                                         return $dayCount . ' дней';
                                     }),
-                                Infolists\Components\TextEntry::make('total_items')
+                                TextEntry::make('total_items')
                                     ->label('Всего элементов')
                                     ->getStateUsing(fn () => $this->ownerRecord->itineraryItems()->count()),
-                                Infolists\Components\TextEntry::make('total_stops')
+                                TextEntry::make('total_stops')
                                     ->label('Всего остановок')
                                     ->getStateUsing(fn () => $this->ownerRecord->itineraryItems()->where('type', 'stop')->count()),
                             ])
                             ->columns(2),
-                        Infolists\Components\Section::make('Использование')
+                        Section::make('Использование')
                             ->schema([
-                                Infolists\Components\TextEntry::make('booking_count')
+                                TextEntry::make('booking_count')
                                     ->label('Количество бронирований')
                                     ->getStateUsing(fn () => $this->ownerRecord->bookings()->count()),
-                                Infolists\Components\TextEntry::make('active_bookings')
+                                TextEntry::make('active_bookings')
                                     ->label('Активные бронирования')
                                     ->getStateUsing(fn () => $this->ownerRecord->bookings()->where('status', '!=', 'cancelled')->count()),
-                                Infolists\Components\TextEntry::make('total_revenue')
+                                TextEntry::make('total_revenue')
                                     ->label('Общий доход')
                                     ->getStateUsing(function (): string {
                                         $total = $this->ownerRecord->bookings()
@@ -158,9 +167,9 @@ class TourPreviewRelationManager extends RelationManager
                                     }),
                             ])
                             ->columns(3),
-                        Infolists\Components\Section::make('Временной анализ')
+                        Section::make('Временной анализ')
                             ->schema([
-                                Infolists\Components\TextEntry::make('total_duration')
+                                TextEntry::make('total_duration')
                                     ->label('Общая продолжительность')
                                     ->getStateUsing(function (): string {
                                         $totalMinutes = $this->ownerRecord->itineraryItems()->sum('duration_minutes');
@@ -168,7 +177,7 @@ class TourPreviewRelationManager extends RelationManager
                                         $minutes = $totalMinutes % 60;
                                         return "{$hours}ч {$minutes}м";
                                     }),
-                                Infolists\Components\TextEntry::make('average_item_duration')
+                                TextEntry::make('average_item_duration')
                                     ->label('Средняя продолжительность элемента')
                                     ->getStateUsing(function (): string {
                                         $avgMinutes = $this->ownerRecord->itineraryItems()->avg('duration_minutes');
@@ -176,7 +185,7 @@ class TourPreviewRelationManager extends RelationManager
                                         $minutes = round($avgMinutes % 60);
                                         return "{$hours}ч {$minutes}м";
                                     }),
-                                Infolists\Components\TextEntry::make('longest_item')
+                                TextEntry::make('longest_item')
                                     ->label('Самый длинный элемент')
                                     ->getStateUsing(function (): string {
                                         $longest = $this->ownerRecord->itineraryItems()
@@ -289,21 +298,21 @@ class TourPreviewRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->color('info')
                     ->infolist([
-                        Infolists\Components\Section::make('Информация об элементе')
+                        Section::make('Информация об элементе')
                             ->schema([
-                                Infolists\Components\TextEntry::make('title')
+                                TextEntry::make('title')
                                     ->label('Название'),
-                                Infolists\Components\TextEntry::make('type')
+                                TextEntry::make('type')
                                     ->label('Тип')
                                     ->badge()
                                     ->color(fn (string $state): string => $state === 'day' ? 'primary' : 'success'),
-                                Infolists\Components\TextEntry::make('description')
+                                TextEntry::make('description')
                                     ->label('Описание')
                                     ->columnSpanFull(),
-                                Infolists\Components\TextEntry::make('default_start_time')
+                                TextEntry::make('default_start_time')
                                     ->label('Время начала')
                                     ->time(),
-                                Infolists\Components\TextEntry::make('duration_minutes')
+                                TextEntry::make('duration_minutes')
                                     ->label('Продолжительность')
                                     ->formatStateUsing(function (int $state): string {
                                         $hours = intval($state / 60);
@@ -316,17 +325,17 @@ class TourPreviewRelationManager extends RelationManager
                                             return "{$minutes}м";
                                         }
                                     }),
-                                Infolists\Components\TextEntry::make('parent.title')
+                                TextEntry::make('parent.title')
                                     ->label('Родительский день')
                                     ->placeholder('—'),
-                                Infolists\Components\TextEntry::make('usage_count')
+                                TextEntry::make('usage_count')
                                     ->label('Использований в бронированиях')
                                     ->getStateUsing(fn (ItineraryItem $record): int => $record->bookingItineraryItems()->count()),
                             ])
                             ->columns(2),
-                        Infolists\Components\Section::make('Дополнительные данные')
+                        Section::make('Дополнительные данные')
                             ->schema([
-                                Infolists\Components\KeyValueEntry::make('meta')
+                                KeyValueEntry::make('meta')
                                     ->label('Мета-данные')
                                     ->columnSpanFull(),
                             ])
@@ -339,9 +348,24 @@ class TourPreviewRelationManager extends RelationManager
 
     private function calculateEndTime(string $startTime, int $durationMinutes): string
     {
-        $start = \Carbon\Carbon::createFromFormat('H:i', $startTime);
-        $end = $start->copy()->addMinutes($durationMinutes);
-        return $end->format('H:i');
+        try {
+            // Handle different possible time formats
+            if (strpos($startTime, ':') === false) {
+                throw new \InvalidArgumentException('Invalid time format');
+            }
+            
+            $start = \Carbon\Carbon::createFromFormat('H:i', $startTime);
+            
+            if (!$start) {
+                throw new \InvalidArgumentException('Could not parse time');
+            }
+            
+            $end = $start->copy()->addMinutes($durationMinutes);
+            return $end->format('H:i');
+        } catch (\Exception $e) {
+            // Return a safe fallback
+            return 'Invalid';
+        }
     }
 
     private function cloneTour(array $data): Tour

@@ -105,6 +105,82 @@ class ItemsRelationManager extends RelationManager
                     ->limit(60)
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('guide_assigned')
+                    ->label('Гид назначен')
+                    ->getStateUsing(function ($record) {
+                        $guideAssignment = $record->assignments()
+                            ->where('assignable_type', Guide::class)
+                            ->first();
+                        
+                        if ($guideAssignment) {
+                            $guide = $guideAssignment->assignable;
+                            return $guide ? $guide->name : 'Гид удален';
+                        }
+                        
+                        return '—';
+                    })
+                    ->badge()
+                    ->color(fn ($state) => $state === '—' ? 'gray' : 'success')
+                    ->toggleable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('restaurant_assigned')
+                    ->label('Ресторан назначен')
+                    ->getStateUsing(function ($record) {
+                        $restaurantAssignment = $record->assignments()
+                            ->where('assignable_type', Restaurant::class)
+                            ->first();
+                        
+                        if ($restaurantAssignment) {
+                            $restaurant = $restaurantAssignment->assignable;
+                            return $restaurant ? $restaurant->name : 'Ресторан удален';
+                        }
+                        
+                        return '—';
+                    })
+                    ->badge()
+                    ->color(fn ($state) => $state === '—' ? 'gray' : 'warning')
+                    ->toggleable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('hotel_assigned')
+                    ->label('Гостиница назначена')
+                    ->getStateUsing(function ($record) {
+                        $hotelAssignment = $record->assignments()
+                            ->where('assignable_type', Hotel::class)
+                            ->first();
+                        
+                        if ($hotelAssignment) {
+                            $hotel = $hotelAssignment->assignable;
+                            return $hotel ? $hotel->name : 'Гостиница удалена';
+                        }
+                        
+                        return '—';
+                    })
+                    ->badge()
+                    ->color(fn ($state) => $state === '—' ? 'gray' : 'info')
+                    ->toggleable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('transport_assigned')
+                    ->label('Транспорт назначен')
+                    ->getStateUsing(function ($record) {
+                        $transportAssignment = $record->assignments()
+                            ->where('assignable_type', Transport::class)
+                            ->first();
+                        
+                        if ($transportAssignment) {
+                            $transport = $transportAssignment->assignable;
+                            return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                        }
+                        
+                        return '—';
+                    })
+                    ->badge()
+                    ->color(fn ($state) => $state === '—' ? 'gray' : 'danger')
+                    ->toggleable()
+                    ->sortable(),
+
                 Tables\Columns\IconColumn::make('is_custom')
                     ->label('Пользовательский')
                     ->boolean(),
@@ -151,6 +227,54 @@ class ItemsRelationManager extends RelationManager
                         'completed' => 'Завершено',
                         'cancelled' => 'Отменено',
                     ]),
+
+                Filter::make('has_guide')
+                    ->label('С гидом')
+                    ->query(fn (Builder $query): Builder => $query->whereHas('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Guide::class);
+                    })),
+
+                Filter::make('no_guide')
+                    ->label('Без гида')
+                    ->query(fn (Builder $query): Builder => $query->whereDoesntHave('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Guide::class);
+                    })),
+
+                Filter::make('has_restaurant')
+                    ->label('С рестораном')
+                    ->query(fn (Builder $query): Builder => $query->whereHas('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Restaurant::class);
+                    })),
+
+                Filter::make('no_restaurant')
+                    ->label('Без ресторана')
+                    ->query(fn (Builder $query): Builder => $query->whereDoesntHave('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Restaurant::class);
+                    })),
+
+                Filter::make('has_hotel')
+                    ->label('С гостиницей')
+                    ->query(fn (Builder $query): Builder => $query->whereHas('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Hotel::class);
+                    })),
+
+                Filter::make('no_hotel')
+                    ->label('Без гостиницы')
+                    ->query(fn (Builder $query): Builder => $query->whereDoesntHave('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Hotel::class);
+                    })),
+
+                Filter::make('has_transport')
+                    ->label('С транспортом')
+                    ->query(fn (Builder $query): Builder => $query->whereHas('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Transport::class);
+                    })),
+
+                Filter::make('no_transport')
+                    ->label('Без транспорта')
+                    ->query(fn (Builder $query): Builder => $query->whereDoesntHave('assignments', function (Builder $query) {
+                        $query->where('assignable_type', Transport::class);
+                    })),
             ])
             ->headerActions([
                 CreateAction::make()
@@ -186,6 +310,433 @@ class ItemsRelationManager extends RelationManager
                                 ->success()
                                 ->send();
                         }
+                    }),
+
+                Action::make('bulkAssignGuide')
+                    ->label('Назначить гида на несколько дней')
+                    ->icon('heroicon-o-users')
+                    ->color('success')
+                    ->form([
+                        Forms\Components\Select::make('guide_id')
+                            ->label('Выберите гида')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Guide::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\Select::make('days')
+                            ->label('Выберите дни')
+                            ->multiple()
+                            ->required()
+                            ->options(function () {
+                                $booking = $this->ownerRecord;
+                                return $booking->itineraryItems()
+                                    ->orderBy('date')
+                                    ->get()
+                                    ->mapWithKeys(function ($item) {
+                                        return [
+                                            $item->id => $item->date->format('d.m.Y') . ' - ' . $item->title
+                                        ];
+                                    })
+                                    ->all();
+                            })
+                            ->helperText('Выберите дни, на которые нужно назначить гида'),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество гидов')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function (array $data): void {
+                        $guideId = (int) $data['guide_id'];
+                        $dayIds = $data['days'];
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $booking = $this->ownerRecord;
+                        $assignedCount = 0;
+
+                        foreach ($dayIds as $dayId) {
+                            $item = $booking->itineraryItems()->find($dayId);
+                            if ($item) {
+                                // Check if guide is already assigned to this day
+                                $existingAssignment = $item->assignments()
+                                    ->where('assignable_type', Guide::class)
+                                    ->where('assignable_id', $guideId)
+                                    ->first();
+
+                                if (!$existingAssignment) {
+                                    $item->assignments()->create([
+                                        'assignable_type' => Guide::class,
+                                        'assignable_id' => $guideId,
+                                        'quantity' => $quantity,
+                                        'status' => $status,
+                                        'notes' => $notes,
+                                    ]);
+                                    $assignedCount++;
+                                }
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Гид назначен')
+                            ->body("Гид назначен на {$assignedCount} день(ей)")
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('bulkAssignRestaurant')
+                    ->label('Назначить ресторан на несколько дней')
+                    ->icon('heroicon-o-building-storefront')
+                    ->color('warning')
+                    ->form([
+                        Forms\Components\Select::make('restaurant_id')
+                            ->label('Выберите ресторан')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Restaurant::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\Select::make('days')
+                            ->label('Выберите дни')
+                            ->multiple()
+                            ->required()
+                            ->options(function () {
+                                $booking = $this->ownerRecord;
+                                return $booking->itineraryItems()
+                                    ->orderBy('date')
+                                    ->get()
+                                    ->mapWithKeys(function ($item) {
+                                        return [
+                                            $item->id => $item->date->format('d.m.Y') . ' - ' . $item->title
+                                        ];
+                                    })
+                                    ->all();
+                            })
+                            ->helperText('Выберите дни, на которые нужно назначить ресторан'),
+
+                        Forms\Components\Select::make('meal_type_id')
+                            ->label('Тип питания')
+                            ->searchable()
+                            ->options(function ($get) {
+                                $restaurantId = (int) ($get('restaurant_id') ?? 0);
+                                if (!$restaurantId) return [];
+                                return MealType::query()
+                                    ->where('restaurant_id', $restaurantId)
+                                    ->get()
+                                    ->mapWithKeys(fn (MealType $m) => [
+                                        $m->id => $m->name . ' — ' . number_format((float) $m->price, 2) . ' $',
+                                    ])
+                                    ->all();
+                            })
+                            ->live(),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество порций')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function (array $data): void {
+                        $restaurantId = (int) $data['restaurant_id'];
+                        $dayIds = $data['days'];
+                        $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $booking = $this->ownerRecord;
+                        $assignedCount = 0;
+
+                        foreach ($dayIds as $dayId) {
+                            $item = $booking->itineraryItems()->find($dayId);
+                            if ($item) {
+                                // Check if restaurant is already assigned to this day
+                                $existingAssignment = $item->assignments()
+                                    ->where('assignable_type', Restaurant::class)
+                                    ->where('assignable_id', $restaurantId)
+                                    ->first();
+
+                                if (!$existingAssignment) {
+                                    $item->assignments()->create([
+                                        'assignable_type' => Restaurant::class,
+                                        'assignable_id' => $restaurantId,
+                                        'meal_type_id' => $mealTypeId,
+                                        'quantity' => $quantity,
+                                        'status' => $status,
+                                        'notes' => $notes,
+                                    ]);
+                                    $assignedCount++;
+                                }
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Ресторан назначен')
+                            ->body("Ресторан назначен на {$assignedCount} день(ей)")
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('bulkAssignHotel')
+                    ->label('Назначить гостиницу на несколько дней')
+                    ->icon('heroicon-o-building-office-2')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\Select::make('hotel_id')
+                            ->label('Выберите гостиницу')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Hotel::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\Select::make('days')
+                            ->label('Выберите дни')
+                            ->multiple()
+                            ->required()
+                            ->options(function () {
+                                $booking = $this->ownerRecord;
+                                return $booking->itineraryItems()
+                                    ->orderBy('date')
+                                    ->get()
+                                    ->mapWithKeys(function ($item) {
+                                        return [
+                                            $item->id => $item->date->format('d.m.Y') . ' - ' . $item->title
+                                        ];
+                                    })
+                                    ->all();
+                            })
+                            ->helperText('Выберите дни, на которые нужно назначить гостиницу'),
+
+                        Forms\Components\Repeater::make('rooms')
+                            ->label('Номера')
+                            ->columns(3)
+                            ->addActionLabel('Добавить номер')
+                            ->schema([
+                                Forms\Components\Select::make('room_id')
+                                    ->label('Тип номера')
+                                    ->searchable()
+                                    ->required()
+                                    ->options(function ($get) {
+                                        $hotelId = (int) ($get('../../hotel_id') ?? 0);
+                                        if (!$hotelId) return [];
+                                        return Room::query()
+                                            ->where('hotel_id', $hotelId)
+                                            ->orderBy('name')
+                                            ->pluck('name', 'id')
+                                            ->all();
+                                    }),
+
+                                Forms\Components\TextInput::make('quantity')
+                                    ->label('Количество')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->default(1)
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('notes')
+                                    ->label('Примечания')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Общие примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function (array $data): void {
+                        $hotelId = (int) $data['hotel_id'];
+                        $dayIds = $data['days'];
+                        $rooms = $data['rooms'] ?? [];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $booking = $this->ownerRecord;
+                        $assignedCount = 0;
+
+                        foreach ($dayIds as $dayId) {
+                            $item = $booking->itineraryItems()->find($dayId);
+                            if ($item && !empty($rooms)) {
+                                // Check if hotel is already assigned to this day
+                                $existingAssignment = $item->assignments()
+                                    ->where('assignable_type', Hotel::class)
+                                    ->where('assignable_id', $hotelId)
+                                    ->first();
+
+                                if (!$existingAssignment) {
+                                    // Create assignments for each room
+                                    foreach ($rooms as $room) {
+                                        $roomId = isset($room['room_id']) ? (int) $room['room_id'] : null;
+                                        if (!$roomId) continue;
+
+                                        $item->assignments()->create([
+                                            'assignable_type' => Hotel::class,
+                                            'assignable_id' => $hotelId,
+                                            'room_id' => $roomId,
+                                            'quantity' => isset($room['quantity']) ? (int) $room['quantity'] : 1,
+                                            'status' => $status,
+                                            'notes' => $room['notes'] ?? $notes,
+                                        ]);
+                                    }
+                                    $assignedCount++;
+                                }
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Гостиница назначена')
+                            ->body("Гостиница назначена на {$assignedCount} день(ей)")
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('bulkAssignTransport')
+                    ->label('Назначить транспорт на несколько дней')
+                    ->icon('heroicon-o-truck')
+                    ->color('danger')
+                    ->form([
+                        Forms\Components\Select::make('transport_id')
+                            ->label('Выберите транспорт')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Transport::query()
+                                    ->orderBy('model')
+                                    ->get()
+                                    ->mapWithKeys(function ($transport) {
+                                        return [
+                                            $transport->id => $transport->model . ' (' . $transport->license_plate . ')'
+                                        ];
+                                    })
+                                    ->all();
+                            }),
+
+                        Forms\Components\Select::make('days')
+                            ->label('Выберите дни')
+                            ->multiple()
+                            ->required()
+                            ->options(function () {
+                                $booking = $this->ownerRecord;
+                                return $booking->itineraryItems()
+                                    ->orderBy('date')
+                                    ->get()
+                                    ->mapWithKeys(function ($item) {
+                                        return [
+                                            $item->id => $item->date->format('d.m.Y') . ' - ' . $item->title
+                                        ];
+                                    })
+                                    ->all();
+                            })
+                            ->helperText('Выберите дни, на которые нужно назначить транспорт'),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество транспорта')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function (array $data): void {
+                        $transportId = (int) $data['transport_id'];
+                        $dayIds = $data['days'];
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $booking = $this->ownerRecord;
+                        $assignedCount = 0;
+
+                        foreach ($dayIds as $dayId) {
+                            $item = $booking->itineraryItems()->find($dayId);
+                            if ($item) {
+                                // Check if transport is already assigned to this day
+                                $existingAssignment = $item->assignments()
+                                    ->where('assignable_type', Transport::class)
+                                    ->where('assignable_id', $transportId)
+                                    ->first();
+
+                                if (!$existingAssignment) {
+                                    $item->assignments()->create([
+                                        'assignable_type' => Transport::class,
+                                        'assignable_id' => $transportId,
+                                        'quantity' => $quantity,
+                                        'status' => $status,
+                                        'notes' => $notes,
+                                    ]);
+                                    $assignedCount++;
+                                }
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Транспорт назначен')
+                            ->body("Транспорт назначен на {$assignedCount} день(ей)")
+                            ->success()
+                            ->send();
                     }),
             ])
             ->actions([
@@ -578,7 +1129,348 @@ class ItemsRelationManager extends RelationManager
                 DeleteAction::make()
                     ->successNotificationTitle('Элемент удален'),
             ])
-            ->bulkActions([])
+            ->bulkActions([
+                BulkAction::make('bulkAssignGuide')
+                    ->label('Назначить гида выбранным дням')
+                    ->icon('heroicon-o-users')
+                    ->color('success')
+                    ->form([
+                        Forms\Components\Select::make('guide_id')
+                            ->label('Выберите гида')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Guide::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество гидов')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function ($records, array $data): void {
+                        $guideId = (int) $data['guide_id'];
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $assignedCount = 0;
+
+                        foreach ($records as $item) {
+                            // Check if guide is already assigned to this day
+                            $existingAssignment = $item->assignments()
+                                ->where('assignable_type', Guide::class)
+                                ->where('assignable_id', $guideId)
+                                ->first();
+
+                            if (!$existingAssignment) {
+                                $item->assignments()->create([
+                                    'assignable_type' => Guide::class,
+                                    'assignable_id' => $guideId,
+                                    'quantity' => $quantity,
+                                    'status' => $status,
+                                    'notes' => $notes,
+                                ]);
+                                $assignedCount++;
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Гид назначен')
+                            ->body("Гид назначен на {$assignedCount} выбранных день(ей)")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('bulkAssignRestaurant')
+                    ->label('Назначить ресторан выбранным дням')
+                    ->icon('heroicon-o-building-storefront')
+                    ->color('warning')
+                    ->form([
+                        Forms\Components\Select::make('restaurant_id')
+                            ->label('Выберите ресторан')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Restaurant::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\Select::make('meal_type_id')
+                            ->label('Тип питания')
+                            ->searchable()
+                            ->options(function ($get) {
+                                $restaurantId = (int) ($get('restaurant_id') ?? 0);
+                                if (!$restaurantId) return [];
+                                return MealType::query()
+                                    ->where('restaurant_id', $restaurantId)
+                                    ->get()
+                                    ->mapWithKeys(fn (MealType $m) => [
+                                        $m->id => $m->name . ' — ' . number_format((float) $m->price, 2) . ' $',
+                                    ])
+                                    ->all();
+                            })
+                            ->live(),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество порций')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function ($records, array $data): void {
+                        $restaurantId = (int) $data['restaurant_id'];
+                        $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $assignedCount = 0;
+
+                        foreach ($records as $item) {
+                            // Check if restaurant is already assigned to this day
+                            $existingAssignment = $item->assignments()
+                                ->where('assignable_type', Restaurant::class)
+                                ->where('assignable_id', $restaurantId)
+                                ->first();
+
+                            if (!$existingAssignment) {
+                                $item->assignments()->create([
+                                    'assignable_type' => Restaurant::class,
+                                    'assignable_id' => $restaurantId,
+                                    'meal_type_id' => $mealTypeId,
+                                    'quantity' => $quantity,
+                                    'status' => $status,
+                                    'notes' => $notes,
+                                ]);
+                                $assignedCount++;
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Ресторан назначен')
+                            ->body("Ресторан назначен на {$assignedCount} выбранных день(ей)")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('bulkAssignHotel')
+                    ->label('Назначить гостиницу выбранным дням')
+                    ->icon('heroicon-o-building-office-2')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\Select::make('hotel_id')
+                            ->label('Выберите гостиницу')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Hotel::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all();
+                            }),
+
+                        Forms\Components\Repeater::make('rooms')
+                            ->label('Номера')
+                            ->columns(3)
+                            ->addActionLabel('Добавить номер')
+                            ->schema([
+                                Forms\Components\Select::make('room_id')
+                                    ->label('Тип номера')
+                                    ->searchable()
+                                    ->required()
+                                    ->options(function ($get) {
+                                        $hotelId = (int) ($get('../../hotel_id') ?? 0);
+                                        if (!$hotelId) return [];
+                                        return Room::query()
+                                            ->where('hotel_id', $hotelId)
+                                            ->orderBy('name')
+                                            ->pluck('name', 'id')
+                                            ->all();
+                                    }),
+
+                                Forms\Components\TextInput::make('quantity')
+                                    ->label('Количество')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->default(1)
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('notes')
+                                    ->label('Примечания')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Общие примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function ($records, array $data): void {
+                        $hotelId = (int) $data['hotel_id'];
+                        $rooms = $data['rooms'] ?? [];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $assignedCount = 0;
+
+                        foreach ($records as $item) {
+                            if (!empty($rooms)) {
+                                // Check if hotel is already assigned to this day
+                                $existingAssignment = $item->assignments()
+                                    ->where('assignable_type', Hotel::class)
+                                    ->where('assignable_id', $hotelId)
+                                    ->first();
+
+                                if (!$existingAssignment) {
+                                    // Create assignments for each room
+                                    foreach ($rooms as $room) {
+                                        $roomId = isset($room['room_id']) ? (int) $room['room_id'] : null;
+                                        if (!$roomId) continue;
+
+                                        $item->assignments()->create([
+                                            'assignable_type' => Hotel::class,
+                                            'assignable_id' => $hotelId,
+                                            'room_id' => $roomId,
+                                            'quantity' => isset($room['quantity']) ? (int) $room['quantity'] : 1,
+                                            'status' => $status,
+                                            'notes' => $room['notes'] ?? $notes,
+                                        ]);
+                                    }
+                                    $assignedCount++;
+                                }
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Гостиница назначена')
+                            ->body("Гостиница назначена на {$assignedCount} выбранных день(ей)")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('bulkAssignTransport')
+                    ->label('Назначить транспорт выбранным дням')
+                    ->icon('heroicon-o-truck')
+                    ->color('danger')
+                    ->form([
+                        Forms\Components\Select::make('transport_id')
+                            ->label('Выберите транспорт')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->options(function () {
+                                return Transport::query()
+                                    ->orderBy('model')
+                                    ->get()
+                                    ->mapWithKeys(function ($transport) {
+                                        return [
+                                            $transport->id => $transport->model . ' (' . $transport->license_plate . ')'
+                                        ];
+                                    })
+                                    ->all();
+                            }),
+
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество транспорта')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
+                        Forms\Components\Select::make('status')
+                            ->label('Статус назначения')
+                            ->options([
+                                'pending' => 'Ожидает',
+                                'confirmed' => 'Подтверждено',
+                            ])
+                            ->default('pending'),
+
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Примечания')
+                            ->rows(2),
+                    ])
+                    ->action(function ($records, array $data): void {
+                        $transportId = (int) $data['transport_id'];
+                        $quantity = (int) $data['quantity'];
+                        $status = $data['status'] ?? 'pending';
+                        $notes = $data['notes'] ?? null;
+
+                        $assignedCount = 0;
+
+                        foreach ($records as $item) {
+                            // Check if transport is already assigned to this day
+                            $existingAssignment = $item->assignments()
+                                ->where('assignable_type', Transport::class)
+                                ->where('assignable_id', $transportId)
+                                ->first();
+
+                            if (!$existingAssignment) {
+                                $item->assignments()->create([
+                                    'assignable_type' => Transport::class,
+                                    'assignable_id' => $transportId,
+                                    'quantity' => $quantity,
+                                    'status' => $status,
+                                    'notes' => $notes,
+                                ]);
+                                $assignedCount++;
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Транспорт назначен')
+                            ->body("Транспорт назначен на {$assignedCount} выбранных день(ей)")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+            ])
             ->paginated(false);
     }
 

@@ -14,22 +14,104 @@ class SpokenLanguageSeeder extends Seeder
     public function run(): void
     {
         $languages = [
+            // Major World Languages
             'English',
-            'Russian',
-            'Uzbek',
-            'French',
-            'German',
+            'Mandarin Chinese',
             'Spanish',
-            'Chinese',
-            'Japanese',
-            'Korean',
+            'Hindi',
             'Arabic',
+            'Portuguese',
+            'Bengali',
+            'Russian',
+            'Japanese',
+            'German',
+            'French',
+            'Korean',
             'Turkish',
-            'Persian',
+            'Vietnamese',
+            'Italian',
+            'Persian (Farsi)',
+            'Dutch',
+            'Indonesian',
+            'Thai',
+            'Polish',
+            
+            // Regional Languages (Central Asia & Middle East)
+            'Uzbek',
+            'Kazakh',
+            'Kyrgyz',
+            'Tajik',
+            'Turkmen',
+            'Afghan Persian (Dari)',
+            'Pashto',
+            'Kurdish',
+            'Hebrew',
+            'Urdu',
+            'Punjabi',
+            
+            // European Languages
+            'Swedish',
+            'Norwegian',
+            'Danish',
+            'Finnish',
+            'Greek',
+            'Czech',
+            'Hungarian',
+            'Romanian',
+            'Bulgarian',
+            'Serbian',
+            'Croatian',
+            'Slovak',
+            'Ukrainian',
+            'Belarusian',
+            'Lithuanian',
+            'Latvian',
+            'Estonian',
+            'Icelandic',
+            
+            // Asian Languages
+            'Cantonese',
+            'Tamil',
+            'Telugu',
+            'Marathi',
+            'Gujarati',
+            'Kannada',
+            'Malayalam',
+            'Oriya',
+            'Assamese',
+            'Nepali',
+            'Sinhala',
+            'Burmese',
+            'Khmer',
+            'Lao',
+            'Filipino (Tagalog)',
+            'Malay',
+            'Bahasa Indonesia',
+            
+            // African Languages
+            'Swahili',
+            'Amharic',
+            'Yoruba',
+            'Hausa',
+            'Igbo',
+            'Zulu',
+            'Xhosa',
+            'Afrikaans',
+            
+            // American Languages
+            'Quechua',
+            'Aymara',
+            'Guarani',
+            'Nahuatl',
+            
+            // Sign Languages
+            'American Sign Language (ASL)',
+            'British Sign Language (BSL)',
+            'International Sign Language',
         ];
 
         foreach ($languages as $language) {
-            SpokenLanguage::create(['name' => $language]);
+            SpokenLanguage::firstOrCreate(['name' => $language]);
         }
     }
 }

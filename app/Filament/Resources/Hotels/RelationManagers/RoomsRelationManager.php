@@ -26,7 +26,9 @@ class RoomsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('name')
                     ->label('Название номера')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('Например: Deluxe Suite, Standard Room')
+                    ->helperText('Введите название номера'),
                 Forms\Components\Select::make('room_type_id')
                     ->label('Тип номера')
                     ->relationship('roomType', 'type')
@@ -119,7 +121,14 @@ class RoomsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        // Ensure name field is always present
+                        if (empty($data['name'])) {
+                            $data['name'] = 'Room ' . uniqid();
+                        }
+                        return $data;
+                    }),
             ])
             ->actions([
                 EditAction::make(),

@@ -31,10 +31,20 @@ class TransportForm
                             ->live(),
                         Select::make('transport_type_id')
                             ->label('Тип транспорта')
-                            ->relationship('transportType', 'type')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->type)
-                            ->preload()
-                            ->required(),
+                            ->options(function ($get) {
+                                $selectedCategory = $get('category');
+                                
+                                if (!$selectedCategory) {
+                                    return [];
+                                }
+                                
+                                // Fetch transport types based on selected category
+                                return \App\Models\TransportType::where('category', $selectedCategory)
+                                    ->pluck('type', 'id');
+                            })
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(fn () => null), // Clear selection when category changes
                         Select::make('company_id')
                             ->label('Компания')
                             ->relationship('company', 'name')

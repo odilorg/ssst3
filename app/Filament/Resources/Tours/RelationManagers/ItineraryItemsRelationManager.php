@@ -77,34 +77,23 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->minValue(1)
                     ->suffix('мин')
                     ->helperText('Используйте кнопки для быстрого выбора'),
-                Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('set_30min')
-                        ->label('30 мин')
-                        ->action(function (callable $set) {
-                            $set('duration_minutes', 30);
-                        }),
-                    Forms\Components\Actions\Action::make('set_1hr')
-                        ->label('1 час')
-                        ->action(function (callable $set) {
-                            $set('duration_minutes', 60);
-                        }),
-                    Forms\Components\Actions\Action::make('set_2hr')
-                        ->label('2 часа')
-                        ->action(function (callable $set) {
-                            $set('duration_minutes', 120);
-                        }),
-                    Forms\Components\Actions\Action::make('set_4hr')
-                        ->label('4 часа')
-                        ->action(function (callable $set) {
-                            $set('duration_minutes', 240);
-                        }),
-                    Forms\Components\Actions\Action::make('set_8hr')
-                        ->label('8 часов')
-                        ->action(function (callable $set) {
-                            $set('duration_minutes', 480);
-                        }),
-                ])
-                ->columnSpanFull(),
+                Forms\Components\Select::make('duration_preset')
+                    ->label('Быстрый выбор продолжительности')
+                    ->options([
+                        '30' => '30 минут',
+                        '60' => '1 час',
+                        '120' => '2 часа',
+                        '240' => '4 часа',
+                        '480' => '8 часов',
+                    ])
+                    ->live()
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        if ($state) {
+                            $set('duration_minutes', (int) $state);
+                        }
+                    })
+                    ->placeholder('Выберите продолжительность')
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Порядок сортировки')
                     ->numeric()
