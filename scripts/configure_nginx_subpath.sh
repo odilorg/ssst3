@@ -39,17 +39,17 @@ php artisan config:clear
 php artisan optimize
 
 echo "[2/4] Writing Nginx snippet for subpath to /etc/nginx/snippets/tour_app_subpath.conf"
-cat >/etc/nginx/snippets/tour_app_subpath.conf <<'EOF'
+cat >/etc/nginx/snippets/tour_app_subpath.conf <<EOF
 location ^~ /tour_app {
     alias ${APP_DIR}/public;
     index index.php;
-    try_files $uri $uri/ /index.php?$query_string;
+    try_files \$uri \$uri/ /index.php?\$query_string;
 }
 
 location ~ ^/tour_app/(.+\.php)$ {
     alias ${APP_DIR}/public/$1;
     include snippets/fastcgi-php.conf;
-    fastcgi_param SCRIPT_FILENAME $request_filename;
+    fastcgi_param SCRIPT_FILENAME \$request_filename;
     fastcgi_pass unix:${PHP_FPM_SOCK};
 }
 EOF
