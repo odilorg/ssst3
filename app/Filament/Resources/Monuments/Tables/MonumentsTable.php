@@ -30,7 +30,7 @@ class MonumentsTable
                     ->searchable(),
                 TextColumn::make('ticket_price')
                     ->label('Цена билета')
-                    ->money('USD')
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, ',', ' ') . ' сум' : '—')
                     ->sortable(),
                 ImageColumn::make('images')
                     ->label('Изображения')

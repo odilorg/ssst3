@@ -33,4 +33,9 @@ class Guide extends Model
     {
         return $this->belongsToMany(SpokenLanguage::class, 'guide_spoken_language');
     }
+
+    public function contractServices()
+    {
+        return $this->morphMany(ContractService::class, 'serviceable');
+    }
 }

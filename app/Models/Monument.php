@@ -36,4 +36,9 @@ class Monument extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function contractServices()
+    {
+        return $this->morphMany(ContractService::class, 'serviceable');
+    }
 }

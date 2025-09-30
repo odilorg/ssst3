@@ -12,13 +12,17 @@ class Company extends Model
     protected $fillable = [
         'name',
         'address_street',
-        'address_city',
+        'city_id',
         'phone',
         'email',
+        'accountant_name',
         'inn',
         'account_number',
         'bank_name',
         'bank_mfo',
+        'has_treasury_account',
+        'treasury_account_number',
+        'treasury_stir',
         'director_name',
         'logo',
         'is_operator',
@@ -27,12 +31,17 @@ class Company extends Model
 
     protected $casts = [
         'is_operator' => 'boolean',
+        'has_treasury_account' => 'boolean',
         'inn' => 'integer',
-        'account_number' => 'integer',
         'bank_mfo' => 'integer',
     ];
 
     // Relationships
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
     // public function hotels()
     // {
     //     return $this->hasMany(Hotel::class);

@@ -27,25 +27,13 @@ class MonumentForm
                         Select::make('city_id')
                             ->label('Город')
                             ->relationship('city', 'name')
+                            ->searchable()
                             ->preload()
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state) {
-                                    $city = \App\Models\City::find($state);
-                                    if ($city) {
-                                        $set('city', $city->name);
-                                    }
-                                }
-                            }),
-                        TextInput::make('city')
-                            ->label('Город')
-                            ->required()
-                            ->dehydrated(),
+                            ->required(),
                         TextInput::make('ticket_price')
                             ->label('Цена билета')
                             ->numeric()
-                            ->prefix('$')
+                            ->suffix('сум')
                             ->required(),
                         Textarea::make('description')
                             ->label('Описание')
