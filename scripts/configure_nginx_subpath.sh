@@ -39,7 +39,7 @@ php artisan config:clear
 php artisan optimize
 
 echo "[2/4] Writing Nginx snippet for subpath to /etc/nginx/snippets/tour_app_subpath.conf"
-cat >/etc/nginx/snippets/tour_app_subpath.conf <<EOF
+cat >/etc/nginx/snippets/tour_app_subpath.conf <<'EOF'
 location ^~ /tour_app {
     alias ${APP_DIR}/public;
     index index.php;
