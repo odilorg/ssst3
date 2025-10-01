@@ -917,13 +917,32 @@ class ItemsRelationManager extends RelationManager
                                     })
                                     ->live(),
 
-                                // Quantity for restaurants and guides
+                                // TRANSPORT PRICE TYPE (Transport only)
+                                Forms\Components\Select::make('transport_price_type_id')
+                                    ->label('Тип услуги')
+                                    ->searchable()
+                                    ->visible(fn ($get) => $get('assignable_type') === Transport::class)
+                                    ->options(function ($get) {
+                                        if ($get('assignable_type') !== Transport::class) return [];
+                                        $transportTypeId = (int) ($get('assignable_id') ?? 0);
+                                        if (!$transportTypeId) return [];
+                                        return \App\Models\TransportPrice::query()
+                                            ->where('transport_type_id', $transportTypeId)
+                                            ->get()
+                                            ->mapWithKeys(fn ($p) => [
+                                                $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
+                                            ])
+                                            ->all();
+                                    })
+                                    ->live(),
+
+                                // Quantity for restaurants, guides, and transport
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
                                     ->default(1)
-                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class])),
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class, Transport::class])),
 
                                 Forms\Components\TextInput::make('cost')
                                     ->label('Стоимость')
@@ -995,6 +1014,8 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_type' => (string) $a->assignable_type,
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
+                                    'transport_price_type_id' => $a->transport_price_type_id ? (int) $a->transport_price_type_id : null,
+                                    'quantity' => $a->quantity ? (int) $a->quantity : 1,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
                                     'end_time' => $a->end_time ?: null,
@@ -1087,6 +1108,7 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_type' => (string) $type,
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
+                                    'transport_price_type_id' => isset($row['transport_price_type_id']) ? (int) $row['transport_price_type_id'] : null,
                                     'quantity' => isset($row['quantity']) ? (int) $row['quantity'] : 1,
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',
