@@ -11,8 +11,6 @@ class Guide extends Model
 
     protected $fillable = [
         'name',
-        'daily_rate',
-        'language',
         'is_marketing',
         'phone',
         'email',
@@ -25,7 +23,6 @@ class Guide extends Model
     protected $casts = [
         'price_types' => 'array',
         'is_marketing' => 'boolean',
-        'daily_rate' => 'decimal:2',
     ];
 
     // Relationships

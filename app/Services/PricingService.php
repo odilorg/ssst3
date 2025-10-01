@@ -123,7 +123,7 @@ class PricingService
                 return Monument::find($serviceId)?->ticket_price;
 
             case 'App\Models\Guide':
-                return Guide::find($serviceId)?->daily_rate;
+                return null;
 
             default:
                 return null;
