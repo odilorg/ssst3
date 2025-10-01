@@ -108,13 +108,17 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('guide_assigned')
                     ->label('Гид')
                     ->getStateUsing(function ($record) {
-                        $guideAssignment = $record->assignments()
+                        $guideAssignments = $record->assignments()
                             ->where('assignable_type', Guide::class)
-                            ->first();
+                            ->get();
                         
-                        if ($guideAssignment) {
-                            $guide = $guideAssignment->assignable;
-                            return $guide ? $guide->name : 'Гид удален';
+                        if ($guideAssignments->count() > 0) {
+                            $guides = $guideAssignments->map(function ($assignment) {
+                                $guide = $assignment->assignable;
+                                return $guide ? $guide->name : 'Гид удален';
+                            })->filter()->join(', ');
+                            
+                            return $guides ?: '—';
                         }
                         
                         return '—';
@@ -127,13 +131,17 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('restaurant_assigned')
                     ->label('Еда')
                     ->getStateUsing(function ($record) {
-                        $restaurantAssignment = $record->assignments()
+                        $restaurantAssignments = $record->assignments()
                             ->where('assignable_type', Restaurant::class)
-                            ->first();
+                            ->get();
                         
-                        if ($restaurantAssignment) {
-                            $restaurant = $restaurantAssignment->assignable;
-                            return $restaurant ? $restaurant->name : 'Ресторан удален';
+                        if ($restaurantAssignments->count() > 0) {
+                            $restaurants = $restaurantAssignments->map(function ($assignment) {
+                                $restaurant = $assignment->assignable;
+                                return $restaurant ? $restaurant->name : 'Ресторан удален';
+                            })->filter()->join(', ');
+                            
+                            return $restaurants ?: '—';
                         }
                         
                         return '—';
@@ -146,13 +154,17 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('hotel_assigned')
                     ->label('Гост.')
                     ->getStateUsing(function ($record) {
-                        $hotelAssignment = $record->assignments()
+                        $hotelAssignments = $record->assignments()
                             ->where('assignable_type', Hotel::class)
-                            ->first();
+                            ->get();
                         
-                        if ($hotelAssignment) {
-                            $hotel = $hotelAssignment->assignable;
-                            return $hotel ? $hotel->name : 'Гостиница удалена';
+                        if ($hotelAssignments->count() > 0) {
+                            $hotels = $hotelAssignments->map(function ($assignment) {
+                                $hotel = $assignment->assignable;
+                                return $hotel ? $hotel->name : 'Гостиница удалена';
+                            })->filter()->join(', ');
+                            
+                            return $hotels ?: '—';
                         }
                         
                         return '—';
@@ -165,22 +177,26 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('transport_assigned')
                     ->label('Авто')
                     ->getStateUsing(function ($record) {
-                        $transportAssignment = $record->assignments()
+                        $transportAssignments = $record->assignments()
                             ->where('assignable_type', Transport::class)
-                            ->first();
+                            ->get();
                         
-                        if ($transportAssignment) {
-                            // Check if assignable_id is a TransportType ID
-                            $assignableId = $transportAssignment->assignable_id;
-                            $transportType = \App\Models\TransportType::find($assignableId);
+                        if ($transportAssignments->count() > 0) {
+                            $transports = $transportAssignments->map(function ($assignment) {
+                                // Check if assignable_id is a TransportType ID
+                                $assignableId = $assignment->assignable_id;
+                                $transportType = \App\Models\TransportType::find($assignableId);
+                                
+                                if ($transportType) {
+                                    return $transportType->type;
+                                }
+                                
+                                // Fallback to old Transport model logic
+                                $transport = $assignment->assignable;
+                                return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                            })->filter()->join(', ');
                             
-                            if ($transportType) {
-                                return $transportType->type;
-                            }
-                            
-                            // Fallback to old Transport model logic
-                            $transport = $transportAssignment->assignable;
-                            return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                            return $transports ?: '—';
                         }
                         
                         return '—';
