@@ -74,17 +74,14 @@ class AssignmentsRelationManager extends RelationManager
                             'hotel' => Hotel::all()->pluck('name', 'id')->toArray(),
                             'restaurant' => Restaurant::all()->pluck('name', 'id')->toArray(),
                             'monument' => Monument::all()->pluck('name', 'id')->toArray(),
-                            'transport' => \App\Models\TransportType::all()
-                                ->mapWithKeys(function ($t) {
-                                    $type = $t->type ?? '';
-                                    $category = $t->category ?? '';
-                                    $label = trim($type . (strlen($category) ? ' (' . $category . ')' : ''));
-                                    if ($label === '') {
-                                        $label = 'Transport Type #' . $t->id;
-                                    }
-                                    return [$t->id => $label];
-                                })
-                                ->toArray(),
+                            'transport' => [
+                                'bus' => 'Автобус',
+                                'car' => 'Легковой автомобиль',
+                                'mikro_bus' => 'Микроавтобус',
+                                'mini_van' => 'Минивэн',
+                                'air' => 'Авиация',
+                                'rail' => 'Железная дорога',
+                            ],
                             default => [],
                         };
                     })
