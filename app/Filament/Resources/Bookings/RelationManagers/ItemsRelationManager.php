@@ -116,7 +116,7 @@ class ItemsRelationManager extends RelationManager
                         if ($guideAssignments->count() > 0) {
                             $guides = $guideAssignments->map(function ($assignment) {
                                 $guide = $assignment->assignable;
-                                return $guide ? $guide->name : 'Гид удален';
+                            return $guide ? $guide->name : 'Гид удален';
                             })->filter()->unique()->join('<br>');
                             
                             return $guides ?: '—';
@@ -140,7 +140,7 @@ class ItemsRelationManager extends RelationManager
                         if ($restaurantAssignments->count() > 0) {
                             $restaurants = $restaurantAssignments->map(function ($assignment) {
                                 $restaurant = $assignment->assignable;
-                                return $restaurant ? $restaurant->name : 'Ресторан удален';
+                            return $restaurant ? $restaurant->name : 'Ресторан удален';
                             })->filter()->unique()->join('<br>');
                             
                             return $restaurants ?: '—';
@@ -164,7 +164,7 @@ class ItemsRelationManager extends RelationManager
                         if ($hotelAssignments->count() > 0) {
                             $hotels = $hotelAssignments->map(function ($assignment) {
                                 $hotel = $assignment->assignable;
-                                return $hotel ? $hotel->name : 'Гостиница удалена';
+                            return $hotel ? $hotel->name : 'Гостиница удалена';
                             })->filter()->unique()->join('<br>');
                             
                             return $hotels ?: '—';
@@ -936,12 +936,36 @@ class ItemsRelationManager extends RelationManager
                                     })
                                     ->live(),
 
-                                // Quantity for restaurants, guides, and transport
+                                // GUIDE SERVICE COST (Guide only)
+                                Forms\Components\Select::make('guide_service_cost')
+                                    ->label('Тип услуги')
+                                    ->searchable()
+                                    ->visible(fn ($get) => $get('assignable_type') === Guide::class)
+                                    ->options(function ($get) {
+                                        if ($get('assignable_type') !== Guide::class) return [];
+                                        $guideId = (int) ($get('assignable_id') ?? 0);
+                                        if (!$guideId) return [];
+                                        
+                                        $guide = Guide::find($guideId);
+                                        if (!$guide || !$guide->price_types) return [];
+                                        
+                                        $options = [];
+                                        foreach ($guide->price_types as $index => $priceType) {
+                                            $priceTypeName = $priceType['price_type_name'] ?? 'Unknown';
+                                            $price = $priceType['price'] ?? 0;
+                                            $options[$index] = $priceTypeName . ' — ' . number_format((float) $price, 2) . ' $';
+                                        }
+                                        
+                                        return $options;
+                                    })
+                                    ->live(),
+
+                                // Quantity for restaurants and transport only
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
-                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class, Transport::class]))
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Transport::class]))
                                     ->helperText(function ($get) {
                                         if ($get('assignable_type') === Restaurant::class) {
                                             $paxTotal = $this->ownerRecord->pax_total ?? 0;
@@ -1027,6 +1051,7 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
                                     'transport_price_type_id' => $a->transport_price_type_id ? (int) $a->transport_price_type_id : null,
+                                    'guide_service_cost' => $a->guide_service_cost ?: null,
                                     'quantity' => $quantity,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
@@ -1123,7 +1148,7 @@ class ItemsRelationManager extends RelationManager
                                 } elseif ($type === Restaurant::class) {
                                     $quantity = $this->ownerRecord->pax_total ?? 1;
                                 } else {
-                                    // For guides and transport, default to 1 if empty
+                                    // For transport, default to 1 if empty
                                     $quantity = 1;
                                 }
 
@@ -1132,7 +1157,8 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
                                     'transport_price_type_id' => isset($row['transport_price_type_id']) ? (int) $row['transport_price_type_id'] : null,
-                                    'quantity' => $quantity,
+                                    'guide_service_cost' => isset($row['guide_service_cost']) ? $row['guide_service_cost'] : null,
+                                    'quantity' => $type === Guide::class ? null : $quantity, // No quantity for guides
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',
                                     'status' => $row['status'] ?? 'pending',

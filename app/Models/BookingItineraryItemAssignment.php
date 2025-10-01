@@ -17,6 +17,7 @@ class BookingItineraryItemAssignment extends Model
         'room_id',
         'meal_type_id',
         'transport_price_type_id',
+        'guide_service_cost',
         'role',
         'quantity',
         'cost',
