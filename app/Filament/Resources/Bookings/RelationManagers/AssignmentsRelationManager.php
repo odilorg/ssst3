@@ -64,11 +64,21 @@ class AssignmentsRelationManager extends RelationManager
                         if (!$type) return [];
                         
                         return match ($type) {
-                            'guide' => Guide::all()->pluck('name', 'id'),
-                            'hotel' => Hotel::all()->pluck('name', 'id'),
-                            'restaurant' => Restaurant::all()->pluck('name', 'id'),
-                            'monument' => Monument::all()->pluck('name', 'id'),
-                            'transport' => Transport::all()->pluck('model', 'id'),
+                            'guide' => Guide::all()->pluck('name', 'id')->toArray(),
+                            'hotel' => Hotel::all()->pluck('name', 'id')->toArray(),
+                            'restaurant' => Restaurant::all()->pluck('name', 'id')->toArray(),
+                            'monument' => Monument::all()->pluck('name', 'id')->toArray(),
+                            'transport' => Transport::all()
+                                ->mapWithKeys(function ($t) {
+                                    $model = $t->model ?? '';
+                                    $plate = $t->plate_number ?? '';
+                                    $label = trim($model . (strlen($plate) ? ' - ' . $plate : ''));
+                                    if ($label === '') {
+                                        $label = 'Transport #' . $t->id;
+                                    }
+                                    return [$t->id => $label];
+                                })
+                                ->toArray(),
                             default => [],
                         };
                     })
