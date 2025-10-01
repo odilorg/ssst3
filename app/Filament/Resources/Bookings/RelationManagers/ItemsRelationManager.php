@@ -107,6 +107,7 @@ class ItemsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('guide_assigned')
                     ->label('Гид')
+                    ->html()
                     ->getStateUsing(function ($record) {
                         $guideAssignments = $record->assignments()
                             ->where('assignable_type', Guide::class)
@@ -115,8 +116,8 @@ class ItemsRelationManager extends RelationManager
                         if ($guideAssignments->count() > 0) {
                             $guides = $guideAssignments->map(function ($assignment) {
                                 $guide = $assignment->assignable;
-                                return $guide ? $guide->name : 'Гид удален';
-                            })->filter()->join(', ');
+                            return $guide ? $guide->name : 'Гид удален';
+                            })->filter()->join('<br>');
                             
                             return $guides ?: '—';
                         }
@@ -130,6 +131,7 @@ class ItemsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('restaurant_assigned')
                     ->label('Еда')
+                    ->html()
                     ->getStateUsing(function ($record) {
                         $restaurantAssignments = $record->assignments()
                             ->where('assignable_type', Restaurant::class)
@@ -138,8 +140,8 @@ class ItemsRelationManager extends RelationManager
                         if ($restaurantAssignments->count() > 0) {
                             $restaurants = $restaurantAssignments->map(function ($assignment) {
                                 $restaurant = $assignment->assignable;
-                                return $restaurant ? $restaurant->name : 'Ресторан удален';
-                            })->filter()->join(', ');
+                            return $restaurant ? $restaurant->name : 'Ресторан удален';
+                            })->filter()->join('<br>');
                             
                             return $restaurants ?: '—';
                         }
@@ -153,6 +155,7 @@ class ItemsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('hotel_assigned')
                     ->label('Гост.')
+                    ->html()
                     ->getStateUsing(function ($record) {
                         $hotelAssignments = $record->assignments()
                             ->where('assignable_type', Hotel::class)
@@ -161,8 +164,8 @@ class ItemsRelationManager extends RelationManager
                         if ($hotelAssignments->count() > 0) {
                             $hotels = $hotelAssignments->map(function ($assignment) {
                                 $hotel = $assignment->assignable;
-                                return $hotel ? $hotel->name : 'Гостиница удалена';
-                            })->filter()->join(', ');
+                            return $hotel ? $hotel->name : 'Гостиница удалена';
+                            })->filter()->join('<br>');
                             
                             return $hotels ?: '—';
                         }
@@ -176,6 +179,7 @@ class ItemsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('transport_assigned')
                     ->label('Авто')
+                    ->html()
                     ->getStateUsing(function ($record) {
                         $transportAssignments = $record->assignments()
                             ->where('assignable_type', Transport::class)
@@ -193,8 +197,8 @@ class ItemsRelationManager extends RelationManager
                                 
                                 // Fallback to old Transport model logic
                                 $transport = $assignment->assignable;
-                                return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
-                            })->filter()->join(', ');
+                            return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                            })->filter()->join('<br>');
                             
                             return $transports ?: '—';
                         }
