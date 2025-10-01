@@ -941,8 +941,21 @@ class ItemsRelationManager extends RelationManager
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
-                                    ->default(1)
-                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class, Transport::class])),
+                                    ->default(function ($get) {
+                                        // For restaurants, default to booking's number of people
+                                        if ($get('assignable_type') === Restaurant::class) {
+                                            return $this->ownerRecord->pax_total ?? 1;
+                                        }
+                                        return 1;
+                                    })
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class, Transport::class]))
+                                    ->helperText(function ($get) {
+                                        if ($get('assignable_type') === Restaurant::class) {
+                                            $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                            return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                                        }
+                                        return null;
+                                    }),
 
                                 Forms\Components\TextInput::make('cost')
                                     ->label('Стоимость')
@@ -1010,12 +1023,18 @@ class ItemsRelationManager extends RelationManager
                             ->where('assignable_type', '!=', Hotel::class)
                             ->where('assignable_type', '!=', Monument::class)
                             ->map(function ($a) {
+                                // For restaurant assignments, if quantity equals pax_total, leave it empty to show default
+                                $quantity = $a->quantity ? (int) $a->quantity : 1;
+                                if ($a->assignable_type === Restaurant::class && $quantity === $this->ownerRecord->pax_total) {
+                                    $quantity = null; // This will trigger the default value in the form
+                                }
+
                                 return [
                                     'assignable_type' => (string) $a->assignable_type,
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
                                     'transport_price_type_id' => $a->transport_price_type_id ? (int) $a->transport_price_type_id : null,
-                                    'quantity' => $a->quantity ? (int) $a->quantity : 1,
+                                    'quantity' => $quantity,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
                                     'end_time' => $a->end_time ?: null,
@@ -1104,12 +1123,20 @@ class ItemsRelationManager extends RelationManager
                                 }
                             } else {
                                 // Non-hotel 1:1 (non-monuments)
+                                // Determine quantity: use form value if provided, otherwise use booking's pax_total for restaurants
+                                $quantity = 1;
+                                if (isset($row['quantity']) && !empty($row['quantity'])) {
+                                    $quantity = (int) $row['quantity'];
+                                } elseif ($type === Restaurant::class) {
+                                    $quantity = $this->ownerRecord->pax_total ?? 1;
+                                }
+
                                 $record->assignments()->create([
                                     'assignable_type' => (string) $type,
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
                                     'transport_price_type_id' => isset($row['transport_price_type_id']) ? (int) $row['transport_price_type_id'] : null,
-                                    'quantity' => isset($row['quantity']) ? (int) $row['quantity'] : 1,
+                                    'quantity' => $quantity,
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',
                                     'status' => $row['status'] ?? 'pending',
