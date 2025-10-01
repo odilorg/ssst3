@@ -58,7 +58,13 @@ class AssignmentsRelationManager extends RelationManager
                     ->live()
                     ->afterStateUpdated(fn (callable $set) => $set('assignable_id', null)),
                 Forms\Components\Select::make('assignable_id')
-                    ->label('Поставщик')
+                    ->label(function (callable $get) {
+                        $type = $get('assignable_type');
+                        return match ($type) {
+                            'transport' => 'Тип транспорта',
+                            default => 'Поставщик',
+                        };
+                    })
                     ->options(function (callable $get) {
                         $type = $get('assignable_type');
                         if (!$type) return [];
@@ -68,13 +74,13 @@ class AssignmentsRelationManager extends RelationManager
                             'hotel' => Hotel::all()->pluck('name', 'id')->toArray(),
                             'restaurant' => Restaurant::all()->pluck('name', 'id')->toArray(),
                             'monument' => Monument::all()->pluck('name', 'id')->toArray(),
-                            'transport' => Transport::all()
+                            'transport' => \App\Models\TransportType::all()
                                 ->mapWithKeys(function ($t) {
-                                    $model = $t->model ?? '';
-                                    $plate = $t->plate_number ?? '';
-                                    $label = trim($model . (strlen($plate) ? ' - ' . $plate : ''));
+                                    $type = $t->type ?? '';
+                                    $category = $t->category ?? '';
+                                    $label = trim($type . (strlen($category) ? ' (' . $category . ')' : ''));
                                     if ($label === '') {
-                                        $label = 'Transport #' . $t->id;
+                                        $label = 'Transport Type #' . $t->id;
                                     }
                                     return [$t->id => $label];
                                 })
