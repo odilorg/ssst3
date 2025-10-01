@@ -93,6 +93,10 @@ class ItemsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
+            ->contentGrid([
+                'md' => 1,
+                'xl' => 1,
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->label('Дата')
@@ -102,27 +106,7 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('title')
                     ->label('Название')
                     ->wrap()
-                    ->limit(60)
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('city')
-                    ->label('Город')
-                    ->getStateUsing(function ($record) {
-                        // Get city from the first assignment or from tour itinerary item
-                        $assignment = $record->assignments()->first();
-                        if ($assignment && $assignment->assignable) {
-                            if (method_exists($assignment->assignable, 'city') && $assignment->assignable->city) {
-                                return $assignment->assignable->city->name;
-                            }
-                        }
-                        
-                        // Fallback to tour itinerary item city
-                        if ($record->tourItineraryItem && $record->tourItineraryItem->city) {
-                            return $record->tourItineraryItem->city->name;
-                        }
-                        
-                        return '—';
-                    })
+                    ->limit(100)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('guide_assigned')
