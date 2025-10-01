@@ -656,22 +656,34 @@ class ItemsRelationManager extends RelationManager
                     ->icon('heroicon-o-truck')
                     ->color('danger')
                     ->form([
-                        Forms\Components\Select::make('transport_id')
-                            ->label('Выберите транспорт')
+                        Forms\Components\Select::make('transport_type_id')
+                            ->label('Выберите тип транспорта')
                             ->searchable()
                             ->preload()
                             ->required()
                             ->options(function () {
-                                return Transport::query()
-                                    ->orderBy('model')
-                                    ->get()
-                                    ->mapWithKeys(function ($transport) {
-                                        return [
-                                            $transport->id => $transport->model . ' (' . $transport->license_plate . ')'
-                                        ];
-                                    })
+                                return \App\Models\TransportType::query()
+                                    ->orderBy('type')
+                                    ->pluck('type', 'id')
                                     ->all();
-                            }),
+                            })
+                            ->live(),
+
+                        Forms\Components\Select::make('transport_price_type_id')
+                            ->label('Тип услуги')
+                            ->searchable()
+                            ->options(function ($get) {
+                                $transportTypeId = (int) ($get('transport_type_id') ?? 0);
+                                if (!$transportTypeId) return [];
+                                return \App\Models\TransportPrice::query()
+                                    ->where('transport_type_id', $transportTypeId)
+                                    ->get()
+                                    ->mapWithKeys(fn ($p) => [
+                                        $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
+                                    ])
+                                    ->all();
+                            })
+                            ->live(),
 
                         Forms\Components\Select::make('days')
                             ->label('Выберите дни')
@@ -711,7 +723,8 @@ class ItemsRelationManager extends RelationManager
                             ->rows(2),
                     ])
                     ->action(function (array $data): void {
-                        $transportId = (int) $data['transport_id'];
+                        $transportTypeId = (int) $data['transport_type_id'];
+                        $transportPriceTypeId = isset($data['transport_price_type_id']) ? (int) $data['transport_price_type_id'] : null;
                         $dayIds = $data['days'];
                         $quantity = (int) $data['quantity'];
                         $status = $data['status'] ?? 'pending';
@@ -723,16 +736,17 @@ class ItemsRelationManager extends RelationManager
                         foreach ($dayIds as $dayId) {
                             $item = $booking->itineraryItems()->find($dayId);
                             if ($item) {
-                                // Check if transport is already assigned to this day
+                                // Check if transport type is already assigned to this day
                                 $existingAssignment = $item->assignments()
                                     ->where('assignable_type', Transport::class)
-                                    ->where('assignable_id', $transportId)
+                                    ->where('assignable_id', $transportTypeId)
                                     ->first();
 
                                 if (!$existingAssignment) {
                                     $item->assignments()->create([
                                         'assignable_type' => Transport::class,
-                                        'assignable_id' => $transportId,
+                                        'assignable_id' => $transportTypeId,
+                                        'transport_price_type_id' => $transportPriceTypeId,
                                         'quantity' => $quantity,
                                         'status' => $status,
                                         'notes' => $notes,
