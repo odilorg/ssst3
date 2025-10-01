@@ -703,6 +703,13 @@ class ItemsRelationManager extends RelationManager
                             })
                             ->helperText('Выберите дни, на которые нужно назначить транспорт'),
 
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Количество транспорта')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
+
                         Forms\Components\Select::make('status')
                             ->label('Статус назначения')
                             ->options([
@@ -719,6 +726,7 @@ class ItemsRelationManager extends RelationManager
                         $transportTypeId = (int) $data['transport_type_id'];
                         $transportPriceTypeId = isset($data['transport_price_type_id']) ? (int) $data['transport_price_type_id'] : null;
                         $dayIds = $data['days'];
+                        $quantity = (int) $data['quantity'];
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
 
@@ -739,6 +747,7 @@ class ItemsRelationManager extends RelationManager
                                         'assignable_type' => Transport::class,
                                         'assignable_id' => $transportTypeId,
                                         'transport_price_type_id' => $transportPriceTypeId,
+                                        'quantity' => $quantity,
                                         'status' => $status,
                                         'notes' => $notes,
                                     ]);
@@ -967,12 +976,12 @@ class ItemsRelationManager extends RelationManager
                                     })
                                     ->live(),
 
-                                // Quantity for restaurants only
+                                // Quantity for restaurants and transport
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
-                                    ->visible(fn ($get) => $get('assignable_type') === Restaurant::class)
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Transport::class]))
                                     ->helperText(function ($get) {
                                         if ($get('assignable_type') === Restaurant::class) {
                                             $paxTotal = $this->ownerRecord->pax_total ?? 0;
@@ -1059,10 +1068,10 @@ class ItemsRelationManager extends RelationManager
                                     'notes' => $a->notes ?: null,
                                 ];
 
-                                // Add quantity only for restaurant assignments
-                                if ($a->assignable_type === Restaurant::class) {
+                                // Add quantity for restaurant and transport assignments
+                                if (in_array($a->assignable_type, [Restaurant::class, Transport::class])) {
                                     $quantity = $a->quantity ? (int) $a->quantity : 1;
-                                    if ($quantity === $this->ownerRecord->pax_total) {
+                                    if ($a->assignable_type === Restaurant::class && $quantity === $this->ownerRecord->pax_total) {
                                         $quantity = null; // This will trigger the default value in the form
                                     }
                                     $data['quantity'] = $quantity;
@@ -1167,12 +1176,12 @@ class ItemsRelationManager extends RelationManager
                                     'notes' => $row['notes'] ?? null,
                                 ];
 
-                                // Add quantity only for restaurant assignments
-                                if ($type === Restaurant::class) {
+                                // Add quantity for restaurant and transport assignments
+                                if (in_array($type, [Restaurant::class, Transport::class])) {
                                     $quantity = 1;
                                     if (isset($row['quantity']) && !empty($row['quantity'])) {
                                         $quantity = (int) $row['quantity'];
-                                    } else {
+                                    } elseif ($type === Restaurant::class) {
                                         $quantity = $this->ownerRecord->pax_total ?? 1;
                                     }
                                     $assignmentData['quantity'] = $quantity;

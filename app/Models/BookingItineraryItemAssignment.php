@@ -19,6 +19,7 @@ class BookingItineraryItemAssignment extends Model
         'transport_price_type_id',
         'guide_service_cost',
         'role',
+        'quantity',
         'cost',
         'currency',
         'status',
@@ -28,6 +29,7 @@ class BookingItineraryItemAssignment extends Model
     ];
 
     protected $casts = [
+        'quantity' => 'integer',
         'cost' => 'decimal:2',
     ];
 
