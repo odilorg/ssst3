@@ -99,14 +99,28 @@ class ItemsRelationManager extends RelationManager
                     ->date()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('title')
-                    ->label('Название')
-                    ->wrap()
-                    ->limit(60)
+                Tables\Columns\TextColumn::make('city')
+                    ->label('Город')
+                    ->getStateUsing(function ($record) {
+                        // Get city from the first assignment or from tour itinerary item
+                        $assignment = $record->assignments()->first();
+                        if ($assignment && $assignment->assignable) {
+                            if (method_exists($assignment->assignable, 'city') && $assignment->assignable->city) {
+                                return $assignment->assignable->city->name;
+                            }
+                        }
+                        
+                        // Fallback to tour itinerary item city
+                        if ($record->tourItineraryItem && $record->tourItineraryItem->city) {
+                            return $record->tourItineraryItem->city->name;
+                        }
+                        
+                        return '—';
+                    })
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('guide_assigned')
-                    ->label('Гид назначен')
+                    ->label('Гид')
                     ->getStateUsing(function ($record) {
                         $guideAssignment = $record->assignments()
                             ->where('assignable_type', Guide::class)
@@ -125,7 +139,7 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('restaurant_assigned')
-                    ->label('Ресторан назначен')
+                    ->label('Еда')
                     ->getStateUsing(function ($record) {
                         $restaurantAssignment = $record->assignments()
                             ->where('assignable_type', Restaurant::class)
@@ -144,7 +158,7 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('hotel_assigned')
-                    ->label('Гостиница назначена')
+                    ->label('Гост.')
                     ->getStateUsing(function ($record) {
                         $hotelAssignment = $record->assignments()
                             ->where('assignable_type', Hotel::class)
@@ -163,7 +177,7 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('transport_assigned')
-                    ->label('Транспорт назначен')
+                    ->label('Авто')
                     ->getStateUsing(function ($record) {
                         $transportAssignment = $record->assignments()
                             ->where('assignable_type', Transport::class)
@@ -181,14 +195,6 @@ class ItemsRelationManager extends RelationManager
                     ->toggleable()
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('is_custom')
-                    ->label('Пользовательский')
-                    ->boolean(),
-
-                Tables\Columns\IconColumn::make('is_locked')
-                    ->label('Заблокировано')
-                    ->boolean(),
-
                 Tables\Columns\TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
@@ -204,19 +210,6 @@ class ItemsRelationManager extends RelationManager
                         'completed' => 'Завершено',
                         'cancelled' => 'Отменено',
                     }),
-
-                Tables\Columns\TextColumn::make('planned_start_time')
-                    ->label('Время начала')
-                    ->time(),
-
-                Tables\Columns\TextColumn::make('planned_duration_minutes')
-                    ->label('Продолжительность (мин)')
-                    ->numeric(),
-
-                Tables\Columns\TextColumn::make('assignments_count')
-                    ->counts('assignments')
-                    ->label('Поставщики')
-                    ->numeric(),
             ])
             ->filters([
                 SelectFilter::make('status')
