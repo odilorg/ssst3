@@ -93,10 +93,6 @@ class ItemsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->contentGrid([
-                'md' => 1,
-                'xl' => 1,
-            ])
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->label('Дата')
