@@ -39,12 +39,10 @@ class RestaurantForm
                         TextInput::make('website')
                             ->label('Веб-сайт')
                             ->url()
-                            ->required()
                             ->maxLength(255),
                         TextInput::make('email')
                             ->label('Email')
                             ->email()
-                            ->required()
                             ->maxLength(255),
                         Select::make('company_id')
                             ->label('Компания')
