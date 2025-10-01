@@ -941,13 +941,6 @@ class ItemsRelationManager extends RelationManager
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
-                                    ->default(function ($get) {
-                                        // For restaurants, default to booking's number of people
-                                        if ($get('assignable_type') === Restaurant::class) {
-                                            return $this->ownerRecord->pax_total ?? 1;
-                                        }
-                                        return 1;
-                                    })
                                     ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class, Transport::class]))
                                     ->helperText(function ($get) {
                                         if ($get('assignable_type') === Restaurant::class) {
@@ -1123,12 +1116,15 @@ class ItemsRelationManager extends RelationManager
                                 }
                             } else {
                                 // Non-hotel 1:1 (non-monuments)
-                                // Determine quantity: use form value if provided, otherwise use booking's pax_total for restaurants
+                                // Determine quantity: use form value if provided, otherwise use defaults
                                 $quantity = 1;
                                 if (isset($row['quantity']) && !empty($row['quantity'])) {
                                     $quantity = (int) $row['quantity'];
                                 } elseif ($type === Restaurant::class) {
                                     $quantity = $this->ownerRecord->pax_total ?? 1;
+                                } else {
+                                    // For guides and transport, default to 1 if empty
+                                    $quantity = 1;
                                 }
 
                                 $record->assignments()->create([
