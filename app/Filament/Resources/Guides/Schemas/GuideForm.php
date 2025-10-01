@@ -34,6 +34,13 @@ class GuideForm
                             ->required()
                             ->email()
                             ->maxLength(255),
+                        TextInput::make('language')
+                            ->label('Язык')
+                            ->maxLength(255),
+                        TextInput::make('daily_rate')
+                            ->label('Дневная ставка')
+                            ->numeric()
+                            ->prefix('$'),
                         TextInput::make('address')
                             ->label('Адрес')
                             ->maxLength(255),
