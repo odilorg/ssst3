@@ -827,8 +827,19 @@ class ItemsRelationManager extends RelationManager
                                             return $q->pluck('name', 'id')->all();
                                         }
                                         if ($type === Transport::class) {
-                                            $q = Transport::query()->orderBy('model');
-                                            return $q->pluck('model', 'id')->all();
+                                            return Transport::query()
+                                                ->orderBy('model')
+                                                ->get()
+                                                ->mapWithKeys(function ($t) {
+                                                    $model = $t->model ?? '';
+                                                    $plate = $t->plate_number ?? '';
+                                                    $label = trim($model . (strlen($plate) ? ' - ' . $plate : ''));
+                                                    if ($label === '') {
+                                                        $label = 'Transport #' . $t->id;
+                                                    }
+                                                    return [$t->id => $label];
+                                                })
+                                                ->all();
                                         }
                                         return [];
                                     })
