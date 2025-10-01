@@ -468,8 +468,10 @@ class ItemsRelationManager extends RelationManager
                             ->label('Количество порций')
                             ->numeric()
                             ->minValue(1)
-                            ->default(1)
-                            ->required(),
+                            ->helperText(function () {
+                                $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                            }),
 
                         Forms\Components\Select::make('status')
                             ->label('Статус назначения')
@@ -487,7 +489,7 @@ class ItemsRelationManager extends RelationManager
                         $restaurantId = (int) $data['restaurant_id'];
                         $dayIds = $data['days'];
                         $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
-                        $quantity = (int) $data['quantity'];
+                        $quantity = isset($data['quantity']) && !empty($data['quantity']) ? (int) $data['quantity'] : $this->ownerRecord->pax_total ?? 1;
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
 
@@ -1325,8 +1327,10 @@ class ItemsRelationManager extends RelationManager
                             ->label('Количество порций')
                             ->numeric()
                             ->minValue(1)
-                            ->default(1)
-                            ->required(),
+                            ->helperText(function () {
+                                $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                            }),
 
                         Forms\Components\Select::make('status')
                             ->label('Статус назначения')
@@ -1343,7 +1347,7 @@ class ItemsRelationManager extends RelationManager
                     ->action(function ($records, array $data): void {
                         $restaurantId = (int) $data['restaurant_id'];
                         $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
-                        $quantity = (int) $data['quantity'];
+                        $quantity = isset($data['quantity']) && !empty($data['quantity']) ? (int) $data['quantity'] : $this->ownerRecord->pax_total ?? 1;
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
 
