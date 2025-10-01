@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
-            $table->integer('quantity')->nullable()->change();
+            $table->dropColumn('quantity');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
-            $table->integer('quantity')->nullable(false)->change();
+            $table->integer('quantity')->default(1);
         });
     }
 };

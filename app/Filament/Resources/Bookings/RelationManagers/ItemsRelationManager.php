@@ -1040,24 +1040,28 @@ class ItemsRelationManager extends RelationManager
                             ->where('assignable_type', '!=', Hotel::class)
                             ->where('assignable_type', '!=', Monument::class)
                             ->map(function ($a) {
-                                // For restaurant assignments, if quantity equals pax_total, leave it empty to show default
-                                $quantity = $a->quantity ? (int) $a->quantity : 1;
-                                if ($a->assignable_type === Restaurant::class && $quantity === $this->ownerRecord->pax_total) {
-                                    $quantity = null; // This will trigger the default value in the form
-                                }
-
-                                return [
+                                $data = [
                                     'assignable_type' => (string) $a->assignable_type,
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
                                     'transport_price_type_id' => $a->transport_price_type_id ? (int) $a->transport_price_type_id : null,
                                     'guide_service_cost' => $a->guide_service_cost ?: null,
-                                    'quantity' => $quantity,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
                                     'end_time' => $a->end_time ?: null,
                                     'notes' => $a->notes ?: null,
                                 ];
+
+                                // Add quantity only for non-guide assignments
+                                if ($a->assignable_type !== Guide::class) {
+                                    $quantity = $a->quantity ? (int) $a->quantity : 1;
+                                    if ($a->assignable_type === Restaurant::class && $quantity === $this->ownerRecord->pax_total) {
+                                        $quantity = null; // This will trigger the default value in the form
+                                    }
+                                    $data['quantity'] = $quantity;
+                                }
+
+                                return $data;
                             })
                             ->values()
                             ->all();
@@ -1141,31 +1145,33 @@ class ItemsRelationManager extends RelationManager
                                 }
                             } else {
                                 // Non-hotel 1:1 (non-monuments)
-                                // Determine quantity: use form value if provided, otherwise use defaults
-                                $quantity = 1;
-                                if (isset($row['quantity']) && !empty($row['quantity'])) {
-                                    $quantity = (int) $row['quantity'];
-                                } elseif ($type === Restaurant::class) {
-                                    $quantity = $this->ownerRecord->pax_total ?? 1;
-                                } else {
-                                    // For transport, default to 1 if empty
-                                    $quantity = 1;
-                                }
-
-                                $record->assignments()->create([
+                                // Prepare assignment data
+                                $assignmentData = [
                                     'assignable_type' => (string) $type,
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
                                     'transport_price_type_id' => isset($row['transport_price_type_id']) ? (int) $row['transport_price_type_id'] : null,
                                     'guide_service_cost' => isset($row['guide_service_cost']) ? $row['guide_service_cost'] : null,
-                                    'quantity' => $type === Guide::class ? null : $quantity, // No quantity for guides
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',
                                     'status' => $row['status'] ?? 'pending',
                                     'start_time' => $row['start_time'] ?? null,
                                     'end_time' => $row['end_time'] ?? null,
                                     'notes' => $row['notes'] ?? null,
-                                ]);
+                                ];
+
+                                // Add quantity only for non-guide assignments
+                                if ($type !== Guide::class) {
+                                    $quantity = 1;
+                                    if (isset($row['quantity']) && !empty($row['quantity'])) {
+                                        $quantity = (int) $row['quantity'];
+                                    } elseif ($type === Restaurant::class) {
+                                        $quantity = $this->ownerRecord->pax_total ?? 1;
+                                    }
+                                    $assignmentData['quantity'] = $quantity;
+                                }
+
+                                $record->assignments()->create($assignmentData);
                             }
                         }
 
