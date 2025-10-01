@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Guides\Schemas;
 
+use App\Models\City;
 use App\Models\SpokenLanguage;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -36,9 +37,17 @@ class GuideForm
                         TextInput::make('address')
                             ->label('Адрес')
                             ->maxLength(255),
-                        TextInput::make('city')
+                        Select::make('city_id')
                             ->label('Город')
-                            ->maxLength(255),
+                            ->relationship('city', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Название города')
+                                    ->required()
+                                    ->maxLength(255),
+                            ]),
                         Select::make('spoken_languages')
                             ->label('Языки')
                             ->relationship('spokenLanguages', 'name')

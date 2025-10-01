@@ -17,7 +17,7 @@ class Guide extends Model
         'phone',
         'email',
         'address',
-        'city',
+        'city_id',
         'image',
         'price_types',
     ];
@@ -29,6 +29,11 @@ class Guide extends Model
     ];
 
     // Relationships
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
     public function spokenLanguages()
     {
         return $this->belongsToMany(SpokenLanguage::class, 'guide_spoken_language');
