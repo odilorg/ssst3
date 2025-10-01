@@ -99,6 +99,12 @@ class ItemsRelationManager extends RelationManager
                     ->date()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Название')
+                    ->wrap()
+                    ->limit(60)
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('city')
                     ->label('Город')
                     ->getStateUsing(function ($record) {
