@@ -170,6 +170,15 @@ class ItemsRelationManager extends RelationManager
                             ->first();
                         
                         if ($transportAssignment) {
+                            // Check if assignable_id is a TransportType ID
+                            $assignableId = $transportAssignment->assignable_id;
+                            $transportType = \App\Models\TransportType::find($assignableId);
+                            
+                            if ($transportType) {
+                                return $transportType->type;
+                            }
+                            
+                            // Fallback to old Transport model logic
                             $transport = $transportAssignment->assignable;
                             return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
                         }
