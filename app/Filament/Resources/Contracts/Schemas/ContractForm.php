@@ -302,18 +302,16 @@ class ContractForm
                                             )
                                             ->columnSpanFull(),
 
-                                        // Direct pricing for Transport, Guide, Monument
+                                        // Direct pricing for Transport, Guide
                                         TextInput::make('direct_price_input')
                                             ->label(fn ($get) => match($get('../../serviceable_type')) {
                                                 'App\Models\Transport' => 'Daily Rate (Transport)',
                                                 'App\Models\Guide' => 'Daily Rate (Guide)',
-                                                'App\Models\Monument' => 'Ticket Price',
                                                 default => 'Price'
                                             })
                                             ->visible(fn ($get) => in_array($get('../../serviceable_type'), [
                                                 'App\Models\Transport',
                                                 'App\Models\Guide',
-                                                'App\Models\Monument'
                                             ]))
                                             ->numeric()
                                             ->required()
@@ -323,13 +321,82 @@ class ContractForm
                                             ->helperText(fn ($get) => match($get('../../serviceable_type')) {
                                                 'App\Models\Transport' => 'Daily rate for this transport (e.g., $150/day for bus rental)',
                                                 'App\Models\Guide' => 'Daily rate for this guide (e.g., $80/day for guide services)',
-                                                'App\Models\Monument' => 'Price per ticket for monument entrance',
                                                 default => 'Enter price'
                                             })
                                             ->afterStateUpdated(function ($state, $set) {
                                                 $set('price_data', ['direct_price' => (float) $state]);
                                             })
                                             ->columnSpanFull(),
+
+                                        // Monument pricing with categories
+                                        TextInput::make('monument_foreigner_adult')
+                                            ->label('Foreigner Adult Price')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Monument')
+                                            ->numeric()
+                                            ->prefix('$')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Ticket price for foreign adult')
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $set('price_data', [
+                                                    'foreigner_adult' => (float) ($state ?? 0),
+                                                    'foreigner_child' => (float) ($get('monument_foreigner_child') ?? 0),
+                                                    'local_adult' => (float) ($get('monument_local_adult') ?? 0),
+                                                    'local_child' => (float) ($get('monument_local_child') ?? 0),
+                                                ]);
+                                            })
+                                            ->columnSpan(1),
+                                        TextInput::make('monument_foreigner_child')
+                                            ->label('Foreigner Child Price')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Monument')
+                                            ->numeric()
+                                            ->prefix('$')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Ticket price for foreign child')
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $set('price_data', [
+                                                    'foreigner_adult' => (float) ($get('monument_foreigner_adult') ?? 0),
+                                                    'foreigner_child' => (float) ($state ?? 0),
+                                                    'local_adult' => (float) ($get('monument_local_adult') ?? 0),
+                                                    'local_child' => (float) ($get('monument_local_child') ?? 0),
+                                                ]);
+                                            })
+                                            ->columnSpan(1),
+                                        TextInput::make('monument_local_adult')
+                                            ->label('Local Adult Price')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Monument')
+                                            ->numeric()
+                                            ->suffix('сум')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Ticket price for local adult')
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $set('price_data', [
+                                                    'foreigner_adult' => (float) ($get('monument_foreigner_adult') ?? 0),
+                                                    'foreigner_child' => (float) ($get('monument_foreigner_child') ?? 0),
+                                                    'local_adult' => (float) ($state ?? 0),
+                                                    'local_child' => (float) ($get('monument_local_child') ?? 0),
+                                                ]);
+                                            })
+                                            ->columnSpan(1),
+                                        TextInput::make('monument_local_child')
+                                            ->label('Local Child Price')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Monument')
+                                            ->numeric()
+                                            ->suffix('сум')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Ticket price for local child')
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $set('price_data', [
+                                                    'foreigner_adult' => (float) ($get('monument_foreigner_adult') ?? 0),
+                                                    'foreigner_child' => (float) ($get('monument_foreigner_child') ?? 0),
+                                                    'local_adult' => (float) ($get('monument_local_adult') ?? 0),
+                                                    'local_child' => (float) ($state ?? 0),
+                                                ]);
+                                            })
+                                            ->columnSpan(1),
 
                                         // Hidden field to store the actual price_data JSON
                                         \Filament\Forms\Components\Hidden::make('price_data'),

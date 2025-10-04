@@ -69,14 +69,6 @@ class MonumentForm
                             ->placeholder('0.00')
                             ->nullable()
                             ->helperText('Цена билета для ребенка местного жителя'),
-                        TextInput::make('ticket_price')
-                            ->label('Общая базовая цена (Legacy)')
-                            ->numeric()
-                            ->suffix('сум')
-                            ->placeholder('0.00')
-                            ->nullable()
-                            ->helperText('Устаревшее поле. Используйте категории выше.')
-                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->collapsible(),
