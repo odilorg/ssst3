@@ -49,10 +49,12 @@ class TransportTypeForm
                             ->required(fn ($get) => $get('category') === 'rail'),
                     ])
                     ->columns(2),
-                Section::make('Цены на транспорт')
+                Section::make('Базовые цены на транспорт (Base Pricing)')
+                    ->description('Стандартные цены для этого типа транспорта. Если есть контракт с конкретным транспортом, цены из контракта будут использоваться вместо базовых.')
                     ->schema([
                         Repeater::make('transportPrices')
                             ->relationship('transportPrices')
+                            ->label('Типы цен')
                             ->schema([
                                 Select::make('price_type')
                                     ->label('Тип цены')
@@ -64,18 +66,30 @@ class TransportTypeForm
                                         'economy' => 'Economy',
                                         'business' => 'Business',
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->helperText('Выберите тип услуги'),
                                 TextInput::make('cost')
                                     ->label('Стоимость')
                                     ->required()
                                     ->numeric()
                                     ->prefix('$')
-                                    ->minValue(0),
+                                    ->minValue(0)
+                                    ->placeholder('0.00')
+                                    ->helperText('Базовая цена без контракта'),
                             ])
                             ->columns(2)
-                            ->addActionLabel('Добавить цену')
-                            ->reorderable(true),
-                    ]),
+                            ->addActionLabel('Добавить тип цены')
+                            ->reorderable(true)
+                            ->itemLabel(fn (array $state): ?string =>
+                                isset($state['price_type'])
+                                    ? $state['price_type'] . ' - $' . ($state['cost'] ?? '0')
+                                    : null
+                            )
+                            ->collapsible()
+                            ->helperText('📝 Примечание: Если есть контракт с конкретным транспортом, цены из контракта будут использоваться вместо базовых.')
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
             ]);
     }
 }

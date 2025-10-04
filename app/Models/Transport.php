@@ -26,7 +26,6 @@ class Transport extends Model
         'fuel_consumption',
         'fuel_remaining_liter',
         'company_id',
-        'daily_rate',
     ];
 
     protected $casts = [
@@ -36,7 +35,6 @@ class Transport extends Model
         'oil_change_interval_km' => 'integer',
         'fuel_consumption' => 'decimal:2',
         'fuel_remaining_liter' => 'decimal:2',
-        'daily_rate' => 'decimal:2',
     ];
 
     // Relationships

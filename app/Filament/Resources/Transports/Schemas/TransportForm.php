@@ -64,14 +64,6 @@ class TransportForm
                             ->preload()
                             ->searchable()
                             ->required(),
-                        TextInput::make('daily_rate')
-                            ->label('Базовая дневная ставка')
-                            ->numeric()
-                            ->prefix('$')
-                            ->step(0.01)
-                            ->placeholder('0.00')
-                            ->helperText('Стандартная дневная ставка за аренду. Если есть контракт, цены из контракта будут использоваться вместо базовой.')
-                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 

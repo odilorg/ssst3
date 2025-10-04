@@ -302,30 +302,66 @@ class ContractForm
                                             )
                                             ->columnSpanFull(),
 
-                                        // Direct pricing for Transport, Guide
+                                        // Direct pricing for Guide only
                                         TextInput::make('direct_price_input')
-                                            ->label(fn ($get) => match($get('../../serviceable_type')) {
-                                                'App\Models\Transport' => 'Daily Rate (Transport)',
-                                                'App\Models\Guide' => 'Daily Rate (Guide)',
-                                                default => 'Price'
-                                            })
-                                            ->visible(fn ($get) => in_array($get('../../serviceable_type'), [
-                                                'App\Models\Transport',
-                                                'App\Models\Guide',
-                                            ]))
+                                            ->label('Daily Rate (Guide)')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Guide')
                                             ->numeric()
                                             ->required()
                                             ->prefix('$')
                                             ->step(0.01)
                                             ->placeholder('0.00')
-                                            ->helperText(fn ($get) => match($get('../../serviceable_type')) {
-                                                'App\Models\Transport' => 'Daily rate for this transport (e.g., $150/day for bus rental)',
-                                                'App\Models\Guide' => 'Daily rate for this guide (e.g., $80/day for guide services)',
-                                                default => 'Enter price'
-                                            })
+                                            ->helperText('Daily rate for this guide (e.g., $80/day for guide services)')
                                             ->afterStateUpdated(function ($state, $set) {
                                                 $set('price_data', ['direct_price' => (float) $state]);
                                             })
+                                            ->columnSpanFull(),
+
+                                        // Transport pricing with price types
+                                        Repeater::make('transport_prices')
+                                            ->label('Transport Price Types')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Transport')
+                                            ->schema([
+                                                Select::make('price_type')
+                                                    ->label('Price Type')
+                                                    ->options([
+                                                        'per_day' => 'Per Day',
+                                                        'per_pickup_dropoff' => 'Per Pickup Dropoff',
+                                                        'po_gorodu' => 'Po Gorodu',
+                                                        'vip' => 'VIP',
+                                                        'economy' => 'Economy',
+                                                        'business' => 'Business',
+                                                    ])
+                                                    ->required()
+                                                    ->helperText('Select service type')
+                                                    ->columnSpan(1),
+                                                TextInput::make('price')
+                                                    ->label('Price')
+                                                    ->numeric()
+                                                    ->required()
+                                                    ->prefix('$')
+                                                    ->step(0.01)
+                                                    ->placeholder('0.00')
+                                                    ->helperText('Contract price for this service type')
+                                                    ->columnSpan(1),
+                                            ])
+                                            ->columns(2)
+                                            ->afterStateUpdated(function ($state, $set) {
+                                                $priceData = [];
+                                                foreach ($state ?? [] as $item) {
+                                                    if (isset($item['price_type']) && isset($item['price'])) {
+                                                        $priceData[$item['price_type']] = (float) $item['price'];
+                                                    }
+                                                }
+                                                $set('price_data', $priceData);
+                                            })
+                                            ->addActionLabel('Add Price Type')
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string =>
+                                                isset($state['price_type'])
+                                                    ? $state['price_type'] . ' - $' . ($state['price'] ?? '0')
+                                                    : null
+                                            )
                                             ->columnSpanFull(),
 
                                         // Monument pricing with categories
