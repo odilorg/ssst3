@@ -23,7 +23,8 @@ class MonumentForm
                         TextInput::make('name')
                             ->label('Название монумента')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->placeholder('Например: Регистан, Гур-Эмир'),
                         Select::make('city_id')
                             ->label('Город')
                             ->relationship('city', 'name')
@@ -31,12 +32,15 @@ class MonumentForm
                             ->preload()
                             ->required(),
                         TextInput::make('ticket_price')
-                            ->label('Цена билета')
+                            ->label('Базовая цена билета')
                             ->numeric()
                             ->suffix('сум')
-                            ->required(),
+                            ->required()
+                            ->placeholder('0.00')
+                            ->helperText('Стандартная цена билета. Если есть контракт, цены из контракта будут использоваться вместо базовой.'),
                         Textarea::make('description')
                             ->label('Описание')
+                            ->placeholder('Историческая справка, интересные факты...')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),

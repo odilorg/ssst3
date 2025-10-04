@@ -24,10 +24,26 @@ class ContractsTable
                     ->label('Title')
                     ->searchable()
                     ->limit(30),
-                TextColumn::make('supplierCompany.name')
-                    ->label('Supplier Company')
+                TextColumn::make('supplier.name')
+                    ->label('Supplier')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($record) => match($record->supplier_type) {
+                        'App\Models\Company' => 'success',
+                        'App\Models\Guide' => 'info',
+                        'App\Models\Driver' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn ($record) =>
+                        $record->supplier?->name . ' (' .
+                        match($record->supplier_type) {
+                            'App\Models\Company' => 'Company',
+                            'App\Models\Guide' => 'Guide',
+                            'App\Models\Driver' => 'Driver',
+                            default => 'Unknown'
+                        } . ')'
+                    ),
                 TextColumn::make('start_date')
                     ->label('Start Date')
                     ->date()
@@ -77,11 +93,13 @@ class ContractsTable
                         'expired' => 'Expired',
                         'terminated' => 'Terminated',
                     ]),
-                SelectFilter::make('supplier_company_id')
-                    ->label('Supplier Company')
-                    ->relationship('supplierCompany', 'name')
-                    ->searchable()
-                    ->preload(),
+                SelectFilter::make('supplier_type')
+                    ->label('Supplier Type')
+                    ->options([
+                        'App\Models\Company' => 'Company',
+                        'App\Models\Guide' => 'Individual Guide',
+                        'App\Models\Driver' => 'Individual Driver',
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -146,7 +146,7 @@ class PricingService
     {
         return ContractService::active()
             ->forService($serviceType, $serviceId)
-            ->with('contract.supplierCompany')
+            ->with('contract.supplier')
             ->get();
     }
 

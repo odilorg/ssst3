@@ -42,6 +42,11 @@ class Company extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function contracts()
+    {
+        return $this->morphMany(Contract::class, 'supplier');
+    }
+
     // public function hotels()
     // {
     //     return $this->hasMany(Hotel::class);
