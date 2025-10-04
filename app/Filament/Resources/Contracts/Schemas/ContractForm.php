@@ -94,23 +94,19 @@ class ContractForm
                                         'App\Models\Guide' => 'Guide',
                                     ])
                                     ->live()
+                                    ->afterStateUpdated(fn ($set) => $set('serviceable_id', null))
                                     ->required(),
                                 Select::make('serviceable_id')
                                     ->label('Service')
                                     ->options(function ($get) {
                                         $type = $get('serviceable_type');
                                         if (!$type) return [];
-                                        
+
                                         return $type::all()->pluck('name', 'id');
                                     })
                                     ->searchable()
+                                    ->live()
                                     ->required(),
-                                KeyValue::make('pricing_structure')
-                                    ->label('Pricing Structure')
-                                    ->keyLabel('Price Key')
-                                    ->valueLabel('Price Value')
-                                    ->helperText('Define pricing structure (e.g., direct_price: 100, rooms: {"1": 80, "2": 120})')
-                                    ->addActionLabel('Add Price'),
                                 DatePicker::make('start_date')
                                     ->label('Service Start Date')
                                     ->nullable(),
@@ -122,6 +118,127 @@ class ContractForm
                                     ->label('Specific Terms')
                                     ->rows(2)
                                     ->placeholder('Service-specific terms and conditions...'),
+
+                                // Nested repeater for prices (versioned pricing)
+                                Repeater::make('prices')
+                                    ->relationship()
+                                    ->label('Price Versions')
+                                    ->schema([
+                                        DatePicker::make('effective_from')
+                                            ->label('Effective From')
+                                            ->required()
+                                            ->default(now()),
+                                        DatePicker::make('effective_until')
+                                            ->label('Effective Until')
+                                            ->after('effective_from')
+                                            ->helperText('Leave empty for current/ongoing prices'),
+                                        TextInput::make('amendment_number')
+                                            ->label('Amendment Number')
+                                            ->placeholder('e.g., Доп. соглашение №1')
+                                            ->helperText('Leave empty for initial contract prices'),
+
+                                        // Hotel room pricing
+                                        Repeater::make('room_prices')
+                                            ->label('Room Prices')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Hotel')
+                                            ->schema([
+                                                Select::make('room_id')
+                                                    ->label('Room')
+                                                    ->options(function ($get) {
+                                                        $hotelId = $get('../../../../serviceable_id');
+                                                        if (!$hotelId) return [];
+                                                        return \App\Models\Room::where('hotel_id', $hotelId)
+                                                            ->get()
+                                                            ->pluck('name', 'id');
+                                                    })
+                                                    ->required()
+                                                    ->searchable(),
+                                                TextInput::make('price')
+                                                    ->label('Price per Night')
+                                                    ->numeric()
+                                                    ->required()
+                                                    ->prefix('$')
+                                                    ->step(0.01),
+                                            ])
+                                            ->columns(2)
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $priceData = $get('price_data') ?? [];
+                                                $priceData['rooms'] = [];
+                                                foreach ($state ?? [] as $room) {
+                                                    if (isset($room['room_id']) && isset($room['price'])) {
+                                                        $priceData['rooms'][$room['room_id']] = (float) $room['price'];
+                                                    }
+                                                }
+                                                $set('price_data', $priceData);
+                                            })
+                                            ->addActionLabel('Add Room Price')
+                                            ->collapsible(),
+
+                                        // Restaurant meal type pricing
+                                        Repeater::make('meal_prices')
+                                            ->label('Meal Type Prices')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Restaurant')
+                                            ->schema([
+                                                Select::make('meal_type_id')
+                                                    ->label('Meal Type')
+                                                    ->options(function ($get) {
+                                                        $restaurantId = $get('../../../../serviceable_id');
+                                                        if (!$restaurantId) return [];
+                                                        return \App\Models\MealType::where('restaurant_id', $restaurantId)
+                                                            ->get()
+                                                            ->pluck('name', 'id');
+                                                    })
+                                                    ->required()
+                                                    ->searchable(),
+                                                TextInput::make('price')
+                                                    ->label('Price per Person')
+                                                    ->numeric()
+                                                    ->required()
+                                                    ->prefix('$')
+                                                    ->step(0.01),
+                                            ])
+                                            ->columns(2)
+                                            ->afterStateUpdated(function ($state, $set, $get) {
+                                                $priceData = $get('price_data') ?? [];
+                                                $priceData['meal_types'] = [];
+                                                foreach ($state ?? [] as $meal) {
+                                                    if (isset($meal['meal_type_id']) && isset($meal['price'])) {
+                                                        $priceData['meal_types'][$meal['meal_type_id']] = (float) $meal['price'];
+                                                    }
+                                                }
+                                                $set('price_data', $priceData);
+                                            })
+                                            ->addActionLabel('Add Meal Price')
+                                            ->collapsible(),
+
+                                        // Direct pricing for Transport, Guide, Monument
+                                        TextInput::make('direct_price_input')
+                                            ->label('Daily Rate / Ticket Price')
+                                            ->visible(fn ($get) => in_array($get('../../serviceable_type'), [
+                                                'App\Models\Transport',
+                                                'App\Models\Guide',
+                                                'App\Models\Monument'
+                                            ]))
+                                            ->numeric()
+                                            ->required()
+                                            ->prefix('$')
+                                            ->step(0.01)
+                                            ->afterStateUpdated(function ($state, $set) {
+                                                $set('price_data', ['direct_price' => (float) $state]);
+                                            }),
+
+                                        // Hidden field to store the actual price_data JSON
+                                        \Filament\Forms\Components\Hidden::make('price_data'),
+
+                                        Textarea::make('notes')
+                                            ->label('Price Change Notes')
+                                            ->rows(2)
+                                            ->placeholder('Reason for price change...'),
+                                    ])
+                                    ->columns(1)
+                                    ->addActionLabel('Add Price Version / Amendment')
+                                    ->collapsible()
+                                    ->defaultItems(1),
                             ])
                             ->columns(2)
                             ->addActionLabel('Add Service')

@@ -33,66 +33,57 @@ class PricingService
      */
     private function getContractPrice(string $serviceType, int $serviceId, ?int $subServiceId = null, ?Carbon $date = null): ?float
     {
+        $date = $date ?? now();
+
         $query = ContractService::active()
             ->forService($serviceType, $serviceId);
 
-        if ($date) {
-            $query->where(function ($q) use ($date) {
-                $q->whereNull('start_date')
-                  ->orWhere('start_date', '<=', $date);
-            })->where(function ($q) use ($date) {
-                $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', $date);
-            });
-        }
-
         $contractService = $query->first();
-        
-        if (!$contractService || !$contractService->pricing_structure) {
+
+        if (!$contractService) {
             return null;
         }
 
-        return $this->extractPriceFromContract($contractService, $subServiceId);
+        // Get the price version active on the given date
+        $priceVersion = $contractService->getPriceVersion($date);
+
+        if (!$priceVersion) {
+            return null;
+        }
+
+        return $this->extractPriceFromPriceVersion($priceVersion, $serviceType, $subServiceId);
     }
 
     /**
-     * Extract price from contract service pricing structure
+     * Extract price from contract service price version
      */
-    private function extractPriceFromContract(ContractService $contractService, ?int $subServiceId = null): ?float
+    private function extractPriceFromPriceVersion($priceVersion, string $serviceType, ?int $subServiceId = null): ?float
     {
-        $pricingStructure = $contractService->pricing_structure;
+        if (!$priceVersion) {
+            return null;
+        }
 
         // Handle different pricing structures based on service type
-        switch ($contractService->serviceable_type) {
+        switch ($serviceType) {
             case 'App\Models\Hotel':
                 if ($subServiceId) {
                     // Room-specific pricing
-                    return $pricingStructure['rooms'][$subServiceId] ?? null;
+                    return $priceVersion->getPriceForRoom($subServiceId);
                 }
                 break;
 
             case 'App\Models\Restaurant':
                 if ($subServiceId) {
                     // Meal type-specific pricing
-                    return $pricingStructure['meal_types'][$subServiceId] ?? null;
+                    return $priceVersion->getPriceForMealType($subServiceId);
                 }
                 break;
 
             case 'App\Models\Transport':
-                if ($subServiceId) {
-                    // Transport type-specific pricing
-                    return $pricingStructure['transport_types'][$subServiceId] ?? null;
-                }
-                // Direct pricing for transport
-                return $pricingStructure['direct_price'] ?? null;
-
             case 'App\Models\Monument':
-                // Direct pricing for monuments
-                return $pricingStructure['direct_price'] ?? null;
-
             case 'App\Models\Guide':
-                // Direct pricing for guides
-                return $pricingStructure['direct_price'] ?? null;
+                // Direct pricing
+                return $priceVersion->getDirectPrice();
         }
 
         return null;

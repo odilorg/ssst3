@@ -15,7 +15,6 @@ class ContractService extends Model
         'contract_id',
         'serviceable_type',
         'serviceable_id',
-        'pricing_structure',
         'is_active',
         'start_date',
         'end_date',
@@ -23,7 +22,6 @@ class ContractService extends Model
     ];
 
     protected $casts = [
-        'pricing_structure' => 'array',
         'is_active' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
@@ -38,6 +36,24 @@ class ContractService extends Model
     public function serviceable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function prices()
+    {
+        return $this->hasMany(ContractServicePrice::class);
+    }
+
+    public function currentPrice()
+    {
+        return $this->hasOne(ContractServicePrice::class)
+            ->current()
+            ->latest('effective_from');
+    }
+
+    public function priceHistory()
+    {
+        return $this->hasMany(ContractServicePrice::class)
+            ->orderBy('effective_from', 'desc');
     }
 
     // Scopes
@@ -60,29 +76,33 @@ class ContractService extends Model
                     ->where('serviceable_id', $serviceableId);
     }
 
-    // Helper methods for pricing
-    public function getPriceForRoom($roomId)
+    // Helper methods for pricing (delegated to current price version)
+    public function getPriceForRoom($roomId, $date = null)
     {
-        return $this->pricing_structure['rooms'][$roomId] ?? null;
+        $priceRecord = $this->getPriceVersion($date);
+        return $priceRecord?->getPriceForRoom($roomId);
     }
 
-    public function getPriceForMealType($mealTypeId)
+    public function getPriceForMealType($mealTypeId, $date = null)
     {
-        return $this->pricing_structure['meal_types'][$mealTypeId] ?? null;
+        $priceRecord = $this->getPriceVersion($date);
+        return $priceRecord?->getPriceForMealType($mealTypeId);
     }
 
-    public function getPriceForTransportType($transportTypeId)
+    public function getDirectPrice($date = null)
     {
-        return $this->pricing_structure['transport_types'][$transportTypeId] ?? null;
+        $priceRecord = $this->getPriceVersion($date);
+        return $priceRecord?->getDirectPrice();
     }
 
-    public function getDirectPrice()
+    // Get price version active on a specific date
+    public function getPriceVersion($date = null)
     {
-        return $this->pricing_structure['direct_price'] ?? null;
-    }
+        $date = $date ?? now();
 
-    public function getDiscountRate()
-    {
-        return $this->pricing_structure['discount_rate'] ?? null;
+        return $this->prices()
+            ->activeOn($date)
+            ->orderBy('effective_from', 'desc')
+            ->first();
     }
 }

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
-            $table->string('guide_service_cost')->nullable()->after('meal_type_id');
+        Schema::table('contract_services', function (Blueprint $table) {
+            $table->dropColumn('pricing_structure');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
-            $table->dropColumn('guide_service_cost');
+        Schema::table('contract_services', function (Blueprint $table) {
+            $table->json('pricing_structure')->nullable();
         });
     }
 };
