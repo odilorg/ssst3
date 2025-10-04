@@ -68,7 +68,8 @@ class HotelForm
                             ->preload()
                             ->searchable(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
 
             ]);
     }
