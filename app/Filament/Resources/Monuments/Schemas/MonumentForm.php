@@ -31,19 +31,55 @@ class MonumentForm
                             ->searchable()
                             ->preload()
                             ->required(),
-                        TextInput::make('ticket_price')
-                            ->label('Базовая цена билета')
-                            ->numeric()
-                            ->suffix('сум')
-                            ->required()
-                            ->placeholder('0.00')
-                            ->helperText('Стандартная цена билета. Если есть контракт, цены из контракта будут использоваться вместо базовой.'),
                         Textarea::make('description')
                             ->label('Описание')
                             ->placeholder('Историческая справка, интересные факты...')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
+
+                Section::make('Базовые цены билетов (Base Pricing)')
+                    ->description('Стандартные цены для иностранцев и местных жителей. Если есть контракт, цены из контракта будут использоваться вместо базовых.')
+                    ->schema([
+                        TextInput::make('foreigner_adult_price')
+                            ->label('Иностранцы - Взрослый')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для взрослого иностранца'),
+                        TextInput::make('foreigner_child_price')
+                            ->label('Иностранцы - Ребенок')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для ребенка-иностранца'),
+                        TextInput::make('local_adult_price')
+                            ->label('Местные - Взрослый')
+                            ->numeric()
+                            ->suffix('сум')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для взрослого местного жителя'),
+                        TextInput::make('local_child_price')
+                            ->label('Местные - Ребенок')
+                            ->numeric()
+                            ->suffix('сум')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для ребенка местного жителя'),
+                        TextInput::make('ticket_price')
+                            ->label('Общая базовая цена (Legacy)')
+                            ->numeric()
+                            ->suffix('сум')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Устаревшее поле. Используйте категории выше.')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
 
                 Section::make('Компания и ваучер')
                     ->schema([
