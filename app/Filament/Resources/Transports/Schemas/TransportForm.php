@@ -50,8 +50,7 @@ class TransportForm
                             ->relationship('company', 'name')
                             ->preload()
                             ->searchable()
-                            ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->required(),
                         Select::make('driver_id')
                             ->label('Водитель')
                             ->relationship('driver', 'name')

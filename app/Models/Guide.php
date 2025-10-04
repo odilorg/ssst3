@@ -11,13 +11,11 @@ class Guide extends Model
 
     protected $fillable = [
         'name',
-        'daily_rate',
-        'language',
         'is_marketing',
         'phone',
         'email',
         'address',
-        'city',
+        'city_id',
         'image',
         'price_types',
     ];
@@ -25,12 +23,21 @@ class Guide extends Model
     protected $casts = [
         'price_types' => 'array',
         'is_marketing' => 'boolean',
-        'daily_rate' => 'decimal:2',
     ];
 
     // Relationships
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
     public function spokenLanguages()
     {
         return $this->belongsToMany(SpokenLanguage::class, 'guide_spoken_language');
+    }
+
+    public function contractServices()
+    {
+        return $this->morphMany(ContractService::class, 'serviceable');
     }
 }

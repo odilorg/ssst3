@@ -39,4 +39,9 @@ class Restaurant extends Model
     {
         return $this->hasMany(MealType::class);
     }
+
+    public function contractServices()
+    {
+        return $this->morphMany(ContractService::class, 'serviceable');
+    }
 }

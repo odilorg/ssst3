@@ -72,4 +72,9 @@ class Transport extends Model
     {
         return $this->belongsToMany(Amenity::class, 'transport_amenity');
     }
+
+    public function contractServices()
+    {
+        return $this->morphMany(ContractService::class, 'serviceable');
+    }
 }

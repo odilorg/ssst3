@@ -22,7 +22,11 @@ class OilChangeForm
                         Select::make('transport_id')
                             ->label('Транспорт')
                             ->relationship('transport', 'plate_number')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->plate_number . ' - ' . $record->model)
+                            ->getOptionLabelFromRecordUsing(function ($record) {
+                                $plate = $record->plate_number ?? '—';
+                                $model = $record->model ?? '—';
+                                return $plate . ' - ' . $model;
+                            })
                             ->preload()
                             ->required()
                             ->live()

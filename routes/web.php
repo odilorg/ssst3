@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
+use App\Services\PricingService;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,6 +12,7 @@ Route::get('/', function () {
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
     $costBreakdown = [];
     $totalCost = 0;
+    $pricingService = app(PricingService::class);
 
     // Get all itinerary items for this booking
     $itineraryItems = $booking->itineraryItems()->with('assignments.assignable')->get();
@@ -21,12 +23,21 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
         foreach ($assignments as $assignment) {
             $assignable = $assignment->assignable;
             $quantity = $assignment->quantity ?? 1;
-            $unitPrice = 0;
             $itemName = '';
+            $category = '';
+
+            // Get pricing using the PricingService
+            $pricing = $pricingService->getPricingBreakdown(
+                $assignment->assignable_type,
+                $assignment->assignable_id,
+                $assignment->room_id ?? $assignment->meal_type_id,
+                $booking->start_date
+            );
+
+            $unitPrice = $pricing['final_price'] ?? 0;
 
             switch ($assignment->assignable_type) {
                 case \App\Models\Guide::class:
-                    $unitPrice = $assignable?->daily_rate ?? 0;
                     $itemName = $assignable?->name ?? 'Гид удален';
                     $category = 'guide';
                     break;
@@ -34,10 +45,8 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                 case \App\Models\Restaurant::class:
                     if ($assignment->meal_type_id) {
                         $mealType = \App\Models\MealType::find($assignment->meal_type_id);
-                        $unitPrice = $mealType?->price ?? 0;
                         $itemName = $assignable?->name . ' - ' . $mealType?->name ?? 'Ресторан удален';
                     } else {
-                        $unitPrice = $assignable?->average_price ?? 0;
                         $itemName = $assignable?->name ?? 'Ресторан удален';
                     }
                     $category = 'restaurant';
@@ -46,19 +55,21 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                 case \App\Models\Hotel::class:
                     if ($assignment->room_id) {
                         $room = \App\Models\Room::find($assignment->room_id);
-                        $unitPrice = $room?->cost_per_night ?? 0;
                         $itemName = $assignable?->name . ' - ' . $room?->name ?? 'Гостиница удалена';
                     } else {
-                        $unitPrice = $assignable?->average_price ?? 0;
                         $itemName = $assignable?->name ?? 'Гостиница удалена';
                     }
                     $category = 'hotel';
                     break;
 
                 case \App\Models\Transport::class:
-                    $unitPrice = $assignable?->daily_rate ?? 0;
-                    $itemName = $assignable?->model . ' (' . $assignable?->license_plate . ')' ?? 'Транспорт удален';
+                    $itemName = $assignable?->model . ' (' . $assignable?->plate_number . ')' ?? 'Транспорт удален';
                     $category = 'transport';
+                    break;
+
+                case \App\Models\Monument::class:
+                    $itemName = $assignable?->name ?? 'Монумент удален';
+                    $category = 'monument';
                     break;
 
                 default:
@@ -76,6 +87,9 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
                 'total_price' => $itemTotal,
+                'has_contract' => $pricing['has_contract'] ?? false,
+                'savings' => $pricing['savings'] ?? 0,
+                'savings_percentage' => $pricing['savings_percentage'] ?? 0,
             ];
         }
     }

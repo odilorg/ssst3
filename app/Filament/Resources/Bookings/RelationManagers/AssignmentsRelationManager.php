@@ -58,17 +58,25 @@ class AssignmentsRelationManager extends RelationManager
                     ->live()
                     ->afterStateUpdated(fn (callable $set) => $set('assignable_id', null)),
                 Forms\Components\Select::make('assignable_id')
-                    ->label('Поставщик')
+                    ->label(function (callable $get) {
+                        $type = $get('assignable_type');
+                        return match ($type) {
+                            'transport' => 'Тип транспорта',
+                            default => 'Поставщик',
+                        };
+                    })
                     ->options(function (callable $get) {
                         $type = $get('assignable_type');
                         if (!$type) return [];
                         
                         return match ($type) {
-                            'guide' => Guide::all()->pluck('name', 'id'),
-                            'hotel' => Hotel::all()->pluck('name', 'id'),
-                            'restaurant' => Restaurant::all()->pluck('name', 'id'),
-                            'monument' => Monument::all()->pluck('name', 'id'),
-                            'transport' => Transport::all()->pluck('model', 'id'),
+                            'guide' => Guide::all()->pluck('name', 'id')->toArray(),
+                            'hotel' => Hotel::all()->pluck('name', 'id')->toArray(),
+                            'restaurant' => Restaurant::all()->pluck('name', 'id')->toArray(),
+                            'monument' => Monument::all()->pluck('name', 'id')->toArray(),
+                            'transport' => \App\Models\TransportType::all()
+                                ->pluck('type', 'id')
+                                ->toArray(),
                             default => [],
                         };
                     })
