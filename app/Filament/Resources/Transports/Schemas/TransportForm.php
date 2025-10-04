@@ -74,6 +74,13 @@ class TransportForm
                             ->required()
                             ->maxLength(255)
                             ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                        TextInput::make('vin')
+                            ->label('VIN номер')
+                            ->maxLength(255)
+                            ->nullable()
+                            ->placeholder('Например: 1HGBH41JXMN109186')
+                            ->helperText('Vehicle Identification Number (необязательно)')
+                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
                         TextInput::make('model')
                             ->label('Модель')
                             ->required()

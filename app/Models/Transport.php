@@ -11,6 +11,7 @@ class Transport extends Model
 
     protected $fillable = [
         'plate_number',
+        'vin',
         'model',
         'number_of_seat',
         'category',
