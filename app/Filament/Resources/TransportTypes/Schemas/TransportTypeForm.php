@@ -36,13 +36,13 @@ class TransportTypeForm
                         CheckboxList::make('running_days')
                             ->label('Дни работы')
                             ->options([
-                                'monday' => 'Mon',
-                                'tuesday' => 'Tue',
-                                'wednesday' => 'Wed',
-                                'thursday' => 'Thu',
-                                'friday' => 'Fri',
-                                'saturday' => 'Sat',
-                                'sunday' => 'Sun',
+                                'monday' => 'M',
+                                'tuesday' => 'T',
+                                'wednesday' => 'W',
+                                'thursday' => 'T',
+                                'friday' => 'F',
+                                'saturday' => 'S',
+                                'sunday' => 'S',
                             ])
                             ->columns(7)
                             ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
