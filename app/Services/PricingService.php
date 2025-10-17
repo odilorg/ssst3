@@ -120,6 +120,14 @@ class PricingService
                 return Monument::find($serviceId)?->ticket_price;
 
             case 'App\Models\Guide':
+                $guide = Guide::find($serviceId);
+                if ($guide && $guide->price_types) {
+                    // Get the first price type (assuming per_daily for now)
+                    $priceTypes = is_array($guide->price_types) ? $guide->price_types : json_decode($guide->price_types, true);
+                    if (!empty($priceTypes) && isset($priceTypes[0]['price'])) {
+                        return (float) $priceTypes[0]['price'];
+                    }
+                }
                 return null;
 
             default:
