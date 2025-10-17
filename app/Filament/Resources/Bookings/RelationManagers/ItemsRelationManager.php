@@ -671,19 +671,16 @@ class ItemsRelationManager extends RelationManager
                             })
                             ->live(),
 
-                        Forms\Components\Select::make('transport_price_type_id')
+                        Forms\Components\Select::make('transport_instance_price_id')
                             ->label('Тип услуги')
                             ->searchable()
                             ->options(function ($get) {
                                 $transportId = (int) ($get('transport_id') ?? 0);
                                 if (!$transportId) return [];
                                 
-                                // Get the transport and its transport_type_id
-                                $transport = Transport::find($transportId);
-                                if (!$transport) return [];
-                                
-                                return \App\Models\TransportPrice::query()
-                                    ->where('transport_type_id', $transport->transport_type_id)
+                                // Get transport instance prices for this specific transport
+                                return \App\Models\TransportInstancePrice::query()
+                                    ->where('transport_id', $transportId)
                                     ->get()
                                     ->mapWithKeys(fn ($p) => [
                                         $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
@@ -731,7 +728,7 @@ class ItemsRelationManager extends RelationManager
                     ])
                     ->action(function (array $data): void {
                         $transportId = (int) $data['transport_id'];
-                        $transportPriceTypeId = isset($data['transport_price_type_id']) ? (int) $data['transport_price_type_id'] : null;
+                        $transportInstancePriceId = isset($data['transport_instance_price_id']) ? (int) $data['transport_instance_price_id'] : null;
                         $dayIds = $data['days'];
                         $quantity = (int) $data['quantity'];
                         $status = $data['status'] ?? 'pending';
@@ -753,7 +750,7 @@ class ItemsRelationManager extends RelationManager
                                     $item->assignments()->create([
                                         'assignable_type' => Transport::class,
                                         'assignable_id' => $transportId,
-                                        'transport_price_type_id' => $transportPriceTypeId,
+                                        'transport_instance_price_id' => $transportInstancePriceId,
                                         'quantity' => $quantity,
                                         'status' => $status,
                                         'notes' => $notes,
@@ -948,8 +945,8 @@ class ItemsRelationManager extends RelationManager
                                     })
                                     ->live(),
 
-                                // TRANSPORT PRICE TYPE (Transport only)
-                                Forms\Components\Select::make('transport_price_type_id')
+                                // TRANSPORT INSTANCE PRICE TYPE (Transport only)
+                                Forms\Components\Select::make('transport_instance_price_id')
                                     ->label('Тип услуги')
                                     ->searchable()
                                     ->visible(fn ($get) => $get('assignable_type') === Transport::class)
@@ -958,12 +955,9 @@ class ItemsRelationManager extends RelationManager
                                         $transportId = (int) ($get('assignable_id') ?? 0);
                                         if (!$transportId) return [];
                                         
-                                        // Get the transport and its transport_type_id
-                                        $transport = Transport::find($transportId);
-                                        if (!$transport) return [];
-                                        
-                                        return \App\Models\TransportPrice::query()
-                                            ->where('transport_type_id', $transport->transport_type_id)
+                                        // Get transport instance prices for this specific transport
+                                        return \App\Models\TransportInstancePrice::query()
+                                            ->where('transport_id', $transportId)
                                             ->get()
                                             ->mapWithKeys(fn ($p) => [
                                                 $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
@@ -1080,7 +1074,7 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_type' => (string) $a->assignable_type,
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
-                                    'transport_price_type_id' => $a->transport_price_type_id ? (int) $a->transport_price_type_id : null,
+                                    'transport_instance_price_id' => $a->transport_instance_price_id ? (int) $a->transport_instance_price_id : null,
                                     'guide_service_cost' => $a->guide_service_cost ?: null,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
@@ -1186,7 +1180,7 @@ class ItemsRelationManager extends RelationManager
                                     'assignable_type' => (string) $type,
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
-                                    'transport_price_type_id' => isset($row['transport_price_type_id']) ? (int) $row['transport_price_type_id'] : null,
+                                    'transport_instance_price_id' => isset($row['transport_instance_price_id']) ? (int) $row['transport_instance_price_id'] : null,
                                     'guide_service_cost' => isset($row['guide_service_cost']) ? $row['guide_service_cost'] : null,
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',

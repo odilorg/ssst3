@@ -7,6 +7,7 @@ use App\Models\Room;
 use App\Models\MealType;
 use App\Models\Transport;
 use App\Models\TransportPrice;
+use App\Models\TransportInstancePrice;
 use App\Models\Monument;
 use App\Models\Guide;
 use Carbon\Carbon;
@@ -109,9 +110,19 @@ class PricingService
                 return null;
 
             case 'App\Models\Transport':
-                // If transport_price_type_id is provided, use transport_prices table
+                // Try transport instance pricing first, then fall back to transport type pricing
                 if ($subServiceId) {
-                    return TransportPrice::find($subServiceId)?->cost;
+                    // First try transport instance price
+                    $instancePrice = TransportInstancePrice::find($subServiceId);
+                    if ($instancePrice) {
+                        return $instancePrice->cost;
+                    }
+                    
+                    // Fall back to transport type price
+                    $typePrice = TransportPrice::find($subServiceId);
+                    if ($typePrice) {
+                        return $typePrice->cost;
+                    }
                 }
                 // Otherwise fall back to transport daily_rate
                 return Transport::find($serviceId)?->daily_rate;

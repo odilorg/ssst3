@@ -81,6 +81,11 @@ class Transport extends Model
         return $this->morphMany(ContractService::class, 'serviceable');
     }
 
+    public function transportInstancePrices()
+    {
+        return $this->hasMany(TransportInstancePrice::class);
+    }
+
     /**
      * Generate display label for transport in estimates
      * Format: "{TransportType} {PlateNumber} - {PriceType}"
@@ -106,9 +111,14 @@ class Transport extends Model
             throw new \Exception("Transport #{$transport->id} has invalid transport_type_id {$transport->transport_type_id}");
         }
         
-        $transportPrice = $assignment->transportPrice;
+        // Try transport instance price first, then fall back to transport type price
+        $transportPrice = $assignment->transportInstancePrice;
         if (!$transportPrice) {
-            throw new \Exception("Transport assignment #{$assignment->id} has invalid transport_price_type_id {$assignment->transport_price_type_id}");
+            $transportPrice = $assignment->transportPrice;
+        }
+        
+        if (!$transportPrice) {
+            throw new \Exception("Transport assignment #{$assignment->id} has no valid pricing (neither transport_instance_price_id nor transport_price_type_id)");
         }
         
         $typeName = $transportType->type;
