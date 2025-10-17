@@ -44,7 +44,7 @@ class TransportTypeForm
                                 'saturday' => 'Sat',
                                 'sunday' => 'Sun',
                             ])
-                            ->columns(4)
+                            ->columns(7)
                             ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->required(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->helperText('Выберите дни, когда этот тип транспорта работает'),
