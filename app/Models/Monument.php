@@ -34,6 +34,21 @@ class Monument extends Model
         'local_child_price' => 'decimal:2',
     ];
 
+    // Mutators
+    public function setCityIdAttribute($value)
+    {
+        $this->attributes['city_id'] = $value;
+        $this->updateCityAttribute();
+    }
+
+    private function updateCityAttribute()
+    {
+        if (isset($this->attributes['city_id'])) {
+            $city = City::find($this->attributes['city_id']);
+            $this->attributes['city'] = $city ? $city->name : '';
+        }
+    }
+
     // Relationships
     public function city()
     {
