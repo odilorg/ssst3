@@ -187,17 +187,11 @@ class ItemsRelationManager extends RelationManager
                         
                         if ($transportAssignments->count() > 0) {
                             $transports = $transportAssignments->map(function ($assignment) {
-                                // Check if assignable_id is a TransportType ID
-                                $assignableId = $assignment->assignable_id;
-                                $transportType = \App\Models\TransportType::find($assignableId);
-                                
-                                if ($transportType) {
-                                    return $transportType->type;
-                                }
-                                
-                                // Fallback to old Transport model logic
                                 $transport = $assignment->assignable;
-                            return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                                if ($transport && $transport->transportType) {
+                                    return $transport->transportType->type;
+                                }
+                                return 'Транспорт удален';
                             })->filter()->unique()->join('<br>');
                             
                             return $transports ?: '—';
