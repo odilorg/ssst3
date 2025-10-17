@@ -19,7 +19,7 @@ class RestaurantForm
                     ->schema([
                         Select::make('city_id')
                             ->label('Город')
-                            ->relationship('city', 'name')
+                            ->relationship('city', 'name', fn($query) => $query->distinct())
                             ->preload()
                             ->searchable()
                             ->required(),

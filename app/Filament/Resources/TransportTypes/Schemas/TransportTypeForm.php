@@ -45,8 +45,9 @@ class TransportTypeForm
                                 'sunday' => 'Sunday',
                             ])
                             ->columns(4)
-                            ->visible(fn ($get) => $get('category') === 'rail')
-                            ->required(fn ($get) => $get('category') === 'rail'),
+                            ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
+                            ->required(fn ($get) => in_array($get('category'), ['air', 'rail']))
+                            ->helperText('Выберите дни, когда этот тип транспорта работает'),
                     ])
                     ->columns(2),
                 Section::make('Базовые цены на транспорт (Base Pricing)')

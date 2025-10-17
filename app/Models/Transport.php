@@ -18,6 +18,7 @@ class Transport extends Model
         'transport_type_id',
         'departure_time',
         'arrival_time',
+        'running_days',
         'driver_id',
         'city_id',
         'images',
@@ -31,6 +32,7 @@ class Transport extends Model
 
     protected $casts = [
         'images' => 'array',
+        'running_days' => 'array',
         'number_of_seat' => 'integer',
         'oil_change_interval_months' => 'integer',
         'oil_change_interval_km' => 'integer',
