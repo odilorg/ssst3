@@ -32,6 +32,35 @@ class Guide extends Model
         'certificate_issue_date' => 'date',
     ];
 
+    // Mutators
+    public function setFirstNameAttribute($value)
+    {
+        $this->attributes['first_name'] = $value;
+        $this->updateNameAttribute();
+    }
+
+    public function setLastNameAttribute($value)
+    {
+        $this->attributes['last_name'] = $value;
+        $this->updateNameAttribute();
+    }
+
+    public function setPatronymicAttribute($value)
+    {
+        $this->attributes['patronymic'] = $value;
+        $this->updateNameAttribute();
+    }
+
+    private function updateNameAttribute()
+    {
+        $nameParts = array_filter([
+            $this->attributes['first_name'] ?? null,
+            $this->attributes['patronymic'] ?? null,
+            $this->attributes['last_name'] ?? null,
+        ]);
+        $this->attributes['name'] = implode(' ', $nameParts);
+    }
+
     // Accessors
     public function getNameAttribute()
     {
