@@ -76,9 +76,13 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                         $priceType = \App\Models\TransportPrice::find($assignment->transport_price_type_id);
                         $transportPriceType = ' - ' . ($priceType?->price_type ?? '');
                     }
-                    $model = $assignable?->model ?? '';
-                    $plate = $assignable?->plate_number ?? 'Неизвестный';
-                    $itemName = trim("{$model} {$plate}{$transportPriceType}") ?: 'Транспорт удален';
+                    
+                    // Get transport type name
+                    $transportType = \App\Models\TransportType::find($assignable?->transport_type_id);
+                    $typeName = $transportType?->type ?? ucfirst($assignable?->category ?? 'Transport');
+                    $plate = $assignable?->plate_number ?? 'Unknown';
+                    
+                    $itemName = trim("{$typeName} {$plate}{$transportPriceType}") ?: 'Транспорт удален';
                     $category = 'transport';
                     break;
 
