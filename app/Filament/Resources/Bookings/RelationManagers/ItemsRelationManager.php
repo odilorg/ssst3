@@ -656,15 +656,23 @@ class ItemsRelationManager extends RelationManager
                     ->icon('heroicon-o-truck')
                     ->color('danger')
                     ->form([
-                        Forms\Components\Select::make('transport_type_id')
-                            ->label('Выберите тип транспорта')
+                        Forms\Components\Select::make('transport_id')
+                            ->label('Выберите транспорт')
                             ->searchable()
                             ->preload()
                             ->required()
                             ->options(function () {
-                                return \App\Models\TransportType::query()
-                                    ->orderBy('type')
-                                    ->pluck('type', 'id')
+                                return Transport::query()
+                                    ->with('transportType')
+                                    ->orderBy('plate_number')
+                                    ->get()
+                                    ->mapWithKeys(function ($transport) {
+                                        $typeName = $transport->transportType?->type ?? 'Unknown';
+                                        $plate = $transport->plate_number ?? 'Unknown';
+                                        return [
+                                            $transport->id => "{$typeName} {$plate}"
+                                        ];
+                                    })
                                     ->all();
                             })
                             ->live(),
@@ -673,10 +681,15 @@ class ItemsRelationManager extends RelationManager
                             ->label('Тип услуги')
                             ->searchable()
                             ->options(function ($get) {
-                                $transportTypeId = (int) ($get('transport_type_id') ?? 0);
-                                if (!$transportTypeId) return [];
+                                $transportId = (int) ($get('transport_id') ?? 0);
+                                if (!$transportId) return [];
+                                
+                                // Get the transport and its transport_type_id
+                                $transport = Transport::find($transportId);
+                                if (!$transport) return [];
+                                
                                 return \App\Models\TransportPrice::query()
-                                    ->where('transport_type_id', $transportTypeId)
+                                    ->where('transport_type_id', $transport->transport_type_id)
                                     ->get()
                                     ->mapWithKeys(fn ($p) => [
                                         $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
@@ -723,7 +736,7 @@ class ItemsRelationManager extends RelationManager
                             ->rows(2),
                     ])
                     ->action(function (array $data): void {
-                        $transportTypeId = (int) $data['transport_type_id'];
+                        $transportId = (int) $data['transport_id'];
                         $transportPriceTypeId = isset($data['transport_price_type_id']) ? (int) $data['transport_price_type_id'] : null;
                         $dayIds = $data['days'];
                         $quantity = (int) $data['quantity'];
@@ -736,16 +749,16 @@ class ItemsRelationManager extends RelationManager
                         foreach ($dayIds as $dayId) {
                             $item = $booking->itineraryItems()->find($dayId);
                             if ($item) {
-                                // Check if transport type is already assigned to this day
+                                // Check if transport is already assigned to this day
                                 $existingAssignment = $item->assignments()
                                     ->where('assignable_type', Transport::class)
-                                    ->where('assignable_id', $transportTypeId)
+                                    ->where('assignable_id', $transportId)
                                     ->first();
 
                                 if (!$existingAssignment) {
                                     $item->assignments()->create([
                                         'assignable_type' => Transport::class,
-                                        'assignable_id' => $transportTypeId,
+                                        'assignable_id' => $transportId,
                                         'transport_price_type_id' => $transportPriceTypeId,
                                         'quantity' => $quantity,
                                         'status' => $status,
@@ -851,9 +864,17 @@ class ItemsRelationManager extends RelationManager
                                             return $q->pluck('name', 'id')->all();
                                         }
                                         if ($type === Transport::class) {
-                                            return \App\Models\TransportType::query()
-                                                ->orderBy('type')
-                                                ->pluck('type', 'id')
+                                            return Transport::query()
+                                                ->with('transportType')
+                                                ->orderBy('plate_number')
+                                                ->get()
+                                                ->mapWithKeys(function ($transport) {
+                                                    $typeName = $transport->transportType?->type ?? 'Unknown';
+                                                    $plate = $transport->plate_number ?? 'Unknown';
+                                                    return [
+                                                        $transport->id => "{$typeName} {$plate}"
+                                                    ];
+                                                })
                                                 ->all();
                                         }
                                         return [];
@@ -940,10 +961,15 @@ class ItemsRelationManager extends RelationManager
                                     ->visible(fn ($get) => $get('assignable_type') === Transport::class)
                                     ->options(function ($get) {
                                         if ($get('assignable_type') !== Transport::class) return [];
-                                        $transportTypeId = (int) ($get('assignable_id') ?? 0);
-                                        if (!$transportTypeId) return [];
+                                        $transportId = (int) ($get('assignable_id') ?? 0);
+                                        if (!$transportId) return [];
+                                        
+                                        // Get the transport and its transport_type_id
+                                        $transport = Transport::find($transportId);
+                                        if (!$transport) return [];
+                                        
                                         return \App\Models\TransportPrice::query()
-                                            ->where('transport_type_id', $transportTypeId)
+                                            ->where('transport_type_id', $transport->transport_type_id)
                                             ->get()
                                             ->mapWithKeys(fn ($p) => [
                                                 $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $',
