@@ -41,6 +41,13 @@ class MonumentForm
                 Section::make('Базовые цены билетов (Base Pricing)')
                     ->description('Стандартные цены для иностранцев и местных жителей. Если есть контракт, цены из контракта будут использоваться вместо базовых.')
                     ->schema([
+                        TextInput::make('ticket_price')
+                            ->label('Базовая цена билета')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->required()
+                            ->helperText('Основная цена билета для расчетов'),
                         TextInput::make('foreigner_adult_price')
                             ->label('Иностранцы - Взрослый')
                             ->numeric()
