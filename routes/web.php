@@ -27,10 +27,18 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
             $category = '';
 
             // Get pricing using the PricingService
+            // For hotels use room_id, for restaurants use meal_type_id, for transport use transport_price_type_id
+            $subServiceId = match($assignment->assignable_type) {
+                \App\Models\Hotel::class => $assignment->room_id,
+                \App\Models\Restaurant::class => $assignment->meal_type_id,
+                \App\Models\Transport::class => $assignment->transport_price_type_id,
+                default => null,
+            };
+            
             $pricing = $pricingService->getPricingBreakdown(
                 $assignment->assignable_type,
                 $assignment->assignable_id,
-                $assignment->room_id ?? $assignment->meal_type_id,
+                $subServiceId,
                 $booking->start_date
             );
 
@@ -63,7 +71,14 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                     break;
 
                 case \App\Models\Transport::class:
-                    $itemName = $assignable?->model . ' (' . $assignable?->plate_number . ')' ?? 'Транспорт удален';
+                    $transportPriceType = '';
+                    if ($assignment->transport_price_type_id) {
+                        $priceType = \App\Models\TransportPrice::find($assignment->transport_price_type_id);
+                        $transportPriceType = ' - ' . ($priceType?->price_type ?? '');
+                    }
+                    $model = $assignable?->model ?? '';
+                    $plate = $assignable?->plate_number ?? 'Неизвестный';
+                    $itemName = trim("{$model} {$plate}{$transportPriceType}") ?: 'Транспорт удален';
                     $category = 'transport';
                     break;
 
