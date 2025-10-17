@@ -89,6 +89,7 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                 case \App\Models\Monument::class:
                     $itemName = $assignable?->name ?? 'Монумент удален';
                     $category = 'monument';
+                    // $unitPrice is already set by PricingService above
                     break;
 
                 default:
