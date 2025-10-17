@@ -6,6 +6,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -33,7 +34,7 @@ class TransportTypeForm
                             ])
                             ->required()
                             ->live(),
-                        CheckboxList::make('running_days')
+                        ToggleButtons::make('running_days')
                             ->label('Дни работы')
                             ->options([
                                 'monday' => 'M',
@@ -44,8 +45,8 @@ class TransportTypeForm
                                 'saturday' => 'S',
                                 'sunday' => 'S',
                             ])
-                            ->columns(7)
-                            ->gridDirection('row')
+                            ->multiple()
+                            ->inline()
                             ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->required(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->helperText('Выберите дни, когда этот тип транспорта работает'),

@@ -6,7 +6,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -100,7 +100,7 @@ class TransportForm
                             ->label('Время прибытия')
                             ->required()
                             ->visible(fn ($get) => in_array($get('category'), ['air', 'rail'])),
-                        CheckboxList::make('running_days')
+                        ToggleButtons::make('running_days')
                             ->label('Дни работы')
                             ->options([
                                 'monday' => 'M',
@@ -111,8 +111,8 @@ class TransportForm
                                 'saturday' => 'S',
                                 'sunday' => 'S',
                             ])
-                            ->columns(7)
-                            ->gridDirection('row')
+                            ->multiple()
+                            ->inline()
                             ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->required(fn ($get) => in_array($get('category'), ['air', 'rail']))
                             ->helperText('Выберите дни, когда транспорт работает'),
