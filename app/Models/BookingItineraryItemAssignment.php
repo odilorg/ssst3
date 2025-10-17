@@ -43,4 +43,9 @@ class BookingItineraryItemAssignment extends Model
     {
         return $this->morphTo();
     }
+
+    public function transportPrice()
+    {
+        return $this->belongsTo(TransportPrice::class, 'transport_price_type_id');
+    }
 }

@@ -15,7 +15,12 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
     $pricingService = app(PricingService::class);
 
     // Get all itinerary items for this booking
-    $itineraryItems = $booking->itineraryItems()->with('assignments.assignable')->get();
+    $itineraryItems = $booking->itineraryItems()
+        ->with([
+            'assignments.assignable',
+            'assignments.transportPrice'
+        ])
+        ->get();
 
     foreach ($itineraryItems as $item) {
         $assignments = $item->assignments;
@@ -71,18 +76,13 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
                     break;
 
                 case \App\Models\Transport::class:
-                    $transportPriceType = '';
-                    if ($assignment->transport_price_type_id) {
-                        $priceType = \App\Models\TransportPrice::find($assignment->transport_price_type_id);
-                        $transportPriceType = ' - ' . ($priceType?->price_type ?? '');
+                    try {
+                        $itemName = \App\Models\Transport::getEstimateLabel($assignment);
+                    } catch (\Exception $e) {
+                        // Log error and throw to prevent rendering bad data
+                        \Log::error("Failed to generate transport label: " . $e->getMessage());
+                        throw new \Exception("Cannot generate estimate: " . $e->getMessage());
                     }
-                    
-                    // Get transport type name
-                    $transportType = \App\Models\TransportType::find($assignable?->transport_type_id);
-                    $typeName = $transportType?->type ?? ucfirst($assignable?->category ?? 'Transport');
-                    $plate = $assignable?->plate_number ?? 'Unknown';
-                    
-                    $itemName = trim("{$typeName} {$plate}{$transportPriceType}") ?: 'Транспорт удален';
                     $category = 'transport';
                     break;
 
