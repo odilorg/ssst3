@@ -27,7 +27,14 @@ Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
 
         foreach ($assignments as $assignment) {
             $assignable = $assignment->assignable;
-            $quantity = $assignment->quantity ?? 1;
+            
+            // For monuments, use booking's pax_total (total number of people)
+            // For other services, use assignment quantity
+            $quantity = match($assignment->assignable_type) {
+                \App\Models\Monument::class => $booking->pax_total ?? 1,
+                default => $assignment->quantity ?? 1,
+            };
+            
             $itemName = '';
             $category = '';
 
