@@ -12,6 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
+            // First, add the column if it doesn't exist
+            if (!Schema::hasColumn('booking_itinerary_item_assignments', 'transport_instance_price_id')) {
+                $table->foreignId('transport_instance_price_id')->nullable()->after('transport_price_type_id');
+            }
+
+            // Then add the foreign key constraint
             $table->foreign('transport_instance_price_id', 'booking_assignment_transport_instance_price_fk')
                 ->references('id')
                 ->on('transport_instance_prices')
@@ -26,6 +32,7 @@ return new class extends Migration
     {
         Schema::table('booking_itinerary_item_assignments', function (Blueprint $table) {
             $table->dropForeign('booking_assignment_transport_instance_price_fk');
+            $table->dropColumn('transport_instance_price_id');
         });
     }
 };
