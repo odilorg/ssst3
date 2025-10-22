@@ -205,11 +205,85 @@ class LeadsTable
                     ->label('Mark Contacted')
                     ->icon('heroicon-o-envelope')
                     ->color('success')
-                    ->requiresConfirmation()
-                    ->action(function ($record) {
-                        $record->markAsContacted();
+                    ->form([
+                        Select::make('followup_period')
+                            ->label('Schedule Follow-up')
+                            ->options([
+                                '1_day' => 'Tomorrow',
+                                '3_days' => 'In 3 days',
+                                '1_week' => 'In 1 week (Recommended)',
+                                '2_weeks' => 'In 2 weeks',
+                                '1_month' => 'In 1 month',
+                                'custom' => 'Custom date',
+                            ])
+                            ->default('1_week')
+                            ->required()
+                            ->live(),
+
+                        \Filament\Forms\Components\DateTimePicker::make('custom_followup_date')
+                            ->label('Custom Follow-up Date')
+                            ->native(false)
+                            ->visible(fn ($get) => $get('followup_period') === 'custom')
+                            ->required(fn ($get) => $get('followup_period') === 'custom'),
+                    ])
+                    ->action(function ($record, array $data) {
+                        // Calculate follow-up date
+                        $followupDate = match($data['followup_period']) {
+                            '1_day' => now()->addDay(),
+                            '3_days' => now()->addDays(3),
+                            '1_week' => now()->addWeek(),
+                            '2_weeks' => now()->addWeeks(2),
+                            '1_month' => now()->addMonth(),
+                            'custom' => $data['custom_followup_date'],
+                        };
+
+                        $record->update([
+                            'status' => 'contacted',
+                            'last_contacted_at' => now(),
+                            'next_followup_at' => $followupDate,
+                        ]);
                     })
                     ->visible(fn ($record) => !$record->isContacted()),
+
+                Action::make('schedule_followup')
+                    ->label('Schedule Follow-up')
+                    ->icon('heroicon-o-calendar')
+                    ->color('warning')
+                    ->form([
+                        Select::make('followup_period')
+                            ->label('When should we follow up?')
+                            ->options([
+                                '1_day' => 'Tomorrow',
+                                '3_days' => 'In 3 days',
+                                '1_week' => 'In 1 week',
+                                '2_weeks' => 'In 2 weeks',
+                                '1_month' => 'In 1 month',
+                                'custom' => 'Custom date',
+                            ])
+                            ->default('1_week')
+                            ->required()
+                            ->live(),
+
+                        \Filament\Forms\Components\DateTimePicker::make('custom_followup_date')
+                            ->label('Custom Follow-up Date')
+                            ->native(false)
+                            ->visible(fn ($get) => $get('followup_period') === 'custom')
+                            ->required(fn ($get) => $get('followup_period') === 'custom'),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $followupDate = match($data['followup_period']) {
+                            '1_day' => now()->addDay(),
+                            '3_days' => now()->addDays(3),
+                            '1_week' => now()->addWeek(),
+                            '2_weeks' => now()->addWeeks(2),
+                            '1_month' => now()->addMonth(),
+                            'custom' => $data['custom_followup_date'],
+                        };
+
+                        $record->update([
+                            'next_followup_at' => $followupDate,
+                        ]);
+                    }),
 
                 Action::make('mark_responded')
                     ->label('Mark Responded')
