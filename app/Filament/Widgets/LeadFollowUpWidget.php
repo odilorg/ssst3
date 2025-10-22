@@ -3,7 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Lead;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -60,12 +63,12 @@ class LeadFollowUpWidget extends BaseWidget
                     ->label('Assigned To'),
             ])
             ->actions([
-                Tables\Actions\Action::make('schedule_followup')
+                Action::make('schedule_followup')
                     ->label('Reschedule')
                     ->icon('heroicon-o-calendar')
                     ->color('warning')
                     ->form([
-                        Tables\Components\Select::make('followup_period')
+                        Select::make('followup_period')
                             ->label('When should we follow up?')
                             ->options([
                                 '1_day' => 'Tomorrow',
@@ -79,7 +82,7 @@ class LeadFollowUpWidget extends BaseWidget
                             ->required()
                             ->live(),
 
-                        Tables\Components\DateTimePicker::make('custom_followup_date')
+                        DateTimePicker::make('custom_followup_date')
                             ->label('Custom Follow-up Date')
                             ->native(false)
                             ->visible(fn ($get) => $get('followup_period') === 'custom')
