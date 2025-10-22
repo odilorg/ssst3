@@ -96,6 +96,41 @@ class LeadsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('has_uzbekistan_partner')
+                    ->label('UZ Partner')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                    ->color(fn ($state) => $state ? 'success' : 'gray')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('uzbekistan_partnership_status')
+                    ->label('UZ Partnership')
+                    ->badge()
+                    ->color(fn (string $state = null): string => match ($state) {
+                        'active' => 'success',
+                        'pending' => 'warning',
+                        'seasonal' => 'info',
+                        'inactive' => 'gray',
+                        'expired' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('working_status')
+                    ->label('Working Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'seasonal' => 'info',
+                        'inactive' => 'danger',
+                        'temporary_pause' => 'warning',
+                        'unknown' => 'gray',
+                    })
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
@@ -146,6 +181,22 @@ class LeadsTable
                     ->label('Active Leads')
                     ->query(fn (Builder $query) => $query->active())
                     ->toggle(),
+
+                Filter::make('with_uzbekistan_partner')
+                    ->label('Has Uzbekistan Partner')
+                    ->query(fn (Builder $query) => $query->withUzbekistanPartner())
+                    ->toggle(),
+
+                SelectFilter::make('working_status')
+                    ->label('Working Status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                        'seasonal' => 'Seasonal',
+                        'temporary_pause' => 'Temporary Pause',
+                        'unknown' => 'Unknown',
+                    ])
+                    ->multiple(),
             ])
             ->recordActions([
                 EditAction::make(),

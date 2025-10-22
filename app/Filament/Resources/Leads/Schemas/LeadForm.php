@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -163,6 +164,55 @@ class LeadForm
                             ->label('Certifications')
                             ->suggestions(['IATA', 'ASTA', 'ABTA', 'CLIA'])
                             ->placeholder('Add certifications'),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(),
+
+                Section::make('Uzbekistan Partnership & Working Status')
+                    ->schema([
+                        Toggle::make('has_uzbekistan_partner')
+                            ->label('Has Uzbekistan Partner')
+                            ->live()
+                            ->helperText('Is this company already working with a partner in Uzbekistan?'),
+
+                        TextInput::make('uzbekistan_partner_name')
+                            ->label('Uzbekistan Partner Name')
+                            ->maxLength(255)
+                            ->visible(fn ($get) => $get('has_uzbekistan_partner'))
+                            ->placeholder('Partner company name'),
+
+                        Select::make('uzbekistan_partnership_status')
+                            ->label('Partnership Status')
+                            ->options([
+                                'active' => 'Active - Currently Working',
+                                'inactive' => 'Inactive - Not Working',
+                                'expired' => 'Expired Contract',
+                                'seasonal' => 'Seasonal Partnership',
+                                'pending' => 'Pending New Partnership',
+                            ])
+                            ->visible(fn ($get) => $get('has_uzbekistan_partner'))
+                            ->placeholder('Select status'),
+
+                        Textarea::make('uzbekistan_partnership_notes')
+                            ->label('Partnership Notes')
+                            ->rows(2)
+                            ->visible(fn ($get) => $get('has_uzbekistan_partner'))
+                            ->placeholder('Details about the partnership')
+                            ->columnSpanFull(),
+
+                        Select::make('working_status')
+                            ->label('Company Working Status')
+                            ->options([
+                                'active' => 'Active - Currently Operational',
+                                'inactive' => 'Inactive - Not Operating',
+                                'seasonal' => 'Seasonal Operation',
+                                'temporary_pause' => 'Temporarily Paused',
+                                'unknown' => 'Unknown',
+                            ])
+                            ->required()
+                            ->default('active')
+                            ->helperText('Current operational status of the company'),
                     ])
                     ->columns(2)
                     ->collapsible()

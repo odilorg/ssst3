@@ -33,6 +33,11 @@ class Lead extends Model
         'business_type',
         'annual_volume',
         'certifications',
+        'has_uzbekistan_partner',
+        'uzbekistan_partner_name',
+        'uzbekistan_partnership_status',
+        'uzbekistan_partnership_notes',
+        'working_status',
         'assigned_to',
         'last_contacted_at',
         'next_followup_at',
@@ -46,6 +51,7 @@ class Lead extends Model
         'tour_types' => 'array',
         'target_markets' => 'array',
         'certifications' => 'array',
+        'has_uzbekistan_partner' => 'boolean',
         'last_contacted_at' => 'datetime',
         'next_followup_at' => 'datetime',
         'converted_to_customer_at' => 'date',
@@ -112,6 +118,16 @@ class Lead extends Model
     public function scopeAssignedTo($query, int $userId)
     {
         return $query->where('assigned_to', $userId);
+    }
+
+    public function scopeWithUzbekistanPartner($query)
+    {
+        return $query->where('has_uzbekistan_partner', true);
+    }
+
+    public function scopeActivelyWorking($query)
+    {
+        return $query->where('working_status', 'active');
     }
 
     // Helper Methods
