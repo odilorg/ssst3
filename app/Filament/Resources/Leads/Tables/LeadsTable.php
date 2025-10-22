@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -53,21 +54,21 @@ class LeadsTable
                     ->icon('heroicon-o-globe-alt')
                     ->toggleable(),
 
-                TextColumn::make('status')
+                SelectColumn::make('status')
                     ->label('Status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'new' => 'gray',
-                        'researching' => 'info',
-                        'qualified' => 'primary',
-                        'contacted' => 'warning',
-                        'responded' => 'success',
-                        'negotiating' => 'warning',
-                        'partner' => 'success',
-                        'not_interested' => 'danger',
-                        'invalid' => 'danger',
-                        'on_hold' => 'gray',
-                    })
+                    ->options([
+                        'new' => 'New',
+                        'researching' => 'Researching',
+                        'qualified' => 'Qualified',
+                        'contacted' => 'Contacted',
+                        'responded' => 'Responded',
+                        'negotiating' => 'Negotiating',
+                        'partner' => 'Partner',
+                        'not_interested' => 'Not Interested',
+                        'invalid' => 'Invalid Data',
+                        'on_hold' => 'On Hold',
+                    ])
+                    ->selectablePlaceholder(false)
                     ->sortable(),
 
                 TextColumn::make('source')
