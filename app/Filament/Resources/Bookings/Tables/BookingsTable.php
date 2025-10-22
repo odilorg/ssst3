@@ -99,6 +99,102 @@ class BookingsTable
             ->color('info')
             ->url(fn ($record) => route('booking.estimate.print', $record))
             ->openUrlInNewTab(),
+
+        Action::make('generate_requests')
+            ->label('Заявки')
+            ->icon('heroicon-o-document-text')
+            ->color('warning')
+            ->requiresConfirmation()
+            ->modalHeading('Генерация заявок поставщикам')
+            ->modalDescription('Создать заявки для всех назначенных поставщиков этого бронирования?')
+            ->modalSubmitActionLabel('Создать заявки')
+            ->action(function ($record) {
+                try {
+                    // Use the service directly instead of HTTP request
+                    $requestService = app(\App\Services\SupplierRequestService::class);
+                    
+                    // Generate requests for all assigned suppliers
+                    $requests = $requestService->generateRequestsForBooking($record);
+                    
+                    if (empty($requests)) {
+                        Notification::make()
+                            ->title('Нет поставщиков')
+                            ->body('Нет назначенных поставщиков для генерации заявок')
+                            ->warning()
+                            ->send();
+                        return;
+                    }
+                    
+                    // Prepare response data
+                    $responseData = [];
+                    foreach ($requests as $request) {
+                        $responseData[] = [
+                            'id' => $request->id,
+                            'supplier_type' => $request->supplier_type,
+                            'supplier_type_label' => $request->supplier_type_label,
+                            'supplier_type_icon' => $request->supplier_type_icon,
+                            'supplier_id' => $request->supplier_id,
+                            'supplier_name' => match($request->supplier_type) {
+                                'hotel' => \App\Models\Hotel::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
+                                'transport' => \App\Models\Transport::find($request->supplier_id)?->transportType?->type ?? 'Неизвестный поставщик',
+                                'guide' => \App\Models\Guide::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
+                                'restaurant' => \App\Models\Restaurant::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
+                                default => 'Неизвестный поставщик'
+                            },
+                            'status' => $request->status,
+                            'status_label' => $request->status_label,
+                            'expires_at' => $request->expires_at?->format('d.m.Y H:i'),
+                            'pdf_url' => $requestService->getDownloadUrl($request->pdf_path),
+                            'pdf_path' => $request->pdf_path,
+                        ];
+                    }
+                    
+                    Notification::make()
+                        ->title('Заявки созданы')
+                        ->body("Создано " . count($requests) . " заявок")
+                        ->success()
+                        ->send();
+                    
+                    // Store requests data in session for download modal
+                    session(['generated_requests_' . $record->id => $responseData]);
+                    
+                } catch (\Exception $e) {
+                    Notification::make()
+                        ->title('Ошибка')
+                        ->body('Не удалось создать заявки: ' . $e->getMessage())
+                        ->danger()
+                        ->send();
+                }
+            })
+            ->after(function ($record) {
+                // Show download modal if requests were generated
+                $requests = session('generated_requests_' . $record->id);
+                if ($requests) {
+                    session()->forget('generated_requests_' . $record->id);
+                    
+                    // Create download links HTML
+                    $downloadLinks = collect($requests)->map(function ($request) {
+                        $supplierName = match($request['supplier_type']) {
+                            'hotel' => \App\Models\Hotel::find($request['supplier_id'])?->name ?? 'Неизвестный поставщик',
+                            'transport' => \App\Models\Transport::find($request['supplier_id'])?->transportType?->type ?? 'Неизвестный поставщик',
+                            'guide' => \App\Models\Guide::find($request['supplier_id'])?->name ?? 'Неизвестный поставщик',
+                            'restaurant' => \App\Models\Restaurant::find($request['supplier_id'])?->name ?? 'Неизвестный поставщик',
+                            default => 'Неизвестный поставщик'
+                        };
+                        
+                        return "<a href='{$request['pdf_url']}' target='_blank' class='text-blue-600 hover:text-blue-800'>
+                            {$request['supplier_type_icon']} {$supplierName} - {$request['supplier_type_label']}
+                        </a>";
+                    })->join('<br>');
+                    
+                    Notification::make()
+                        ->title('Заявки готовы к скачиванию')
+                        ->body(new \Illuminate\Support\HtmlString($downloadLinks))
+                        ->success()
+                        ->persistent()
+                        ->send();
+                }
+            }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

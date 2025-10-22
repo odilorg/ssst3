@@ -73,6 +73,11 @@ class Booking extends Model
         );
     }
 
+    public function supplierRequests()
+    {
+        return $this->hasMany(SupplierRequest::class);
+    }
+
     // Business Logic Methods
     public function generateReference()
     {
