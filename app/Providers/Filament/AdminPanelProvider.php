@@ -44,7 +44,6 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\LeadStatsWidget::class,
                 \App\Filament\Widgets\LeadFollowUpWidget::class,
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
