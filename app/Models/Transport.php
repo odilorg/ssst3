@@ -12,9 +12,9 @@ class Transport extends Model
     protected $fillable = [
         'plate_number',
         'vin',
+        'make',
         'model',
         'number_of_seat',
-        'category',
         'transport_type_id',
         'departure_time',
         'arrival_time',
@@ -87,15 +87,25 @@ class Transport extends Model
     }
 
     /**
+     * Get the category from transport type (computed attribute)
+     * This maintains backward compatibility after removing category column
+     */
+    public function getCategoryAttribute(): ?string
+    {
+        return $this->transportType?->category;
+    }
+
+    /**
      * Get the display name for the transport
-     * Format: "{PlateNumber} - {Model}"
-     * Example: "01 A 123 BC - Mercedes Sprinter"
+     * Format: "{Make} {Model} - {PlateNumber}"
+     * Example: "Chevrolet Cobalt - 30AS25214"
      */
     public function getNameAttribute(): string
     {
         $parts = array_filter([
-            $this->plate_number,
+            $this->make,
             $this->model,
+            $this->plate_number,
         ]);
 
         return implode(' - ', $parts) ?: 'Transport #' . $this->id;

@@ -18,39 +18,108 @@ class TransportForm
     {
         return $schema
             ->components([
-                Section::make('Основная информация')
+                Section::make('Классификация транспорта')
+                    ->description('Выберите категорию и тип транспортного средства')
                     ->schema([
-                        Select::make('category')
-                            ->label('Категория')
+                        Select::make('_category_filter')
+                            ->label('Категория (для фильтрации)')
                             ->options([
-                                'bus' => 'Bus',
-                                'car' => 'Car',
-                                'mikro_bus' => 'Mikro Bus',
-                                'mini_van' => 'Mini Van',
-                                'air' => 'Air',
-                                'rail' => 'Rail',
+                                'bus' => 'Автобус',
+                                'car' => 'Легковой автомобиль',
+                                'mikro_bus' => 'Микроавтобус',
+                                'mini_van' => 'Минивэн',
+                                'air' => 'Авиатранспорт',
+                                'rail' => 'Железнодорожный',
                             ])
-                            ->required()
-                            ->live(),
+                            ->live()
+                            ->dehydrated(false)
+                            ->helperText('Выберите категорию, чтобы отфильтровать типы транспорта')
+                            ->placeholder('Выберите категорию...'),
+
                         Select::make('transport_type_id')
                             ->label('Тип транспорта')
+                            ->relationship('transportType', 'type')
                             ->options(function ($get) {
-                                $selectedCategory = $get('category');
+                                $categoryFilter = $get('_category_filter');
 
-                                if (!$selectedCategory) {
-                                    return [];
+                                $query = \App\Models\TransportType::query();
+
+                                if ($categoryFilter) {
+                                    $query->where('category', $categoryFilter);
                                 }
 
-                                // Fetch transport types based on selected category
-                                return \App\Models\TransportType::where('category', $selectedCategory)
-                                    ->pluck('type', 'id');
+                                return $query->pluck('type', 'id');
                             })
+                            ->searchable()
+                            ->preload()
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn () => null), // Clear selection when category changes
+                            ->createOptionForm([
+                                TextInput::make('type')
+                                    ->label('Название типа')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Например: Sedan, Bus, Van')
+                                    ->helperText('Введите классификацию транспорта (не марку!)'),
+                                Select::make('category')
+                                    ->label('Категория')
+                                    ->options([
+                                        'bus' => 'Автобус',
+                                        'car' => 'Легковой автомобиль',
+                                        'mikro_bus' => 'Микроавтобус',
+                                        'mini_van' => 'Минивэн',
+                                        'air' => 'Авиатранспорт',
+                                        'rail' => 'Железнодорожный',
+                                    ])
+                                    ->required()
+                                    ->helperText('Выберите широкую категорию'),
+                            ])
+                            ->createOptionUsing(function (array $data) {
+                                $type = \App\Models\TransportType::create($data);
+                                return $type->id;
+                            })
+                            ->helperText('Выберите существующий тип или создайте новый (+)')
+                            ->columnSpanFull(),
+
+                        Placeholder::make('category_display')
+                            ->label('Категория')
+                            ->content(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) {
+                                    return 'Сначала выберите тип транспорта';
+                                }
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                if (!$type) {
+                                    return '—';
+                                }
+
+                                $categoryLabels = [
+                                    'bus' => 'Автобус',
+                                    'car' => 'Легковой автомобиль',
+                                    'mikro_bus' => 'Микроавтобус',
+                                    'mini_van' => 'Минивэн',
+                                    'air' => 'Авиатранспорт',
+                                    'rail' => 'Железнодорожный',
+                                ];
+
+                                return $categoryLabels[$type->category] ?? $type->category;
+                            })
+                            ->helperText('Категория наследуется от типа транспорта'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Основная информация')
+                    ->schema([
                         Select::make('company_id')
                             ->label('Компания')
                             ->relationship('company', 'name')
+                            ->preload()
+                            ->searchable()
+                            ->required(),
+                        Select::make('city_id')
+                            ->label('Город')
+                            ->relationship('city', 'name')
                             ->preload()
                             ->searchable()
                             ->required(),
@@ -60,48 +129,100 @@ class TransportForm
                             ->preload()
                             ->searchable()
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
-                        Select::make('city_id')
-                            ->label('Город')
-                            ->relationship('city', 'name')
-                            ->preload()
-                            ->searchable()
-                            ->required(),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                     ])
                     ->columns(2),
 
                 Section::make('Информация о транспортном средстве')
+                    ->description('Укажите конкретные характеристики этого транспортного средства')
                     ->schema([
+                        TextInput::make('make')
+                            ->label('Производитель')
+                            ->maxLength(255)
+                            ->placeholder('Например: Chevrolet, Toyota, Mercedes')
+                            ->helperText('Марка транспортного средства')
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
+                        TextInput::make('model')
+                            ->label('Модель')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('Например: Cobalt, Camry, Sprinter')
+                            ->helperText('Модель транспортного средства')
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('plate_number')
                             ->label('Номерной знак')
                             ->required()
                             ->maxLength(255)
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->placeholder('Например: 30AS25214')
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('vin')
                             ->label('VIN номер')
                             ->maxLength(255)
                             ->nullable()
                             ->placeholder('Например: 1HGBH41JXMN109186')
                             ->helperText('Vehicle Identification Number (необязательно)')
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
-                        TextInput::make('model')
-                            ->label('Модель')
-                            ->required()
-                            ->maxLength(255)
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('number_of_seat')
                             ->label('Количество мест')
                             ->numeric()
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TimePicker::make('departure_time')
                             ->label('Время отправления')
                             ->required()
-                            ->visible(fn ($get) => in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && in_array($type->category, ['air', 'rail']);
+                            }),
                         TimePicker::make('arrival_time')
                             ->label('Время прибытия')
                             ->required()
-                            ->visible(fn ($get) => in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && in_array($type->category, ['air', 'rail']);
+                            }),
                         ToggleButtons::make('running_days')
                             ->label('Дни работы')
                             ->options([
@@ -115,8 +236,20 @@ class TransportForm
                             ])
                             ->multiple()
                             ->inline()
-                            ->visible(fn ($get) => in_array($get('category'), ['air', 'rail']))
-                            ->required(fn ($get) => in_array($get('category'), ['air', 'rail']))
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && in_array($type->category, ['air', 'rail']);
+                            })
+                            ->required(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && in_array($type->category, ['air', 'rail']);
+                            })
                             ->helperText('Выберите дни, когда транспорт работает'),
                     ])
                     ->columns(2),
@@ -131,22 +264,46 @@ class TransportForm
                                 'natural_gaz' => 'Газ',
                             ])
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('fuel_consumption')
                             ->label('Расход топлива (л/100км)')
                             ->numeric()
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('oil_change_interval_months')
                             ->label('Интервал замены масла (месяцы)')
                             ->numeric()
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                         TextInput::make('oil_change_interval_km')
                             ->label('Интервал замены масла (км)')
                             ->numeric()
                             ->required()
-                            ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
+                            ->visible(function ($get) {
+                                $typeId = $get('transport_type_id');
+                                if (!$typeId) return false;
+
+                                $type = \App\Models\TransportType::find($typeId);
+                                return $type && !in_array($type->category, ['air', 'rail']);
+                            }),
                     ])
                     ->columns(2),
 
