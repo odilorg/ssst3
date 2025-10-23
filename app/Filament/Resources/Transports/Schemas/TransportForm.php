@@ -192,14 +192,12 @@ class TransportForm
                                         'per_km' => 'За км',
                                         'per_hour' => 'За час',
                                     ])
-                                    ->required()
                                     ->distinct()
                                     ->columnSpan(1),
 
                                 TextInput::make('cost')
                                     ->label('Цена')
                                     ->numeric()
-                                    ->required()
                                     ->prefix('$')
                                     ->step(0.01)
                                     ->minValue(0)
@@ -213,11 +211,12 @@ class TransportForm
                                         'EUR' => 'EUR',
                                     ])
                                     ->default('USD')
-                                    ->required()
                                     ->columnSpan(1),
                             ])
                             ->columns(3)
                             ->addActionLabel('Добавить цену')
+                            ->deletable()
+                            ->reorderable(false)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string =>
                                 isset($state['price_type'], $state['cost'])
@@ -225,7 +224,7 @@ class TransportForm
                                     : 'Новая цена'
                             )
                             ->defaultItems(0)
-                            ->helperText('Оставьте пустым, чтобы использовать стандартные цены типа транспорта. Добавьте только если нужны индивидуальные цены (например, для VIP автомобилей).')
+                            ->helperText('Удалите ВСЕ цены, чтобы использовать стандартные цены типа транспорта. Оставьте только те цены, которые хотите переопределить (например, для VIP автомобилей).')
                             ->columnSpanFull(),
                     ])
                     ->columns(1)
