@@ -54,7 +54,14 @@ class ContractForm
                             ->options(function ($get) {
                                 $type = $get('supplier_type');
                                 if (!$type) return [];
-                                return $type::all()->pluck('name', 'id');
+
+                                // Filter out records with null names and provide fallback
+                                return $type::all()
+                                    ->filter(fn($record) => !empty($record->name))
+                                    ->mapWithKeys(fn($record) => [
+                                        $record->id => $record->name ?? 'Unnamed ' . class_basename($type) . ' #' . $record->id
+                                    ])
+                                    ->toArray();
                             })
                             ->searchable()
                             ->required()
@@ -152,7 +159,13 @@ class ContractForm
                                         $type = $get('serviceable_type');
                                         if (!$type) return [];
 
-                                        return $type::all()->pluck('name', 'id');
+                                        // Filter out records with null names and provide fallback
+                                        return $type::all()
+                                            ->filter(fn($record) => !empty($record->name))
+                                            ->mapWithKeys(fn($record) => [
+                                                $record->id => $record->name ?? 'Unnamed ' . class_basename($type) . ' #' . $record->id
+                                            ])
+                                            ->toArray();
                                     })
                                     ->searchable()
                                     ->live()
@@ -216,9 +229,14 @@ class ContractForm
                                                     ->options(function ($get) {
                                                         $hotelId = $get('../../../../serviceable_id');
                                                         if (!$hotelId) return [];
+
                                                         return \App\Models\Room::where('hotel_id', $hotelId)
                                                             ->get()
-                                                            ->pluck('name', 'id');
+                                                            ->filter(fn($room) => !empty($room->name))
+                                                            ->mapWithKeys(fn($room) => [
+                                                                $room->id => $room->name ?? 'Room #' . $room->id
+                                                            ])
+                                                            ->toArray();
                                                     })
                                                     ->required()
                                                     ->searchable()
@@ -264,9 +282,14 @@ class ContractForm
                                                     ->options(function ($get) {
                                                         $restaurantId = $get('../../../../serviceable_id');
                                                         if (!$restaurantId) return [];
+
                                                         return \App\Models\MealType::where('restaurant_id', $restaurantId)
                                                             ->get()
-                                                            ->pluck('name', 'id');
+                                                            ->filter(fn($mealType) => !empty($mealType->name))
+                                                            ->mapWithKeys(fn($mealType) => [
+                                                                $mealType->id => $mealType->name ?? 'Meal Type #' . $mealType->id
+                                                            ])
+                                                            ->toArray();
                                                     })
                                                     ->required()
                                                     ->searchable()
