@@ -5,12 +5,14 @@ namespace App\Filament\Pages;
 use App\Imports\LeadsImport;
 use App\Models\Lead;
 use App\Models\LeadImport;
+use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,17 +20,29 @@ use Maatwebsite\Excel\HeadingRowImport;
 
 class ImportLeads extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
-
-    protected static ?string $navigationGroup = 'Lead Management';
-
-    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUpTray;
 
     protected static string $view = 'filament.pages.import-leads';
 
-    protected static ?string $title = 'Import Leads';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Lead Management';
+    }
 
-    protected static ?string $navigationLabel = 'Import Leads';
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Import Leads';
+    }
+
+    public function getTitle(): string
+    {
+        return 'Import Leads';
+    }
 
     public ?array $data = [];
 

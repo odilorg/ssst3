@@ -5,9 +5,11 @@ namespace App\Filament\Resources\LeadImports;
 use App\Filament\Resources\LeadImports\Pages\ListLeadImports;
 use App\Filament\Resources\LeadImports\Pages\ViewLeadImport;
 use App\Models\LeadImport;
+use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -15,17 +17,32 @@ class LeadImportResource extends Resource
 {
     protected static ?string $model = LeadImport::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    protected static ?string $navigationGroup = 'Lead Management';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Lead Management';
+    }
 
-    protected static ?int $navigationSort = 3;
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
 
-    protected static ?string $navigationLabel = 'Import History';
+    public static function getNavigationLabel(): string
+    {
+        return 'Import History';
+    }
 
-    protected static ?string $modelLabel = 'Import';
+    public static function getModelLabel(): string
+    {
+        return 'Import';
+    }
 
-    protected static ?string $pluralModelLabel = 'Imports';
+    public static function getPluralModelLabel(): string
+    {
+        return 'Imports';
+    }
 
     public static function form(Form $form): Form
     {
