@@ -59,14 +59,18 @@ You need to add these secrets to GitHub:
    - Name: `PROD_HOST`
    - Value: Your server IP or domain (e.g., `123.45.67.89` or `tour.example.com`)
 
-2. **PROD_USERNAME**
+2. **PROD_PORT**
+   - Name: `PROD_PORT`
+   - Value: SSH port number (e.g., `2222` or `22` for default)
+
+3. **PROD_USERNAME**
    - Name: `PROD_USERNAME`
    - Value: SSH username (e.g., `root` or `ubuntu`)
 
-3. **PROD_SSH_KEY**
+4. **PROD_SSH_KEY**
    - Name: `PROD_SSH_KEY`
-   - Value: Your private SSH key content (from `~/.ssh/id_ed25519`)
-   - Get it with: `cat ~/.ssh/id_ed25519`
+   - Value: Your private SSH key content (from `~/.ssh/id_ed25519_new`)
+   - Get it with: `cat ~/.ssh/id_ed25519_new`
 
 ---
 

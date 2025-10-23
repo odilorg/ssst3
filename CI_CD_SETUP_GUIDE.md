@@ -157,7 +157,7 @@ GitHub automatically:
 
 Go to: https://github.com/odilorg/ssst3/settings/secrets/actions
 
-Click "New repository secret" and add these 3 secrets:
+Click "New repository secret" and add these 4 secrets:
 
 **1. PROD_HOST**
 ```
@@ -165,19 +165,25 @@ Name: PROD_HOST
 Value: YOUR_SERVER_IP or tour.example.com
 ```
 
-**2. PROD_USERNAME**
+**2. PROD_PORT**
+```
+Name: PROD_PORT
+Value: 2222 (or 22 for default port)
+```
+
+**3. PROD_USERNAME**
 ```
 Name: PROD_USERNAME
 Value: root (or ubuntu, or your SSH username)
 ```
 
-**3. PROD_SSH_KEY**
+**4. PROD_SSH_KEY**
 ```
 Name: PROD_SSH_KEY
 Value: (your private SSH key content)
 
 To get your key:
-cat ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519_new
 
 Copy the ENTIRE output including:
 -----BEGIN OPENSSH PRIVATE KEY-----
