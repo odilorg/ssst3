@@ -151,7 +151,7 @@ class TransportForm
                     ->columns(2),
 
                 Section::make('Цены')
-                    ->description('Установите индивидуальные цены для этого транспорта или удалите ВСЕ цены для использования стандартных цен типа')
+                    ->description('Установите индивидуальные цены или оставьте пустыми/0 для использования стандартных цен типа')
                     ->schema([
                         Placeholder::make('type_prices_info')
                             ->label('Стандартные цены типа транспорта')
@@ -192,13 +192,11 @@ class TransportForm
                                         'per_km' => 'За км',
                                         'per_hour' => 'За час',
                                     ])
-                                    ->required()
                                     ->columnSpan(1),
 
                                 TextInput::make('cost')
                                     ->label('Цена')
                                     ->numeric()
-                                    ->required()
                                     ->prefix('$')
                                     ->step(0.01)
                                     ->minValue(0)
@@ -212,7 +210,6 @@ class TransportForm
                                         'EUR' => 'EUR',
                                     ])
                                     ->default('USD')
-                                    ->required()
                                     ->columnSpan(1),
                             ])
                             ->columns(3)
@@ -221,12 +218,27 @@ class TransportForm
                             ->reorderable(false)
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string =>
-                                isset($state['price_type'], $state['cost'])
+                                isset($state['price_type'], $state['cost']) && $state['cost'] > 0
                                     ? $state['price_type'] . ' - $' . number_format((float) $state['cost'], 2)
                                     : 'Новая цена'
                             )
                             ->defaultItems(0)
-                            ->helperText('⚠️ Чтобы использовать стандартные цены: УДАЛИТЕ все строки (🗑️). НЕ оставляйте пустые поля или 0! Если цена остается в списке - все поля обязательны.')
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data): ?array {
+                                // Auto-delete records with empty/zero/missing cost or missing price_type
+                                // This allows users to set 0, leave empty, or delete - all work the same
+                                if (
+                                    empty($data['price_type']) ||
+                                    empty($data['cost']) ||
+                                    (float) $data['cost'] <= 0
+                                ) {
+                                    // Return null to signal Filament to delete this record
+                                    return null;
+                                }
+
+                                // Valid record - keep it
+                                return $data;
+                            })
+                            ->helperText('💡 Чтобы использовать стандартные цены типа: удалите строку (🗑️), установите цену = 0, или оставьте поля пустыми. Все три способа работают одинаково!')
                             ->columnSpanFull(),
                     ])
                     ->columns(1)

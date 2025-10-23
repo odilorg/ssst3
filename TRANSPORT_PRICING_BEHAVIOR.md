@@ -56,6 +56,34 @@ transport_instance_prices table:
 
 ---
 
+## 🎁 User-Friendly Flexibility (NEW!)
+
+**Three ways to use type prices - ALL work the same:**
+
+### **Method 1: Delete the row** (🗑️)
+Click the trash icon to remove the price row
+
+### **Method 2: Set cost to 0**
+Type "0" in the cost field and save
+
+### **Method 3: Leave fields empty**
+Don't fill in the fields and save
+
+**All three methods trigger auto-deletion!**
+
+The `TransportInstancePriceObserver` intercepts saves and:
+```php
+if (cost is empty OR cost <= 0 OR price_type is empty) {
+    → Delete the record (if exists)
+    → Prevent save
+    → System falls back to type price ✅
+}
+```
+
+**Result:** Database stays clean (only complete records), but users have flexibility in how they indicate "use type prices"
+
+---
+
 ## 🎯 Workflow Examples
 
 ### **Example 1: Standard Transport (Use Type Prices)**
