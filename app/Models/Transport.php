@@ -87,10 +87,25 @@ class Transport extends Model
     }
 
     /**
+     * Get the display name for the transport
+     * Format: "{PlateNumber} - {Model}"
+     * Example: "01 A 123 BC - Mercedes Sprinter"
+     */
+    public function getNameAttribute(): string
+    {
+        $parts = array_filter([
+            $this->plate_number,
+            $this->model,
+        ]);
+
+        return implode(' - ', $parts) ?: 'Transport #' . $this->id;
+    }
+
+    /**
      * Generate display label for transport in estimates
      * Format: "{TransportType} {PlateNumber} - {PriceType}"
      * Example: "Mercedes Sprinter BUS-001 - per_day"
-     * 
+     *
      * @throws \Exception if transport or related data is missing
      */
     public static function getEstimateLabel(BookingItineraryItemAssignment $assignment): string
