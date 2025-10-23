@@ -1,0 +1,60 @@
+name: Deploy to Production
+
+# Manual trigger only - for safety
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+        default: ''
+
+jobs:
+  deploy:
+    name: Deploy to Production Server
+    runs-on: ubuntu-latest
+
+    # Only run if user typed "deploy"
+    if: github.event.inputs.confirm == 'deploy'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /var/www/tour_app
+
+            echo "🔄 Pulling latest code..."
+            git pull origin main
+
+            echo "📦 Installing dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "🗄️ Running migrations..."
+            php artisan migrate --force
+
+            echo "🧹 Clearing caches..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "🔄 Restarting queue workers..."
+            php artisan queue:restart
+
+            echo "✅ Deployment complete!"
+
+      - name: Notify on success
+        if: success()
+        run: echo "✅ Production deployment successful!"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Production deployment failed!"
+          exit 1
