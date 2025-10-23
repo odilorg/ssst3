@@ -80,6 +80,11 @@ class Lead extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function emailLogs()
+    {
+        return $this->hasMany(EmailLog::class);
+    }
+
     // Query Scopes
     public function scopeNew($query)
     {

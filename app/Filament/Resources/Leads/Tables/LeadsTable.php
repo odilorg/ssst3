@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\Leads\Tables;
 
+use App\Models\EmailTemplate;
 use App\Models\User;
+use App\Services\EmailService;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Placeholder;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -201,6 +205,73 @@ class LeadsTable
             ])
             ->recordActions([
                 EditAction::make(),
+
+                Action::make('send_email')
+                    ->label('Send Email')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('primary')
+                    ->form([
+                        Select::make('email_template_id')
+                            ->label('Email Template')
+                            ->options(EmailTemplate::where('is_active', true)->pluck('name', 'id'))
+                            ->required()
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function ($state, $set, $get, $record) {
+                                if ($state && $record) {
+                                    $template = EmailTemplate::find($state);
+                                    $emailService = app(EmailService::class);
+                                    $preview = $emailService->preview($record, $template);
+                                    $set('preview_subject', $preview['subject']);
+                                    $set('preview_body', $preview['body']);
+                                }
+                            })
+                            ->helperText('Select a template to preview the email'),
+
+                        Placeholder::make('preview')
+                            ->label('Email Preview')
+                            ->content(function ($get) {
+                                $subject = $get('preview_subject');
+                                $body = $get('preview_body');
+
+                                if (!$subject && !$body) {
+                                    return 'Select a template to see preview';
+                                }
+
+                                return new \Illuminate\Support\HtmlString(
+                                    '<div class="border rounded p-4 bg-white dark:bg-gray-800">' .
+                                    '<div class="mb-2"><strong>Subject:</strong> ' . e($subject) . '</div>' .
+                                    '<div class="border-t pt-2 prose dark:prose-invert max-w-none">' . $body . '</div>' .
+                                    '</div>'
+                                );
+                            })
+                            ->visible(fn ($get) => $get('email_template_id')),
+                    ])
+                    ->action(function ($record, array $data) {
+                        try {
+                            $template = EmailTemplate::find($data['email_template_id']);
+                            $emailService = app(EmailService::class);
+                            $emailService->sendToLead($record, $template);
+
+                            Notification::make()
+                                ->success()
+                                ->title('Email Sent!')
+                                ->body("Email sent successfully to {$record->company_name}")
+                                ->send();
+
+                            // Update lead status if it's new
+                            if ($record->status === 'new') {
+                                $record->update(['status' => 'contacted']);
+                            }
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->danger()
+                                ->title('Failed to Send Email')
+                                ->body($e->getMessage())
+                                ->send();
+                        }
+                    })
+                    ->visible(fn ($record) => !empty($record->email)),
 
                 Action::make('mark_contacted')
                     ->label('Mark Contacted')
