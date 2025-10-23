@@ -11,7 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\HtmlString;
+use Illuminate\Support\HtmlString;
 
 class EmailTemplateForm
 {
