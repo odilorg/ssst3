@@ -7,30 +7,9 @@
 
 ## 👥 AI Agent Assignments
 
-### **🤖 Leads AI (Claude Code)**
+### **🤖 Transport AI (Claude Code)**
 
-**Branch:** `feature/lead-csv-import`
-
-**Responsibilities:**
-- Lead management system
-- CSV import functionality for leads
-- Lead forms and validation
-- Lead-to-booking conversion
-- Lead reports and analytics
-
-**Files/Directories:**
-- `app/Models/Lead.php`
-- `app/Filament/Resources/Leads/**`
-- `database/migrations/*_leads_*`
-- Any lead-related services
-
-**Status:** 🟢 Active
-
----
-
-### **🤖 Transport AI**
-
-**Branch:** `feature/transport-restructuring`
+**Branch:** `feature/lead-csv-import` ⚠️ _(Misleading name - actually for transports!)_
 
 **Responsibilities:**
 - Transport types and categories
@@ -38,6 +17,7 @@
 - Transport pricing (type & instance)
 - Transport forms and validation
 - Transport-related observers
+- Transport documentation
 
 **Files/Directories:**
 - `app/Models/Transport.php`
@@ -49,8 +29,31 @@
 - `app/Observers/TransportObserver.php`
 - `app/Observers/TransportInstancePriceObserver.php`
 - `database/migrations/*_transport*`
+- `TRANSPORT_*.md` documentation files
 
-**Status:** 🟢 Active
+**Status:** 🟢 Active (transport module complete)
+
+---
+
+### **🤖 Leads AI (Other AI)**
+
+**Branch:** TBD _(Please create your own branch for leads work)_
+
+**Responsibilities:**
+- Lead management system
+- CSV import functionality for leads
+- Lead forms and validation
+- Lead-to-booking conversion
+- Lead reports and analytics
+
+**Files/Directories:**
+- `app/Models/Lead.php`
+- `app/Filament/Resources/Leads/**`
+- `database/migrations/*_lead*`
+- Any lead-related services
+- Lead import/export features
+
+**Status:** 🟡 Awaiting branch creation
 
 ---
 
@@ -142,10 +145,10 @@
 
 ## 📈 Current Status
 
-| AI | Branch | Last Activity | Status |
-|----|--------|---------------|--------|
-| Leads AI | feature/lead-csv-import | 2025-10-23 | 🟢 Ready to work on Leads |
-| Transport AI | feature/transport-restructuring | 2025-10-23 | 🟡 Review transport work |
+| AI | Branch | Module | Last Activity | Status |
+|----|--------|--------|---------------|--------|
+| Transport AI (Claude Code) | feature/lead-csv-import | Transports | 2025-10-23 | 🟢 Active - transport module complete |
+| Leads AI (Other AI) | TBD | Leads | N/A | 🟡 Need to create branch |
 
 ---
 
