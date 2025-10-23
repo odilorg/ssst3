@@ -193,7 +193,6 @@ class TransportForm
                                         'per_hour' => 'За час',
                                     ])
                                     ->required()
-                                    ->distinct()
                                     ->columnSpan(1),
 
                                 TextInput::make('cost')
