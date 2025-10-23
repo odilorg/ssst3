@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Transports\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -147,6 +149,88 @@ class TransportForm
                             ->visible(fn ($get) => !in_array($get('category'), ['air', 'rail'])),
                     ])
                     ->columns(2),
+
+                Section::make('Цены')
+                    ->description('Установите индивидуальные цены для этого транспорта или оставьте пустым для использования стандартных цен типа')
+                    ->schema([
+                        Placeholder::make('type_prices_info')
+                            ->label('Стандартные цены типа транспорта')
+                            ->content(function ($record) {
+                                if (!$record || !$record->transport_type_id) {
+                                    return 'Сначала выберите тип транспорта';
+                                }
+
+                                $typePrices = \App\Models\TransportPrice::where('transport_type_id', $record->transport_type_id)->get();
+
+                                if ($typePrices->isEmpty()) {
+                                    return 'Для этого типа транспорта не установлены стандартные цены';
+                                }
+
+                                $pricesList = $typePrices->map(function ($price) {
+                                    return $price->price_type . ': $' . number_format($price->cost, 2);
+                                })->join(', ');
+
+                                return 'Стандартные цены: ' . $pricesList;
+                            })
+                            ->columnSpanFull()
+                            ->visible(fn ($record) => $record !== null),
+
+                        Repeater::make('transportInstancePrices')
+                            ->label('Индивидуальные цены (переопределяют стандартные)')
+                            ->relationship('transportInstancePrices')
+                            ->schema([
+                                Select::make('price_type')
+                                    ->label('Тип цены')
+                                    ->options([
+                                        'per_day' => 'За день',
+                                        'per_pickup_dropoff' => 'Подвоз/Встреча',
+                                        'po_gorodu' => 'По городу',
+                                        'vip' => 'VIP',
+                                        'economy' => 'Эконом',
+                                        'business' => 'Бизнес',
+                                        'per_seat' => 'За место',
+                                        'per_km' => 'За км',
+                                        'per_hour' => 'За час',
+                                    ])
+                                    ->required()
+                                    ->distinct()
+                                    ->columnSpan(1),
+
+                                TextInput::make('cost')
+                                    ->label('Цена')
+                                    ->numeric()
+                                    ->required()
+                                    ->prefix('$')
+                                    ->step(0.01)
+                                    ->minValue(0)
+                                    ->columnSpan(1),
+
+                                Select::make('currency')
+                                    ->label('Валюта')
+                                    ->options([
+                                        'USD' => 'USD',
+                                        'UZS' => 'UZS',
+                                        'EUR' => 'EUR',
+                                    ])
+                                    ->default('USD')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->columns(3)
+                            ->addActionLabel('Добавить цену')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string =>
+                                isset($state['price_type'], $state['cost'])
+                                    ? $state['price_type'] . ' - $' . number_format((float) $state['cost'], 2)
+                                    : 'Новая цена'
+                            )
+                            ->defaultItems(0)
+                            ->helperText('Оставьте пустым, чтобы использовать стандартные цены типа транспорта. Добавьте только если нужны индивидуальные цены (например, для VIP автомобилей).')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1)
+                    ->collapsible()
+                    ->collapsed(fn ($record) => $record && $record->transportInstancePrices->isEmpty()),
 
                 Section::make('Удобства и изображения')
                     ->schema([
