@@ -6,9 +6,14 @@ use App\Filament\Resources\LeadImports\Pages\ListLeadImports;
 use App\Filament\Resources\LeadImports\Pages\ViewLeadImport;
 use App\Models\LeadImport;
 use BackedEnum;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\DateTimePicker;
+use Filament\Schemas\Components\Placeholder;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Select;
+use Filament\Schemas\Components\Textarea;
+use Filament\Schemas\Components\TextInput;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -44,71 +49,70 @@ class LeadImportResource extends Resource
         return 'Imports';
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Import Details')
+        return $schema
+            ->components([
+                Section::make('Import Details')
                     ->schema([
-                        Forms\Components\TextInput::make('filename')
+                        TextInput::make('filename')
                             ->label('Filename')
                             ->disabled(),
 
-                        Forms\Components\Select::make('user_id')
+                        Select::make('user_id')
                             ->label('Imported By')
                             ->relationship('user', 'name')
                             ->disabled(),
 
-                        Forms\Components\TextInput::make('status')
-                            ->badge()
+                        TextInput::make('status')
                             ->disabled(),
 
-                        Forms\Components\DateTimePicker::make('started_at')
+                        DateTimePicker::make('started_at')
                             ->label('Started At')
                             ->disabled(),
 
-                        Forms\Components\DateTimePicker::make('completed_at')
+                        DateTimePicker::make('completed_at')
                             ->label('Completed At')
                             ->disabled(),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Statistics')
+                Section::make('Statistics')
                     ->schema([
-                        Forms\Components\TextInput::make('total_rows')
+                        TextInput::make('total_rows')
                             ->label('Total Rows')
                             ->disabled(),
 
-                        Forms\Components\TextInput::make('created_count')
+                        TextInput::make('created_count')
                             ->label('Created')
                             ->disabled(),
 
-                        Forms\Components\TextInput::make('updated_count')
+                        TextInput::make('updated_count')
                             ->label('Updated')
                             ->disabled(),
 
-                        Forms\Components\TextInput::make('skipped_count')
+                        TextInput::make('skipped_count')
                             ->label('Skipped')
                             ->disabled(),
 
-                        Forms\Components\TextInput::make('failed_count')
+                        TextInput::make('failed_count')
                             ->label('Failed')
                             ->disabled(),
 
-                        Forms\Components\Placeholder::make('success_rate')
+                        Placeholder::make('success_rate')
                             ->label('Success Rate')
                             ->content(fn (LeadImport $record) => round($record->success_rate, 1) . '%'),
                     ])
                     ->columns(3),
 
-                Forms\Components\Section::make('Configuration')
+                Section::make('Configuration')
                     ->schema([
-                        Forms\Components\Textarea::make('field_mapping')
+                        Textarea::make('field_mapping')
                             ->label('Field Mapping')
                             ->disabled()
                             ->formatStateUsing(fn ($state) => json_encode($state, JSON_PRETTY_PRINT)),
 
-                        Forms\Components\Textarea::make('error_log')
+                        Textarea::make('error_log')
                             ->label('Error Log')
                             ->disabled()
                             ->formatStateUsing(fn ($state) => $state ? json_encode(json_decode($state), JSON_PRETTY_PRINT) : 'No errors'),
