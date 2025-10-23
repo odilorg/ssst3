@@ -249,8 +249,8 @@ class ContractForm
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string =>
                                                 isset($state['room_id'])
-                                                    ? \App\Models\Room::find($state['room_id'])?->name
-                                                    : null
+                                                    ? \App\Models\Room::find($state['room_id'])?->name ?? 'Room #' . $state['room_id']
+                                                    : 'New Room Price'
                                             )
                                             ->columnSpanFull(),
 
@@ -297,8 +297,8 @@ class ContractForm
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string =>
                                                 isset($state['meal_type_id'])
-                                                    ? \App\Models\MealType::find($state['meal_type_id'])?->name
-                                                    : null
+                                                    ? \App\Models\MealType::find($state['meal_type_id'])?->name ?? 'Meal Type #' . $state['meal_type_id']
+                                                    : 'New Meal Price'
                                             )
                                             ->columnSpanFull(),
 
@@ -360,7 +360,7 @@ class ContractForm
                                             ->itemLabel(fn (array $state): ?string =>
                                                 isset($state['price_type'])
                                                     ? $state['price_type'] . ' - $' . ($state['price'] ?? '0')
-                                                    : null
+                                                    : 'New Transport Price'
                                             )
                                             ->columnSpanFull(),
 
@@ -451,7 +451,7 @@ class ContractForm
                                     ->itemLabel(fn (array $state): ?string =>
                                         isset($state['effective_from'])
                                             ? 'Effective from ' . $state['effective_from']
-                                            : null
+                                            : 'New Price Version'
                                     )
                                     ->columnSpanFull(),
                             ])
@@ -460,8 +460,8 @@ class ContractForm
                             ->collapsible()
                             ->itemLabel(fn (array $state): ?string =>
                                 isset($state['serviceable_id']) && isset($state['serviceable_type'])
-                                    ? $state['serviceable_type']::find($state['serviceable_id'])?->name
-                                    : null
+                                    ? $state['serviceable_type']::find($state['serviceable_id'])?->name ?? 'Service #' . $state['serviceable_id']
+                                    : 'New Service'
                             ),
                     ])
                     ->collapsible(),

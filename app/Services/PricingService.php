@@ -110,22 +110,28 @@ class PricingService
                 return null;
 
             case 'App\Models\Transport':
-                // Try transport instance pricing first, then fall back to transport type pricing
+                // Priority chain: Instance price → Type price → daily_rate
                 if ($subServiceId) {
-                    // First try transport instance price
+                    // Try transport instance price
                     $instancePrice = TransportInstancePrice::find($subServiceId);
                     if ($instancePrice) {
                         return $instancePrice->cost;
                     }
-                    
-                    // Fall back to transport type price
-                    $typePrice = TransportPrice::find($subServiceId);
+                }
+
+                // If no instance price, try to get type price from transport's type
+                $transport = Transport::find($serviceId);
+                if ($transport && $transport->transport_type_id) {
+                    // Get first matching type price (could be improved to match specific price_type)
+                    $typePrice = TransportPrice::where('transport_type_id', $transport->transport_type_id)
+                        ->first();
                     if ($typePrice) {
                         return $typePrice->cost;
                     }
                 }
-                // Otherwise fall back to transport daily_rate
-                return Transport::find($serviceId)?->daily_rate;
+
+                // Last fallback: transport's daily_rate field
+                return $transport->daily_rate ?? null;
 
             case 'App\Models\Monument':
                 return Monument::find($serviceId)?->ticket_price;
