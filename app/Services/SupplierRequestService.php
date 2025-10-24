@@ -9,7 +9,7 @@ use App\Models\Transport;
 use App\Models\Guide;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class SupplierRequestService
 {
@@ -330,7 +330,7 @@ class SupplierRequestService
             'requestData' => $request->request_data,
         ];
         
-        $pdf = Pdf::loadView($template, $data);
+        $pdf = PDF::loadView($template, $data);
         $pdf->setPaper('A4', 'portrait');
         
         // Generate unique filename
