@@ -139,52 +139,183 @@ class SupplierRequestService
     private function buildHotelRequestData(Booking $booking, $assignment)
     {
         $hotel = $assignment->assignable;
-        $room = $assignment->room;  // Use eager loaded relationship
 
         // Load hotel's city if not loaded
         if (!$hotel->relationLoaded('city')) {
             $hotel->load('city');
         }
 
-        // Get all dates this hotel is used (sorted and unique)
-        $hotelDates = $booking->itineraryItems()
+        // Get all itinerary items with assignments for this hotel
+        $hotelItineraryItems = $booking->itineraryItems()
             ->whereHas('assignments', function($query) use ($hotel) {
                 $query->where('assignable_type', Hotel::class)
                       ->where('assignable_id', $hotel->id);
             })
+            ->with(['assignments' => function($query) use ($hotel) {
+                $query->where('assignable_type', Hotel::class)
+                      ->where('assignable_id', $hotel->id)
+                      ->with('room');
+            }])
             ->orderBy('date')
-            ->pluck('date')
-            ->unique() // Remove duplicates
-            ->sort()   // Re-sort after unique
-            ->values() // Re-index array
-            ->toArray();
+            ->get();
 
-        // Group consecutive dates into separate stays
-        $stays = $this->groupConsecutiveDates($hotelDates);
+        // Build date-to-rooms mapping
+        $dateRoomMap = [];
+        foreach ($hotelItineraryItems as $item) {
+            $dateKey = $item->date->format('Y-m-d');
+            if (!isset($dateRoomMap[$dateKey])) {
+                $dateRoomMap[$dateKey] = [];
+            }
+
+            foreach ($item->assignments as $assign) {
+                if ($assign->room) {
+                    $dateRoomMap[$dateKey][] = [
+                        'room_type' => $assign->room->name,
+                        'quantity' => $assign->quantity ?? 1,
+                        'notes' => $assign->notes
+                    ];
+                }
+            }
+        }
+
+        // Get unique sorted dates
+        $hotelDates = $hotelItineraryItems->pluck('date')->unique()->sort()->values()->toArray();
+
+        // Group consecutive dates into separate stays with room info
+        $stays = $this->groupConsecutiveDatesWithRooms($hotelDates, $dateRoomMap);
 
         // Calculate totals
         $totalNights = 0;
+        $allRooms = [];
         foreach ($stays as $stay) {
             $totalNights += $stay['nights'];
+            foreach ($stay['rooms'] as $room) {
+                $allRooms[] = $room['room_type'];
+            }
         }
+        $allRooms = array_values(array_unique($allRooms));
 
         $firstStay = $stays[0] ?? null;
         $lastStay = end($stays) ?: null;
+
+        // Get special requirements from any assignment
+        $specialRequirements = 'Нет особых требований';
+        foreach ($hotelItineraryItems as $item) {
+            foreach ($item->assignments as $assign) {
+                if (!empty($assign->notes)) {
+                    $specialRequirements = $assign->notes;
+                    break 2;
+                }
+            }
+        }
 
         return [
             'hotel_name' => $hotel->name,
             'hotel_address' => $hotel->address,
             'hotel_city' => $hotel->city?->name ?? 'Не указан',
-            'room_type' => $room?->name ?? 'Не указан',
-            'room_count' => $assignment->quantity ?? 1,
+            'room_types' => $allRooms,  // All unique room types used
             'check_in' => $firstStay ? $firstStay['check_in'] : 'Не указано',
             'check_out' => $lastStay ? $lastStay['check_out'] : 'Не указано',
             'nights' => $totalNights,
-            'stays' => $stays,  // Array of individual stays
+            'stays' => $stays,  // Array of individual stays with room info
             'multiple_stays' => count($stays) > 1,
-            'special_requirements' => $assignment->notes ?? 'Нет особых требований',
+            'special_requirements' => $specialRequirements,
             'start_date' => $firstStay ? $firstStay['check_in'] : 'Не указано',
             'end_date' => $lastStay ? $lastStay['check_out'] : 'Не указано',
+        ];
+    }
+
+    /**
+     * Group consecutive dates into separate stays with room information
+     */
+    private function groupConsecutiveDatesWithRooms(array $dates, array $dateRoomMap)
+    {
+        if (empty($dates)) {
+            return [];
+        }
+
+        $stays = [];
+        $currentStay = [$dates[0]];
+
+        for ($i = 1; $i < count($dates); $i++) {
+            $prevDate = $currentStay[count($currentStay) - 1];
+            $currentDate = $dates[$i];
+
+            // Ensure we're working with Carbon instances (make copies to avoid mutation)
+            if (!$prevDate instanceof \Carbon\Carbon) {
+                $prevDate = \Carbon\Carbon::parse($prevDate);
+            } else {
+                $prevDate = $prevDate->copy();
+            }
+
+            if (!$currentDate instanceof \Carbon\Carbon) {
+                $currentDate = \Carbon\Carbon::parse($currentDate);
+            } else {
+                $currentDate = $currentDate->copy();
+            }
+
+            // Check if dates are consecutive (1 day apart)
+            $daysDiff = (int) $prevDate->startOfDay()->diffInDays($currentDate->startOfDay());
+
+            if ($daysDiff === 1) {
+                // Consecutive - add to current stay (use original, not the copy)
+                $currentStay[] = $dates[$i];
+            } else {
+                // Non-consecutive - save current stay and start new one
+                $stays[] = $this->formatStayWithRooms($currentStay, $dateRoomMap);
+                $currentStay = [$dates[$i]];
+            }
+        }
+
+        // Add the last stay
+        $stays[] = $this->formatStayWithRooms($currentStay, $dateRoomMap);
+
+        return $stays;
+    }
+
+    /**
+     * Format a stay with check-in, check-out, nights, and room information
+     */
+    private function formatStayWithRooms(array $dates, array $dateRoomMap)
+    {
+        $checkIn = $dates[0];
+        $checkOut = end($dates)->copy()->addDay();
+        $nights = count($dates);
+
+        // Collect all rooms used during this stay
+        $roomsInStay = [];
+        $roomTypeSummary = [];
+
+        foreach ($dates as $date) {
+            $dateKey = $date->format('Y-m-d');
+            if (isset($dateRoomMap[$dateKey])) {
+                foreach ($dateRoomMap[$dateKey] as $roomInfo) {
+                    // Add to detailed rooms list
+                    $roomsInStay[] = [
+                        'date' => $date->format('d.m.Y'),
+                        'room_type' => $roomInfo['room_type'],
+                        'quantity' => $roomInfo['quantity']
+                    ];
+
+                    // Aggregate for summary
+                    $roomType = $roomInfo['room_type'];
+                    if (!isset($roomTypeSummary[$roomType])) {
+                        $roomTypeSummary[$roomType] = [
+                            'room_type' => $roomType,
+                            'total_quantity' => 0
+                        ];
+                    }
+                    $roomTypeSummary[$roomType]['total_quantity'] += $roomInfo['quantity'];
+                }
+            }
+        }
+
+        return [
+            'check_in' => $checkIn->format('d.m.Y'),
+            'check_out' => $checkOut->format('d.m.Y'),
+            'nights' => $nights,
+            'rooms' => array_values($roomTypeSummary),  // Summary by room type
+            'rooms_detailed' => $roomsInStay  // Detailed day-by-day
         ];
     }
 

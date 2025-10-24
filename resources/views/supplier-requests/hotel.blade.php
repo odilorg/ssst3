@@ -193,6 +193,16 @@
                 <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
                 <td>(days)</td>
             </tr>
+            @if(!empty($stay['rooms']))
+            <tr>
+                <th>Номера<br>Rooms:</th>
+                <td colspan="6" class="highlight">
+                    @foreach($stay['rooms'] as $room)
+                        {{ $room['room_type'] }} x{{ $room['total_quantity'] }}@if(!$loop->last), @endif
+                    @endforeach
+                </td>
+            </tr>
+            @endif
         </table>
         @endforeach
 
@@ -202,6 +212,7 @@
         </div>
     @else
         <!-- Single stay -->
+        @php $stay = $requestData['stays'][0] ?? null; @endphp
         <table>
             <tr>
                 <th style="width: 120px">1-заезд:<br>1-arr.:</th>
@@ -222,6 +233,16 @@
                 <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
                 <td>(days)</td>
             </tr>
+            @if($stay && !empty($stay['rooms']))
+            <tr>
+                <th>Номера<br>Rooms:</th>
+                <td colspan="6" class="highlight">
+                    @foreach($stay['rooms'] as $room)
+                        {{ $room['room_type'] }} x{{ $room['total_quantity'] }}@if(!$loop->last), @endif
+                    @endforeach
+                </td>
+            </tr>
+            @endif
         </table>
     @endif
 
