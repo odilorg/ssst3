@@ -162,18 +162,6 @@ class SupplierRequestService
         // Group consecutive dates into separate stays
         $stays = $this->groupConsecutiveDates($hotelDates);
 
-        // Debug logging
-        $datesFormatted = array_map(function($date) {
-            return $date instanceof \Carbon\Carbon ? $date->format('Y-m-d') : (string)$date;
-        }, $hotelDates);
-
-        \Log::info('Hotel Dates for ' . $hotel->name, [
-            'raw_dates_count' => count($hotelDates),
-            'formatted_dates' => $datesFormatted,
-            'stays_count' => count($stays),
-            'stays' => $stays
-        ]);
-
         // Calculate totals
         $totalNights = 0;
         foreach ($stays as $stay) {
@@ -230,15 +218,7 @@ class SupplierRequestService
             }
 
             // Check if dates are consecutive (1 day apart)
-            $daysDiff = $prevDate->startOfDay()->diffInDays($currentDate->startOfDay());
-
-            // Debug log
-            \Log::debug('Date comparison', [
-                'prev' => $prevDate->format('Y-m-d'),
-                'current' => $currentDate->format('Y-m-d'),
-                'diff' => $daysDiff,
-                'is_consecutive' => $daysDiff === 1
-            ]);
+            $daysDiff = (int) $prevDate->startOfDay()->diffInDays($currentDate->startOfDay());
 
             if ($daysDiff === 1) {
                 // Consecutive - add to current stay (use original, not the copy)
