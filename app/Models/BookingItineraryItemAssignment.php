@@ -54,4 +54,14 @@ class BookingItineraryItemAssignment extends Model
     {
         return $this->belongsTo(TransportInstancePrice::class, 'transport_instance_price_id');
     }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
+    public function mealType()
+    {
+        return $this->belongsTo(MealType::class);
+    }
 }
