@@ -87,17 +87,16 @@ class SupplierRequestService
      */
     public function buildRequestData(Booking $booking, $assignment, $supplierType)
     {
+        // Base data without dates - each supplier type will provide accurate dates
         $baseData = [
             'booking_reference' => $booking->reference,
             'customer_name' => $booking->customer?->name,
-            'start_date' => $booking->start_date?->format('d.m.Y'),
-            'end_date' => $booking->end_date?->format('d.m.Y'),
             'pax_total' => $booking->pax_total,
             'currency' => $booking->currency ?? 'USD',
             'generated_at' => now()->format('d.m.Y H:i'),
             'expires_at' => now()->addHours(48)->format('d.m.Y H:i'),
         ];
-        
+
         switch ($supplierType) {
             case 'hotel':
                 return array_merge($baseData, $this->buildHotelRequestData($booking, $assignment));
@@ -120,16 +119,38 @@ class SupplierRequestService
         $hotel = $assignment->assignable;
         $room = $assignment->room;  // Use eager loaded relationship
 
+        // Get dates from the itinerary item associated with this assignment
+        $itineraryItem = $assignment->bookingItineraryItem;
+        $checkInDate = $itineraryItem?->date;
+
+        // Calculate check-out date and nights
+        // Find all itinerary items for this booking with the same hotel
+        $hotelAssignments = $booking->itineraryItems()
+            ->whereHas('assignments', function($query) use ($hotel) {
+                $query->where('assignable_type', Hotel::class)
+                      ->where('assignable_id', $hotel->id);
+            })
+            ->orderBy('date')
+            ->get();
+
+        // Get the last date this hotel is used
+        $lastDate = $hotelAssignments->last()?->date;
+        $checkOutDate = $lastDate ? $lastDate->copy()->addDay() : ($checkInDate ? $checkInDate->copy()->addDay() : null);
+
+        $nights = $checkInDate && $lastDate ?
+            $checkInDate->diffInDays($lastDate) + 1 : 1;
+
         return [
             'hotel_name' => $hotel->name,
             'hotel_address' => $hotel->address,
             'room_type' => $room?->name ?? 'Не указан',
             'room_count' => $assignment->quantity ?? 1,
-            'check_in' => $booking->start_date?->format('d.m.Y'),
-            'check_out' => $booking->end_date?->format('d.m.Y'),
-            'nights' => $booking->start_date && $booking->end_date ?
-                $booking->start_date->diffInDays($booking->end_date) : 0,
+            'check_in' => $checkInDate?->format('d.m.Y') ?? 'Не указано',
+            'check_out' => $checkOutDate?->format('d.m.Y') ?? 'Не указано',
+            'nights' => $nights,
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
+            'start_date' => $checkInDate?->format('d.m.Y') ?? 'Не указано',
+            'end_date' => $checkOutDate?->format('d.m.Y') ?? 'Не указано',
         ];
     }
     
@@ -147,6 +168,13 @@ class SupplierRequestService
         // Get itinerary item for route and time info
         $itineraryItem = $assignment->bookingItineraryItem;
 
+        // Get all usage dates for this transport to determine service period
+        $usageDates = $this->getTransportUsageDates($booking, $assignment->assignable_id);
+
+        // Determine start and end dates from actual usage
+        $startDate = !empty($usageDates) ? $usageDates[0]['date'] : ($itineraryItem?->date?->format('d.m.Y') ?? 'Не указано');
+        $endDate = !empty($usageDates) ? end($usageDates)['date'] : $startDate;
+
         return [
             'transport_name' => $transportType?->type ?? 'Неизвестный',
             'vehicle_model' => $transport->model ?? 'Не указан',
@@ -162,7 +190,9 @@ class SupplierRequestService
             'end_time' => $this->formatTime($assignment->end_time) ?? 'Не указано',
             'route_info' => $this->getTransportRouteInfo($booking, $assignment),
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
-            'usage_dates' => $this->getTransportUsageDates($booking, $assignment->assignable_id),
+            'usage_dates' => $usageDates,
+            'start_date' => $startDate,  // Override baseData with actual usage dates
+            'end_date' => $endDate,
         ];
     }
     
@@ -178,14 +208,23 @@ class SupplierRequestService
             ? $guide->spokenLanguages->pluck('name')->toArray()
             : ['Русский'];
 
+        // Get actual tour dates for this guide
+        $tourDates = $this->getGuideTourDates($booking, $guide->id);
+
+        // Determine start and end dates from actual tour dates
+        $startDate = !empty($tourDates) ? $tourDates[0] : ($assignment->bookingItineraryItem?->date?->format('d.m.Y') ?? 'Не указано');
+        $endDate = !empty($tourDates) ? end($tourDates) : $startDate;
+
         return [
             'guide_name' => $guide->name,
             'guide_phone' => $guide->phone,
             'guide_email' => $guide->email,
             'languages' => $languages,
             'group_size' => $booking->pax_total,
-            'tour_dates' => $this->getGuideTourDates($booking),
+            'tour_dates' => $tourDates,
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
+            'start_date' => $startDate,  // Override baseData with actual tour dates
+            'end_date' => $endDate,
         ];
     }
     
@@ -197,14 +236,20 @@ class SupplierRequestService
         $restaurant = $assignment->assignable;
         $mealType = $assignment->mealType;  // Use eager loaded relationship
 
+        // Get the specific date for this meal from the itinerary item
+        $itineraryItem = $assignment->bookingItineraryItem;
+        $mealDate = $itineraryItem?->date?->format('d.m.Y') ?? 'Не указано';
+
         return [
             'restaurant_name' => $restaurant->name,
             'restaurant_address' => $restaurant->address,
             'meal_type' => $mealType?->name ?? 'Не указан',
-            'meal_time' => $assignment->start_time ?? 'Не указано',
+            'meal_time' => $this->formatTime($assignment->start_time) ?? 'Не указано',
             'group_size' => $booking->pax_total,
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
             'dietary_requirements' => 'Уточнить при подтверждении',
+            'start_date' => $mealDate,  // Override baseData with actual meal date
+            'end_date' => $mealDate,    // Same day service for restaurants
         ];
     }
     
@@ -303,11 +348,14 @@ class SupplierRequestService
     /**
      * Get guide tour dates from booking itinerary
      */
-    private function getGuideTourDates(Booking $booking)
+    private function getGuideTourDates(Booking $booking, $guideId = null)
     {
         $dates = $booking->itineraryItems()
-            ->whereHas('assignments', function($query) {
+            ->whereHas('assignments', function($query) use ($guideId) {
                 $query->where('assignable_type', Guide::class);
+                if ($guideId) {
+                    $query->where('assignable_id', $guideId);
+                }
             })
             ->pluck('date')
             ->map(function($date) {
@@ -317,7 +365,7 @@ class SupplierRequestService
             ->unique()
             ->values()
             ->toArray();
-            
+
         return $dates;
     }
     
