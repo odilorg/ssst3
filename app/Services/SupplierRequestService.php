@@ -285,7 +285,7 @@ class SupplierRequestService
             return [
                 'date' => $item->date ? $item->date->format('d.m.Y') : 'Не указано',
                 'day_title' => $item->title ?? 'День',
-                'start_time' => $item->planned_start_time ? $item->planned_start_time->format('H:i') : null,
+                'start_time' => $this->formatTime($item->planned_start_time),
             ];
         })->toArray();
 
