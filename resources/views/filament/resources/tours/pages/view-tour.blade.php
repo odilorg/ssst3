@@ -8,15 +8,15 @@
         .tour-card {
             background: white;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .tour-header-card {
             background: white;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
             border-bottom: 4px solid #7B3F9E;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
@@ -49,26 +49,27 @@
             font-size: 48px;
             font-weight: bold;
             color: #7B3F9E;
-            margin: 20px 0;
+            margin: 8px 0;
         }
         .tour-title {
             text-align: center;
             font-size: 32px;
             font-weight: bold;
             color: #7B3F9E;
-            margin: 16px 0;
+            margin: 8px 0 12px 0;
         }
         .tour-meta {
             display: flex;
             justify-content: center;
-            gap: 32px;
+            gap: 16px;
             flex-wrap: wrap;
+            margin-top: 12px;
         }
         .meta-badge {
             background: #f3f4f6;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
             color: #374151;
         }
         .meta-badge strong {
