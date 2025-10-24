@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\CompanySetting;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -75,6 +76,26 @@ class CompanySettings extends Page implements HasForms
                             ->label('Postal Code'),
                     ])
                     ->columns(2),
+
+                Section::make('Branding')
+                    ->description('Upload your company logo for use in PDFs and documents')
+                    ->schema([
+                        FileUpload::make('logo_path')
+                            ->label('Company Logo')
+                            ->image()
+                            ->disk('public')
+                            ->directory('logos')
+                            ->visibility('public')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->maxSize(2048)
+                            ->helperText('Upload your company logo (max 2MB). Recommended size: 800x200px')
+                            ->columnSpanFull(),
+                    ]),
 
                 Section::make('Banking Information')
                     ->description('Add your bank account details for invoices and payments')

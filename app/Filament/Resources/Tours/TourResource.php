@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Tours;
 use App\Filament\Resources\Tours\Pages\CreateTour;
 use App\Filament\Resources\Tours\Pages\EditTour;
 use App\Filament\Resources\Tours\Pages\ListTours;
+use App\Filament\Resources\Tours\Pages\ViewTour;
 use App\Filament\Resources\Tours\RelationManagers\ItineraryItemsRelationManager;
 use App\Filament\Resources\Tours\RelationManagers\TourPreviewRelationManager;
 use App\Filament\Resources\Tours\Schemas\TourForm;
@@ -77,6 +78,7 @@ class TourResource extends Resource
         return [
             'index' => ListTours::route('/'),
             'create' => CreateTour::route('/create'),
+            'view' => ViewTour::route('/{record}'),
             'edit' => EditTour::route('/{record}/edit'),
         ];
     }
