@@ -48,7 +48,7 @@ class LeadResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'new')->count();
+        return static::getModel()::count();
     }
 
     public static function getNavigationBadgeColor(): ?string
