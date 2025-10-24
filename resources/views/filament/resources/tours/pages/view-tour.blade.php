@@ -16,7 +16,7 @@
             border-radius: 8px;
             padding: 24px;
             margin-bottom: 20px;
-            border-bottom: 4px solid #2563eb;
+            border-bottom: 4px solid #7B3F9E;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .company-flex {
@@ -47,14 +47,14 @@
             text-align: center;
             font-size: 48px;
             font-weight: bold;
-            color: #2563eb;
+            color: #7B3F9E;
             margin: 20px 0;
         }
         .tour-title {
             text-align: center;
             font-size: 32px;
             font-weight: bold;
-            color: #111827;
+            color: #7B3F9E;
             margin: 16px 0;
         }
         .tour-meta {
@@ -83,7 +83,7 @@
         .day-header {
             background: #e5e7eb;
             padding: 16px 24px;
-            border-left: 4px solid #2563eb;
+            border-left: 4px solid #7B3F9E;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -132,7 +132,7 @@
             align-items: start;
         }
         .activity-bullet {
-            color: #2563eb;
+            color: #7B3F9E;
             font-size: 16px;
             margin-top: 2px;
         }

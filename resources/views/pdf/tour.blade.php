@@ -19,7 +19,7 @@
             padding: 20px;
         }
         .header {
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #7B3F9E;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -52,7 +52,7 @@
             text-align: center;
             font-size: 36pt;
             font-weight: bold;
-            color: #2563eb;
+            color: #7B3F9E;
             margin: 20px 0;
         }
         .tour-title {
@@ -60,6 +60,7 @@
             font-size: 20pt;
             font-weight: bold;
             margin: 15px 0;
+            color: #7B3F9E;
         }
         .tour-meta {
             text-align: center;
@@ -84,7 +85,7 @@
         .day-header {
             background: #e5e7eb;
             padding: 10px 15px;
-            border-left: 4px solid #2563eb;
+            border-left: 4px solid #7B3F9E;
         }
         .day-title {
             font-size: 13pt;
@@ -116,7 +117,7 @@
             margin-bottom: 8px;
         }
         .activity-bullet {
-            color: #2563eb;
+            color: #7B3F9E;
             display: inline;
         }
         .activity-title {
@@ -158,24 +159,20 @@
                 </div>
                 @if($companySettings)
                 <div class="header-right contact-info">
-                    <div class="company-name" style="text-align: right; margin-bottom: 8px;">{{ $companySettings->company_name ?? 'Silk Tour Ltd' }}</div>
-                    @if($companySettings->legal_name)
-                        <div style="font-size: 10pt; color: #666; margin-bottom: 5px;">{{ $companySettings->legal_name }}</div>
-                    @endif
                     @if($companySettings->office_address)
                         <div>{{ $companySettings->office_address }}</div>
                     @endif
                     @if($companySettings->city || $companySettings->country)
-                        <div>{{ $companySettings->city }}@if($companySettings->city && $companySettings->country), @endif{{ $companySettings->country }}</div>
+                        <div>{{ $companySettings->city }}@if($companySettings->city && $companySettings->country), @endif{{ $companySettings->country }}@if($companySettings->postal_code) {{ $companySettings->postal_code }}@endif</div>
                     @endif
                     @if($companySettings->phone)
                         <div>Tel: {{ $companySettings->phone }}</div>
                     @endif
                     @if($companySettings->email)
-                        <div>Email: {{ $companySettings->email }}</div>
+                        <div>e-mail: {{ $companySettings->email }}</div>
                     @endif
                     @if($companySettings->website)
-                        <div>Web: {{ str_replace(['http://', 'https://'], '', $companySettings->website) }}</div>
+                        <div>web: {{ str_replace(['http://', 'https://'], '', $companySettings->website) }}</div>
                     @endif
                 </div>
                 @endif
