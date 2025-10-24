@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'DejaVu Sans', sans-serif;
             line-height: 1.6;
             color: #333;
             background: white;
