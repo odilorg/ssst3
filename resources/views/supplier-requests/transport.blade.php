@@ -2,376 +2,300 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заявка на транспорт</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        @page {
+            margin: 1.5cm;
+            size: A4;
         }
 
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: white;
-            padding: 20px;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #000;
+            margin: 0;
+            padding: 0;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #dc2626;
-        }
-
-        .header h1 {
-            color: #dc2626;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header .subtitle {
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            page-break-inside: avoid;
-        }
-
-        .section-title {
-            background: #f8fafc;
-            color: #1e293b;
-            padding: 15px 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            border-left: 4px solid #dc2626;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .info-item {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .info-label {
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-size: 1.1rem;
-            color: #1e293b;
-            font-weight: 600;
-        }
-
-        .transport-details {
-            background: #fef2f2;
-            border: 1px solid #dc2626;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .transport-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #991b1b;
-            margin-bottom: 10px;
-        }
-
-        .transport-specs {
-            color: #b91c1c;
-            font-size: 1rem;
-        }
-
-        .usage-dates {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .usage-dates h3 {
-            color: #0c4a6e;
+        .letterhead {
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
             margin-bottom: 15px;
         }
 
-        .date-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
+        .company-info {
+            font-size: 10pt;
+            line-height: 1.3;
         }
 
-        .date-item {
-            background: white;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: 600;
-            color: #0369a1;
+        .company-name {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-bottom: 3px;
         }
 
-        .requirements {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .requirements h3 {
-            color: #92400e;
+        .meta-row {
+            display: table;
+            width: 100%;
             margin-bottom: 10px;
         }
 
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
+        .meta-left {
+            display: table-cell;
+            width: 40%;
+        }
+
+        .meta-right {
+            display: table-cell;
+            width: 60%;
+            text-align: right;
+        }
+
+        .field-line {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 120px;
+            padding: 0 5px;
+        }
+
+        .title {
             text-align: center;
-            color: #64748b;
-            font-size: 0.9rem;
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            letter-spacing: 2px;
         }
 
-        .urgent {
-            background: #fef2f2;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+        .intro-text {
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        table td, table th {
+            border: 1px solid #000;
+            padding: 6px 8px;
+            font-size: 10pt;
+        }
+
+        table th {
+            background: #f0f0f0;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .highlight {
+            background: #ffff00;
+            font-weight: bold;
+        }
+
+        .section-header {
+            font-weight: bold;
+            background: #e0e0e0;
+            padding: 4px 6px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .note-box {
+            border: 1px solid #000;
+            padding: 10px;
+            min-height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            font-size: 9pt;
+            margin-top: 20px;
             text-align: center;
-        }
-
-        .urgent-text {
-            color: #dc2626;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        @media print {
-            body {
-                padding: 0;
-            }
-            
-            .section {
-                page-break-inside: avoid;
-            }
-        }
-
-        @page {
-            margin: 1cm;
-            size: A4;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <!-- Header -->
-        <div class="header">
-            <h1>ЗАЯВКА НА ТРАНСПОРТ</h1>
-            <div class="subtitle">Jahongir Travel OOO</div>
+    <!-- Letterhead -->
+    <div class="letterhead">
+        <div class="company-name">Jahongir Travel OOO</div>
+        <div class="company-info">
+            48, Usto Umar Jurakulov str., Samarkand, Uzbekistan 140100<br>
+            Tel: +998 55 7045000; E-mail: info@jahongir-travel.com; Web: www.jahongir-travel.com
         </div>
+    </div>
 
-        <!-- Urgent Notice -->
-        <div class="urgent">
-            <div class="urgent-text">
-                ⏰ СРОК ПОДТВЕРЖДЕНИЯ: {{ $requestData['expires_at'] }}
-            </div>
+    <!-- Meta information -->
+    <div class="meta-row">
+        <div class="meta-left">
+            № <span class="field-line">{{ $requestData['booking_reference'] }}</span><br>
+            № <span class="field-line">{{ date('d.m.Y') }}</span>
         </div>
-
-        <!-- Transport Details -->
-        <div class="transport-details">
-            <div class="transport-name">🚗 {{ $requestData['transport_name'] }}</div>
-            <div class="transport-specs">
-                @if(!empty($requestData['vehicle_make']))
-                Производитель: {{ $requestData['vehicle_make'] }} |
-                @endif
-                Модель: {{ $requestData['vehicle_model'] }} |
-                Номер: {{ $requestData['plate_number'] }} |
-                Вместимость: {{ $requestData['capacity'] }} пассажиров
-            </div>
-            <div class="transport-specs" style="margin-top: 10px; font-size: 1.1rem;">
-                <strong>Тип услуги:</strong> {{ $requestData['price_type'] }}
-            </div>
+        <div class="meta-right">
+            <strong>To:</strong> Transport Company <span class="highlight">{{ $requestData['vehicle_make'] ?? 'TRANSPORT' }}</span><br>
+            <strong>Vehicle:</strong> <span class="highlight">{{ $requestData['transport_name'] }} - {{ $requestData['plate_number'] }}</span><br>
+            <strong>Att:</strong> Dispatch Department
         </div>
+    </div>
 
-        <!-- Booking Information -->
-        <div class="section">
-            <div class="section-title">Информация о заказе</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Номер бронирования</div>
-                    <div class="info-value">{{ $requestData['booking_reference'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Клиент</div>
-                    <div class="info-value">{{ $requestData['customer_name'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Количество пассажиров</div>
-                    <div class="info-value">{{ $requestData['pax_total'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Требуется водитель</div>
-                    <div class="info-value">{{ $requestData['driver_required'] ? 'Да' : 'Нет' }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Валюта</div>
-                    <div class="info-value">{{ $requestData['currency'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Дата создания заявки</div>
-                    <div class="info-value">{{ $requestData['generated_at'] }}</div>
-                </div>
-            </div>
-        </div>
+    <!-- Title -->
+    <div class="title">ЗАЯВКА НА ТРАНСПОРТ / TRANSPORT REQUEST</div>
 
-        <!-- Pricing Information -->
-        <div class="section">
-            <div class="section-title">Информация о стоимости</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Тип тарифа</div>
-                    <div class="info-value">{{ $requestData['price_type'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Цена за единицу</div>
-                    <div class="info-value">${{ number_format($requestData['unit_price'], 2) }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Количество</div>
-                    <div class="info-value">{{ $requestData['quantity'] }}</div>
-                </div>
-                <div class="info-item" style="background: #fef3c7; border: 2px solid #f59e0b;">
-                    <div class="info-label">Общая стоимость</div>
-                    <div class="info-value" style="color: #92400e; font-size: 1.3rem;">
-                        ${{ number_format($requestData['unit_price'] * $requestData['quantity'], 2) }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Introduction -->
+    <div class="intro-text">
+        <em>Пожалуйста, предоставьте и подтвердите письменно следующие транспортные услуги для группы туристов:</em><br>
+        <em>Please, give and confirm the following transport services for tourists' group:</em>
+    </div>
 
-        <!-- Time Requirements -->
+    <!-- Main booking table -->
+    <table>
+        <tr>
+            <th>1. Страна<br>Country</th>
+            <td class="highlight">{{ $booking->country ?? 'UZBEKISTAN' }}</td>
+            <th>Пассажиров<br>Passengers</th>
+            <td class="highlight">{{ $requestData['pax_total'] }}</td>
+            <th>Номер заказа<br>Ref.</th>
+            <td class="highlight">{{ $requestData['booking_reference'] }}</td>
+        </tr>
+    </table>
+
+    <!-- Transport Details -->
+    <div class="section-header">2. Информация о транспорте / Transport Information:</div>
+    <table>
+        <tr>
+            <th style="width: 180px">Тип транспорта<br>Transport Type</th>
+            <td class="highlight" colspan="3">{{ $requestData['transport_name'] }}</td>
+        </tr>
+        <tr>
+            <th>Производитель<br>Make</th>
+            <td class="highlight">{{ $requestData['vehicle_make'] ?? 'N/A' }}</td>
+            <th style="width: 150px">Модель<br>Model</th>
+            <td class="highlight">{{ $requestData['vehicle_model'] }}</td>
+        </tr>
+        <tr>
+            <th>Номер<br>Plate Number</th>
+            <td class="highlight">{{ $requestData['plate_number'] }}</td>
+            <th>Вместимость<br>Capacity</th>
+            <td class="highlight">{{ $requestData['capacity'] }} пассажиров</td>
+        </tr>
+        <tr>
+            <th>Водитель<br>Driver</th>
+            <td class="highlight">{{ $requestData['driver_required'] ? 'Требуется / Required' : 'Не требуется / Not required' }}</td>
+            <th>Тип тарифа<br>Price Type</th>
+            <td class="highlight">{{ $requestData['price_type'] }}</td>
+        </tr>
+    </table>
+
+    <!-- Service Period -->
+    <div class="section-header">3. Период использования / Service Period:</div>
+    <table>
+        <tr>
+            <th style="width: 150px">Начало<br>Start Date</th>
+            <td class="highlight">{{ $requestData['start_date'] }}</td>
+            <th style="width: 150px">Окончание<br>End Date</th>
+            <td class="highlight">{{ $requestData['end_date'] }}</td>
+        </tr>
         @if(!empty($requestData['start_time']) && $requestData['start_time'] !== 'Не указано')
-        <div class="section">
-            <div class="section-title">Временные требования</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Время начала</div>
-                    <div class="info-value">{{ $requestData['start_time'] }}</div>
-                </div>
-                @if(!empty($requestData['end_time']) && $requestData['end_time'] !== 'Не указано')
-                <div class="info-item">
-                    <div class="info-label">Время окончания</div>
-                    <div class="info-value">{{ $requestData['end_time'] }}</div>
-                </div>
-                @endif
-            </div>
-        </div>
-        @endif
-
-        <!-- Route Information -->
-        @if(!empty($requestData['route_info']))
-        <div class="section">
-            <div class="section-title">Информация о маршруте</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Место посадки</div>
-                    <div class="info-value">{{ $requestData['route_info']['pickup_location'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Место высадки</div>
-                    <div class="info-value">{{ $requestData['route_info']['dropoff_location'] }}</div>
-                </div>
-            </div>
-            @if(!empty($requestData['route_info']['route_description']))
-            <div class="info-item" style="margin-top: 15px; grid-column: 1 / -1;">
-                <div class="info-label">Описание маршрута</div>
-                <div class="info-value">{{ $requestData['route_info']['route_description'] }}</div>
-            </div>
-            @endif
-        </div>
-        @endif
-
-        <!-- Usage Dates -->
-        <div class="usage-dates">
-            <h3>📅 Даты использования транспорта</h3>
-            @if(is_array($requestData['usage_dates']) && count($requestData['usage_dates']) > 0)
-                @if(isset($requestData['usage_dates'][0]['date']))
-                    <!-- Enhanced format with day titles and times -->
-                    @foreach($requestData['usage_dates'] as $dateInfo)
-                        <div class="date-item" style="text-align: left; padding: 15px;">
-                            <div style="font-size: 1.1rem; font-weight: 700; color: #0369a1;">
-                                {{ $dateInfo['date'] }}
-                            </div>
-                            <div style="font-size: 0.9rem; color: #0c4a6e; margin-top: 5px;">
-                                {{ $dateInfo['day_title'] }}
-                            </div>
-                            @if(!empty($dateInfo['start_time']))
-                                <div style="font-size: 0.85rem; color: #64748b; margin-top: 3px;">
-                                    ⏰ {{ $dateInfo['start_time'] }}
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                @else
-                    <!-- Simple format (legacy) -->
-                    <div class="date-list">
-                        @foreach($requestData['usage_dates'] as $date)
-                            <div class="date-item">{{ $date }}</div>
-                        @endforeach
-                    </div>
-                @endif
+        <tr>
+            <th>Время начала<br>Start Time</th>
+            <td class="highlight">{{ $requestData['start_time'] }}</td>
+            @if(!empty($requestData['end_time']) && $requestData['end_time'] !== 'Не указано')
+            <th>Время окончания<br>End Time</th>
+            <td class="highlight">{{ $requestData['end_time'] }}</td>
             @else
-                <p style="text-align: center; color: #64748b; padding: 20px;">Даты будут уточнены дополнительно</p>
+            <th colspan="2"></th>
             @endif
-        </div>
+        </tr>
+        @endif
+    </table>
 
-        <!-- Special Requirements -->
-        <div class="requirements">
-            <h3>Особые требования и пожелания</h3>
-            <p>{{ $requestData['special_requirements'] }}</p>
-        </div>
+    <!-- Route Information -->
+    @if(!empty($requestData['route_info']))
+    <div class="section-header">4. Информация о маршруте / Route Information:</div>
+    <table>
+        <tr>
+            <th style="width: 180px">Место посадки<br>Pickup Location</th>
+            <td class="highlight" colspan="3">{{ $requestData['route_info']['pickup_location'] }}</td>
+        </tr>
+        <tr>
+            <th>Место высадки<br>Dropoff Location</th>
+            <td class="highlight" colspan="3">{{ $requestData['route_info']['dropoff_location'] }}</td>
+        </tr>
+        @if(!empty($requestData['route_info']['route_description']))
+        <tr>
+            <th>Описание маршрута<br>Route Description</th>
+            <td colspan="3">{{ $requestData['route_info']['route_description'] }}</td>
+        </tr>
+        @endif
+    </table>
+    @endif
 
-        <!-- Contact Information -->
-        <div class="section">
-            <div class="section-title">Контактная информация</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Туристическая компания</div>
-                    <div class="info-value">Jahongir Travel OOO</div>
-                </div>
-            </div>
-        </div>
+    <!-- Usage Dates -->
+    @if(is_array($requestData['usage_dates']) && count($requestData['usage_dates']) > 0)
+    <div class="section-header">5. Даты использования / Usage Dates:</div>
+    <table>
+        <tr>
+            <th>Дата<br>Date</th>
+            <th>День<br>Day</th>
+            <th>Время<br>Time</th>
+        </tr>
+        @foreach($requestData['usage_dates'] as $dateInfo)
+        <tr>
+            <td class="highlight">{{ $dateInfo['date'] }}</td>
+            <td>{{ $dateInfo['day_title'] }}</td>
+            <td>{{ $dateInfo['start_time'] ?? '-' }}</td>
+        </tr>
+        @endforeach
+    </table>
+    @endif
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>Пожалуйста, подтвердите или отклоните данную заявку в течение указанного срока.</p>
-            <p>Спасибо за сотрудничество!</p>
-        </div>
+    <!-- Pricing -->
+    <div class="section-header">6. Стоимость / Pricing:</div>
+    <table>
+        <tr>
+            <th style="width: 180px">Тип тарифа<br>Price Type</th>
+            <td>{{ $requestData['price_type'] }}</td>
+            <th style="width: 180px">Цена за единицу<br>Unit Price</th>
+            <td class="highlight">${{ number_format($requestData['unit_price'], 2) }}</td>
+        </tr>
+        <tr>
+            <th>Количество<br>Quantity</th>
+            <td>{{ $requestData['quantity'] }}</td>
+            <th>ОБЩАЯ СТОИМОСТЬ<br>TOTAL COST</th>
+            <td class="highlight" style="font-size: 12pt;">${{ number_format($requestData['unit_price'] * $requestData['quantity'], 2) }}</td>
+        </tr>
+        <tr>
+            <th>Валюта<br>Currency</th>
+            <td colspan="3">{{ $requestData['currency'] }}</td>
+        </tr>
+    </table>
+
+    <!-- Client Name -->
+    <div class="section-header">7. Client's name:</div>
+    <div style="background: #ffff00; padding: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;">
+        {{ strtoupper($requestData['customer_name']) }}
+    </div>
+
+    <!-- Special Requirements -->
+    <div class="section-header">8. Особые требования / Special Requirements:</div>
+    <div class="note-box">
+        <strong>{{ $requestData['special_requirements'] }}</strong>
+    </div>
+
+    <!-- Additional Notes -->
+    <div class="section-header">9. Дополнительные заметки / Additional Notes:</div>
+    <div class="note-box" style="min-height: 40px;">
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-text">
+        Пожалуйста, подтвердите или отклоните данную заявку до {{ $requestData['expires_at'] }}<br>
+        Please confirm or reject this application before {{ $requestData['expires_at'] }}<br>
+        Спасибо за сотрудничество! / Thank you for cooperation!
     </div>
 </body>
 </html>
