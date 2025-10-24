@@ -64,6 +64,7 @@ class GenerateTourWithAI implements ShouldQueue
                     if (isset($dayData['stops']) && is_array($dayData['stops'])) {
                         foreach ($dayData['stops'] as $stopIndex => $stopData) {
                             $day->children()->create([
+                                'tour_id' => $tour->id,
                                 'type' => 'stop',
                                 'title' => $stopData['title'],
                                 'description' => $stopData['description'] ?? null,
