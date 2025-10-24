@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TourAIService
@@ -19,33 +19,44 @@ class TourAIService
         try {
             $prompt = $this->buildPrompt($params);
 
-            $response = OpenAI::chat()->create([
-                'model' => 'deepseek-chat',
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $this->getSystemPrompt()
+            $response = Http::timeout(120)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . config('openai.api_key'),
+                    'Content-Type' => 'application/json',
+                ])
+                ->post('https://api.deepseek.com/v1/chat/completions', [
+                    'model' => 'deepseek-chat',
+                    'messages' => [
+                        [
+                            'role' => 'system',
+                            'content' => $this->getSystemPrompt()
+                        ],
+                        [
+                            'role' => 'user',
+                            'content' => $prompt
+                        ]
                     ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ],
-                'temperature' => 0.7,
-                'max_tokens' => 4000,
-            ]);
+                    'temperature' => 0.7,
+                    'max_tokens' => 4000,
+                ]);
 
-            $content = $response->choices[0]->message->content;
+            $data = $response->json();
+
+            if (!isset($data['choices'][0]['message']['content'])) {
+                throw new \Exception('Invalid API response structure');
+            }
+
+            $content = $data['choices'][0]['message']['content'];
 
             // Parse JSON response
             $tourData = $this->parseAIResponse($content);
 
             // Add metadata
             $tourData['_meta'] = [
-                'tokens_used' => $response->usage->totalTokens,
-                'prompt_tokens' => $response->usage->promptTokens,
-                'completion_tokens' => $response->usage->completionTokens,
-                'cost' => $this->calculateCost($response->usage),
+                'tokens_used' => $data['usage']['total_tokens'] ?? 0,
+                'prompt_tokens' => $data['usage']['prompt_tokens'] ?? 0,
+                'completion_tokens' => $data['usage']['completion_tokens'] ?? 0,
+                'cost' => $this->calculateCost((object) ($data['usage'] ?? [])),
             ];
 
             return $tourData;
@@ -102,23 +113,29 @@ class TourAIService
         ], JSON_PRETTY_PRINT);
 
         try {
-            $response = OpenAI::chat()->create([
-                'model' => 'deepseek-chat',
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are an expert tour planner. Always respond with valid JSON only, no additional text.'
+            $response = Http::timeout(120)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . config('openai.api_key'),
+                    'Content-Type' => 'application/json',
+                ])
+                ->post('https://api.deepseek.com/v1/chat/completions', [
+                    'model' => 'deepseek-chat',
+                    'messages' => [
+                        [
+                            'role' => 'system',
+                            'content' => 'You are an expert tour planner. Always respond with valid JSON only, no additional text.'
+                        ],
+                        [
+                            'role' => 'user',
+                            'content' => $prompt
+                        ]
                     ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ],
-                'temperature' => 0.8,
-                'max_tokens' => 2000,
-            ]);
+                    'temperature' => 0.8,
+                    'max_tokens' => 2000,
+                ]);
 
-            $content = $response->choices[0]->message->content;
+            $data = $response->json();
+            $content = $data['choices'][0]['message']['content'] ?? throw new \Exception('Invalid API response');
             return json_decode($content, true);
 
         } catch (\Exception $e) {
