@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TourAIGeneration extends Model
 {
+    protected $table = 'tour_ai_generations';
+
     protected $fillable = [
         'tour_id',
         'user_id',
