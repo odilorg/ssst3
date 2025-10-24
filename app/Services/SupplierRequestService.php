@@ -155,8 +155,8 @@ class SupplierRequestService
             'price_type_raw' => $priceTypeInfo['raw'] ?? null,
             'unit_price' => $priceTypeInfo['price'] ?? 0,
             'quantity' => $assignment->quantity ?? 1,
-            'start_time' => $assignment->start_time ? $assignment->start_time->format('H:i') : ($itineraryItem?->planned_start_time?->format('H:i') ?? 'Не указано'),
-            'end_time' => $assignment->end_time ? $assignment->end_time->format('H:i') : 'Не указано',
+            'start_time' => $this->formatTime($assignment->start_time) ?? ($itineraryItem?->planned_start_time ? $this->formatTime($itineraryItem->planned_start_time) : 'Не указано'),
+            'end_time' => $this->formatTime($assignment->end_time) ?? 'Не указано',
             'route_info' => $this->getTransportRouteInfo($booking, $assignment),
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
             'usage_dates' => $this->getTransportUsageDates($booking, $assignment->assignable_id),
@@ -343,6 +343,29 @@ class SupplierRequestService
         return $path;
     }
     
+    /**
+     * Format time value (handles both string and Carbon instances)
+     */
+    private function formatTime($time)
+    {
+        if (!$time) {
+            return null;
+        }
+
+        // If it's already a string (HH:MM:SS format from database)
+        if (is_string($time)) {
+            // Extract HH:MM from HH:MM:SS
+            return substr($time, 0, 5);
+        }
+
+        // If it's a Carbon/DateTime instance
+        if ($time instanceof \Carbon\Carbon || $time instanceof \DateTime) {
+            return $time->format('H:i');
+        }
+
+        return null;
+    }
+
     /**
      * Get supplier data based on type and ID
      */
