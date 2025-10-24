@@ -190,12 +190,12 @@
     </table>
 
     <!-- Service Period -->
-    <div class="section-header">3. Период использования / Service Period:</div>
+    <div class="section-header">3. Период покрытия / Coverage Period:</div>
     <table>
         <tr>
-            <th style="width: 150px">Начало<br>Start Date</th>
+            <th style="width: 150px">Первая дата<br>First Date</th>
             <td class="highlight">{{ $requestData['start_date'] }}</td>
-            <th style="width: 150px">Окончание<br>End Date</th>
+            <th style="width: 150px">Последняя дата<br>Last Date</th>
             <td class="highlight">{{ $requestData['end_date'] }}</td>
         </tr>
         @if(!empty($requestData['start_time']) && $requestData['start_time'] !== 'Не указано')
@@ -235,7 +235,10 @@
 
     <!-- Usage Dates -->
     @if(is_array($requestData['usage_dates']) && count($requestData['usage_dates']) > 0)
-    <div class="section-header">5. Даты использования / Usage Dates:</div>
+    <div class="section-header">5. Конкретные даты использования / Specific Usage Dates:</div>
+    <div style="font-size: 9pt; margin-bottom: 5px; font-style: italic;">
+        Транспорт требуется в следующие дни / Transport is required on the following days:
+    </div>
     <table>
         <tr>
             <th>Дата<br>Date</th>

@@ -188,12 +188,12 @@
     </table>
 
     <!-- Service Period -->
-    <div class="section-header">3. Период работы / Service Period:</div>
+    <div class="section-header">3. Период покрытия / Coverage Period:</div>
     <table>
         <tr>
-            <th style="width: 180px">Начало<br>Start Date</th>
+            <th style="width: 180px">Первая дата<br>First Date</th>
             <td class="highlight">{{ $requestData['start_date'] }}</td>
-            <th style="width: 180px">Окончание<br>End Date</th>
+            <th style="width: 180px">Последняя дата<br>Last Date</th>
             <td class="highlight">{{ $requestData['end_date'] }}</td>
         </tr>
         <tr>
@@ -204,7 +204,10 @@
 
     <!-- Tour Dates -->
     @if(is_array($requestData['tour_dates']) && count($requestData['tour_dates']) > 0)
-    <div class="section-header">4. Даты экскурсий / Tour Dates:</div>
+    <div class="section-header">4. Конкретные даты работы / Specific Working Dates:</div>
+    <div style="font-size: 9pt; margin-bottom: 5px; font-style: italic;">
+        Гид требуется в следующие дни / Guide is required on the following days:
+    </div>
     <table>
         <tr>
             <th>#</th>
