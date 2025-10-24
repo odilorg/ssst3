@@ -49,20 +49,28 @@ class SupplierRequestService
         
         // Group assignments by supplier type
         $groupedAssignments = $assignments->groupBy('assignable_type');
-        
+
         foreach ($groupedAssignments as $assignableType => $typeAssignments) {
             $supplierType = $this->getSupplierType($assignableType);
-            
+
             if (!$supplierType) {
                 continue; // Skip monuments and other non-supplier types
             }
-            
-            foreach ($typeAssignments as $assignment) {
+
+            // Group by unique supplier ID to avoid duplicate requests
+            // (e.g., same hotel used on multiple days)
+            $uniqueSuppliers = $typeAssignments->groupBy('assignable_id');
+
+            foreach ($uniqueSuppliers as $supplierId => $supplierAssignments) {
+                // Use the first assignment to build the request
+                // (buildRequestData methods query all dates for the supplier anyway)
+                $assignment = $supplierAssignments->first();
                 $supplier = $assignment->assignable;
+
                 if (!$supplier) continue;
-                
+
                 $requestData = $this->buildRequestData($booking, $assignment, $supplierType);
-                
+
                 // Create supplier request record
                 $request = SupplierRequest::createForSupplier(
                     $booking,
@@ -70,11 +78,11 @@ class SupplierRequestService
                     $supplier->id,
                     $requestData
                 );
-                
+
                 // Generate PDF
-                $pdfPath = $this->generatePDF($request, $supplierType);
+                $pdfPath = $this->generatePDF($request, $supplierType, $supplier);
                 $request->update(['pdf_path' => $pdfPath]);
-                
+
                 $requests[] = $request;
             }
         }
@@ -446,30 +454,37 @@ class SupplierRequestService
     /**
      * Generate PDF for a supplier request
      */
-    public function generatePDF(SupplierRequest $request, $supplierType)
+    public function generatePDF(SupplierRequest $request, $supplierType, $supplier = null)
     {
         $template = "supplier-requests.{$supplierType}";
-        
-        // Get supplier data based on type
-        $supplier = $this->getSupplierData($request->supplier_type, $request->supplier_id);
-        
+
+        // Get supplier data if not provided
+        if (!$supplier) {
+            $supplier = $this->getSupplierData($request->supplier_type, $request->supplier_id);
+        }
+
         $data = [
             'request' => $request,
             'booking' => $request->booking,
             'supplier' => $supplier,
             'requestData' => $request->request_data,
         ];
-        
+
         $pdf = PDF::loadView($template, $data);
         $pdf->setPaper('A4', 'portrait');
-        
-        // Generate unique filename
-        $filename = "request_{$request->booking->reference}_{$supplierType}_{$request->supplier_id}_" . now()->format('YmdHis') . '.pdf';
+
+        // Sanitize supplier name for filename
+        $supplierName = $supplier->name ?? 'Unknown';
+        $sanitizedName = preg_replace('/[^a-zA-Z0-9_-]/', '', str_replace(' ', '_', $supplierName));
+        $sanitizedName = substr($sanitizedName, 0, 50); // Limit length
+
+        // Generate unique filename with supplier name
+        $filename = "request_{$request->booking->reference}_{$supplierType}_{$sanitizedName}_" . now()->format('YmdHis') . '.pdf';
         $path = "supplier-requests/{$request->booking_id}/{$filename}";
-        
+
         // Store PDF
         Storage::disk('public')->put($path, $pdf->output());
-        
+
         return $path;
     }
     
