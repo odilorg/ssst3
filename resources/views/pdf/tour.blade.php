@@ -153,15 +153,15 @@
             <div class="header-flex">
                 <div class="header-left">
                     @if($companySettings && $companySettings->logo_path)
-                        <img src="{{ public_path('storage/' . $companySettings->logo_path) }}" alt="{{ $companySettings->company_name }}" style="max-width: 200px; max-height: 80px; margin-bottom: 10px;">
-                    @endif
-                    <div class="company-name">{{ $companySettings->company_name ?? 'Silk Tour Ltd' }}</div>
-                    @if($companySettings && $companySettings->legal_name)
-                        <div style="font-size: 10pt; color: #666;">{{ $companySettings->legal_name }}</div>
+                        <img src="{{ public_path('storage/' . $companySettings->logo_path) }}" alt="{{ $companySettings->company_name }}" style="max-width: 200px; max-height: 80px;">
                     @endif
                 </div>
                 @if($companySettings)
                 <div class="header-right contact-info">
+                    <div class="company-name" style="text-align: right; margin-bottom: 8px;">{{ $companySettings->company_name ?? 'Silk Tour Ltd' }}</div>
+                    @if($companySettings->legal_name)
+                        <div style="font-size: 10pt; color: #666; margin-bottom: 5px;">{{ $companySettings->legal_name }}</div>
+                    @endif
                     @if($companySettings->office_address)
                         <div>{{ $companySettings->office_address }}</div>
                     @endif
