@@ -232,6 +232,14 @@ class SupplierRequestService
             // Check if dates are consecutive (1 day apart)
             $daysDiff = $prevDate->startOfDay()->diffInDays($currentDate->startOfDay());
 
+            // Debug log
+            \Log::debug('Date comparison', [
+                'prev' => $prevDate->format('Y-m-d'),
+                'current' => $currentDate->format('Y-m-d'),
+                'diff' => $daysDiff,
+                'is_consecutive' => $daysDiff === 1
+            ]);
+
             if ($daysDiff === 1) {
                 // Consecutive - add to current stay (use original, not the copy)
                 $currentStay[] = $dates[$i];
