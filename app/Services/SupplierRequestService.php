@@ -23,8 +23,6 @@ class SupplierRequestService
         // Get all assignments for this booking
         $assignments = $booking->assignments()
             ->with([
-                'assignable.spokenLanguages',  // For guides
-                'assignable.transportType',     // For transport
                 'bookingItineraryItem',
                 'transportInstancePrice',
                 'transportPrice',
@@ -32,6 +30,22 @@ class SupplierRequestService
                 'mealType'                      // For restaurants
             ])
             ->get();
+
+        // Eager load relationships specific to each assignable type
+        $assignments->load([
+            'assignable' => function ($query) {
+                // This will load the basic assignable
+            }
+        ]);
+
+        // Load type-specific relationships
+        foreach ($assignments as $assignment) {
+            if ($assignment->assignable_type === Guide::class) {
+                $assignment->assignable->load('spokenLanguages');
+            } elseif ($assignment->assignable_type === Transport::class) {
+                $assignment->assignable->load('transportType');
+            }
+        }
         
         // Group assignments by supplier type
         $groupedAssignments = $assignments->groupBy('assignable_type');
