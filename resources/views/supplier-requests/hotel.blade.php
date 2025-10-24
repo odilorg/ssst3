@@ -141,7 +141,7 @@
         </div>
         <div class="meta-right">
             <strong>To:</strong> Hotel <span class="highlight">{{ $requestData['hotel_name'] }}</span><br>
-            <strong>City:</strong> <span class="highlight">{{ $booking->city ?? 'TASHKENT' }}</span><br>
+            <strong>City:</strong> <span class="highlight">{{ $requestData['hotel_city'] }}</span><br>
             <strong>Att:</strong> Booking Department
         </div>
     </div>
@@ -170,27 +170,60 @@
     </table>
 
     <!-- Arrival/Departure -->
-    <table>
-        <tr>
-            <th style="width: 120px">1-заезд:<br>1-arr.:</th>
-            <td>дата заезда / Date of arrival</td>
-            <td class="highlight">{{ $requestData['check_in'] }}</td>
-            <td>время / time</td>
-            <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
-            <td>(сутки)<br>(days)</td>
-            <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
-                {{ $requestData['nights'] }}
-            </td>
-        </tr>
-        <tr>
-            <th>1-отт.:<br>1-arr.:</th>
-            <td>дата выезда / Date of departure</td>
-            <td class="highlight">{{ $requestData['check_out'] }}</td>
-            <td>время / time</td>
-            <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
-            <td>(days)</td>
-        </tr>
-    </table>
+    @if($requestData['multiple_stays'])
+        <!-- Multiple stays -->
+        @foreach($requestData['stays'] as $index => $stay)
+        <table>
+            <tr>
+                <th style="width: 120px">{{ $index + 1 }}-заезд:<br>{{ $index + 1 }}-arr.:</th>
+                <td>дата заезда / Date of arrival</td>
+                <td class="highlight">{{ $stay['check_in'] }}</td>
+                <td>время / time</td>
+                <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
+                <td>(сутки)<br>(days)</td>
+                <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
+                    {{ $stay['nights'] }}
+                </td>
+            </tr>
+            <tr>
+                <th>{{ $index + 1 }}-отт.:<br>{{ $index + 1 }}-dep.:</th>
+                <td>дата выезда / Date of departure</td>
+                <td class="highlight">{{ $stay['check_out'] }}</td>
+                <td>время / time</td>
+                <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
+                <td>(days)</td>
+            </tr>
+        </table>
+        @endforeach
+
+        <!-- Total nights -->
+        <div style="text-align: right; margin-bottom: 15px; font-weight: bold;">
+            ИТОГО / TOTAL: <span class="highlight" style="padding: 5px 10px; font-size: 14pt;">{{ $requestData['nights'] }} ночей / nights</span>
+        </div>
+    @else
+        <!-- Single stay -->
+        <table>
+            <tr>
+                <th style="width: 120px">1-заезд:<br>1-arr.:</th>
+                <td>дата заезда / Date of arrival</td>
+                <td class="highlight">{{ $requestData['check_in'] }}</td>
+                <td>время / time</td>
+                <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
+                <td>(сутки)<br>(days)</td>
+                <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
+                    {{ $requestData['nights'] }}
+                </td>
+            </tr>
+            <tr>
+                <th>1-отт.:<br>1-dep.:</th>
+                <td>дата выезда / Date of departure</td>
+                <td class="highlight">{{ $requestData['check_out'] }}</td>
+                <td>время / time</td>
+                <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
+                <td>(days)</td>
+            </tr>
+        </table>
+    @endif
 
     <!-- Accommodation -->
     <div class="section-header">2. Размещение / Accommodation:</div>

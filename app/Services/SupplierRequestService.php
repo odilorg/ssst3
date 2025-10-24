@@ -133,38 +133,98 @@ class SupplierRequestService
         $hotel = $assignment->assignable;
         $room = $assignment->room;  // Use eager loaded relationship
 
-        // Get dates from the itinerary item associated with this assignment
-        $itineraryItem = $assignment->bookingItineraryItem;
-        $checkInDate = $itineraryItem?->date;
+        // Load hotel's city if not loaded
+        if (!$hotel->relationLoaded('city')) {
+            $hotel->load('city');
+        }
 
-        // Calculate check-out date and nights
-        // Find all itinerary items for this booking with the same hotel
-        $hotelAssignments = $booking->itineraryItems()
+        // Get all dates this hotel is used (sorted)
+        $hotelDates = $booking->itineraryItems()
             ->whereHas('assignments', function($query) use ($hotel) {
                 $query->where('assignable_type', Hotel::class)
                       ->where('assignable_id', $hotel->id);
             })
             ->orderBy('date')
-            ->get();
+            ->pluck('date')
+            ->toArray();
 
-        // Get the last date this hotel is used
-        $lastDate = $hotelAssignments->last()?->date;
-        $checkOutDate = $lastDate ? $lastDate->copy()->addDay() : ($checkInDate ? $checkInDate->copy()->addDay() : null);
+        // Group consecutive dates into separate stays
+        $stays = $this->groupConsecutiveDates($hotelDates);
 
-        $nights = $checkInDate && $lastDate ?
-            $checkInDate->diffInDays($lastDate) + 1 : 1;
+        // Calculate totals
+        $totalNights = 0;
+        foreach ($stays as $stay) {
+            $totalNights += $stay['nights'];
+        }
+
+        $firstStay = $stays[0] ?? null;
+        $lastStay = end($stays) ?: null;
 
         return [
             'hotel_name' => $hotel->name,
             'hotel_address' => $hotel->address,
+            'hotel_city' => $hotel->city?->name ?? 'Не указан',
             'room_type' => $room?->name ?? 'Не указан',
             'room_count' => $assignment->quantity ?? 1,
-            'check_in' => $checkInDate?->format('d.m.Y') ?? 'Не указано',
-            'check_out' => $checkOutDate?->format('d.m.Y') ?? 'Не указано',
-            'nights' => $nights,
+            'check_in' => $firstStay ? $firstStay['check_in'] : 'Не указано',
+            'check_out' => $lastStay ? $lastStay['check_out'] : 'Не указано',
+            'nights' => $totalNights,
+            'stays' => $stays,  // Array of individual stays
+            'multiple_stays' => count($stays) > 1,
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
-            'start_date' => $checkInDate?->format('d.m.Y') ?? 'Не указано',
-            'end_date' => $checkOutDate?->format('d.m.Y') ?? 'Не указано',
+            'start_date' => $firstStay ? $firstStay['check_in'] : 'Не указано',
+            'end_date' => $lastStay ? $lastStay['check_out'] : 'Не указано',
+        ];
+    }
+
+    /**
+     * Group consecutive dates into separate stays
+     */
+    private function groupConsecutiveDates(array $dates)
+    {
+        if (empty($dates)) {
+            return [];
+        }
+
+        $stays = [];
+        $currentStay = [$dates[0]];
+
+        for ($i = 1; $i < count($dates); $i++) {
+            $prevDate = $currentStay[count($currentStay) - 1];
+            $currentDate = $dates[$i];
+
+            // Check if dates are consecutive (1 day apart)
+            $daysDiff = $prevDate->diffInDays($currentDate);
+
+            if ($daysDiff === 1) {
+                // Consecutive - add to current stay
+                $currentStay[] = $currentDate;
+            } else {
+                // Non-consecutive - save current stay and start new one
+                $stays[] = $this->formatStay($currentStay);
+                $currentStay = [$currentDate];
+            }
+        }
+
+        // Add the last stay
+        $stays[] = $this->formatStay($currentStay);
+
+        return $stays;
+    }
+
+    /**
+     * Format a stay with check-in, check-out, and nights
+     */
+    private function formatStay(array $dates)
+    {
+        $checkIn = $dates[0];
+        $checkOut = end($dates)->copy()->addDay();
+        $nights = count($dates);
+
+        return [
+            'check_in' => $checkIn->format('d.m.Y'),
+            'check_out' => $checkOut->format('d.m.Y'),
+            'nights' => $nights,
         ];
     }
     
