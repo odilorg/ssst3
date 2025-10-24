@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Tour;
 use App\Models\TourAIGeneration;
 use App\Services\TourAIService;
+use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
