@@ -344,8 +344,86 @@
 
     <style>
         @media print {
-            .fi-topbar, .fi-sidebar, .fi-page-actions {
+            /* Hide Filament UI elements */
+            .fi-topbar,
+            .fi-sidebar,
+            .fi-page-actions,
+            .fi-header,
+            .fi-breadcrumbs,
+            header {
                 display: none !important;
+            }
+
+            /* Reset page margins and padding */
+            @page {
+                margin: 1.5cm;
+                size: A4;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            /* Adjust container for print */
+            .tour-container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            /* Remove shadows and adjust colors for print */
+            .tour-card,
+            .tour-header-card,
+            .day-card,
+            .footer-card {
+                box-shadow: none !important;
+                border: 1px solid #e5e7eb;
+                page-break-inside: avoid;
+            }
+
+            .tour-header-card {
+                border-bottom: 3px solid #7B3F9E;
+            }
+
+            /* Adjust font sizes for print */
+            .tour-id {
+                font-size: 36pt;
+            }
+
+            .tour-title {
+                font-size: 24pt;
+            }
+
+            /* Ensure day cards don't break across pages */
+            .day-card {
+                page-break-inside: avoid;
+                margin-bottom: 12px;
+            }
+
+            /* Adjust colors for print-friendly versions */
+            .day-header {
+                background: #f3f4f6 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .meta-badge {
+                background: #f9fafb !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Ensure proper page breaks */
+            .footer-card {
+                page-break-before: avoid;
+            }
+
+            /* Print color adjustments */
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>

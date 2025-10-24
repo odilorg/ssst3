@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Tours\Pages;
 
 use App\Filament\Resources\Tours\TourResource;
 use App\Models\CompanySetting;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Pages\Page;
 use Filament\Actions\Action;
 
@@ -33,15 +32,10 @@ class ViewTour extends Page
     {
         return [
             Action::make('print')
-                ->label('Print')
+                ->label('Print / Save as PDF')
                 ->icon('heroicon-o-printer')
                 ->color('primary')
                 ->action('printTour'),
-            Action::make('export_pdf')
-                ->label('Export PDF')
-                ->icon('heroicon-o-document-arrow-down')
-                ->color('success')
-                ->action('exportPdf'),
             Action::make('back')
                 ->label('Back to List')
                 ->icon('heroicon-o-arrow-left')
@@ -53,19 +47,5 @@ class ViewTour extends Page
     public function printTour(): void
     {
         $this->js('window.print()');
-    }
-
-    public function exportPdf()
-    {
-        $pdf = Pdf::loadView('pdf.tour', [
-            'tour' => $this->tour,
-            'companySettings' => $this->companySettings,
-        ]);
-
-        $filename = str_replace(' ', '_', $this->tour->title) . '_Tour_Details.pdf';
-
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, $filename);
     }
 }
