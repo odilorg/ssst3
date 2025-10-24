@@ -69,10 +69,11 @@
             padding: 12px 24px;
             border-radius: 8px;
             font-size: 14px;
+            color: #374151;
         }
         .meta-badge strong {
             font-weight: 600;
-            color: #374151;
+            color: #111827;
         }
         .day-card {
             background: white;
