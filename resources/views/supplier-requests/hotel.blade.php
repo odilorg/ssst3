@@ -2,260 +2,267 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заявка на бронирование отеля</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        @page {
+            margin: 1.5cm;
+            size: A4;
         }
 
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: white;
-            padding: 20px;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #000;
+            margin: 0;
+            padding: 0;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #2563eb;
+        .letterhead {
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .header h1 {
-            color: #2563eb;
-            font-size: 2.5rem;
+        .company-info {
+            font-size: 10pt;
+            line-height: 1.3;
+        }
+
+        .company-name {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-bottom: 3px;
+        }
+
+        .meta-row {
+            display: table;
+            width: 100%;
             margin-bottom: 10px;
-            font-weight: 700;
         }
 
-        .header .subtitle {
-            color: #666;
-            font-size: 1.2rem;
+        .meta-left {
+            display: table-cell;
+            width: 40%;
         }
 
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
+        .meta-right {
+            display: table-cell;
+            width: 60%;
+            text-align: right;
         }
 
-        .section {
-            margin-bottom: 30px;
-            page-break-inside: avoid;
+        .field-line {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 120px;
+            padding: 0 5px;
         }
 
-        .section-title {
-            background: #f8fafc;
-            color: #1e293b;
-            padding: 15px 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            border-left: 4px solid #2563eb;
-            margin-bottom: 20px;
-            border-radius: 4px;
+        .title {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            letter-spacing: 2px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+        .intro-text {
+            margin-bottom: 15px;
+            font-size: 10pt;
         }
 
-        .info-item {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
         }
 
-        .info-label {
-            font-size: 0.9rem;
-            color: #64748b;
+        table td, table th {
+            border: 1px solid #000;
+            padding: 6px 8px;
+            font-size: 10pt;
+        }
+
+        table th {
+            background: #f0f0f0;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .highlight {
+            background: #ffff00;
+            font-weight: bold;
+        }
+
+        .section-header {
+            font-weight: bold;
+            background: #e0e0e0;
+            padding: 4px 6px;
+            margin-top: 10px;
             margin-bottom: 5px;
-            font-weight: 500;
         }
 
-        .info-value {
-            font-size: 1.1rem;
-            color: #1e293b;
-            font-weight: 600;
+        .note-box {
+            border: 1px solid #000;
+            padding: 10px;
+            min-height: 60px;
+            margin-bottom: 15px;
         }
 
-        .hotel-details {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .hotel-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0c4a6e;
-            margin-bottom: 10px;
-        }
-
-        .hotel-address {
-            color: #0369a1;
-            font-size: 1rem;
-        }
-
-        .requirements {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .requirements h3 {
-            color: #92400e;
-            margin-bottom: 10px;
-        }
-
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
+        .footer-text {
+            font-size: 9pt;
+            margin-top: 20px;
             text-align: center;
-            color: #64748b;
-            font-size: 0.9rem;
+            font-style: italic;
         }
 
-        .urgent {
-            background: #fef2f2;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .urgent-text {
-            color: #dc2626;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        @media print {
-            body {
-                padding: 0;
-            }
-            
-            .section {
-                page-break-inside: avoid;
-            }
-        }
-
-        @page {
-            margin: 1cm;
-            size: A4;
+        .label {
+            font-weight: bold;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <!-- Header -->
-        <div class="header">
-            <h1>ЗАЯВКА НА БРОНИРОВАНИЕ ОТЕЛЯ</h1>
-            <div class="subtitle">Jahongir Travel OOO</div>
+    <!-- Letterhead -->
+    <div class="letterhead">
+        <div class="company-name">Jahongir Travel OOO</div>
+        <div class="company-info">
+            48, Usto Umar Jurakulov str., Samarkand, Uzbekistan 140100<br>
+            Tel: +998 55 7045000; E-mail: info@jahongir-travel.com; Web: www.jahongir-travel.com
         </div>
+    </div>
 
-        <!-- Urgent Notice -->
-        <div class="urgent">
-            <div class="urgent-text">
-                ⏰ СРОК ПОДТВЕРЖДЕНИЯ: {{ $requestData['expires_at'] }}
-            </div>
+    <!-- Meta information -->
+    <div class="meta-row">
+        <div class="meta-left">
+            № <span class="field-line">{{ $requestData['booking_reference'] }}</span><br>
+            № <span class="field-line">{{ date('d.m.Y') }}</span>
         </div>
+        <div class="meta-right">
+            <strong>To:</strong> Hotel <span class="highlight">{{ $requestData['hotel_name'] }}</span><br>
+            <strong>City:</strong> <span class="highlight">{{ $booking->city ?? 'TASHKENT' }}</span><br>
+            <strong>Att:</strong> Booking Department
+        </div>
+    </div>
 
-        <!-- Hotel Details -->
-        <div class="hotel-details">
-            <div class="hotel-name">🏨 {{ $requestData['hotel_name'] }}</div>
-            <div class="hotel-address">📍 {{ $requestData['hotel_address'] }}</div>
-        </div>
+    <!-- Title -->
+    <div class="title">ЗАЯВКА / APPLICATION</div>
 
-        <!-- Booking Information -->
-        <div class="section">
-            <div class="section-title">Информация о бронировании</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Номер бронирования</div>
-                    <div class="info-value">{{ $requestData['booking_reference'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Клиент</div>
-                    <div class="info-value">{{ $requestData['customer_name'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Дата заезда</div>
-                    <div class="info-value">{{ $requestData['check_in'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Дата выезда</div>
-                    <div class="info-value">{{ $requestData['check_out'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Количество ночей</div>
-                    <div class="info-value">{{ $requestData['nights'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Количество гостей</div>
-                    <div class="info-value">{{ $requestData['pax_total'] }}</div>
-                </div>
-            </div>
-        </div>
+    <!-- Introduction -->
+    <div class="intro-text">
+        <em>Пожалуйста, предоставьте и подтвердите письменно следующие услуги для группы туристов:</em><br>
+        <em>Please, give and confirm the following services for tourists' group:</em>
+    </div>
 
-        <!-- Room Details -->
-        <div class="section">
-            <div class="section-title">Детали размещения</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Тип номера</div>
-                    <div class="info-value">{{ $requestData['room_type'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Количество номеров</div>
-                    <div class="info-value">{{ $requestData['room_count'] }}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Валюта</div>
-                    <div class="info-value">{{ $requestData['currency'] }}</div>
-                </div>
-            </div>
-        </div>
+    <!-- Main booking table -->
+    <table>
+        <tr>
+            <th>1. Страна<br>Country</th>
+            <td class="highlight">{{ $booking->country ?? 'JAPAN' }}</td>
+            <th>кол-во<br>qty</th>
+            <td class="highlight">{{ $requestData['pax_total'] }}</td>
+            <th>им.г.<br>ref.</th>
+            <td class="highlight">{{ $requestData['booking_reference'] }}</td>
+            <th>откуда<br>from</th>
+            <td class="highlight">{{ $booking->source_city ?? 'TY-528' }}</td>
+        </tr>
+    </table>
 
-        <!-- Special Requirements -->
-        <div class="requirements">
-            <h3>Особые требования и пожелания</h3>
-            <p>{{ $requestData['special_requirements'] }}</p>
-        </div>
+    <!-- Arrival/Departure -->
+    <table>
+        <tr>
+            <th style="width: 120px">1-заезд:<br>1-arr.:</th>
+            <td>дата заезда / Date of arrival</td>
+            <td class="highlight">{{ $requestData['check_in'] }}</td>
+            <td>время / time</td>
+            <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
+            <td>(сутки)<br>(days)</td>
+            <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
+                {{ $requestData['nights'] }}
+            </td>
+        </tr>
+        <tr>
+            <th>1-отт.:<br>1-arr.:</th>
+            <td>дата выезда / Date of departure</td>
+            <td class="highlight">{{ $requestData['check_out'] }}</td>
+            <td>время / time</td>
+            <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
+            <td>(days)</td>
+        </tr>
+    </table>
 
-        <!-- Contact Information -->
-        <div class="section">
-            <div class="section-title">Контактная информация</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Туристическая компания</div>
-                    <div class="info-value">Jahongir Travel OOO</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Дата создания заявки</div>
-                    <div class="info-value">{{ $requestData['generated_at'] }}</div>
-                </div>
-            </div>
-        </div>
+    <!-- Accommodation -->
+    <div class="section-header">2. Размещение / Accommodation:</div>
+    <table>
+        <tr>
+            <th style="width: 150px">заезд / arrival</th>
+            <th>SINGLE<br>{{ $booking->single_rooms ?? '0' }}</th>
+            <th>TWIN<br><span class="highlight">{{ $booking->twin_rooms ?? '1' }}</span></th>
+            <th>DOUBLE<br>{{ $booking->double_rooms ?? '0' }}</th>
+            <th>TSU<br>{{ $booking->triple_rooms ?? '0' }}</th>
+            <th>TRIPLE<br>{{ $booking->extra_rooms ?? '0' }}</th>
+        </tr>
+    </table>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>Пожалуйста, подтвердите или отклоните данную заявку в течение указанного срока.</p>
-            <p>Спасибо за сотрудничество!</p>
-        </div>
+    <!-- Meals -->
+    <div class="section-header">3. Питание / Meals:</div>
+    <table>
+        <tr>
+            <th style="width: 150px">1-завтрак</th>
+            <td class="highlight">{{ $requestData['nights'] }}</td>
+            <td>обед</td>
+            <td>{{ $booking->lunches_count ?? '_____' }}</td>
+            <td>ужин</td>
+            <td>{{ $booking->dinners_count ?? '_____' }}</td>
+        </tr>
+        <tr>
+            <th>завтрак</th>
+            <td>_____</td>
+            <td>обед</td>
+            <td>_____</td>
+            <td>ужин</td>
+            <td>_____</td>
+        </tr>
+        <tr>
+            <th>завтрак</th>
+            <td>_____</td>
+            <td>обед</td>
+            <td>_____</td>
+            <td>ужин</td>
+            <td>_____</td>
+        </tr>
+    </table>
+
+    <!-- Client Name -->
+    <div class="section-header">4. Client's name:</div>
+    <div style="background: #ffff00; padding: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;">
+        {{ strtoupper($requestData['customer_name']) }}
+    </div>
+
+    <!-- Notes -->
+    <div class="section-header">5. Примечание / Note:</div>
+    <div class="note-box">
+        <strong class="highlight">{{ $requestData['special_requirements'] }}</strong>
+    </div>
+
+    <!-- Additional Services -->
+    <div class="section-header">6. Доп. услуги / Add.services:</div>
+    <div class="note-box" style="min-height: 40px;">
+        {{ $booking->additional_services ?? '' }}
+    </div>
+
+    <!-- Changes -->
+    <div class="section-header">7. Изменения / Changes:</div>
+    <div class="note-box" style="min-height: 40px;">
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-text">
+        Пожалуйста, подтвердите или отклоните данную заявку до {{ $requestData['expires_at'] }}<br>
+        Please confirm or reject this application before {{ $requestData['expires_at'] }}<br>
+        Спасибо за сотрудничество! / Thank you for cooperation!
     </div>
 </body>
 </html>
