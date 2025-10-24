@@ -224,8 +224,8 @@ class TourAIService
      */
     protected function calculateCost(object $usage): float
     {
-        $inputCost = ($usage->promptTokens / 1000000) * 0.14;
-        $outputCost = ($usage->completionTokens / 1000000) * 0.28;
+        $inputCost = ($usage->prompt_tokens / 1000000) * 0.14;
+        $outputCost = ($usage->completion_tokens / 1000000) * 0.28;
 
         return round($inputCost + $outputCost, 6);
     }
