@@ -16,7 +16,6 @@ return new class extends Migration
             $table->boolean('is_operator')->default(false);
             $table->string('name');
             $table->string('address_street')->nullable();
-            $table->string('address_city')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->integer('inn')->nullable();

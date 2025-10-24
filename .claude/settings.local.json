@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan make:migration:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd separate name fields for guides and drivers, implement Uzbek driver license categories\n\nThis commit adds proper name structure (first_name, last_name, patronymic) for guides and drivers, following CIS country naming conventions. Also implements Uzbek driver license category system with city relationship.\n\nChanges:\n- Add first_name, last_name, patronymic fields to guides table\n- Add first_name, last_name, patronymic fields to drivers table  \n- Migrate existing guide names (split into first/last name)\n- Migrate existing driver names (split into first/last name)\n- Add license_categories (JSON) and city_id to drivers table\n- Update Guide model with name accessor and fillable fields\n- Update Driver model with name accessor, city relationship, and license categories\n- Update GuideForm with separate name fields (Имя, Фамилия, Отчество)\n- Update DriverForm with separate name fields, city selector, and Uzbek license categories\n- Uzbek license categories: A, A1, B, BE, C, CE, D, DE, M, F (Mopeds and Trams)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ssh:*)",
+      "Bash(php artisan tinker:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

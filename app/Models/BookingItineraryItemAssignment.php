@@ -16,6 +16,9 @@ class BookingItineraryItemAssignment extends Model
         'assignable_id',
         'room_id',
         'meal_type_id',
+        'transport_price_type_id',
+        'transport_instance_price_id',
+        'guide_service_cost',
         'role',
         'quantity',
         'cost',
@@ -40,5 +43,15 @@ class BookingItineraryItemAssignment extends Model
     public function assignable()
     {
         return $this->morphTo();
+    }
+
+    public function transportPrice()
+    {
+        return $this->belongsTo(TransportPrice::class, 'transport_price_type_id');
+    }
+
+    public function transportInstancePrice()
+    {
+        return $this->belongsTo(TransportInstancePrice::class, 'transport_instance_price_id');
     }
 }

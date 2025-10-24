@@ -23,9 +23,11 @@ class CompaniesTable
                     ->label('Адрес')
                     ->searchable()
                     ->limit(30),
-                TextColumn::make('address_city')
+                TextColumn::make('city.name')
                     ->label('Город')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('Не выбран'),
                 TextColumn::make('phone')
                     ->label('Телефон')
                     ->searchable(),
@@ -37,7 +39,13 @@ class CompaniesTable
                     ->sortable(),
                 TextColumn::make('account_number')
                     ->label('Счет')
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, '', '') : '—')
+                    ->limit(20)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        return $state && strlen($state) > 20 ? $state : null;
+                    }),
                 TextColumn::make('bank_name')
                     ->label('Банк')
                     ->searchable()
@@ -52,6 +60,18 @@ class CompaniesTable
                 TextColumn::make('license_number')
                     ->label('Лицензия')
                     ->searchable(),
+                TextColumn::make('treasury_account_number')
+                    ->label('Казнач. сч')
+                    ->formatStateUsing(fn ($state) => $state ? number_format($state, 0, '', '') : '—')
+                    ->limit(15)
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        return $state && strlen($state) > 15 ? $state : null;
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('treasury_stir')
+                    ->label('СТИР')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 ImageColumn::make('logo')
                     ->label('Логотип')
                     ->circular(),

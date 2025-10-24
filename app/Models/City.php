@@ -20,6 +20,11 @@ class City extends Model
     ];
 
     // Relationships
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
+
     public function hotels()
     {
         return $this->hasMany(Hotel::class);

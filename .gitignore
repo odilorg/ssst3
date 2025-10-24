@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Local-only
+.env.tmp
+public/ping.txt
+public/css/

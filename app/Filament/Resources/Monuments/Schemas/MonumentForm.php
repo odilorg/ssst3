@@ -23,35 +23,62 @@ class MonumentForm
                         TextInput::make('name')
                             ->label('Название монумента')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->placeholder('Например: Регистан, Гур-Эмир'),
                         Select::make('city_id')
                             ->label('Город')
                             ->relationship('city', 'name')
+                            ->searchable()
                             ->preload()
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state) {
-                                    $city = \App\Models\City::find($state);
-                                    if ($city) {
-                                        $set('city', $city->name);
-                                    }
-                                }
-                            }),
-                        TextInput::make('city')
-                            ->label('Город')
-                            ->required()
-                            ->dehydrated(),
-                        TextInput::make('ticket_price')
-                            ->label('Цена билета')
-                            ->numeric()
-                            ->prefix('$')
                             ->required(),
                         Textarea::make('description')
                             ->label('Описание')
+                            ->placeholder('Историческая справка, интересные факты...')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
+
+                Section::make('Базовые цены билетов (Base Pricing)')
+                    ->description('Стандартные цены для иностранцев и местных жителей. Если есть контракт, цены из контракта будут использоваться вместо базовых.')
+                    ->schema([
+                        TextInput::make('ticket_price')
+                            ->label('Базовая цена билета')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->required()
+                            ->helperText('Основная цена билета для расчетов'),
+                        TextInput::make('foreigner_adult_price')
+                            ->label('Иностранцы - Взрослый')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для взрослого иностранца'),
+                        TextInput::make('foreigner_child_price')
+                            ->label('Иностранцы - Ребенок')
+                            ->numeric()
+                            ->prefix('$')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для ребенка-иностранца'),
+                        TextInput::make('local_adult_price')
+                            ->label('Местные - Взрослый')
+                            ->numeric()
+                            ->suffix('сум')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для взрослого местного жителя'),
+                        TextInput::make('local_child_price')
+                            ->label('Местные - Ребенок')
+                            ->numeric()
+                            ->suffix('сум')
+                            ->placeholder('0.00')
+                            ->nullable()
+                            ->helperText('Цена билета для ребенка местного жителя'),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
 
                 Section::make('Компания и ваучер')
                     ->schema([

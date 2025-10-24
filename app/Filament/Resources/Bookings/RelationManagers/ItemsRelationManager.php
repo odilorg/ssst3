@@ -102,19 +102,24 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('title')
                     ->label('Название')
                     ->wrap()
-                    ->limit(60)
+                    ->limit(100)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('guide_assigned')
-                    ->label('Гид назначен')
+                    ->label('Гид')
+                    ->html()
                     ->getStateUsing(function ($record) {
-                        $guideAssignment = $record->assignments()
+                        $guideAssignments = $record->assignments()
                             ->where('assignable_type', Guide::class)
-                            ->first();
+                            ->get();
                         
-                        if ($guideAssignment) {
-                            $guide = $guideAssignment->assignable;
+                        if ($guideAssignments->count() > 0) {
+                            $guides = $guideAssignments->map(function ($assignment) {
+                                $guide = $assignment->assignable;
                             return $guide ? $guide->name : 'Гид удален';
+                            })->filter()->unique()->join('<br>');
+                            
+                            return $guides ?: '—';
                         }
                         
                         return '—';
@@ -125,15 +130,20 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('restaurant_assigned')
-                    ->label('Ресторан назначен')
+                    ->label('Еда')
+                    ->html()
                     ->getStateUsing(function ($record) {
-                        $restaurantAssignment = $record->assignments()
+                        $restaurantAssignments = $record->assignments()
                             ->where('assignable_type', Restaurant::class)
-                            ->first();
+                            ->get();
                         
-                        if ($restaurantAssignment) {
-                            $restaurant = $restaurantAssignment->assignable;
+                        if ($restaurantAssignments->count() > 0) {
+                            $restaurants = $restaurantAssignments->map(function ($assignment) {
+                                $restaurant = $assignment->assignable;
                             return $restaurant ? $restaurant->name : 'Ресторан удален';
+                            })->filter()->unique()->join('<br>');
+                            
+                            return $restaurants ?: '—';
                         }
                         
                         return '—';
@@ -144,15 +154,20 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('hotel_assigned')
-                    ->label('Гостиница назначена')
+                    ->label('Гост.')
+                    ->html()
                     ->getStateUsing(function ($record) {
-                        $hotelAssignment = $record->assignments()
+                        $hotelAssignments = $record->assignments()
                             ->where('assignable_type', Hotel::class)
-                            ->first();
+                            ->get();
                         
-                        if ($hotelAssignment) {
-                            $hotel = $hotelAssignment->assignable;
+                        if ($hotelAssignments->count() > 0) {
+                            $hotels = $hotelAssignments->map(function ($assignment) {
+                                $hotel = $assignment->assignable;
                             return $hotel ? $hotel->name : 'Гостиница удалена';
+                            })->filter()->unique()->join('<br>');
+                            
+                            return $hotels ?: '—';
                         }
                         
                         return '—';
@@ -163,15 +178,23 @@ class ItemsRelationManager extends RelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('transport_assigned')
-                    ->label('Транспорт назначен')
+                    ->label('Авто')
+                    ->html()
                     ->getStateUsing(function ($record) {
-                        $transportAssignment = $record->assignments()
+                        $transportAssignments = $record->assignments()
                             ->where('assignable_type', Transport::class)
-                            ->first();
+                            ->get();
                         
-                        if ($transportAssignment) {
-                            $transport = $transportAssignment->assignable;
-                            return $transport ? $transport->model . ' (' . $transport->license_plate . ')' : 'Транспорт удален';
+                        if ($transportAssignments->count() > 0) {
+                            $transports = $transportAssignments->map(function ($assignment) {
+                                $transport = $assignment->assignable;
+                                if ($transport && $transport->transportType) {
+                                    return $transport->transportType->type;
+                                }
+                                return 'Транспорт удален';
+                            })->filter()->unique()->join('<br>');
+                            
+                            return $transports ?: '—';
                         }
                         
                         return '—';
@@ -180,14 +203,6 @@ class ItemsRelationManager extends RelationManager
                     ->color(fn ($state) => $state === '—' ? 'gray' : 'danger')
                     ->toggleable()
                     ->sortable(),
-
-                Tables\Columns\IconColumn::make('is_custom')
-                    ->label('Пользовательский')
-                    ->boolean(),
-
-                Tables\Columns\IconColumn::make('is_locked')
-                    ->label('Заблокировано')
-                    ->boolean(),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Статус')
@@ -204,19 +219,6 @@ class ItemsRelationManager extends RelationManager
                         'completed' => 'Завершено',
                         'cancelled' => 'Отменено',
                     }),
-
-                Tables\Columns\TextColumn::make('planned_start_time')
-                    ->label('Время начала')
-                    ->time(),
-
-                Tables\Columns\TextColumn::make('planned_duration_minutes')
-                    ->label('Продолжительность (мин)')
-                    ->numeric(),
-
-                Tables\Columns\TextColumn::make('assignments_count')
-                    ->counts('assignments')
-                    ->label('Поставщики')
-                    ->numeric(),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -460,8 +462,10 @@ class ItemsRelationManager extends RelationManager
                             ->label('Количество порций')
                             ->numeric()
                             ->minValue(1)
-                            ->default(1)
-                            ->required(),
+                            ->helperText(function () {
+                                $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                            }),
 
                         Forms\Components\Select::make('status')
                             ->label('Статус назначения')
@@ -479,7 +483,7 @@ class ItemsRelationManager extends RelationManager
                         $restaurantId = (int) $data['restaurant_id'];
                         $dayIds = $data['days'];
                         $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
-                        $quantity = (int) $data['quantity'];
+                        $quantity = isset($data['quantity']) && !empty($data['quantity']) ? (int) $data['quantity'] : $this->ownerRecord->pax_total ?? 1;
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
 
@@ -653,15 +657,75 @@ class ItemsRelationManager extends RelationManager
                             ->required()
                             ->options(function () {
                                 return Transport::query()
-                                    ->orderBy('model')
+                                    ->with('transportType')
+                                    ->orderBy('plate_number')
                                     ->get()
                                     ->mapWithKeys(function ($transport) {
+                                        $typeName = $transport->transportType?->type ?? 'Unknown';
+                                        $plate = $transport->plate_number ?? 'Unknown';
                                         return [
-                                            $transport->id => $transport->model . ' (' . $transport->license_plate . ')'
+                                            $transport->id => "{$typeName} {$plate}"
                                         ];
                                     })
                                     ->all();
-                            }),
+                            })
+                            ->live(),
+
+                        Forms\Components\Select::make('transport_instance_price_id')
+                            ->label('Тип услуги')
+                            ->searchable()
+                            ->options(function ($get) {
+                                $transportId = (int) ($get('transport_id') ?? 0);
+                                if (!$transportId) return [];
+
+                                // Price type labels mapping
+                                $priceTypeLabels = [
+                                    'per_day' => 'За день',
+                                    'per_pickup_dropoff' => 'Подвоз/Встреча',
+                                    'po_gorodu' => 'По городу',
+                                    'vip' => 'VIP',
+                                    'economy' => 'Эконом',
+                                    'business' => 'Бизнес',
+                                    'per_seat' => 'За место',
+                                    'per_km' => 'За км',
+                                    'per_hour' => 'За час',
+                                ];
+
+                                $allPrices = [];
+
+                                // Get instance prices
+                                $instancePrices = \App\Models\TransportInstancePrice::query()
+                                    ->where('transport_id', $transportId)
+                                    ->get();
+
+                                // Get instance price types (to avoid duplicates)
+                                $instancePriceTypes = $instancePrices->pluck('price_type')->all();
+
+                                // Add instance prices to options
+                                foreach ($instancePrices as $p) {
+                                    $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                    $allPrices[$p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)';
+                                }
+
+                                // Get transport type prices
+                                $transport = \App\Models\Transport::find($transportId);
+                                if ($transport && $transport->transport_type_id) {
+                                    $typePrices = \App\Models\TransportPrice::query()
+                                        ->where('transport_type_id', $transport->transport_type_id)
+                                        ->get();
+
+                                    // Add type prices that don't have instance price overrides
+                                    foreach ($typePrices as $p) {
+                                        if (!in_array($p->price_type, $instancePriceTypes)) {
+                                            $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                            $allPrices['type_' . $p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)';
+                                        }
+                                    }
+                                }
+
+                                return $allPrices;
+                            })
+                            ->live(),
 
                         Forms\Components\Select::make('days')
                             ->label('Выберите дни')
@@ -702,10 +766,31 @@ class ItemsRelationManager extends RelationManager
                     ])
                     ->action(function (array $data): void {
                         $transportId = (int) $data['transport_id'];
+                        $transportInstancePriceId = isset($data['transport_instance_price_id']) ? $data['transport_instance_price_id'] : null;
                         $dayIds = $data['days'];
                         $quantity = (int) $data['quantity'];
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
+
+                        // Handle type price fallback - auto-create instance price if needed
+                        if ($transportInstancePriceId && is_string($transportInstancePriceId) && str_starts_with($transportInstancePriceId, 'type_')) {
+                            $typePriceId = (int) str_replace('type_', '', $transportInstancePriceId);
+                            $typePrice = \App\Models\TransportPrice::find($typePriceId);
+
+                            if ($typePrice && $transportId) {
+                                $instancePrice = \App\Models\TransportInstancePrice::updateOrCreate(
+                                    [
+                                        'transport_id' => $transportId,
+                                        'price_type' => $typePrice->price_type,
+                                    ],
+                                    [
+                                        'cost' => $typePrice->cost,
+                                        'currency' => $typePrice->currency ?? 'USD',
+                                    ]
+                                );
+                                $transportInstancePriceId = $instancePrice->id;
+                            }
+                        }
 
                         $booking = $this->ownerRecord;
                         $assignedCount = 0;
@@ -723,6 +808,7 @@ class ItemsRelationManager extends RelationManager
                                     $item->assignments()->create([
                                         'assignable_type' => Transport::class,
                                         'assignable_id' => $transportId,
+                                        'transport_instance_price_id' => $transportInstancePriceId ? (int) $transportInstancePriceId : null,
                                         'quantity' => $quantity,
                                         'status' => $status,
                                         'notes' => $notes,
@@ -827,8 +913,18 @@ class ItemsRelationManager extends RelationManager
                                             return $q->pluck('name', 'id')->all();
                                         }
                                         if ($type === Transport::class) {
-                                            $q = Transport::query()->orderBy('model');
-                                            return $q->pluck('model', 'id')->all();
+                                            return Transport::query()
+                                                ->with('transportType')
+                                                ->orderBy('plate_number')
+                                                ->get()
+                                                ->mapWithKeys(function ($transport) {
+                                                    $typeName = $transport->transportType?->type ?? 'Unknown';
+                                                    $plate = $transport->plate_number ?? 'Unknown';
+                                                    return [
+                                                        $transport->id => "{$typeName} {$plate}"
+                                                    ];
+                                                })
+                                                ->all();
                                         }
                                         return [];
                                     })
@@ -907,13 +1003,102 @@ class ItemsRelationManager extends RelationManager
                                     })
                                     ->live(),
 
-                                // Quantity for restaurants and guides
+                                // TRANSPORT INSTANCE PRICE TYPE (Transport only)
+                                Forms\Components\Select::make('transport_instance_price_id')
+                                    ->label('Тип услуги')
+                                    ->searchable()
+                                    ->visible(fn ($get) => $get('assignable_type') === Transport::class)
+                                    ->options(function ($get) {
+                                        if ($get('assignable_type') !== Transport::class) return [];
+                                        $transportId = (int) ($get('assignable_id') ?? 0);
+                                        if (!$transportId) return [];
+
+                                        // Price type labels mapping
+                                        $priceTypeLabels = [
+                                            'per_day' => 'За день',
+                                            'per_pickup_dropoff' => 'Подвоз/Встреча',
+                                            'po_gorodu' => 'По городу',
+                                            'vip' => 'VIP',
+                                            'economy' => 'Эконом',
+                                            'business' => 'Бизнес',
+                                            'per_seat' => 'За место',
+                                            'per_km' => 'За км',
+                                            'per_hour' => 'За час',
+                                        ];
+
+                                        $allPrices = [];
+
+                                        // Get instance prices
+                                        $instancePrices = \App\Models\TransportInstancePrice::query()
+                                            ->where('transport_id', $transportId)
+                                            ->get();
+
+                                        // Get instance price types (to avoid duplicates)
+                                        $instancePriceTypes = $instancePrices->pluck('price_type')->all();
+
+                                        // Add instance prices to options
+                                        foreach ($instancePrices as $p) {
+                                            $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                            $allPrices[$p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)';
+                                        }
+
+                                        // Get transport type prices
+                                        $transport = \App\Models\Transport::find($transportId);
+                                        if ($transport && $transport->transport_type_id) {
+                                            $typePrices = \App\Models\TransportPrice::query()
+                                                ->where('transport_type_id', $transport->transport_type_id)
+                                                ->get();
+
+                                            // Add type prices that don't have instance price overrides
+                                            foreach ($typePrices as $p) {
+                                                if (!in_array($p->price_type, $instancePriceTypes)) {
+                                                    $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                                    $allPrices['type_' . $p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)';
+                                                }
+                                            }
+                                        }
+
+                                        return $allPrices;
+                                    })
+                                    ->live(),
+
+                                // GUIDE SERVICE COST (Guide only)
+                                Forms\Components\Select::make('guide_service_cost')
+                                    ->label('Тип услуги')
+                                    ->searchable()
+                                    ->visible(fn ($get) => $get('assignable_type') === Guide::class)
+                                    ->options(function ($get) {
+                                        if ($get('assignable_type') !== Guide::class) return [];
+                                        $guideId = (int) ($get('assignable_id') ?? 0);
+                                        if (!$guideId) return [];
+                                        
+                                        $guide = Guide::find($guideId);
+                                        if (!$guide || !$guide->price_types) return [];
+                                        
+                                        $options = [];
+                                        foreach ($guide->price_types as $index => $priceType) {
+                                            $priceTypeName = $priceType['price_type_name'] ?? 'Unknown';
+                                            $price = $priceType['price'] ?? 0;
+                                            $options[$index] = $priceTypeName . ' — ' . number_format((float) $price, 2) . ' $';
+                                        }
+                                        
+                                        return $options;
+                                    })
+                                    ->live(),
+
+                                // Quantity for restaurants and transport
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Количество')
                                     ->numeric()
                                     ->minValue(1)
-                                    ->default(1)
-                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Guide::class])),
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Restaurant::class, Transport::class]))
+                                    ->helperText(function ($get) {
+                                        if ($get('assignable_type') === Restaurant::class) {
+                                            $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                            return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                                        }
+                                        return null;
+                                    }),
 
                                 Forms\Components\TextInput::make('cost')
                                     ->label('Стоимость')
@@ -981,15 +1166,28 @@ class ItemsRelationManager extends RelationManager
                             ->where('assignable_type', '!=', Hotel::class)
                             ->where('assignable_type', '!=', Monument::class)
                             ->map(function ($a) {
-                                return [
+                                $data = [
                                     'assignable_type' => (string) $a->assignable_type,
                                     'assignable_id' => (int) $a->assignable_id,
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
+                                    'transport_instance_price_id' => $a->transport_instance_price_id ? (int) $a->transport_instance_price_id : null,
+                                    'guide_service_cost' => $a->guide_service_cost ?: null,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
                                     'end_time' => $a->end_time ?: null,
                                     'notes' => $a->notes ?: null,
                                 ];
+
+                                // Add quantity for restaurant and transport assignments
+                                if (in_array($a->assignable_type, [Restaurant::class, Transport::class])) {
+                                    $quantity = $a->quantity ? (int) $a->quantity : 1;
+                                    if ($a->assignable_type === Restaurant::class && $quantity === $this->ownerRecord->pax_total) {
+                                        $quantity = null; // This will trigger the default value in the form
+                                    }
+                                    $data['quantity'] = $quantity;
+                                }
+
+                                return $data;
                             })
                             ->values()
                             ->all();
@@ -1073,18 +1271,59 @@ class ItemsRelationManager extends RelationManager
                                 }
                             } else {
                                 // Non-hotel 1:1 (non-monuments)
-                                $record->assignments()->create([
+                                // Prepare assignment data
+                                $transportInstancePriceId = isset($row['transport_instance_price_id']) ? $row['transport_instance_price_id'] : null;
+
+                                // Handle type price fallback for transport
+                                if ($type === Transport::class && $transportInstancePriceId && is_string($transportInstancePriceId) && str_starts_with($transportInstancePriceId, 'type_')) {
+                                    // User selected a type price, auto-create instance price
+                                    $typePriceId = (int) str_replace('type_', '', $transportInstancePriceId);
+                                    $typePrice = \App\Models\TransportPrice::find($typePriceId);
+
+                                    if ($typePrice && $assignableId) {
+                                        // Create or update instance price from type price
+                                        $instancePrice = \App\Models\TransportInstancePrice::updateOrCreate(
+                                            [
+                                                'transport_id' => $assignableId,
+                                                'price_type' => $typePrice->price_type,
+                                            ],
+                                            [
+                                                'cost' => $typePrice->cost,
+                                                'currency' => $typePrice->currency ?? 'USD',
+                                            ]
+                                        );
+
+                                        // Now use the instance price ID
+                                        $transportInstancePriceId = $instancePrice->id;
+                                    }
+                                }
+
+                                $assignmentData = [
                                     'assignable_type' => (string) $type,
                                     'assignable_id' => $assignableId,
                                     'meal_type_id' => isset($row['meal_type_id']) ? (int) $row['meal_type_id'] : null,
-                                    'quantity' => isset($row['quantity']) ? (int) $row['quantity'] : 1,
+                                    'transport_instance_price_id' => $transportInstancePriceId ? (int) $transportInstancePriceId : null,
+                                    'guide_service_cost' => isset($row['guide_service_cost']) ? $row['guide_service_cost'] : null,
                                     'cost' => isset($row['cost']) ? (float) $row['cost'] : null,
                                     'currency' => $row['currency'] ?? 'USD',
                                     'status' => $row['status'] ?? 'pending',
                                     'start_time' => $row['start_time'] ?? null,
                                     'end_time' => $row['end_time'] ?? null,
                                     'notes' => $row['notes'] ?? null,
-                                ]);
+                                ];
+
+                                // Add quantity for restaurant and transport assignments
+                                if (in_array($type, [Restaurant::class, Transport::class])) {
+                                    $quantity = 1;
+                                    if (isset($row['quantity']) && !empty($row['quantity'])) {
+                                        $quantity = (int) $row['quantity'];
+                                    } elseif ($type === Restaurant::class) {
+                                        $quantity = $this->ownerRecord->pax_total ?? 1;
+                                    }
+                                    $assignmentData['quantity'] = $quantity;
+                                }
+
+                                $record->assignments()->create($assignmentData);
                             }
                         }
 
@@ -1238,8 +1477,10 @@ class ItemsRelationManager extends RelationManager
                             ->label('Количество порций')
                             ->numeric()
                             ->minValue(1)
-                            ->default(1)
-                            ->required(),
+                            ->helperText(function () {
+                                $paxTotal = $this->ownerRecord->pax_total ?? 0;
+                                return "Оставьте пустым для использования количества людей из бронирования ({$paxTotal})";
+                            }),
 
                         Forms\Components\Select::make('status')
                             ->label('Статус назначения')
@@ -1256,7 +1497,7 @@ class ItemsRelationManager extends RelationManager
                     ->action(function ($records, array $data): void {
                         $restaurantId = (int) $data['restaurant_id'];
                         $mealTypeId = isset($data['meal_type_id']) ? (int) $data['meal_type_id'] : null;
-                        $quantity = (int) $data['quantity'];
+                        $quantity = isset($data['quantity']) && !empty($data['quantity']) ? (int) $data['quantity'] : $this->ownerRecord->pax_total ?? 1;
                         $status = $data['status'] ?? 'pending';
                         $notes = $data['notes'] ?? null;
 

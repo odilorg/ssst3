@@ -19,7 +19,7 @@ class RestaurantForm
                     ->schema([
                         Select::make('city_id')
                             ->label('Город')
-                            ->relationship('city', 'name')
+                            ->relationship('city', 'name', fn($query) => $query->distinct())
                             ->preload()
                             ->searchable()
                             ->required(),
@@ -39,12 +39,10 @@ class RestaurantForm
                         TextInput::make('website')
                             ->label('Веб-сайт')
                             ->url()
-                            ->required()
                             ->maxLength(255),
                         TextInput::make('email')
                             ->label('Email')
                             ->email()
-                            ->required()
                             ->maxLength(255),
                         Select::make('company_id')
                             ->label('Компания')
@@ -55,7 +53,8 @@ class RestaurantForm
                     ])
                     ->columns(2),
 
-                Section::make('Типы блюд')
+                Section::make('Типы блюд и базовые цены (Base Pricing)')
+                    ->description('Стандартные цены за блюдо. Если есть контракт, цены из контракта будут использоваться вместо базовых.')
                     ->schema([
                         Repeater::make('mealTypes')
                             ->label('Типы блюд')
@@ -69,21 +68,27 @@ class RestaurantForm
                                         'dinner' => 'Ужин',
                                         'coffee_break' => 'Кофе-брейк',
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->helperText('Выберите тип блюда'),
                                 TextInput::make('description')
                                     ->label('Описание')
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Например: Континентальный завтрак'),
                                 TextInput::make('price')
-                                    ->label('Цена')
+                                    ->label('Базовая цена на человека')
                                     ->numeric()
                                     ->prefix('$')
-                                    ->required(),
+                                    ->required()
+                                    ->placeholder('0.00')
+                                    ->helperText('Стандартная цена. Цены из контракта имеют приоритет.'),
                             ])
                             ->columns(3)
                             ->defaultItems(1)
                             ->addActionLabel('Добавить тип блюда')
+                            ->helperText('📝 Примечание: Если есть контракт с этим рестораном, цены из контракта будут использоваться вместо базовых.')
                             ->columnSpanFull(),
-                    ]),
+                    ])
+                    ->collapsible(),
 
                 Section::make('Изображения меню')
                     ->schema([

@@ -35,7 +35,7 @@ class HotelForm
                             ->maxLength(255),
                         Select::make('city_id')
                             ->label('Город')
-                            ->relationship('city', 'name')
+                            ->relationship('city', 'name', fn($query) => $query->distinct())
                             ->required()
                             ->preload()
                             ->searchable()
@@ -68,7 +68,8 @@ class HotelForm
                             ->preload()
                             ->searchable(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
 
             ]);
     }

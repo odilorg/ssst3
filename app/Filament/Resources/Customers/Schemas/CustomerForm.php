@@ -23,11 +23,23 @@ class CustomerForm
                             ->email()
                             ->required()
                             ->maxLength(255),
+                        TextInput::make('country')
+                            ->label('Страна')
+                            ->maxLength(255)
+                            ->nullable()
+                            ->placeholder('Например: Uzbekistan, Russia, USA')
+                            ->helperText('Страна проживания клиента'),
                         TextInput::make('phone')
                             ->label('Телефон')
                             ->tel()
                             ->required()
                             ->maxLength(255),
+                        TextInput::make('telegram_username')
+                            ->label('Telegram')
+                            ->maxLength(255)
+                            ->nullable()
+                            ->placeholder('@username')
+                            ->helperText('Telegram username клиента (с @)'),
                         TextInput::make('address')
                             ->label('Адрес')
                             ->required()
