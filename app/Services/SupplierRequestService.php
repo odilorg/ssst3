@@ -19,10 +19,15 @@ class SupplierRequestService
     public function generateRequestsForBooking(Booking $booking)
     {
         $requests = [];
-        
+
         // Get all assignments for this booking
         $assignments = $booking->assignments()
-            ->with(['assignable'])
+            ->with([
+                'assignable',
+                'bookingItineraryItem',
+                'transportInstancePrice',
+                'transportPrice'
+            ])
             ->get();
         
         // Group assignments by supplier type
@@ -132,15 +137,29 @@ class SupplierRequestService
     {
         $transport = $assignment->assignable;
         $transportType = $transport->transportType;
-        
+
+        // Get price type information
+        $priceTypeInfo = $this->getTransportPriceTypeInfo($assignment);
+
+        // Get itinerary item for route and time info
+        $itineraryItem = $assignment->bookingItineraryItem;
+
         return [
             'transport_name' => $transportType?->type ?? 'Неизвестный',
             'vehicle_model' => $transport->model ?? 'Не указан',
+            'vehicle_make' => $transport->make ?? 'Не указан',
             'plate_number' => $transport->plate_number ?? 'Не указан',
-            'capacity' => $transport->capacity ?? $booking->pax_total,
+            'capacity' => $transport->number_of_seat ?? $booking->pax_total,
             'driver_required' => true,
+            'price_type' => $priceTypeInfo['label'] ?? 'Не указан',
+            'price_type_raw' => $priceTypeInfo['raw'] ?? null,
+            'unit_price' => $priceTypeInfo['price'] ?? 0,
+            'quantity' => $assignment->quantity ?? 1,
+            'start_time' => $assignment->start_time ? $assignment->start_time->format('H:i') : ($itineraryItem?->planned_start_time?->format('H:i') ?? 'Не указано'),
+            'end_time' => $assignment->end_time ? $assignment->end_time->format('H:i') : 'Не указано',
+            'route_info' => $this->getTransportRouteInfo($booking, $assignment),
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
-            'usage_dates' => $this->getTransportUsageDates($booking),
+            'usage_dates' => $this->getTransportUsageDates($booking, $assignment->assignable_id),
         ];
     }
     
@@ -182,23 +201,94 @@ class SupplierRequestService
     }
     
     /**
-     * Get transport usage dates from booking itinerary
+     * Get transport price type information with Russian labels
      */
-    private function getTransportUsageDates(Booking $booking)
+    private function getTransportPriceTypeInfo($assignment)
     {
-        $dates = $booking->itineraryItems()
-            ->whereHas('assignments', function($query) {
+        // Price type labels mapping
+        $priceTypeLabels = [
+            'per_day' => 'За день',
+            'per_pickup_dropoff' => 'Подвоз/Встреча',
+            'po_gorodu' => 'По городу',
+            'vip' => 'VIP',
+            'economy' => 'Эконом',
+            'business' => 'Бизнес',
+            'per_seat' => 'За место',
+            'per_km' => 'За км',
+            'per_hour' => 'За час',
+        ];
+
+        // Try to get instance price first, then fall back to type price
+        $transportPrice = $assignment->transportInstancePrice;
+        if (!$transportPrice) {
+            $transportPrice = $assignment->transportPrice;
+        }
+
+        if (!$transportPrice) {
+            return [
+                'label' => 'Не указан',
+                'raw' => null,
+                'price' => 0,
+            ];
+        }
+
+        $priceTypeRaw = $transportPrice->price_type;
+        $priceTypeLabel = $priceTypeLabels[$priceTypeRaw] ?? $priceTypeRaw;
+
+        return [
+            'label' => $priceTypeLabel,
+            'raw' => $priceTypeRaw,
+            'price' => $transportPrice->cost ?? 0,
+        ];
+    }
+
+    /**
+     * Get transport route information from itinerary
+     */
+    private function getTransportRouteInfo(Booking $booking, $assignment)
+    {
+        $itineraryItem = $assignment->bookingItineraryItem;
+
+        if (!$itineraryItem) {
+            return [
+                'pickup_location' => 'Не указано',
+                'dropoff_location' => 'Не указано',
+                'route_description' => 'Информация о маршруте будет предоставлена дополнительно',
+            ];
+        }
+
+        // Try to extract location info from itinerary item
+        $meta = $itineraryItem->meta ?? [];
+        $description = $itineraryItem->description ?? '';
+
+        return [
+            'pickup_location' => $meta['pickup_location'] ?? 'Согласно программе тура',
+            'dropoff_location' => $meta['dropoff_location'] ?? 'Согласно программе тура',
+            'route_description' => !empty($description) ? $description : 'День ' . ($itineraryItem->date ? $itineraryItem->date->format('d.m.Y') : ''),
+        ];
+    }
+
+    /**
+     * Get transport usage dates from booking itinerary (filtered by transport)
+     */
+    private function getTransportUsageDates(Booking $booking, $transportId = null)
+    {
+        $query = $booking->itineraryItems()
+            ->whereHas('assignments', function($query) use ($transportId) {
                 $query->where('assignable_type', Transport::class);
-            })
-            ->pluck('date')
-            ->map(function($date) {
-                return $date ? $date->format('d.m.Y') : null;
-            })
-            ->filter()
-            ->unique()
-            ->values()
-            ->toArray();
-            
+                if ($transportId) {
+                    $query->where('assignable_id', $transportId);
+                }
+            });
+
+        $dates = $query->get()->map(function($item) {
+            return [
+                'date' => $item->date ? $item->date->format('d.m.Y') : 'Не указано',
+                'day_title' => $item->title ?? 'День',
+                'start_time' => $item->planned_start_time ? $item->planned_start_time->format('H:i') : null,
+            ];
+        })->toArray();
+
         return $dates;
     }
     

@@ -206,9 +206,15 @@
         <div class="transport-details">
             <div class="transport-name">🚗 {{ $requestData['transport_name'] }}</div>
             <div class="transport-specs">
-                Модель: {{ $requestData['vehicle_model'] }} | 
-                Номер: {{ $requestData['plate_number'] }} | 
+                @if(!empty($requestData['vehicle_make']))
+                Производитель: {{ $requestData['vehicle_make'] }} |
+                @endif
+                Модель: {{ $requestData['vehicle_model'] }} |
+                Номер: {{ $requestData['plate_number'] }} |
                 Вместимость: {{ $requestData['capacity'] }} пассажиров
+            </div>
+            <div class="transport-specs" style="margin-top: 10px; font-size: 1.1rem;">
+                <strong>Тип услуги:</strong> {{ $requestData['price_type'] }}
             </div>
         </div>
 
@@ -243,14 +249,105 @@
             </div>
         </div>
 
+        <!-- Pricing Information -->
+        <div class="section">
+            <div class="section-title">Информация о стоимости</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Тип тарифа</div>
+                    <div class="info-value">{{ $requestData['price_type'] }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Цена за единицу</div>
+                    <div class="info-value">${{ number_format($requestData['unit_price'], 2) }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Количество</div>
+                    <div class="info-value">{{ $requestData['quantity'] }}</div>
+                </div>
+                <div class="info-item" style="background: #fef3c7; border: 2px solid #f59e0b;">
+                    <div class="info-label">Общая стоимость</div>
+                    <div class="info-value" style="color: #92400e; font-size: 1.3rem;">
+                        ${{ number_format($requestData['unit_price'] * $requestData['quantity'], 2) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Requirements -->
+        @if(!empty($requestData['start_time']) && $requestData['start_time'] !== 'Не указано')
+        <div class="section">
+            <div class="section-title">Временные требования</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Время начала</div>
+                    <div class="info-value">{{ $requestData['start_time'] }}</div>
+                </div>
+                @if(!empty($requestData['end_time']) && $requestData['end_time'] !== 'Не указано')
+                <div class="info-item">
+                    <div class="info-label">Время окончания</div>
+                    <div class="info-value">{{ $requestData['end_time'] }}</div>
+                </div>
+                @endif
+            </div>
+        </div>
+        @endif
+
+        <!-- Route Information -->
+        @if(!empty($requestData['route_info']))
+        <div class="section">
+            <div class="section-title">Информация о маршруте</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Место посадки</div>
+                    <div class="info-value">{{ $requestData['route_info']['pickup_location'] }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Место высадки</div>
+                    <div class="info-value">{{ $requestData['route_info']['dropoff_location'] }}</div>
+                </div>
+            </div>
+            @if(!empty($requestData['route_info']['route_description']))
+            <div class="info-item" style="margin-top: 15px; grid-column: 1 / -1;">
+                <div class="info-label">Описание маршрута</div>
+                <div class="info-value">{{ $requestData['route_info']['route_description'] }}</div>
+            </div>
+            @endif
+        </div>
+        @endif
+
         <!-- Usage Dates -->
         <div class="usage-dates">
             <h3>📅 Даты использования транспорта</h3>
-            <div class="date-list">
-                @foreach($requestData['usage_dates'] as $date)
-                    <div class="date-item">{{ $date }}</div>
-                @endforeach
-            </div>
+            @if(is_array($requestData['usage_dates']) && count($requestData['usage_dates']) > 0)
+                @if(isset($requestData['usage_dates'][0]['date']))
+                    <!-- Enhanced format with day titles and times -->
+                    @foreach($requestData['usage_dates'] as $dateInfo)
+                        <div class="date-item" style="text-align: left; padding: 15px;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #0369a1;">
+                                {{ $dateInfo['date'] }}
+                            </div>
+                            <div style="font-size: 0.9rem; color: #0c4a6e; margin-top: 5px;">
+                                {{ $dateInfo['day_title'] }}
+                            </div>
+                            @if(!empty($dateInfo['start_time']))
+                                <div style="font-size: 0.85rem; color: #64748b; margin-top: 3px;">
+                                    ⏰ {{ $dateInfo['start_time'] }}
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @else
+                    <!-- Simple format (legacy) -->
+                    <div class="date-list">
+                        @foreach($requestData['usage_dates'] as $date)
+                            <div class="date-item">{{ $date }}</div>
+                        @endforeach
+                    </div>
+                @endif
+            @else
+                <p style="text-align: center; color: #64748b; padding: 20px;">Даты будут уточнены дополнительно</p>
+            @endif
         </div>
 
         <!-- Special Requirements -->
