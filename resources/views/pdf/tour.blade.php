@@ -16,7 +16,7 @@
             color: #333;
         }
         .container {
-            padding: 20px;
+            padding: 20px 40px;
         }
         .header {
             border-bottom: 3px solid #7B3F9E;
