@@ -678,33 +678,52 @@ class ItemsRelationManager extends RelationManager
                                 $transportId = (int) ($get('transport_id') ?? 0);
                                 if (!$transportId) return [];
 
-                                // First, try to get instance prices
+                                // Price type labels mapping
+                                $priceTypeLabels = [
+                                    'per_day' => 'За день',
+                                    'per_pickup_dropoff' => 'Подвоз/Встреча',
+                                    'po_gorodu' => 'По городу',
+                                    'vip' => 'VIP',
+                                    'economy' => 'Эконом',
+                                    'business' => 'Бизнес',
+                                    'per_seat' => 'За место',
+                                    'per_km' => 'За км',
+                                    'per_hour' => 'За час',
+                                ];
+
+                                $allPrices = [];
+
+                                // Get instance prices
                                 $instancePrices = \App\Models\TransportInstancePrice::query()
                                     ->where('transport_id', $transportId)
                                     ->get();
 
-                                if ($instancePrices->isNotEmpty()) {
-                                    // Has instance prices - show them
-                                    return $instancePrices->mapWithKeys(fn ($p) => [
-                                        $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)',
-                                    ])->all();
+                                // Get instance price types (to avoid duplicates)
+                                $instancePriceTypes = $instancePrices->pluck('price_type')->all();
+
+                                // Add instance prices to options
+                                foreach ($instancePrices as $p) {
+                                    $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                    $allPrices[$p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)';
                                 }
 
-                                // No instance prices - fall back to type prices
+                                // Get transport type prices
                                 $transport = \App\Models\Transport::find($transportId);
                                 if ($transport && $transport->transport_type_id) {
                                     $typePrices = \App\Models\TransportPrice::query()
                                         ->where('transport_type_id', $transport->transport_type_id)
                                         ->get();
 
-                                    if ($typePrices->isNotEmpty()) {
-                                        return $typePrices->mapWithKeys(fn ($p) => [
-                                            'type_' . $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)',
-                                        ])->all();
+                                    // Add type prices that don't have instance price overrides
+                                    foreach ($typePrices as $p) {
+                                        if (!in_array($p->price_type, $instancePriceTypes)) {
+                                            $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                            $allPrices['type_' . $p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)';
+                                        }
                                     }
                                 }
 
-                                return [];
+                                return $allPrices;
                             })
                             ->live(),
 
@@ -994,33 +1013,52 @@ class ItemsRelationManager extends RelationManager
                                         $transportId = (int) ($get('assignable_id') ?? 0);
                                         if (!$transportId) return [];
 
-                                        // First, try to get instance prices
+                                        // Price type labels mapping
+                                        $priceTypeLabels = [
+                                            'per_day' => 'За день',
+                                            'per_pickup_dropoff' => 'Подвоз/Встреча',
+                                            'po_gorodu' => 'По городу',
+                                            'vip' => 'VIP',
+                                            'economy' => 'Эконом',
+                                            'business' => 'Бизнес',
+                                            'per_seat' => 'За место',
+                                            'per_km' => 'За км',
+                                            'per_hour' => 'За час',
+                                        ];
+
+                                        $allPrices = [];
+
+                                        // Get instance prices
                                         $instancePrices = \App\Models\TransportInstancePrice::query()
                                             ->where('transport_id', $transportId)
                                             ->get();
 
-                                        if ($instancePrices->isNotEmpty()) {
-                                            // Has instance prices - show them
-                                            return $instancePrices->mapWithKeys(fn ($p) => [
-                                                $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)',
-                                            ])->all();
+                                        // Get instance price types (to avoid duplicates)
+                                        $instancePriceTypes = $instancePrices->pluck('price_type')->all();
+
+                                        // Add instance prices to options
+                                        foreach ($instancePrices as $p) {
+                                            $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                            $allPrices[$p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Цена авто)';
                                         }
 
-                                        // No instance prices - fall back to type prices
+                                        // Get transport type prices
                                         $transport = \App\Models\Transport::find($transportId);
                                         if ($transport && $transport->transport_type_id) {
                                             $typePrices = \App\Models\TransportPrice::query()
                                                 ->where('transport_type_id', $transport->transport_type_id)
                                                 ->get();
 
-                                            if ($typePrices->isNotEmpty()) {
-                                                return $typePrices->mapWithKeys(fn ($p) => [
-                                                    'type_' . $p->id => $p->price_type . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)',
-                                                ])->all();
+                                            // Add type prices that don't have instance price overrides
+                                            foreach ($typePrices as $p) {
+                                                if (!in_array($p->price_type, $instancePriceTypes)) {
+                                                    $label = $priceTypeLabels[$p->price_type] ?? $p->price_type;
+                                                    $allPrices['type_' . $p->id] = $label . ' — ' . number_format((float) $p->cost, 2) . ' $ (Стандартная цена)';
+                                                }
                                             }
                                         }
 
-                                        return [];
+                                        return $allPrices;
                                     })
                                     ->live(),
 

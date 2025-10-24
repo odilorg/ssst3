@@ -274,7 +274,6 @@ class TransportForm
                         TextInput::make('fuel_consumption')
                             ->label('Расход топлива (л/100км)')
                             ->numeric()
-                            ->required()
                             ->visible(function ($get) {
                                 $typeId = $get('transport_type_id');
                                 if (!$typeId) return false;
@@ -285,7 +284,6 @@ class TransportForm
                         TextInput::make('oil_change_interval_months')
                             ->label('Интервал замены масла (месяцы)')
                             ->numeric()
-                            ->required()
                             ->visible(function ($get) {
                                 $typeId = $get('transport_type_id');
                                 if (!$typeId) return false;
@@ -296,7 +294,6 @@ class TransportForm
                         TextInput::make('oil_change_interval_km')
                             ->label('Интервал замены масла (км)')
                             ->numeric()
-                            ->required()
                             ->visible(function ($get) {
                                 $typeId = $get('transport_type_id');
                                 if (!$typeId) return false;

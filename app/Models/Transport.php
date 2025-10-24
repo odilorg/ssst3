@@ -113,43 +113,58 @@ class Transport extends Model
 
     /**
      * Generate display label for transport in estimates
-     * Format: "{TransportType} {PlateNumber} - {PriceType}"
-     * Example: "Mercedes Sprinter BUS-001 - per_day"
+     * Format: "{TransportType} {PlateNumber} - {PriceTypeLabel}"
+     * Example: "Sedan 30AS1254 - За день"
      *
      * @throws \Exception if transport or related data is missing
      */
     public static function getEstimateLabel(BookingItineraryItemAssignment $assignment): string
     {
         $transport = $assignment->assignable;
-        
+
         if (!$transport) {
             throw new \Exception("Transport assignment #{$assignment->id} references non-existent transport ID {$assignment->assignable_id}");
         }
-        
+
         // Load transportType if not already loaded
         if (!$transport->relationLoaded('transportType')) {
             $transport->load('transportType');
         }
-        
+
         $transportType = $transport->transportType;
         if (!$transportType) {
             throw new \Exception("Transport #{$transport->id} has invalid transport_type_id {$transport->transport_type_id}");
         }
-        
+
         // Try transport instance price first, then fall back to transport type price
         $transportPrice = $assignment->transportInstancePrice;
         if (!$transportPrice) {
             $transportPrice = $assignment->transportPrice;
         }
-        
+
         if (!$transportPrice) {
             throw new \Exception("Transport assignment #{$assignment->id} has no valid pricing (neither transport_instance_price_id nor transport_price_type_id)");
         }
-        
+
         $typeName = $transportType->type;
         $plate = $transport->plate_number ?? 'UNKNOWN';
-        $priceType = $transportPrice->price_type;
-        
-        return trim("{$typeName} {$plate} - {$priceType}");
+
+        // Price type labels mapping
+        $priceTypeLabels = [
+            'per_day' => 'За день',
+            'per_pickup_dropoff' => 'Подвоз/Встреча',
+            'po_gorodu' => 'По городу',
+            'vip' => 'VIP',
+            'economy' => 'Эконом',
+            'business' => 'Бизнес',
+            'per_seat' => 'За место',
+            'per_km' => 'За км',
+            'per_hour' => 'За час',
+        ];
+
+        $priceTypeRaw = $transportPrice->price_type;
+        $priceTypeLabel = $priceTypeLabels[$priceTypeRaw] ?? $priceTypeRaw;
+
+        return trim("{$typeName} {$plate} - {$priceTypeLabel}");
     }
 }
