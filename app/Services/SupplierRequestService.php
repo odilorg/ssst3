@@ -146,7 +146,7 @@ class SupplierRequestService
             $hotel->load('city');
         }
 
-        // Get all dates this hotel is used (sorted)
+        // Get all dates this hotel is used (sorted and unique)
         $hotelDates = $booking->itineraryItems()
             ->whereHas('assignments', function($query) use ($hotel) {
                 $query->where('assignable_type', Hotel::class)
@@ -154,6 +154,9 @@ class SupplierRequestService
             })
             ->orderBy('date')
             ->pluck('date')
+            ->unique() // Remove duplicates
+            ->sort()   // Re-sort after unique
+            ->values() // Re-index array
             ->toArray();
 
         // Group consecutive dates into separate stays
@@ -201,8 +204,17 @@ class SupplierRequestService
             $prevDate = $currentStay[count($currentStay) - 1];
             $currentDate = $dates[$i];
 
+            // Ensure we're working with Carbon instances
+            if (!$prevDate instanceof \Carbon\Carbon) {
+                $prevDate = \Carbon\Carbon::parse($prevDate);
+            }
+            if (!$currentDate instanceof \Carbon\Carbon) {
+                $currentDate = \Carbon\Carbon::parse($currentDate);
+            }
+
             // Check if dates are consecutive (1 day apart)
-            $daysDiff = $prevDate->diffInDays($currentDate);
+            // Use abs() and compare against 1 to handle both directions
+            $daysDiff = abs($prevDate->startOfDay()->diffInDays($currentDate->startOfDay(), false));
 
             if ($daysDiff === 1) {
                 // Consecutive - add to current stay
