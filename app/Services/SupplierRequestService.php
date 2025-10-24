@@ -23,10 +23,13 @@ class SupplierRequestService
         // Get all assignments for this booking
         $assignments = $booking->assignments()
             ->with([
-                'assignable',
+                'assignable.spokenLanguages',  // For guides
+                'assignable.transportType',     // For transport
                 'bookingItineraryItem',
                 'transportInstancePrice',
-                'transportPrice'
+                'transportPrice',
+                'room',                         // For hotels
+                'mealType'                      // For restaurants
             ])
             ->get();
         
@@ -115,8 +118,8 @@ class SupplierRequestService
     private function buildHotelRequestData(Booking $booking, $assignment)
     {
         $hotel = $assignment->assignable;
-        $room = $assignment->room_id ? \App\Models\Room::find($assignment->room_id) : null;
-        
+        $room = $assignment->room;  // Use eager loaded relationship
+
         return [
             'hotel_name' => $hotel->name,
             'hotel_address' => $hotel->address,
@@ -124,7 +127,7 @@ class SupplierRequestService
             'room_count' => $assignment->quantity ?? 1,
             'check_in' => $booking->start_date?->format('d.m.Y'),
             'check_out' => $booking->end_date?->format('d.m.Y'),
-            'nights' => $booking->start_date && $booking->end_date ? 
+            'nights' => $booking->start_date && $booking->end_date ?
                 $booking->start_date->diffInDays($booking->end_date) : 0,
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
         ];
@@ -169,12 +172,17 @@ class SupplierRequestService
     private function buildGuideRequestData(Booking $booking, $assignment)
     {
         $guide = $assignment->assignable;
-        
+
+        // Get spoken languages from the relationship
+        $languages = $guide->spokenLanguages
+            ? $guide->spokenLanguages->pluck('name')->toArray()
+            : ['Русский'];
+
         return [
             'guide_name' => $guide->name,
             'guide_phone' => $guide->phone,
             'guide_email' => $guide->email,
-            'languages' => $guide->spoken_languages ?? ['Русский'],
+            'languages' => $languages,
             'group_size' => $booking->pax_total,
             'tour_dates' => $this->getGuideTourDates($booking),
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
@@ -187,8 +195,8 @@ class SupplierRequestService
     private function buildRestaurantRequestData(Booking $booking, $assignment)
     {
         $restaurant = $assignment->assignable;
-        $mealType = $assignment->meal_type_id ? \App\Models\MealType::find($assignment->meal_type_id) : null;
-        
+        $mealType = $assignment->mealType;  // Use eager loaded relationship
+
         return [
             'restaurant_name' => $restaurant->name,
             'restaurant_address' => $restaurant->address,
