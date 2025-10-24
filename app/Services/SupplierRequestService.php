@@ -162,6 +162,18 @@ class SupplierRequestService
         // Group consecutive dates into separate stays
         $stays = $this->groupConsecutiveDates($hotelDates);
 
+        // Debug logging
+        $datesFormatted = array_map(function($date) {
+            return $date instanceof \Carbon\Carbon ? $date->format('Y-m-d') : (string)$date;
+        }, $hotelDates);
+
+        \Log::info('Hotel Dates for ' . $hotel->name, [
+            'raw_dates_count' => count($hotelDates),
+            'formatted_dates' => $datesFormatted,
+            'stays_count' => count($stays),
+            'stays' => $stays
+        ]);
+
         // Calculate totals
         $totalNights = 0;
         foreach ($stays as $stay) {
@@ -204,25 +216,29 @@ class SupplierRequestService
             $prevDate = $currentStay[count($currentStay) - 1];
             $currentDate = $dates[$i];
 
-            // Ensure we're working with Carbon instances
+            // Ensure we're working with Carbon instances (make copies to avoid mutation)
             if (!$prevDate instanceof \Carbon\Carbon) {
                 $prevDate = \Carbon\Carbon::parse($prevDate);
+            } else {
+                $prevDate = $prevDate->copy();
             }
+
             if (!$currentDate instanceof \Carbon\Carbon) {
                 $currentDate = \Carbon\Carbon::parse($currentDate);
+            } else {
+                $currentDate = $currentDate->copy();
             }
 
             // Check if dates are consecutive (1 day apart)
-            // Use abs() and compare against 1 to handle both directions
-            $daysDiff = abs($prevDate->startOfDay()->diffInDays($currentDate->startOfDay(), false));
+            $daysDiff = $prevDate->startOfDay()->diffInDays($currentDate->startOfDay());
 
             if ($daysDiff === 1) {
-                // Consecutive - add to current stay
-                $currentStay[] = $currentDate;
+                // Consecutive - add to current stay (use original, not the copy)
+                $currentStay[] = $dates[$i];
             } else {
                 // Non-consecutive - save current stay and start new one
                 $stays[] = $this->formatStay($currentStay);
-                $currentStay = [$currentDate];
+                $currentStay = [$dates[$i]];
             }
         }
 
