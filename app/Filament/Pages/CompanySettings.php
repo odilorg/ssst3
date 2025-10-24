@@ -5,15 +5,14 @@ namespace App\Filament\Pages;
 use App\Models\CompanySetting;
 use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class CompanySettings extends Page implements HasForms
@@ -38,40 +37,73 @@ class CompanySettings extends Page implements HasForms
         $this->form->fill($settings->toArray());
     }
 
-    protected function getFormSchema(): array
+    public function form(Schema $schema): Schema
     {
-        return [
-            Section::make('Basic Information')->schema([
-                TextInput::make('company_name')->required(),
-                TextInput::make('legal_name'),
-                TextInput::make('tax_id')->label('Tax ID'),
-                TextInput::make('email')->email(),
-                TextInput::make('phone'),
-                TextInput::make('website')->url(),
-            ])->columns(2),
-            
-            Section::make('Address')->schema([
-                Textarea::make('office_address')->rows(2),
-                TextInput::make('city'),
-                TextInput::make('country'),
-            ])->columns(2),
-            
-            Section::make('Banking')->schema([
-                Repeater::make('bank_accounts')->schema([
-                    TextInput::make('bank_name')->required(),
-                    TextInput::make('account_number')->required(),
-                    TextInput::make('swift_code'),
-                ])->columns(2)->defaultItems(0),
-            ]),
-        ];
+        return $schema
+            ->components([
+                Section::make('Basic Information')
+                    ->schema([
+                        TextInput::make('company_name')
+                            ->label('Company Name')
+                            ->required(),
+                        TextInput::make('legal_name')
+                            ->label('Legal Name'),
+                        TextInput::make('tax_id')
+                            ->label('Tax ID / VAT Number'),
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->email(),
+                        TextInput::make('phone')
+                            ->label('Phone')
+                            ->tel(),
+                        TextInput::make('website')
+                            ->label('Website')
+                            ->url(),
+                    ])
+                    ->columns(2),
+
+                Section::make('Address Information')
+                    ->schema([
+                        Textarea::make('office_address')
+                            ->label('Office Address')
+                            ->rows(2),
+                        TextInput::make('city')
+                            ->label('City'),
+                        TextInput::make('country')
+                            ->label('Country'),
+                        TextInput::make('postal_code')
+                            ->label('Postal Code'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Banking Information')
+                    ->description('Add your bank account details for invoices and payments')
+                    ->schema([
+                        Repeater::make('bank_accounts')
+                            ->label('Bank Accounts')
+                            ->schema([
+                                TextInput::make('bank_name')
+                                    ->label('Bank Name')
+                                    ->required(),
+                                TextInput::make('account_number')
+                                    ->label('Account Number')
+                                    ->required(),
+                                TextInput::make('swift_code')
+                                    ->label('SWIFT/BIC Code'),
+                                TextInput::make('currency')
+                                    ->label('Currency')
+                                    ->default('USD'),
+                            ])
+                            ->columns(2)
+                            ->defaultItems(0)
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['bank_name'] ?? 'New Bank Account'),
+                    ]),
+            ])
+            ->statePath('data');
     }
 
-    protected function getFormStatePath(): ?string
-    {
-        return 'data';
-    }
-
-    protected function getFormActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Action::make('save')
@@ -85,7 +117,7 @@ class CompanySettings extends Page implements HasForms
         $data = $this->form->getState();
         $settings = CompanySetting::getOrCreate();
         $settings->update($data);
-        
+
         Notification::make()
             ->success()
             ->title('Settings Saved')
