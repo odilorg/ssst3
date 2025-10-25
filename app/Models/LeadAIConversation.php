@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LeadAIConversation extends Model
 {
+    protected $table = 'lead_ai_conversations';
+
     protected $fillable = [
         'lead_id',
         'user_id',

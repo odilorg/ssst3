@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LeadEnrichment extends Model
 {
+    protected $table = 'lead_enrichments';
+
     protected $fillable = [
         'lead_id',
         'user_id',
