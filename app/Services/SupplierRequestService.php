@@ -407,6 +407,12 @@ class SupplierRequestService
         // Build detailed route sheet (маршрутный лист)
         $routeSheet = $this->buildTransportRouteSheet($booking, $transport->id);
 
+        \Log::info('Transport Route Sheet Data', [
+            'transport_id' => $transport->id,
+            'route_sheet' => $routeSheet,
+            'route_sheet_count' => count($routeSheet)
+        ]);
+
         return [
             'transport_name' => $transportType?->type ?? 'Неизвестный',
             'vehicle_model' => $transport->model ?? 'Не указан',
@@ -605,23 +611,59 @@ class SupplierRequestService
     /**
      * Determine cities for route display
      * Shows "City A → City B" for intercity transfers, otherwise just "City A"
+     * Gets city from hotel assignments since itinerary items don't have city
      */
     private function determineCities($currentItem, $allItems)
     {
-        $currentCity = $currentItem->city?->name ?? 'Не указан';
+        // Get city from hotel assignment for current day
+        $currentCity = $this->getCityFromItem($currentItem);
 
         // Find the previous item by date
         $previousItem = $allItems->where('date', '<', $currentItem->date)
             ->sortByDesc('date')
             ->first();
 
-        // If city changes from previous day, show transfer route
-        if ($previousItem && $previousItem->city_id !== $currentItem->city_id) {
-            $previousCity = $previousItem->city?->name ?? 'Не указан';
-            return "{$previousCity} → {$currentCity}";
+        if ($previousItem) {
+            $previousCity = $this->getCityFromItem($previousItem);
+
+            // If city changes from previous day, show transfer route
+            if ($currentCity !== $previousCity && $previousCity !== 'Не указан') {
+                return "{$previousCity} → {$currentCity}";
+            }
         }
 
         return $currentCity;
+    }
+
+    /**
+     * Get city name from itinerary item via hotel assignment
+     */
+    private function getCityFromItem($item)
+    {
+        // Try to get city from hotel assignment
+        $hotelAssignment = $item->assignments
+            ->where('assignable_type', Hotel::class)
+            ->first();
+
+        if ($hotelAssignment && $hotelAssignment->assignable) {
+            $hotel = $hotelAssignment->assignable;
+            if (!$hotel->relationLoaded('city')) {
+                $hotel->load('city');
+            }
+            return $hotel->city?->name ?? 'Не указан';
+        }
+
+        // Fallback: try to extract from title (e.g., "Day 1: Tashkent Arrival")
+        if ($item->title) {
+            $cities = ['Tashkent', 'Samarkand', 'Bukhara', 'Khiva', 'Shakhrisabz', 'Fergana'];
+            foreach ($cities as $city) {
+                if (stripos($item->title, $city) !== false) {
+                    return $city;
+                }
+            }
+        }
+
+        return 'Не указан';
     }
 
     /**
@@ -671,17 +713,26 @@ class SupplierRequestService
                     // Load all assignments (transport and hotels) with their related models
                     $query->with(['assignable']);
                 },
-                'assignments.assignable',
-                'city'
+                'assignments.assignable'
             ])
             ->orderBy('date')
             ->get();
+
+        // Eager load city relationship for hotels
+        foreach ($transportItineraryItems as $item) {
+            foreach ($item->assignments as $assignment) {
+                if ($assignment->assignable_type === Hotel::class && $assignment->assignable) {
+                    $assignment->assignable->load('city');
+                }
+            }
+        }
 
         if ($transportItineraryItems->isEmpty()) {
             return [];
         }
 
         $routeSheet = [];
+        $dayNumber = 1; // Sequential day numbering
 
         foreach ($transportItineraryItems as $item) {
             // Get the transport assignment for this day
@@ -702,14 +753,16 @@ class SupplierRequestService
 
             $routeSheet[] = [
                 'date' => $item->date->format('d.m.Y'),
-                'day_number' => $item->day_number,
-                'day_title' => $item->day_title ?? "День {$item->day_number}",
+                'day_number' => $dayNumber,
+                'day_title' => $item->title ?? "День {$dayNumber}",
                 'cities' => $cities,
                 'assignment_notes' => $transportAssignment->notes ?? '',
                 'start_time' => $this->formatTime($transportAssignment->start_time) ?? 'Не указано',
                 'end_time' => $this->formatTime($transportAssignment->end_time) ?? null,
                 'hotels' => $hotels
             ];
+
+            $dayNumber++;
         }
 
         return $routeSheet;
