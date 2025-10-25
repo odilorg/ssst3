@@ -404,6 +404,9 @@ class SupplierRequestService
         $startDate = !empty($usageDates) ? $usageDates[0]['date'] : ($itineraryItem?->date?->format('d.m.Y') ?? 'Не указано');
         $endDate = !empty($usageDates) ? end($usageDates)['date'] : $startDate;
 
+        // Build detailed route sheet (маршрутный лист)
+        $routeSheet = $this->buildTransportRouteSheet($booking, $transport->id);
+
         return [
             'transport_name' => $transportType?->type ?? 'Неизвестный',
             'vehicle_model' => $transport->model ?? 'Не указан',
@@ -420,6 +423,7 @@ class SupplierRequestService
             'route_info' => $this->getTransportRouteInfo($booking, $assignment),
             'special_requirements' => $assignment->notes ?? 'Нет особых требований',
             'usage_dates' => $usageDates,
+            'route_sheet' => $routeSheet,
             'start_date' => $startDate,  // Override baseData with actual usage dates
             'end_date' => $endDate,
         ];
@@ -597,7 +601,120 @@ class SupplierRequestService
 
         return $dates;
     }
-    
+
+    /**
+     * Determine cities for route display
+     * Shows "City A → City B" for intercity transfers, otherwise just "City A"
+     */
+    private function determineCities($currentItem, $allItems)
+    {
+        $currentCity = $currentItem->city?->name ?? 'Не указан';
+
+        // Find the previous item by date
+        $previousItem = $allItems->where('date', '<', $currentItem->date)
+            ->sortByDesc('date')
+            ->first();
+
+        // If city changes from previous day, show transfer route
+        if ($previousItem && $previousItem->city_id !== $currentItem->city_id) {
+            $previousCity = $previousItem->city?->name ?? 'Не указан';
+            return "{$previousCity} → {$currentCity}";
+        }
+
+        return $currentCity;
+    }
+
+    /**
+     * Determine pickup and dropoff hotels for route display
+     */
+    private function determineHotels($currentItem, $allItems)
+    {
+        // Get hotels from current day (dropoff)
+        $currentHotels = $currentItem->assignments
+            ->where('assignable_type', Hotel::class)
+            ->pluck('assignable.name')
+            ->filter();
+
+        // Get hotels from previous day (pickup)
+        $previousItem = $allItems->where('date', '<', $currentItem->date)
+            ->sortByDesc('date')
+            ->first();
+
+        $previousHotels = collect();
+        if ($previousItem) {
+            $previousHotels = $previousItem->assignments
+                ->where('assignable_type', Hotel::class)
+                ->pluck('assignable.name')
+                ->filter();
+        }
+
+        return [
+            'pickup' => $previousHotels->first() ?? null,
+            'dropoff' => $currentHotels->first() ?? null
+        ];
+    }
+
+    /**
+     * Build detailed route sheet for transport
+     * Returns day-by-day breakdown with cities, hotels, times, and notes
+     */
+    private function buildTransportRouteSheet(Booking $booking, $transportId)
+    {
+        // Get all itinerary items with this transport, including related data
+        $transportItineraryItems = $booking->itineraryItems()
+            ->whereHas('assignments', function($query) use ($transportId) {
+                $query->where('assignable_type', Transport::class)
+                      ->where('assignable_id', $transportId);
+            })
+            ->with([
+                'assignments' => function($query) {
+                    // Load all assignments (transport and hotels) with their related models
+                    $query->with(['assignable']);
+                },
+                'assignments.assignable',
+                'city'
+            ])
+            ->orderBy('date')
+            ->get();
+
+        if ($transportItineraryItems->isEmpty()) {
+            return [];
+        }
+
+        $routeSheet = [];
+
+        foreach ($transportItineraryItems as $item) {
+            // Get the transport assignment for this day
+            $transportAssignment = $item->assignments
+                ->where('assignable_type', Transport::class)
+                ->where('assignable_id', $transportId)
+                ->first();
+
+            if (!$transportAssignment) {
+                continue;
+            }
+
+            // Determine cities (handles intercity transfers)
+            $cities = $this->determineCities($item, $transportItineraryItems);
+
+            // Determine hotels for pickup/dropoff
+            $hotels = $this->determineHotels($item, $transportItineraryItems);
+
+            $routeSheet[] = [
+                'date' => $item->date->format('d.m.Y'),
+                'day_number' => $item->day_number,
+                'day_title' => $item->day_title ?? "День {$item->day_number}",
+                'cities' => $cities,
+                'assignment_notes' => $transportAssignment->notes ?? '',
+                'start_time' => $this->formatTime($transportAssignment->start_time) ?? 'Не указано',
+                'end_time' => $this->formatTime($transportAssignment->end_time) ?? null,
+                'hotels' => $hotels
+            ];
+        }
+
+        return $routeSheet;
+    }
+
     /**
      * Generate PDF for a supplier request
      */

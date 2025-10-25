@@ -255,8 +255,54 @@
     </table>
     @endif
 
+    <!-- Route Sheet (Маршрутный лист) -->
+    @if(isset($requestData['route_sheet']) && count($requestData['route_sheet']) > 0)
+    <div class="section-header">6. Маршрутный лист / Route Sheet:</div>
+    <div style="font-size: 9pt; margin-bottom: 5px; font-style: italic;">
+        Подробная информация о маршруте по дням / Detailed daily route information:
+    </div>
+    <table>
+        <tr>
+            <th style="width: 80px">Дата<br>Date</th>
+            <th style="width: 150px">День<br>Day</th>
+            <th style="width: 120px">Маршрут<br>Route</th>
+            <th>Детали<br>Details</th>
+            <th style="width: 120px">Отель<br>Hotel</th>
+        </tr>
+        @foreach($requestData['route_sheet'] as $route)
+        <tr>
+            <td class="highlight">{{ $route['date'] }}</td>
+            <td><strong>{{ $route['day_title'] }}</strong></td>
+            <td>{{ $route['cities'] }}</td>
+            <td style="font-size: 9pt;">
+                @if($route['start_time'] && $route['start_time'] !== 'Не указано')
+                    <strong>Время / Time:</strong> {{ $route['start_time'] }}
+                    @if($route['end_time'])
+                        - {{ $route['end_time'] }}
+                    @endif
+                    <br>
+                @endif
+                @if($route['assignment_notes'])
+                    {{ $route['assignment_notes'] }}
+                @endif
+            </td>
+            <td style="font-size: 9pt;">
+                @if($route['hotels']['pickup'])
+                    <strong>От / From:</strong><br>
+                    {{ $route['hotels']['pickup'] }}<br>
+                @endif
+                @if($route['hotels']['dropoff'])
+                    <strong>До / To:</strong><br>
+                    {{ $route['hotels']['dropoff'] }}
+                @endif
+            </td>
+        </tr>
+        @endforeach
+    </table>
+    @endif
+
     <!-- Pricing -->
-    <div class="section-header">6. Стоимость / Pricing:</div>
+    <div class="section-header">7. Стоимость / Pricing:</div>
     <table>
         <tr>
             <th style="width: 180px">Тип тарифа<br>Price Type</th>
@@ -277,19 +323,19 @@
     </table>
 
     <!-- Client Name -->
-    <div class="section-header">7. Client's name:</div>
+    <div class="section-header">8. Client's name:</div>
     <div style="background: #ffff00; padding: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;">
         {{ strtoupper($requestData['customer_name']) }}
     </div>
 
     <!-- Special Requirements -->
-    <div class="section-header">8. Особые требования / Special Requirements:</div>
+    <div class="section-header">9. Особые требования / Special Requirements:</div>
     <div class="note-box">
         <strong>{{ $requestData['special_requirements'] }}</strong>
     </div>
 
     <!-- Additional Notes -->
-    <div class="section-header">9. Дополнительные заметки / Additional Notes:</div>
+    <div class="section-header">10. Дополнительные заметки / Additional Notes:</div>
     <div class="note-box" style="min-height: 40px;">
 
     </div>
