@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Tours\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -51,6 +52,9 @@ class ToursTable
                 //
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->label('View Formatted')
+                    ->icon('heroicon-o-document-text'),
                 EditAction::make(),
             ])
             ->toolbarActions([
