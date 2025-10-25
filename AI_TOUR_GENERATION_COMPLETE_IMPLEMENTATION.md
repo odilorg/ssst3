@@ -1058,7 +1058,7 @@ Total Cost:  $0.000744
 #### .env File Additions
 ```env
 # DeepSeek AI Configuration
-OPENAI_API_KEY=sk-dd3ec0c8ae0e4d63b5fcb1e00d660a78
+OPENAI_API_KEY=your-deepseek-api-key-here
 OPENAI_BASE_URL=https://api.deepseek.com/v1
 OPENAI_REQUEST_TIMEOUT=60
 
