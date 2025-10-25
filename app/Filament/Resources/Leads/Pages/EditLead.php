@@ -10,7 +10,7 @@ class EditLead extends EditRecord
 {
     protected static string $resource = LeadResource::class;
 
-    protected static string $view = 'filament.resources.leads.pages.edit-lead-with-copilot';
+    protected ?string $view = 'filament.resources.leads.pages.edit-lead-with-copilot';
 
     protected function getHeaderActions(): array
     {
