@@ -11,12 +11,37 @@ class AIEmailService
 {
     protected string $apiKey;
     protected string $baseUrl;
-    protected string $model = 'deepseek-chat';
+    protected string $model;
+    protected string $provider;
 
-    public function __construct()
+    public function __construct(string $provider = 'deepseek')
     {
-        $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
-        $this->baseUrl = config('services.openai.base_url', env('OPENAI_BASE_URL', 'https://api.deepseek.com'));
+        $this->provider = $provider;
+        $this->configureProvider($provider);
+    }
+
+    protected function configureProvider(string $provider): void
+    {
+        switch ($provider) {
+            case 'openai':
+                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
+                $this->baseUrl = 'https://api.openai.com';
+                $this->model = 'gpt-4o';
+                break;
+
+            case 'openai-mini':
+                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
+                $this->baseUrl = 'https://api.openai.com';
+                $this->model = 'gpt-4o-mini';
+                break;
+
+            case 'deepseek':
+            default:
+                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
+                $this->baseUrl = config('services.openai.base_url', env('OPENAI_BASE_URL', 'https://api.deepseek.com'));
+                $this->model = 'deepseek-chat';
+                break;
+        }
     }
 
     /**
@@ -55,6 +80,7 @@ class AIEmailService
                     'generated_at' => now()->toIso8601String(),
                     'email_type' => $emailType,
                     'tone' => $tone,
+                    'ai_provider' => $this->provider,
                     'ai_model' => $this->model,
                 ],
             ];

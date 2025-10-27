@@ -150,4 +150,58 @@ class EmailService
         $variables = $this->prepareVariables($lead, $customVariables);
         return $template->render($variables);
     }
+
+    /**
+     * Send AI-generated email from lead's draft fields.
+     *
+     * @param Lead $lead
+     * @return EmailLog
+     */
+    public function sendAIGeneratedEmail(Lead $lead): EmailLog
+    {
+        if (!$lead->email_draft_subject || !$lead->email_draft_body) {
+            throw new \Exception('No AI-generated email draft found. Please generate an email first.');
+        }
+
+        if (!$lead->email) {
+            throw new \Exception('Lead does not have an email address.');
+        }
+
+        // Create email log entry
+        $emailLog = EmailLog::create([
+            'lead_id' => $lead->id,
+            'email_template_id' => $lead->selected_email_template_id,
+            'sent_by' => auth()->id(),
+            'recipient_email' => $lead->email,
+            'recipient_name' => $lead->contact_name,
+            'subject' => $lead->email_draft_subject,
+            'body' => $lead->email_draft_body,
+            'status' => 'pending',
+            'metadata' => [
+                'type' => 'ai_generated',
+                'ai_metadata' => $lead->ai_email_metadata,
+            ],
+        ]);
+
+        try {
+            // Send the email
+            Mail::to($lead->email, $lead->contact_name)
+                ->send(new LeadEmail($lead->email_draft_subject, $lead->email_draft_body));
+
+            // Mark as sent
+            $emailLog->markAsSent();
+
+            // Update lead's last_contacted_at timestamp
+            $lead->update(['last_contacted_at' => now()]);
+
+        } catch (Exception $e) {
+            // Mark as failed and log the error
+            $emailLog->markAsFailed($e->getMessage());
+
+            // Re-throw the exception so calling code can handle it
+            throw $e;
+        }
+
+        return $emailLog;
+    }
 }
