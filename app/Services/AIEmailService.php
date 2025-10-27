@@ -24,21 +24,21 @@ class AIEmailService
     {
         switch ($provider) {
             case 'openai':
-                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
+                $this->apiKey = env('OPENAI_REAL_API_KEY', config('services.openai.api_key'));
                 $this->baseUrl = 'https://api.openai.com';
                 $this->model = 'gpt-4o';
                 break;
 
             case 'openai-mini':
-                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
+                $this->apiKey = env('OPENAI_REAL_API_KEY', config('services.openai.api_key'));
                 $this->baseUrl = 'https://api.openai.com';
                 $this->model = 'gpt-4o-mini';
                 break;
 
             case 'deepseek':
             default:
-                $this->apiKey = config('services.openai.api_key', env('OPENAI_API_KEY'));
-                $this->baseUrl = config('services.openai.base_url', env('OPENAI_BASE_URL', 'https://api.deepseek.com'));
+                $this->apiKey = env('DEEPSEEK_API_KEY', config('services.openai.api_key'));
+                $this->baseUrl = env('OPENAI_BASE_URL', 'https://api.deepseek.com');
                 $this->model = 'deepseek-chat';
                 break;
         }
