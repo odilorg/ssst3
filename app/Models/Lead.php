@@ -45,6 +45,17 @@ class Lead extends Model
         'customer_id',
         'quality_score',
         'notes',
+        // AI Email Draft fields
+        'selected_email_template_id',
+        'email_draft_subject',
+        'email_draft_body',
+        'email_draft_notes',
+        'ai_email_metadata',
+        'email_priority',
+        'best_contact_time',
+        'last_email_sent_at',
+        'email_response_status',
+        'total_emails_sent',
     ];
 
     protected $casts = [
@@ -57,6 +68,10 @@ class Lead extends Model
         'converted_to_customer_at' => 'date',
         'annual_volume' => 'integer',
         'quality_score' => 'integer',
+        // AI Email fields
+        'ai_email_metadata' => 'array',
+        'last_email_sent_at' => 'datetime',
+        'total_emails_sent' => 'integer',
     ];
 
     protected static function booted()
@@ -83,6 +98,11 @@ class Lead extends Model
     public function emailLogs()
     {
         return $this->hasMany(EmailLog::class);
+    }
+
+    public function selectedEmailTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'selected_email_template_id');
     }
 
     // Query Scopes
