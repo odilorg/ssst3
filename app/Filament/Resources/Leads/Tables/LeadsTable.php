@@ -95,6 +95,67 @@ class LeadsTable
                     ->icon(fn ($state) => $state && $state->isPast() ? 'heroicon-o-exclamation-circle' : null)
                     ->toggleable(),
 
+                TextColumn::make('total_emails_sent')
+                    ->label('Emails Sent')
+                    ->badge()
+                    ->color(fn ($state) => match(true) {
+                        $state === 0 => 'gray',
+                        $state >= 3 => 'success',
+                        default => 'warning',
+                    })
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('last_email_sent_at')
+                    ->label('Last Email')
+                    ->dateTime('M d, Y')
+                    ->sortable()
+                    ->since()
+                    ->placeholder('Never')
+                    ->toggleable(),
+
+                TextColumn::make('email_response_status')
+                    ->label('Email Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'replied' => 'success',
+                        'interested' => 'success',
+                        'not_interested' => 'danger',
+                        'auto_reply' => 'warning',
+                        'bounced' => 'danger',
+                        'no_response' => 'gray',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'no_response' => 'No Response',
+                        'replied' => 'Replied',
+                        'interested' => 'Interested',
+                        'not_interested' => 'Not Interested',
+                        'auto_reply' => 'Auto Reply',
+                        'bounced' => 'Bounced',
+                        default => $state,
+                    })
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('email_priority')
+                    ->label('Priority')
+                    ->badge()
+                    ->color(fn (string $state = null): string => match ($state) {
+                        'high' => 'danger',
+                        'medium' => 'warning',
+                        'low' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state = null): string => match ($state) {
+                        'high' => '🔴 High',
+                        'medium' => '🟡 Medium',
+                        'low' => '🟢 Low',
+                        default => '-',
+                    })
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('quality_score')
                     ->label('Quality')
                     ->formatStateUsing(fn ($state) => $state ? str_repeat('⭐', $state) : '-')
@@ -202,6 +263,23 @@ class LeadsTable
                         'unknown' => 'Unknown',
                     ])
                     ->multiple(),
+
+                SelectFilter::make('email_response_status')
+                    ->label('Email Response')
+                    ->options([
+                        'no_response' => 'No Response',
+                        'replied' => 'Replied',
+                        'interested' => 'Interested',
+                        'not_interested' => 'Not Interested',
+                        'auto_reply' => 'Auto Reply',
+                        'bounced' => 'Bounced',
+                    ])
+                    ->multiple(),
+
+                Filter::make('emails_sent')
+                    ->label('Has Emails Sent')
+                    ->query(fn (Builder $query) => $query->where('total_emails_sent', '>', 0))
+                    ->toggle(),
             ])
             ->recordActions([
                 EditAction::make(),

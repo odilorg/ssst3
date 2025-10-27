@@ -73,6 +73,13 @@ class LeadResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\LeadAICopilotWidget::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
