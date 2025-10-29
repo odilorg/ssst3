@@ -78,6 +78,18 @@ class Booking extends Model
         return $this->hasMany(SupplierRequest::class);
     }
 
+    public function extras()
+    {
+        return $this->belongsToMany(TourExtra::class, 'booking_tour_extra')
+                    ->withPivot('price_at_booking', 'quantity')
+                    ->withTimestamps();
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     // Business Logic Methods
     public function generateReference()
     {
