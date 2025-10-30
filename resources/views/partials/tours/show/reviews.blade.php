@@ -1,5 +1,4 @@
 {{-- Tour Reviews Partial --}}
-<section class="tour-reviews" id="reviews">
     <div class="reviews-header">
         <h2 class="section-title">Customer Reviews</h2>
         <div class="reviews-summary">
@@ -130,4 +129,3 @@
             </article>
         @endif
     </div>
-</section>

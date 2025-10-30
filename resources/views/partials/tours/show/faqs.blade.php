@@ -1,8 +1,7 @@
 {{-- Tour FAQs Partial --}}
-<section class="tour-faqs" id="faq">
-    <h2 class="section-title">Frequently Asked Questions</h2>
+<h2 class="section-title">Frequently Asked Questions</h2>
 
-    <div class="faq-list">
+<div class="faq-accordion">
         @if($tour->faqs && $tour->faqs->isNotEmpty())
             @foreach($tour->faqs as $faq)
                 <details class="faq-item">
@@ -67,5 +66,4 @@
                 </div>
             </details>
         @endif
-    </div>
-</section>
+</div>

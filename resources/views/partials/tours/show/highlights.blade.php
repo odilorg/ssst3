@@ -1,5 +1,4 @@
 {{-- Tour Highlights Partial --}}
-<section class="tour-highlights" id="highlights">
     <h2 class="section-title">Highlights</h2>
 
     <ul class="highlights-list">
@@ -52,4 +51,3 @@
             </li>
         @endif
     </ul>
-</section>

@@ -1,6 +1,5 @@
 {{-- Tour Hero Partial - Breadcrumbs, Title, Rating --}}
-<section class="tour-header">
-    <div class="container">
+<div class="container">
 
         <!-- Breadcrumb Navigation -->
         <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -55,5 +54,4 @@
             @endif
         </div>
 
-    </div>
-</section>
+</div>

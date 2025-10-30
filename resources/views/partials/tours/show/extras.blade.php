@@ -1,5 +1,4 @@
 {{-- Tour Extras/Add-ons Partial --}}
-<section class="tour-extras" id="extras">
     <h2 class="section-title">Extra Services</h2>
 
     <p class="section-intro">Enhance your tour experience with these optional services. Select any add-ons when booking.</p>
@@ -159,4 +158,3 @@
             </div>
         @endif
     </div>
-</section>

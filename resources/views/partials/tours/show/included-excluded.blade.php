@@ -1,5 +1,4 @@
 {{-- Tour Includes/Excludes Partial --}}
-<section class="tour-includes-excludes" id="includes">
     <h2 class="section-title">What's Included & Excluded</h2>
 
     <div class="includes-excludes-grid">
@@ -107,4 +106,3 @@
         </div>
 
     </div>
-</section>

@@ -1,5 +1,4 @@
 {{-- Tour Itinerary Partial --}}
-<section class="tour-itinerary" id="itinerary" aria-label="Tour itinerary">
     <div class="itinerary-header">
         <h2 class="section-title">Tour Itinerary</h2>
         <div class="itinerary-controls" aria-controls="itinerary-list">
@@ -94,4 +93,3 @@
             </li>
         @endif
     </ol>
-</section>

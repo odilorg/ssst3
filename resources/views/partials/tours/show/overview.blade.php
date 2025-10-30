@@ -1,5 +1,4 @@
 {{-- Tour Overview Partial --}}
-<section class="tour-overview" id="overview">
     <h2 class="section-title">Overview</h2>
 
     <!-- Tour Meta Information -->
@@ -38,4 +37,3 @@
     <div class="tour-overview__content">
         {!! $tour->long_description ?? nl2br(e($tour->short_description)) !!}
     </div>
-</section>
