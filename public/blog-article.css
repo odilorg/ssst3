@@ -1,0 +1,824 @@
+/* ======================================================
+   BLOG ARTICLE PAGE STYLESHEET
+   Jahongir Travel
+   Purpose: Styling for blog article pages
+   Extends: tour-details.css design tokens
+   ====================================================== */
+
+/* This file uses CSS variables from tour-details.css:
+   - Colors: --brand-blue, --brand-yellow
+   - Shadows: --shadow-light, --shadow-medium
+   - Spacing: --space-section, --space-card
+   - Typography: --line-height-relaxed, --max-line-width
+   - Border Radius: --radius-card, --radius-button
+*/
+
+/* ======================================================
+   TABLE OF CONTENTS
+   ======================================================
+   0. Header Fix (Sticky Navigation Override)
+   1. Article Hero Section
+   2. Breadcrumb Navigation
+   3. Article Meta
+   4. Two-Column Layout
+   5. Article Content Typography
+   6. Sidebar Widgets
+   7. Related Articles
+   8. Comments Section
+   9. Responsive Breakpoints
+   ====================================================== */
+
+/* ======================================================
+   0. HEADER FIX - STICKY NAVIGATION OVERRIDE
+   ====================================================== */
+
+/* Override the default absolute positioning from style.css
+   On blog pages, the header should be sticky from the start */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Higher than default 100 to ensure it stays on top */
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.nav {
+  position: relative !important; /* Override absolute positioning */
+  background: transparent;
+}
+
+/* ======================================================
+   1. ARTICLE HERO SECTION
+   ====================================================== */
+
+.article-hero {
+  padding: 2rem 0 3rem;
+  background: #FAFAFA;
+}
+
+.article-hero .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.article-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1E1E1E;
+  margin: 1.5rem 0 2rem 0;
+  max-width: 900px;
+}
+
+.article-featured-image {
+  margin-top: 2rem;
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium, 0 2px 12px rgba(0, 0, 0, 0.05));
+}
+
+.article-featured-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* ======================================================
+   2. BREADCRUMB NAVIGATION
+   ====================================================== */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: var(--brand-blue, #1C54B2);
+}
+
+.breadcrumb-separator {
+  color: #999;
+  user-select: none;
+}
+
+.breadcrumb-current {
+  color: #1E1E1E;
+  font-weight: 500;
+}
+
+/* ======================================================
+   3. ARTICLE META
+   ====================================================== */
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.article-category {
+  background: #EAF2FF;
+  color: var(--brand-blue, #1C54B2);
+  padding: 0.375rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.article-author,
+.article-date,
+.article-reading-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.article-author::before {
+  content: "👤";
+  font-size: 1rem;
+}
+
+.article-date::before {
+  content: "📅";
+  font-size: 1rem;
+}
+
+.article-reading-time::before {
+  content: "⏱️";
+  font-size: 1rem;
+}
+
+/* ======================================================
+   4. TWO-COLUMN LAYOUT
+   ====================================================== */
+
+.article-layout {
+  padding: 3rem 0;
+}
+
+.article-layout .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.article-layout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 3rem;
+  align-items: start;
+}
+
+.article-main {
+  max-width: 800px;
+  width: 100%;
+}
+
+/* ======================================================
+   5. ARTICLE CONTENT TYPOGRAPHY
+   ====================================================== */
+
+.article-content {
+  font-size: 1.0625rem;
+  line-height: var(--line-height-relaxed, 1.7);
+  color: #2C2C2C;
+}
+
+.article-content p {
+  margin-bottom: 1.5rem;
+  max-width: var(--max-line-width, 65ch);
+}
+
+.article-intro {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #1E1E1E;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Headings in Content */
+.article-content h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.article-content h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.article-content h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Links in Content */
+.article-content a {
+  color: var(--brand-blue, #1C54B2);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.article-content a:hover {
+  color: var(--brand-blue-dark, #143d85);
+}
+
+/* Lists */
+.article-list {
+  margin: 1.5rem 0 1.5rem 1.5rem;
+  padding: 0;
+  list-style-type: disc;
+}
+
+.article-list li {
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+  line-height: var(--line-height-relaxed, 1.7);
+}
+
+.article-list li::marker {
+  color: var(--brand-blue, #1C54B2);
+}
+
+/* Blockquotes */
+.article-blockquote {
+  border-left: 4px solid var(--brand-blue, #1C54B2);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #555;
+  font-size: 1.125rem;
+  background: #F9FAFB;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.article-blockquote p {
+  margin: 0;
+}
+
+/* Images in Content */
+.article-image {
+  margin: 2rem 0;
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+}
+
+.article-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-card, 12px);
+  box-shadow: var(--shadow-light, 0 2px 6px rgba(0, 0, 0, 0.04));
+}
+
+.article-image figcaption {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* ======================================================
+   6. SIDEBAR WIDGETS
+   ====================================================== */
+
+.article-sidebar {
+  position: sticky;
+  top: calc(var(--sticky-offset, 88px) + 1rem);
+  align-self: flex-start;
+  max-height: calc(100vh - var(--sticky-offset, 88px) - 2rem);
+  overflow-y: auto;
+}
+
+.sidebar-widget {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: var(--radius-card, 12px);
+  border: 1px solid #E8E8E8;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-light, 0 2px 6px rgba(0, 0, 0, 0.04));
+}
+
+.widget-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--brand-blue, #1C54B2);
+}
+
+/* Search Widget */
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-form input[type="search"] {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 1px solid #E3E3E3;
+  border-radius: var(--radius-button, 8px);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.search-form input[type="search"]:focus {
+  outline: none;
+  border-color: var(--brand-blue, #1C54B2);
+  box-shadow: 0 0 0 3px rgba(28, 84, 178, 0.1);
+}
+
+.search-form button {
+  padding: 0.875rem 1rem;
+  background: var(--brand-blue, #1C54B2);
+  color: white;
+  border: none;
+  border-radius: var(--radius-button, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-form button:hover {
+  background: var(--brand-blue-dark, #143d85);
+  transform: translateY(-2px);
+}
+
+.search-form button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Recent Posts Widget */
+.recent-posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-post-item {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.recent-post-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.recent-post-item a {
+  text-decoration: none;
+  display: block;
+}
+
+.recent-post-item h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin: 0 0 0.375rem 0;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.recent-post-item a:hover h4 {
+  color: var(--brand-blue, #1C54B2);
+}
+
+.recent-post-item time {
+  font-size: 0.8125rem;
+  color: #999;
+}
+
+/* Recent Comments Widget */
+.recent-comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-comment-item {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.recent-comment-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.recent-comment-item a {
+  font-size: 0.9375rem;
+  color: #555;
+  text-decoration: none;
+  line-height: 1.5;
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.recent-comment-item a:hover {
+  color: var(--brand-blue, #1C54B2);
+}
+
+.recent-comment-item strong {
+  color: #1E1E1E;
+  font-weight: 600;
+}
+
+/* ======================================================
+   7. RELATED ARTICLES
+   ====================================================== */
+
+.related-articles {
+  padding: 3rem 0;
+  background: #FAFAFA;
+}
+
+.related-articles .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin: 0 0 2rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--brand-blue, #1C54B2);
+  display: inline-block;
+}
+
+.related-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.related-article-card {
+  background: #fff;
+  border-radius: var(--radius-card, 12px);
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-light, 0 2px 6px rgba(0, 0, 0, 0.04));
+}
+
+.related-article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium, 0 2px 12px rgba(0, 0, 0, 0.05));
+  border-color: #D0D0D0;
+}
+
+.card-image-link {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-image-link img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.related-article-card:hover .card-image-link img {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.card-title a {
+  color: #1E1E1E;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.card-title a:hover {
+  color: var(--brand-blue, #1C54B2);
+}
+
+.card-excerpt {
+  font-size: 0.9375rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.card-read-more {
+  color: var(--brand-blue, #1C54B2);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.card-read-more:hover {
+  color: var(--brand-blue-dark, #143d85);
+  gap: 0.5rem;
+}
+
+/* ======================================================
+   8. COMMENTS SECTION
+   ====================================================== */
+
+.article-comments {
+  padding: 3rem 0;
+}
+
+.article-comments .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.comments-note {
+  font-size: 0.9375rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.comment-form {
+  margin-top: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1E1E1E;
+  font-size: 0.9375rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #E3E3E3;
+  border-radius: var(--radius-button, 8px);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+  background: #fff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--brand-blue, #1C54B2);
+  box-shadow: 0 0 0 3px rgba(28, 84, 178, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.form-checkbox label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.form-error {
+  display: block;
+  color: #DC2626;
+  font-size: 0.8125rem;
+  margin-top: 0.375rem;
+  min-height: 1.25rem;
+}
+
+.btn--primary {
+  background: var(--brand-blue, #1C54B2);
+  color: white;
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: var(--radius-button, 8px);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-light, 0 2px 6px rgba(0, 0, 0, 0.04));
+}
+
+.btn--primary:hover {
+  background: var(--brand-blue-dark, #143d85);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium, 0 2px 12px rgba(0, 0, 0, 0.05));
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+/* ======================================================
+   9. RESPONSIVE BREAKPOINTS
+   ====================================================== */
+
+/* Tablet (1024px - 1199px) */
+@media (max-width: 1199px) {
+  .article-layout-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 2rem;
+  }
+
+  .article-title {
+    font-size: 2.25rem;
+  }
+}
+
+/* Tablet & Mobile (<1024px) */
+@media (max-width: 1023px) {
+  .article-layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .article-sidebar {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+    order: 2;
+  }
+
+  .article-title {
+    font-size: 2rem;
+  }
+
+  .related-articles-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .article-hero {
+    padding: 1.5rem 0 2rem;
+  }
+
+  .article-title {
+    font-size: 1.75rem;
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  .article-meta {
+    font-size: 0.8125rem;
+    gap: 0.75rem;
+  }
+
+  .article-content {
+    font-size: 1rem;
+  }
+
+  .article-content h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .article-content h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .article-intro {
+    font-size: 1.0625rem;
+  }
+
+  .article-layout {
+    padding: 2rem 0;
+  }
+
+  .related-articles {
+    padding: 2rem 0;
+  }
+
+  .related-articles-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .sidebar-widget {
+    padding: 1.25rem;
+  }
+}
+
+/* Small Mobile (<480px) */
+@media (max-width: 479px) {
+  .article-hero .container,
+  .article-layout .container,
+  .related-articles .container,
+  .article-comments .container {
+    padding: 0 1rem;
+  }
+
+  .article-title {
+    font-size: 1.5rem;
+  }
+
+  .article-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .btn--primary {
+    width: 100%;
+  }
+}
