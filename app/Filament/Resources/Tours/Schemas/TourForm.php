@@ -140,16 +140,29 @@ class TourForm
                         Repeater::make('gallery_images')
                             ->label('Галерея изображений')
                             ->schema([
-                                TextInput::make('path')
-                                    ->label('Путь к изображению')
+                                FileUpload::make('path')
+                                    ->label('Изображение')
+                                    ->image()
+                                    ->directory('tours/gallery')
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        null,
+                                        '16:9',
+                                        '4:3',
+                                        '1:1',
+                                    ])
+                                    ->maxSize(5120)
                                     ->required(),
                                 TextInput::make('alt')
                                     ->label('Alt текст')
+                                    ->helperText('Описание изображения для доступности и SEO')
                                     ->required(),
                             ])
                             ->columnSpanFull()
                             ->collapsible()
-                            ->defaultItems(0),
+                            ->itemLabel(fn (array $state): ?string => $state['alt'] ?? 'Изображение галереи')
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить изображение'),
                     ]),
 
                 Section::make('Контент тура')
