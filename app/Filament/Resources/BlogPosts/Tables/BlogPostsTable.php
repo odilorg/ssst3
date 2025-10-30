@@ -61,7 +61,7 @@ class BlogPostsTable
             ->recordActions([
                 Action::make('view_frontend')
                     ->label('View Frontend')
-                    ->icon(Heroicon::OutlineEye)
+                    ->icon(Heroicon::OutlinedEye)
                     ->color('info')
                     ->url(fn ($record) => '/blog-article.html?slug=' . $record->slug)
                     ->openUrlInNewTab(),
