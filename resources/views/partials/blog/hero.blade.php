@@ -29,7 +29,7 @@
     <!-- Featured Image -->
     @if($post->featured_image)
         <div class="article-featured-image">
-            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="eager">
+            <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" loading="eager">
         </div>
     @endif
 </div>

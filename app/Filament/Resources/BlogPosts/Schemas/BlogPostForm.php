@@ -30,12 +30,24 @@ class BlogPostForm
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('featured_image')
-                    ->image(),
+                    ->label('Featured Image')
+                    ->image()
+                    ->disk('public')
+                    ->directory('blog/featured')
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->columnSpanFull(),
                 TextInput::make('author_name')
                     ->required()
                     ->default('Jahongir Travel Team'),
                 FileUpload::make('author_image')
-                    ->image(),
+                    ->label('Author Image')
+                    ->image()
+                    ->disk('public')
+                    ->directory('blog/authors')
+                    ->visibility('public')
+                    ->avatar()
+                    ->imageEditor(),
                 TextInput::make('reading_time')
                     ->required()
                     ->numeric()
