@@ -1,0 +1,2631 @@
+/* ======================================================
+   TOUR DETAILS PAGE STYLESHEET
+   Jahongir Travel
+   Purpose: Complete styling for tour detail pages
+   ====================================================== */
+
+/* This file extends the base style.css with tour-specific components.
+   It inherits CSS variables from the main stylesheet. */
+
+/* ======================================================
+   TABLE OF CONTENTS
+   ======================================================
+   1. Header & Navigation
+   2. Breadcrumbs
+   3. Tour Hero Gallery
+   4. Tour Header (Title, Rating, Meta)
+   5. Two-Column Layout
+   6. Tour Overview
+   7. Tour Highlights
+   8. Includes & Excludes
+   9. Cancellation Policy
+   10. Itinerary Timeline
+   11. Meeting Point & Pickup
+   12. Know Before You Go
+   13. FAQ Accordion
+   14. Extra Services
+   15. Customer Reviews
+   16. Booking Sidebar
+   17. Price Breakdown
+   18. Trust Badges
+   19. Mobile Floating CTA
+   20. Footer
+   21. Utilities & Helpers
+   22. Responsive Breakpoints
+   ====================================================== */
+
+/* ======================================================
+   CSS VARIABLES - Design System
+   ====================================================== */
+
+:root {
+  /* Sticky Navigation */
+  --sticky-offset: 88px; /* Offset for sticky navigation (header height + padding) */
+
+  /* Brand Colors */
+  --brand-blue: #1C54B2;
+  --brand-blue-dark: #143d85;
+  --brand-yellow: #F9B233;
+  --brand-yellow-dark: #e5a020;
+
+  /* Tab Colors - Improved Contrast */
+  --tab-active-bg: #d6e4ff;     /* Darker blue for better contrast */
+  --tab-active-text: #0d3a7a;   /* Darker text for WCAG AA compliance */
+  --tab-hover-bg: #f0f5ff;      /* Subtle hover state */
+
+  /* Shadows - Softer & More Blurred (Phase 1) */
+  --shadow-light: 0 2px 6px rgba(0, 0, 0, 0.04);   /* Softer for cards */
+  --shadow-medium: 0 2px 12px rgba(0, 0, 0, 0.05); /* Softer for hover/sticky */
+
+  /* Spacing Rhythm - 8pt Grid System */
+  --space-section: 32px;  /* Between major sections */
+  --space-card: 24px;     /* Inside cards */
+  --space-small: 16px;    /* Small gaps */
+  --space-xs: 8px;        /* 8pt base unit */
+  --space-sm: 16px;       /* 16pt (2x base) */
+
+  /* Typography Scale */
+  --line-height-tight: 1.3;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.7;
+  --max-line-width: 65ch; /* Updated from 70ch per audit */
+
+  /* Border Radius */
+  --radius-card: 12px;
+  --radius-button: 8px;
+  --radius-tab: 999px;    /* Full rounded for pills */
+}
+
+/* ======================================================
+   1. HEADER & NAVIGATION
+   ====================================================== */
+
+.site-header {
+  background: var(--color-surface, #fff);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.site-header__logo img {
+  height: 40px;
+  width: auto;
+}
+
+.site-nav__list {
+  display: none; /* Hidden on mobile, shown on desktop */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+.site-nav__link {
+  color: var(--color-text, #1E1E1E);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.site-nav__link:hover,
+.site-nav__link:focus {
+  color: var(--color-primary, #0D4C92);
+}
+
+.site-header__contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primary, #0D4C92);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ======================================================
+   2. BREADCRUMBS
+   ====================================================== */
+
+.breadcrumbs {
+  padding: 1rem 0;
+  font-size: 0.875rem;
+  background: var(--color-bg, #FAF8F4);
+}
+
+.breadcrumbs__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumbs__link {
+  color: var(--color-text-muted, #555);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbs__link:hover {
+  color: var(--color-primary, #0D4C92);
+  text-decoration: underline;
+}
+
+.breadcrumbs__separator {
+  color: var(--color-border, #E3E3E3);
+}
+
+.breadcrumbs__current {
+  color: var(--color-text, #1E1E1E);
+  font-weight: 500;
+}
+
+/* ======================================================
+   3. TOUR HERO GALLERY
+   ====================================================== */
+
+.tour-hero {
+  margin: 2rem 0;
+}
+
+.tour-hero__gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 500px;
+}
+
+.tour-hero__main {
+  position: relative;
+  overflow: hidden;
+}
+
+.tour-hero__main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tour-hero__main:hover img {
+  transform: scale(1.05);
+}
+
+.tour-hero__thumbnails {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.tour-hero__thumb {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-border, #E3E3E3);
+}
+
+.tour-hero__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tour-hero__thumb:hover img {
+  transform: scale(1.1);
+}
+
+.tour-hero__thumb:last-child {
+  position: relative;
+}
+
+.tour-hero__more {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 76, 146, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  font-weight: 600;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tour-hero__more:hover {
+  background: rgba(13, 76, 146, 0.95);
+}
+
+.tour-hero__more .icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Skeleton Loader */
+.tour-hero__skeleton {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 500px;
+}
+
+.skeleton--main {
+  background: linear-gradient(90deg, #E3E3E3 0%, #F5F5F5 50%, #E3E3E3 100%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.tour-hero__skeleton-thumbs {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ======================================================
+   4. TOUR HEADER (Title, Rating, Meta)
+   ====================================================== */
+
+.tour-header {
+  margin: 2rem 0;
+}
+
+.tour-header__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.tour-header__title {
+  font-size: 2rem; /* H1 size from audit */
+  font-weight: 700;
+  line-height: var(--line-height-tight); /* 1.3 from audit */
+  font-family: var(--font-heading, "Poppins", sans-serif);
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text, #1E1E1E);
+}
+
+.tour-header__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating-stars .icon--star {
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent, #F4B400);
+}
+
+.rating-score {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--color-text, #1E1E1E);
+}
+
+.rating-count {
+  color: var(--color-text-muted, #555);
+}
+
+.tour-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border, #E3E3E3);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted, #555);
+  font-size: 0.9375rem;
+}
+
+.meta-item .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary, #0D4C92);
+}
+
+.meta-item strong {
+  color: var(--color-text, #1E1E1E);
+  font-weight: 600;
+}
+
+/* ======================================================
+   5. TWO-COLUMN LAYOUT
+   ====================================================== */
+
+/* Content wrapper */
+.tour-content-wrapper {
+  background: var(--color-background, #FAF9F6);
+  touch-action: pan-y; /* Always allow vertical scroll on mobile */
+}
+
+/* Container for layout */
+.tour-content-wrapper .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Grid container for main content + sidebar */
+.tour-layout {
+  display: block; /* Single column on mobile */
+  gap: 2.5rem;
+  margin: 3rem 0;
+  touch-action: pan-y; /* Always allow vertical scroll on mobile */
+}
+
+/* Main content area (contains sections) */
+.tour-main-content {
+  /* Simple block container - sections flow vertically */
+  margin-bottom: 3rem;
+  touch-action: pan-y; /* Always allow vertical scroll on mobile */
+}
+
+/* Section spacing - Consistent 32px rhythm from audit */
+.tour-main-content > section {
+  margin-bottom: var(--space-section); /* 32px */
+  padding-top: var(--space-section); /* 32px */
+  border-top: 1px solid #F1F1F1; /* Section divider from audit */
+}
+
+.tour-main-content > section:first-child {
+  border-top: none; /* No border on first section */
+  padding-top: 0;
+}
+
+.tour-main-content > section:last-child {
+  margin-bottom: 0;
+}
+
+.tour-content {
+  min-width: 0; /* Prevent overflow */
+}
+
+.tour-sidebar {
+  position: relative;
+}
+
+/* ======================================================
+   6. TOUR OVERVIEW
+   ====================================================== */
+
+.tour-overview {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem; /* H2 size from audit */
+  font-weight: 700;
+  line-height: var(--line-height-normal); /* 1.4 */
+  font-family: var(--font-heading, "Poppins", sans-serif);
+  color: var(--color-text, #1E1E1E);
+  margin-bottom: var(--space-card); /* 24px from audit */
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-primary, #0D4C92);
+  display: inline-block;
+}
+
+.tour-overview__text {
+  font-size: 1rem;
+  line-height: var(--line-height-relaxed); /* 1.7 from audit */
+  color: var(--color-text-muted, #555);
+  max-width: var(--max-line-width); /* 70ch for readability */
+}
+
+.tour-overview__text p {
+  margin-bottom: 1rem;
+}
+
+.tour-overview__text a {
+  color: var(--brand-blue); /* Unified link color from audit */
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.tour-overview__text a:hover {
+  color: var(--color-primary-dark, #093870);
+}
+
+/* Mini Table of Contents */
+.mini-toc {
+  background: #F0F7FF;
+  border-left: 4px solid var(--color-primary, #0D4C92);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.mini-toc__title {
+  font-weight: 700;
+  color: var(--color-primary, #0D4C92);
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.mini-toc__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mini-toc__link {
+  color: var(--color-text, #1E1E1E);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.mini-toc__link::before {
+  content: "→";
+  color: var(--color-primary, #0D4C92);
+  font-weight: 700;
+}
+
+.mini-toc__link:hover {
+  color: var(--color-primary, #0D4C92);
+  text-decoration: underline;
+}
+
+/* ======================================================
+   7. TOUR HIGHLIGHTS
+   ====================================================== */
+
+.tour-highlights {
+  margin-bottom: 3rem;
+}
+
+/* Section title styling defined above in overview section */
+
+.highlights-list,
+.highlights-grid {
+  display: grid;
+  gap: 0.875rem; /* Reduced from 1.25rem - tighter spacing between cards */
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+  margin-left: 0;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem; /* Reduced from 1.25rem - tighter icon-to-text spacing */
+  padding: 1.25rem; /* Reduced from var(--space-card) 24px - less internal padding */
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  border-radius: var(--radius-card);
+  border: 1px solid #E8E8E8;
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.highlight-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+  border-color: #D0D0D0;
+}
+
+/* Icon container - premium duotone style */
+.highlight-item .icon {
+  width: 24px;
+  height: 24px;
+  color: #1C54B2;
+  flex-shrink: 0;
+  padding: 10px;
+  background: #E8F1FF;
+  border-radius: 50%;
+  margin-top: 0;
+}
+
+.highlight-item p {
+  margin: 0;
+  color: #2C2C2C;
+  line-height: 1.6;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ======================================================
+   8. INCLUDES & EXCLUDES
+   ====================================================== */
+
+.tour-includes-excludes {
+  margin-bottom: 3rem;
+}
+
+.includes-excludes-grid {
+  display: grid;
+  gap: 1rem; /* Reduced from 2rem - tighter spacing between Included/Excluded cards */
+  margin-top: 2rem;
+}
+
+.includes-section,
+.excludes-section {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  padding: 1.25rem 1.5rem; /* Reduced from 1.75rem 2rem - less internal padding */
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.includes-section:hover,
+.excludes-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: #D0D0D0;
+}
+
+/* Subsection titles (Included/Not Included headings) */
+.subsection-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin-bottom: 2rem; /* Increased from 1.5rem for better spacing */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.includes-section__title,
+.excludes-section__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.includes-section__title .icon,
+.excludes-section__title .icon {
+  width: 20px;
+  height: 20px;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.includes-section__title .icon {
+  color: #2E7D5E;
+  background: #E8F5F0;
+}
+
+.excludes-section__title .icon {
+  color: #C93A37;
+  background: #FEEAEA;
+}
+
+.includes-list,
+.excludes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.includes-list li,
+.excludes-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  line-height: 1.6;
+  font-size: 0.9375rem;
+  color: #2C2C2C;
+}
+
+.includes-list .icon {
+  width: 16px;
+  height: 16px;
+  color: #2E7D5E;
+  flex-shrink: 0;
+  padding: 6px;
+  background: #E8F5F0;
+  border-radius: 50%;
+  margin-top: 0;
+}
+
+.excludes-list .icon {
+  width: 16px;
+  height: 16px;
+  color: #C93A37;
+  flex-shrink: 0;
+  padding: 6px;
+  background: #FEEAEA;
+  border-radius: 50%;
+  margin-top: 0;
+}
+
+/* ======================================================
+   9. CANCELLATION POLICY
+   ====================================================== */
+
+.tour-cancellation {
+  margin-bottom: 3rem;
+}
+
+.cancellation-box {
+  background: #FFF9E6;
+  border: 2px solid var(--color-accent, #F4B400);
+  border-radius: 12px;
+  padding: 1.5rem; /* Reduced from 2rem - consistent with other sections */
+  margin-top: 1.5rem;
+}
+
+.cancellation-box__title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text, #1E1E1E);
+  margin-bottom: 1rem;
+}
+
+.cancellation-box__title .icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent, #F4B400);
+}
+
+.cancellation-box__highlight {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text, #1E1E1E);
+  margin-bottom: 1.5rem;
+}
+
+.cancellation-list {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cancellation-list li {
+  color: var(--color-text-muted, #555);
+  line-height: 1.6;
+}
+
+/* Cancellation Notice - Softer yellow per audit */
+.cancellation-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #FFFBEA; /* Softened yellow from audit */
+  border: 1px solid #FFE08C; /* Softened border from audit */
+  border-radius: var(--radius-card);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.cancellation-notice .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: #F59E0B; /* Warm amber for info icon */
+  margin-top: 0.125rem;
+}
+
+.cancellation-notice p {
+  margin: 0;
+  color: #78350F; /* Darker amber for text */
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+.cancellation-notice strong {
+  color: #78350F;
+  font-weight: 600;
+}
+
+/* ======================================================
+   10. ITINERARY TIMELINE (Semantic Accordion)
+   ====================================================== */
+
+.tour-itinerary {
+  margin-bottom: 3rem;
+}
+
+/* Header with title + expand/collapse controls */
+.itinerary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.itinerary-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.itinerary-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0D4C92;
+  background: #F0F7FF;
+  border: 1px solid #D0E7FF;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.itinerary-controls button:hover {
+  background: #E0EFFF;
+  border-color: #0D4C92;
+}
+
+/* Timeline list - ordered list with left border as timeline */
+.itinerary-list {
+  border-left: 3px solid #0D4C92;
+  margin: 2rem 0 0 1.5rem;
+  padding-left: 2rem;
+  list-style: none;
+}
+
+.itinerary-list li {
+  margin: 0 0 1rem 0; /* Reduced from 1.5rem - consistent with other card sections */
+  position: relative;
+}
+
+.itinerary-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Timeline dot on each stop */
+.itinerary-list li::before {
+  content: "";
+  position: absolute;
+  left: -2.375rem;
+  top: 0.5rem;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 3px solid #0D4C92;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.itinerary-list li:has(details[open])::before {
+  background: #0D4C92;
+}
+
+/* Details element (accordion container) */
+.itinerary-list details {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  border: 1px solid #E8E8E8;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem; /* Increased from 0.75rem 1rem - consistent with includes/excludes cards */
+  transition: all 0.2s ease;
+}
+
+.itinerary-list details:hover {
+  background: #F0F7FF;
+  border-color: #D0E7FF;
+}
+
+.itinerary-list details[open] {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Summary (clickable: time + title) */
+.itinerary-list summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  list-style: none; /* Remove default marker */
+}
+
+.itinerary-list summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Time element */
+.itinerary-list time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0D4C92;
+  min-width: 5.5rem;
+  flex-shrink: 0;
+}
+
+/* Stop title */
+.stop-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1E1E1E;
+  flex: 1;
+}
+
+/* Stop body (expandable content) */
+.stop-body {
+  margin-top: 0.75rem;
+  padding-left: 6.25rem; /* Align with title */
+  color: #555;
+  line-height: 1.6;
+}
+
+.stop-body p {
+  margin: 0 0 0.75rem 0;
+}
+
+.stop-body p:last-child {
+  margin-bottom: 0;
+}
+
+.stop-duration {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* ======================================================
+   11. MEETING POINT & PICKUP
+   ====================================================== */
+
+.tour-meeting {
+  margin-bottom: 3rem;
+}
+
+.meeting-grid {
+  display: grid;
+  gap: 1.5rem; /* Reduced from 2rem - consistent spacing */
+  margin-top: 1.5rem;
+}
+
+.meeting-info {
+  background: var(--color-surface, #fff);
+  padding: 1.5rem; /* Reduced from 2rem - consistent with other cards */
+  border-radius: 12px;
+  border: 1px solid var(--color-border, #E3E3E3);
+}
+
+.meeting-info__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem; /* Reduced from 1.5rem - tighter spacing */
+}
+
+.meeting-info__item:last-child {
+  margin-bottom: 0;
+}
+
+.meeting-info__item .icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary, #0D4C92);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.meeting-info__item h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text, #1E1E1E);
+  margin: 0 0 0.5rem 0;
+}
+
+.meeting-info__item p {
+  color: var(--color-text-muted, #555);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.meeting-map {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #E3E3E3);
+  height: 300px;
+}
+
+.meeting-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Mobile: prevent map from trapping scroll */
+@media (max-width: 767px) {
+  .meeting-map iframe {
+    pointer-events: none; /* Disable map interaction on mobile to prevent scroll trap */
+  }
+
+  .meeting-map:active iframe {
+    pointer-events: auto; /* Re-enable when user taps/holds on map */
+  }
+}
+
+/* ======================================================
+   12. KNOW BEFORE YOU GO
+   ====================================================== */
+
+.tour-know-before {
+  margin-bottom: 3rem;
+}
+
+/* Know Before You Go - List Format */
+.know-before-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.know-before-list li {
+  display: flex;
+  align-items: flex-start; /* Align icon with first line of text */
+  gap: 1rem;
+}
+
+.know-before-list li .icon {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  width: 20px;
+  height: 20px;
+  color: var(--brand-blue);
+  margin-top: 2px; /* Fine-tune alignment with bold text baseline */
+}
+
+.know-before-list li strong {
+  font-weight: 600;
+  color: #1E1E1E;
+}
+
+.know-before-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.know-before-item {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  padding: 1.25rem 1.5rem; /* Reduced vertical from 1.75rem - consistent with other cards */
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.know-before-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: #D0D0D0;
+}
+
+.know-before-item__icon {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 1.25rem;
+  padding: 12px;
+  color: #1C54B2;
+  background: #E8F1FF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.know-before-item h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin: 0 0 0.625rem 0;
+  letter-spacing: 0.01em;
+}
+
+.know-before-item p {
+  color: #2C2C2C;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ======================================================
+   13. FAQ ACCORDION
+   ====================================================== */
+
+.tour-faq {
+  margin-bottom: 3rem;
+}
+
+/* FAQ Accordion - Premium Style */
+.tour-faq {
+  margin-bottom: 3rem;
+}
+
+.faq-accordion {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Breathing room from audit */
+}
+
+.faq-item {
+  background: linear-gradient(180deg, #ffffff, #f9fafb);
+  border: 1px solid #E8E8E8;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.faq-item:hover {
+  box-shadow: var(--shadow-medium);
+  border-color: #D0D0D0;
+}
+
+/* FAQ Question (summary) */
+.faq-question {
+  padding: 1.25rem 1.5rem; /* Reduced from 1.5rem 1.75rem - consistent spacing */
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item:hover .faq-question {
+  background: rgba(240, 247, 255, 0.5);
+}
+
+.faq-item[open] .faq-question {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.faq-question span {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* Chevron icon */
+.faq-question .icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: #0D4C92;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-item[open] .faq-question .icon {
+  transform: rotate(180deg);
+}
+
+/* FAQ Answer */
+.faq-answer {
+  padding: 1.25rem 1.5rem 1.5rem; /* Reduced from 1.25rem 1.75rem 1.75rem - consistent spacing */
+  color: #555;
+  line-height: 1.7;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-answer p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.faq-answer p + p {
+  margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ======================================================
+   14. EXTRA SERVICES - Premium Mockup Style
+   ====================================================== */
+
+.tour-extras {
+  margin-bottom: 3rem;
+}
+
+.section-intro {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.extras-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* 2 columns on tablet+ */
+@media (min-width: 768px) {
+  .extras-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+/* Extra Service Card - Clean mockup style */
+.extra-service-card {
+  background: #fff;
+  border: 1px solid #DEDEDE;
+  border-radius: 12px;
+  padding: 2rem 1.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.extra-service-card:hover {
+  border-color: #C0C0C0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Icon section */
+.extra-service__icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.25rem;
+  color: #1E1E1E;
+  flex-shrink: 0;
+}
+
+.extra-service__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Content section */
+.extra-service__content {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.extra-service__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.extra-service__description {
+  color: #555;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+/* Price section */
+.extra-service__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+}
+
+.price-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1E1E1E;
+}
+
+/* Action section - checkbox + label */
+.extra-service__action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #F0F0F0;
+}
+
+.extra-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #C0C0C0;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+  flex-shrink: 0;
+  outline: none; /* Remove default browser outline */
+}
+
+.extra-checkbox:hover {
+  border-color: #0D4C92;
+}
+
+/* Only show focus outline for keyboard navigation, not mouse clicks */
+.extra-checkbox:focus-visible {
+  box-shadow: 0 0 0 3px rgba(13, 76, 146, 0.15);
+  border-color: #0D4C92;
+}
+
+.extra-checkbox:checked {
+  background-color: #0D4C92;
+  border-color: #0D4C92;
+}
+
+.extra-checkbox:checked:focus-visible {
+  box-shadow: 0 0 0 3px rgba(13, 76, 146, 0.25);
+}
+
+.extra-label {
+  font-size: 0.9375rem;
+  color: #1E1E1E;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  margin: 0;
+}
+
+.extra-checkbox:checked + .extra-label {
+  color: #0D4C92;
+  font-weight: 600;
+}
+
+/* ======================================================
+   15. CUSTOMER REVIEWS - Premium Mockup Style
+   ====================================================== */
+
+.tour-reviews {
+  margin-bottom: 3rem;
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.reviews-summary {
+  text-align: right;
+}
+
+.reviews-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.reviews-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem; /* Reduced from 1.75rem per audit */
+}
+
+/* 2 columns on desktop */
+@media (min-width: 768px) {
+  .reviews-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem; /* Reduced from 2rem per audit */
+  }
+}
+
+/* Review Card - Clean white design */
+.review-card {
+  background: #fff;
+  border: 1px solid #DEDEDE;
+  border-radius: var(--radius-card);
+  padding: 2rem 1.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-light);
+}
+
+.review-card:hover {
+  box-shadow: var(--shadow-medium);
+  border-color: #C0C0C0;
+  transform: translateY(-2px);
+}
+
+/* Review Header - Avatar + Info */
+.review-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reviewer-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #F0F0F0;
+}
+
+.reviewer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewer-name {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+/* Stars below name */
+.review-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.review-rating .icon--star {
+  width: 18px;
+  height: 18px;
+  color: #F4B400;
+  flex-shrink: 0;
+}
+
+/* Location + Date below name */
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #777;
+  flex-wrap: wrap;
+}
+
+.review-location {
+  color: #555;
+}
+
+.review-separator {
+  color: #D0D0D0;
+}
+
+.review-date {
+  color: #777;
+}
+
+/* Review Text */
+.review-text {
+  color: #555;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Reviews CTA */
+.reviews-cta {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  background: #F9FAFB;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.reviews-cta-text {
+  color: #555;
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+}
+
+/* ======================================================
+   16. BOOKING SIDEBAR
+   ====================================================== */
+
+.booking-sidebar {
+  /* Just a sticky container - no visual styling */
+}
+
+.booking-sidebar__header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border, #E3E3E3);
+}
+
+.booking-sidebar__header h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text, #1E1E1E);
+  margin: 0 0 0.5rem 0;
+}
+
+.booking-sidebar__price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary, #0D4C92);
+  line-height: 1;
+}
+
+.booking-sidebar__price-unit {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text-muted, #555);
+}
+
+/* Booking Form */
+.booking-form {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--color-text, #1E1E1E);
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.form-label .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary, #0D4C92);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-border, #E3E3E3);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  min-height: 44px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #0D4C92);
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: var(--color-error, #E53935);
+}
+
+.form-hint {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #555);
+  margin-top: 0.25rem;
+}
+
+.form-error {
+  display: none;
+  color: var(--color-error, #E53935);
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Secondary action as text link */
+.btn-link {
+  color: #555;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: 500;
+}
+
+.btn-link:hover {
+  color: #0D4C92;
+  text-decoration: underline;
+}
+
+/* ======================================================
+   17. PRICE BREAKDOWN
+   ====================================================== */
+
+.price-breakdown {
+  background: #F8FAFB;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.breakdown-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text, #1E1E1E);
+  margin: 0 0 1rem 0;
+}
+
+.breakdown-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9375rem;
+}
+
+.breakdown-label {
+  color: var(--color-text-muted, #555);
+}
+
+.breakdown-value {
+  font-weight: 600;
+  color: var(--color-text, #1E1E1E);
+}
+
+.breakdown-item--total {
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--color-border, #E3E3E3);
+  margin-top: 0.5rem;
+}
+
+.breakdown-item--total .breakdown-label {
+  font-weight: 700;
+  color: var(--color-text, #1E1E1E);
+  font-size: 1rem;
+}
+
+.breakdown-total {
+  font-size: 1.5rem;
+  color: var(--color-primary, #0D4C92);
+}
+
+.breakdown-note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #555);
+  margin: 1rem 0 0 0;
+  text-align: center;
+}
+
+/* ======================================================
+   18. TRUST BADGES - Premium Style
+   ====================================================== */
+
+.trust-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  color: #1E1E1E;
+  font-weight: 500;
+}
+
+.badge-item .icon {
+  width: 20px;
+  height: 20px;
+  color: #1E1E1E;
+  flex-shrink: 0;
+}
+
+/* ======================================================
+   19. BOOKING BENEFITS - "Why Book" Section
+   ====================================================== */
+
+.booking-benefits {
+  margin-top: 2rem;
+}
+
+.benefits-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.3;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  color: #555;
+}
+
+.benefit-item .icon {
+  width: 20px;
+  height: 20px;
+  color: #00A86B;
+  flex-shrink: 0;
+}
+
+/* ======================================================
+   20. BOOKING CLARIFICATION BOX - Yellow Highlight
+   ====================================================== */
+
+.booking-clarification {
+  background: #FFF9E6;
+  border: 1px solid #F4B400;
+  border-radius: 8px;
+  padding: 1.25rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.clarification-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: #1E1E1E;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+}
+
+.clarification-text .icon {
+  width: 18px;
+  height: 18px;
+  color: #1E1E1E;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.clarification-text strong {
+  font-weight: 700;
+  color: #1E1E1E;
+}
+
+.clarification-note {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ======================================================
+   19. MOBILE FLOATING CTA
+   ====================================================== */
+
+.mobile-booking-cta {
+  display: none; /* Hidden by default, shown on mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface, #fff);
+  padding: 1rem 1.5rem;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 90;
+  pointer-events: none; /* Don't intercept page scroll */
+}
+
+.mobile-booking-cta__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  pointer-events: auto; /* Content is interactive */
+}
+
+.mobile-booking-cta__price {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto; /* Price text is interactive */
+}
+
+.mobile-booking-cta__amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary, #0D4C92);
+  line-height: 1;
+}
+
+.mobile-booking-cta__unit {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #555);
+}
+
+.mobile-booking-cta .btn {
+  flex-shrink: 0;
+  pointer-events: auto; /* Button is interactive */
+}
+
+/* ======================================================
+   20. FOOTER
+   ====================================================== */
+/* Footer styles are shared from main stylesheet */
+
+/* ======================================================
+   21. UTILITIES & HELPERS
+   ====================================================== */
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--large {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+.btn--secondary {
+  background: transparent;
+  border: 2px solid var(--brand-blue);
+  color: var(--brand-blue);
+  padding: 1rem 2rem;
+  border-radius: var(--radius-button);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn--secondary:hover {
+  background: var(--brand-blue);
+  color: white;
+}
+
+.btn--whatsapp {
+  background: #25D366;
+  color: white;
+  gap: 0.5rem;
+}
+
+.btn--whatsapp:hover {
+  background: #1EBE57;
+}
+
+.btn--whatsapp .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ======================================================
+   22. RESPONSIVE BREAKPOINTS
+   ====================================================== */
+
+/* Tablet: 768px and up */
+@media (min-width: 768px) {
+  /* Two-column layout: main content + sidebar */
+  .tour-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2.5rem;
+    align-items: start; /* Align both columns to top */
+  }
+
+  /* Sidebar becomes sticky - positioned below sticky tabs to avoid overlap */
+  .booking-sidebar {
+    position: sticky;
+    top: 220px; /* Below header (88px) + sticky tabs (~50px) + gap (82px) */
+    align-self: flex-start;
+    z-index: 30; /* Above section navigation (z-index: 10) */
+  }
+
+  /* Hero gallery responsive */
+  .tour-hero__gallery {
+    max-height: 450px;
+  }
+
+  /* Includes/Excludes side by side */
+  .includes-excludes-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Meeting grid */
+  .meeting-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Navigation visible */
+  .site-nav__list {
+    display: flex;
+  }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+  /* Larger hero */
+  .tour-hero__gallery {
+    max-height: 500px;
+  }
+
+  /* More columns for highlights */
+  .highlights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Know before you go 3 columns */
+  .know-before-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Extra services 2 columns */
+  .extras-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Reviews 2 columns */
+  .reviews-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 767px and below */
+@media (max-width: 767px) {
+  /* Hero gallery stacked */
+  .tour-hero__gallery {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  .tour-hero__thumbnails {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+  }
+
+  /* Mobile floating CTA shown */
+  .mobile-booking-cta {
+    display: block;
+  }
+
+  /* Add padding to body to account for fixed CTA */
+  body {
+    padding-bottom: 80px;
+  }
+
+  /* Single column layout - tour-layout is just a block on mobile */
+  .tour-layout {
+    display: block; /* Stack vertically */
+  }
+
+  /* Add spacing between sections */
+  .tour-main-content {
+    margin-bottom: 2rem;
+  }
+
+  /* Section Navigation - kept sticky on mobile with arrows */
+  .section-nav {
+    /* Keep sticky and arrows visible - they help with discoverability */
+  }
+
+  /* Itinerary - mobile optimized */
+  .itinerary-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .itinerary-list {
+    margin-left: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .itinerary-list details {
+    padding: 0.625rem 0.875rem;
+  }
+
+  .itinerary-list time {
+    font-size: 0.8125rem;
+    min-width: 4.5rem;
+  }
+
+  .stop-title {
+    font-size: 0.9375rem;
+  }
+
+  .stop-body {
+    padding-left: 5rem;
+    font-size: 0.9375rem;
+  }
+
+  /* FAQ - mobile optimized */
+  .faq-question {
+    padding: 1.125rem 1.25rem;
+    font-size: 1rem;
+  }
+
+  .faq-answer {
+    padding: 1rem 1.25rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .faq-accordion {
+    gap: 1rem;
+  }
+
+  /* Extra Services - mobile optimized */
+  .extra-service-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .extra-service__icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+  }
+
+  .extra-service__title {
+    font-size: 1.0625rem;
+  }
+
+  .extra-service__description {
+    font-size: 0.875rem;
+  }
+
+  .price-value {
+    font-size: 1.125rem;
+  }
+
+  /* Reviews - mobile optimized */
+  .review-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .reviewer-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .reviewer-name {
+    font-size: 1rem;
+  }
+
+  .review-rating .icon--star {
+    width: 16px;
+    height: 16px;
+  }
+
+  .review-text {
+    font-size: 0.875rem;
+  }
+
+  .reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .reviews-summary {
+    text-align: left;
+  }
+
+  /* Smaller text */
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .tour-header__title {
+    font-size: 1.75rem;
+  }
+
+  /* Itinerary smaller padding */
+  .itinerary-timeline {
+    padding-left: 2.5rem;
+  }
+
+  .itinerary-item__marker {
+    left: -2.25rem;
+  }
+
+  /* Tour Meta Bar - Stack on mobile */
+  .tour-meta-bar {
+    gap: 1rem;
+  }
+
+  .tour-meta-item {
+    font-size: 0.875rem;
+  }
+
+  /* Section TOC - Scrollable on mobile */
+  .section-toc {
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .toc-link {
+    font-size: 0.875rem;
+  }
+
+  /* Tour Header Actions - Smaller on mobile */
+  .tour-header__actions {
+    gap: 0.375rem;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Title smaller on mobile */
+  .tour-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* ======================================================
+   GETYOURGUIDE-STYLE UPDATES (Reference Design Match)
+   ====================================================== */
+
+/* Tour Meta Bar - Clean Icon + Text */
+.tour-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.tour-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: #1E1E1E;
+}
+
+.tour-meta-item svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--brand-blue); /* Changed from gray to brand blue for visual interest */
+}
+
+.tour-meta-item span {
+  line-height: 1.4;
+}
+
+/* Section Navigation Wrapper - Sticky Container */
+.section-nav-wrapper {
+  position: relative; /* Non-sticky on mobile */
+  touch-action: pan-y; /* Allow vertical page scroll on mobile */
+}
+
+/* Desktop: Make wrapper sticky with proper z-index */
+@media (min-width: 992px) {
+  .section-nav-wrapper {
+    position: sticky;
+    top: var(--sticky-offset, 88px);
+    z-index: 10; /* Below booking sidebar (30) to not overlap */
+  }
+
+  /* Make navigation more compact to avoid sidebar overlap */
+  .section-nav {
+    padding: var(--space-xs);
+  }
+
+  .section-nav__scroller {
+    gap: 0.75rem; /* Reduced from 1.25rem */
+  }
+
+  .section-nav__scroller a {
+    font-size: 0.875rem; /* Reduced from 0.9375rem */
+    padding: 6px 12px; /* Compact on desktop, still readable */
+  }
+}
+
+/* Section Navigation with Arrows & Fade Edges */
+.section-nav {
+  background: #fff;
+  border-top: 1px solid #F0F0F0;
+  border-bottom: 1px solid #E7EAF0; /* Updated per audit for better separation */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.02);
+  touch-action: pan-y; /* Allow vertical page scroll on mobile */
+}
+
+/* Add shadow when stuck (toggled via JS) */
+.section-nav.is-stuck {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid #ddd;
+}
+
+/* Scroller strip with fade edges */
+.section-nav__scroller {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: visible; /* Don't create vertical scroll context - prevents scroll trap */
+  overscroll-behavior-x: contain; /* Keep horizontal bounce contained without blocking vertical */
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto; /* Let browser handle both horizontal and vertical touch naturally */
+  scroll-snap-type: x proximity;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  flex: 1 1 auto;
+  position: relative;
+  scrollbar-width: none; /* Firefox */
+  /* Fade edges to indicate scrollability */
+  --fade: 24px;
+  mask-image: linear-gradient(to right,
+    transparent 0,
+    #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    transparent 100%);
+}
+
+.section-nav__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* Links (chips) */
+.section-nav__scroller a {
+  scroll-snap-align: center;
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  padding: var(--space-xs) var(--space-sm); /* 8pt grid: 8px 16px */
+  border-radius: var(--radius-tab);
+  border: 1px solid transparent;
+  transition: all 120ms ease; /* Faster, more responsive */
+  white-space: nowrap;
+}
+
+.section-nav__scroller a:hover {
+  color: var(--brand-blue);
+  background: var(--tab-hover-bg); /* Subtle background on hover */
+  transform: scale(1.02); /* Micro-interaction */
+}
+
+.section-nav__scroller a.is-active {
+  color: var(--tab-active-text); /* Darker for contrast */
+  background: var(--tab-active-bg); /* Darker blue background */
+  border-bottom: 2px solid var(--brand-blue); /* Underline for active state */
+  font-weight: 600;
+}
+
+/* Arrow buttons */
+.section-nav__btn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #555;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.section-nav__btn[hidden] {
+  display: none;
+}
+
+.section-nav__btn:hover {
+  background: #f5f5f5;
+  color: #0d4c92;
+}
+
+/* Very small screens: allow wrap as fallback */
+@media (max-width: 380px) {
+  .section-nav__scroller {
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    overflow-x: visible;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .section-nav__scroller a {
+    display: inline-block;
+  }
+
+  .section-nav__btn {
+    display: none;
+  }
+}
+
+/* Tour Header Rating & Actions */
+.tour-header__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+  color: #6B6B6B;
+}
+
+.tour-header__rating svg {
+  flex-shrink: 0;
+}
+
+.rating-score {
+  font-weight: 600;
+  color: #1E1E1E;
+}
+
+.rating-count {
+  color: #6B6B6B;
+}
+
+.rating-separator {
+  color: #DEDEDE;
+  margin: 0 0.25rem;
+}
+
+.tour-location {
+  color: #6B6B6B;
+}
+
+/* Title Row with Actions */
+.tour-header__title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tour-title {
+  flex: 1;
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #1E1E1E;
+}
+
+.tour-header__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #DEDEDE;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #1E1E1E;
+}
+
+.btn-icon:hover {
+  background: #F8F8F8;
+  border-color: #1E1E1E;
+}
+
+.btn-icon:focus {
+  outline: 2px solid #F4B400;
+  outline-offset: 2px;
+}
+
+.btn-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hero Gallery - Rounded Corners */
+.tour-hero__gallery {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tour-hero__main,
+.thumbnail {
+  border-radius: 0;
+}
+
+.thumbnail:first-child {
+  border-radius: 0;
+}
+
+/* Booking Card - Reference Style */
+.booking-sidebar {
+  position: sticky;
+  top: 220px; /* Below header (88px) + sticky tabs (~50px) + gap (82px) */
+  align-self: flex-start;
+  z-index: 30; /* Above section navigation (z-index: 10) */
+}
+
+.booking-card {
+  background: #fff; /* Pure white */
+  border: 1px solid #DEDEDE;
+  border-radius: var(--radius-card);
+  padding: var(--space-card);
+  box-shadow: var(--shadow-light); /* Softer, consistent shadow */
+}
+
+.booking-card__header {
+  margin-bottom: 1.25rem;
+}
+
+.booking-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.price-label {
+  font-size: 0.875rem;
+  color: #6B6B6B;
+  font-weight: 400;
+}
+
+.price-amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1E1E1E;
+}
+
+.price-unit {
+  font-size: 0.875rem;
+  color: #6B6B6B;
+  font-weight: 400;
+}
+
+/* Form Labels - Clean Style */
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1E1E1E;
+}
+
+.form-label svg {
+  display: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #DEDEDE;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1E1E1E;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1E1E1E;
+  box-shadow: 0 0 0 3px rgba(30, 30, 30, 0.05);
+}
+
+.form-hint {
+  display: none;
+}
+
+/* Primary CTA - Brand Blue (changed from alarming red) */
+.btn--primary {
+  background: var(--brand-blue);
+  color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-button);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn--primary:hover {
+  background: var(--brand-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary Button - See definition above at line 1759 (removed duplicate) */
+
+/* Accent Button - Brand Yellow "Request to Book" */
+.btn--accent {
+  background: var(--brand-yellow);
+  color: #1E1E1E;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-button);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-light);
+}
+
+/* Full width when used with .btn--block */
+.btn--accent.btn--block {
+  width: 100%;
+}
+
+.btn--accent:hover {
+  background: var(--brand-yellow-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn--accent:active {
+  transform: translateY(0);
+}
+
+.btn--accent .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Print styles */
+@media print {
+  .site-header,
+  .breadcrumbs,
+  .booking-sidebar,
+  .mobile-booking-cta,
+  .tour-extras,
+  .itinerary-controls,
+  footer {
+    display: none;
+  }
+
+  body {
+    background: white;
+    padding-bottom: 0;
+  }
+
+  /* Open all itinerary stops for printing */
+  .itinerary-list details {
+    display: block !important;
+  }
+
+  .itinerary-list summary {
+    display: block;
+    cursor: default;
+  }
+
+  .stop-body {
+    display: block !important;
+  }
+}
