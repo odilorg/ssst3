@@ -36,6 +36,16 @@ class TourController extends Controller
     }
 
     /**
+     * Gallery section
+     * Returns: Hero image and gallery thumbnails
+     */
+    public function gallery(string $slug)
+    {
+        $tour = $this->getCachedTour($slug);
+        return view('partials.tours.show.gallery', compact('tour'));
+    }
+
+    /**
      * Overview section
      * Returns: Description, quick info grid
      */

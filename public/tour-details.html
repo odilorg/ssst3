@@ -339,6 +339,8 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="css/gallery-lightbox.css">
+  <link rel="stylesheet" href="tour-details-gallery-addon.css">
 </head>
 <body>
 
@@ -414,82 +416,12 @@
       </div>
 
       <!-- Actual Gallery -->
-      <div class="tour-hero__gallery is-hidden">
-
-        <!-- Main Image (Left) -->
-        <div class="tour-hero__main">
-          <img
-            src="images/tours/samarkand/hero-main-1200.webp"
-            srcset="images/tours/samarkand/hero-main-800.webp 800w,
-                    images/tours/samarkand/hero-main-1200.webp 1200w,
-                    images/tours/samarkand/hero-main-1600.webp 1600w"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 60vw"
-            alt="Magnificent view of Registan Square in Samarkand with three madrasahs"
-            width="1200"
-            height="800"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            class="hero-image"
-            id="main-gallery-image">
-
-          <!-- Navigation Arrows -->
-          <button class="gallery-nav gallery-nav--prev" aria-label="Previous image">
-            <svg class="icon icon--chevron-left" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M10.354 3.646a.5.5 0 010 .708L6.707 8l3.647 3.646a.5.5 0 01-.708.708l-4-4a.5.5 0 010-.708l4-4a.5.5 0 01.708 0z"/></svg>
-          </button>
-          <button class="gallery-nav gallery-nav--next" aria-label="Next image">
-            <svg class="icon icon--chevron-right" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.646 3.646a.5.5 0 01.708 0l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L9.293 8 5.646 4.354a.5.5 0 010-.708z"/></svg>
-          </button>
-        </div>
-
-        <!-- Thumbnail Grid (Right) -->
-        <div class="tour-hero__thumbnails">
-
-          <button class="thumbnail thumbnail--active" data-index="0" aria-label="View image 1">
-            <img
-              src="images/tours/samarkand/registan-1.webp"
-              alt="Registan Square detail view"
-              width="400"
-              height="300"
-              loading="lazy"
-              decoding="async">
-          </button>
-
-          <button class="thumbnail" data-index="1" aria-label="View image 2">
-            <img
-              src="images/tours/samarkand/shah-i-zinda.webp"
-              alt="Shah-i-Zinda necropolis blue domes"
-              width="400"
-              height="300"
-              loading="lazy"
-              decoding="async">
-          </button>
-
-          <button class="thumbnail" data-index="2" aria-label="View image 3">
-            <img
-              src="images/tours/samarkand/bibi-khanym.webp"
-              alt="Bibi-Khanym Mosque entrance"
-              width="400"
-              height="300"
-              loading="lazy"
-              decoding="async">
-          </button>
-
-          <button class="thumbnail thumbnail--overlay" data-index="3" aria-label="View all 8 photos">
-            <img
-              src="images/tours/samarkand/street-view.webp"
-              alt="Traditional street in old Samarkand"
-              width="400"
-              height="300"
-              loading="lazy"
-              decoding="async">
-            <div class="thumbnail__overlay">
-              <svg class="icon icon--images" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm3 7l2-2 1.5 1.5L11 8l3 3v1H5v-1zm2.5-4a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM16 6h-1v6a2 2 0 01-2 2H7v1a2 2 0 002 2h7a2 2 0 002-2V8a2 2 0 00-2-2z"/></svg>
-              <span>+4 photos</span>
-            </div>
-          </button>
-
-        </div>
+      <!-- Actual Gallery - Loaded via HTMX -->
+      <div class="tour-hero__gallery is-hidden"
+           hx-get=""
+           hx-trigger="load"
+           hx-swap="innerHTML"
+           data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
       </div>
     </div>
   </section>
@@ -1063,6 +995,7 @@
           // Map section class names to partial endpoint names
           const classToPartialMap = {
             'tour-header': 'hero',
+            'tour-hero__gallery': 'gallery',
             'tour-overview': 'overview',
             'tour-highlights': 'highlights',
             'tour-includes-excludes': 'included-excluded',
@@ -1120,6 +1053,7 @@
 
   <!-- Tour Details JavaScript -->
   <script src="tour-details.js" defer></script>
+  <script src="js/gallery-lightbox.js" defer></script>
 
   <!-- Main JavaScript -->
   <script src="js/main.js" defer></script>

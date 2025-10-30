@@ -333,6 +333,9 @@ Route::prefix('partials')->name('partials.')->group(function () {
     // -------- TOUR DETAIL SECTIONS --------
     Route::get('/tours/{slug}/hero', [TourController::class, 'hero'])
         ->name('tours.hero');
+    
+    Route::get('/tours/{slug}/gallery', [TourController::class, 'gallery'])
+        ->name('tours.gallery');
 
     Route::get('/tours/{slug}/overview', [TourController::class, 'overview'])
         ->name('tours.overview');

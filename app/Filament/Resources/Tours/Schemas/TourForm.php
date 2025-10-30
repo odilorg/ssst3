@@ -134,6 +134,7 @@ class TourForm
                             ->label('Главное изображение')
                             ->image()
                             ->directory('tours/heroes')
+                            ->disk('public')
                             ->imageEditor()
                             ->columnSpanFull(),
 
@@ -144,6 +145,7 @@ class TourForm
                                     ->label('Изображение')
                                     ->image()
                                     ->directory('tours/gallery')
+                                    ->disk('public')
                                     ->imageEditor()
                                     ->imageEditorAspectRatios([
                                         null,

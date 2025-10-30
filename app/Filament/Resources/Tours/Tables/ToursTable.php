@@ -58,7 +58,7 @@ class ToursTable
                     ->label('View Frontend')
                     ->icon(Heroicon::OutlinedEye)
                     ->color('info')
-                    ->url(fn (\$record) => '/tour-details.html?slug=' . \$record->slug . '&t=' . time())
+                    ->url(fn ($record) => '/tour-details.html?slug=' . $record->slug)
                     ->openUrlInNewTab(),
                 ViewAction::make()
                     ->label('View Formatted')

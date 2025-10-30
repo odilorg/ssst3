@@ -63,7 +63,7 @@ class BlogPostsTable
                     ->label('View Frontend')
                     ->icon(Heroicon::OutlinedEye)
                     ->color('info')
-                    ->url(fn (\$record) => '/blog-article.html?slug=' . \$record->slug . '&t=' . time())
+                    ->url(fn ($record) => '/blog-article.html?slug=' . $record->slug)
                     ->openUrlInNewTab(),
                 EditAction::make(),
             ])
