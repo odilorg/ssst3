@@ -1050,7 +1050,7 @@
     (function() {
       // Get tour slug from URL query parameter
       const urlParams = new URLSearchParams(window.location.search);
-      const tourSlug = urlParams.get('tour');
+      const tourSlug = urlParams.get('slug') || urlParams.get('tour');
 
       console.log('[Tour] Query parameter slug:', tourSlug);
 
