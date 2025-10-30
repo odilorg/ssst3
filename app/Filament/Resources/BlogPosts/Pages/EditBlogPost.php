@@ -19,7 +19,7 @@ class EditBlogPost extends EditRecord
                 ->label('View Frontend')
                 ->icon(Heroicon::OutlinedEye)
                 ->color('info')
-                ->url(fn () => '/blog-article.html?slug=' . $this->record->slug)
+                ->url(fn () => '/blog-article.html?slug=' . \$this->record->slug . '&t=' . time())
                 ->openUrlInNewTab(),
             DeleteAction::make(),
         ];

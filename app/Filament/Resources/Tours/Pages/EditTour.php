@@ -19,7 +19,7 @@ class EditTour extends EditRecord
                 ->label('View Frontend')
                 ->icon(Heroicon::OutlinedEye)
                 ->color('info')
-                ->url(fn () => '/tour-details.html?slug=' . $this->record->slug)
+                ->url(fn () => '/tour-details.html?slug=' . \$this->record->slug . '&t=' . time())
                 ->openUrlInNewTab(),
             DeleteAction::make(),
         ];
