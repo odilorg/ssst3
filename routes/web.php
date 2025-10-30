@@ -299,13 +299,65 @@ Route::get('/supplier-request/{request}/download', function (\App\Models\Supplie
     if (!$request->pdf_path) {
         abort(404, 'PDF файл не найден');
     }
-    
+
     $requestService = app(SupplierRequestService::class);
     $filePath = storage_path('app/public/' . $request->pdf_path);
-    
+
     if (!file_exists($filePath)) {
         abort(404, 'PDF файл не найден на диске');
     }
-    
+
     return response()->download($filePath, "Заявка_{$request->booking->reference}_{$request->supplier_type_label}.pdf");
 })->name('supplier.request.download');
+
+// ============================================
+// PUBLIC PARTIAL ROUTES
+// Serve HTML partials for frontend consumption
+// ============================================
+
+use App\Http\Controllers\Partials\TourController;
+use App\Http\Controllers\Partials\BookingController;
+use App\Http\Controllers\Partials\SearchController;
+
+Route::prefix('partials')->name('partials.')->group(function () {
+
+    // -------- TOUR LIST --------
+    Route::get('/tours', [TourController::class, 'list'])
+        ->name('tours.list');
+
+    // -------- TOUR SEARCH/FILTER --------
+    Route::get('/tours/search', [SearchController::class, 'search'])
+        ->name('tours.search');
+
+    // -------- TOUR DETAIL SECTIONS --------
+    Route::get('/tours/{slug}/hero', [TourController::class, 'hero'])
+        ->name('tours.hero');
+
+    Route::get('/tours/{slug}/overview', [TourController::class, 'overview'])
+        ->name('tours.overview');
+
+    Route::get('/tours/{slug}/highlights', [TourController::class, 'highlights'])
+        ->name('tours.highlights');
+
+    Route::get('/tours/{slug}/itinerary', [TourController::class, 'itinerary'])
+        ->name('tours.itinerary');
+
+    Route::get('/tours/{slug}/included-excluded', [TourController::class, 'includedExcluded'])
+        ->name('tours.included-excluded');
+
+    Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs'])
+        ->name('tours.faqs');
+
+    Route::get('/tours/{slug}/extras', [TourController::class, 'extras'])
+        ->name('tours.extras');
+
+    Route::get('/tours/{slug}/reviews', [TourController::class, 'reviews'])
+        ->name('tours.reviews');
+
+    // -------- BOOKING --------
+    Route::get('/bookings/form/{tour_slug}', [BookingController::class, 'form'])
+        ->name('bookings.form');
+
+    Route::post('/bookings', [BookingController::class, 'store'])
+        ->name('bookings.store');
+});
