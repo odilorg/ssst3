@@ -318,6 +318,7 @@ Route::get('/supplier-request/{request}/download', function (\App\Models\Supplie
 use App\Http\Controllers\Partials\TourController;
 use App\Http\Controllers\Partials\BookingController;
 use App\Http\Controllers\Partials\SearchController;
+use App\Http\Controllers\Partials\BlogController;
 
 Route::prefix('partials')->name('partials.')->group(function () {
 
@@ -360,4 +361,17 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::post('/bookings', [BookingController::class, 'store'])
         ->name('bookings.store');
+
+    // -------- BLOG POST SECTIONS --------
+    Route::get('/blog/{slug}/hero', [BlogController::class, 'hero'])
+        ->name('blog.hero');
+
+    Route::get('/blog/{slug}/content', [BlogController::class, 'content'])
+        ->name('blog.content');
+
+    Route::get('/blog/{slug}/sidebar', [BlogController::class, 'sidebar'])
+        ->name('blog.sidebar');
+
+    Route::get('/blog/{slug}/related', [BlogController::class, 'related'])
+        ->name('blog.related');
 });
