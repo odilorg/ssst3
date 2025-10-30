@@ -20,9 +20,31 @@ class BlogTagResource extends Resource
 {
     protected static ?string $model = BlogTag::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Blog';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Tags';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Tag';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Tags';
+    }
 
     public static function form(Schema $schema): Schema
     {
