@@ -8,8 +8,8 @@
     </div>
 
     <ol id="itinerary-list" class="itinerary-list">
-        @if($tour->itineraries && $tour->itineraries->isNotEmpty())
-            @foreach($tour->itineraries as $index => $stop)
+        @if($tour->itineraryItems && $tour->itineraryItems->isNotEmpty())
+            @foreach($tour->itineraryItems as $index => $stop)
                 <li id="stop-{{ $stop->id }}">
                     <details {{ $index < 2 ? 'open' : '' }}>
                         <summary>
