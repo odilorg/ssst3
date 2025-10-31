@@ -158,9 +158,15 @@ class TourController extends Controller
      * Requirements section (Know Before You Go)
      * Returns: Tour-specific requirements or global defaults
      */
+    /**
+     * Requirements section (Know Before You Go)
+     * Returns: Tour-specific requirements or global defaults
+     */
     public function requirements(string $slug)
     {
         $tour = $this->getCachedTour($slug);
-        return view('partials.tours.show.requirements', compact('tour'));
+        $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+        
+        return view('partials.tours.show.requirements', compact('tour', 'globalRequirements'));
     }
 }
