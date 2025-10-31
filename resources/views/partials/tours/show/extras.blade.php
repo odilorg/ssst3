@@ -4,8 +4,8 @@
     <p class="section-intro">Enhance your tour experience with these optional services. Select any add-ons when booking.</p>
 
     <div class="extras-grid">
-        @if($tour->activeExtras && $tour->activeExtras->isNotEmpty())
-            @foreach($tour->activeExtras as $extra)
+        @if($extras && $extras->isNotEmpty())
+            @foreach($extras as $extra)
                 <div class="extra-service-card">
                     <div class="extra-service__icon">
                         @if($extra->icon)
