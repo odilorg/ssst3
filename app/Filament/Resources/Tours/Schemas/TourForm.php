@@ -241,6 +241,39 @@ class TourForm
                             ->columnSpanFull(),
                     ]),
 
+                Section::make('FAQ (Часто задаваемые вопросы)')
+                    ->description('Добавьте вопросы и ответы для этого тура')
+                    ->schema([
+                        Repeater::make('faqs')
+                            ->label('Вопросы и ответы')
+                            ->relationship('faqs')
+                            ->schema([
+                                Textarea::make('question')
+                                    ->label('Вопрос')
+                                    ->required()
+                                    ->rows(2)
+                                    ->placeholder('What should I bring?')
+                                    ->columnSpanFull(),
+
+                                Textarea::make('answer')
+                                    ->label('Ответ')
+                                    ->required()
+                                    ->rows(4)
+                                    ->placeholder('Comfortable walking shoes, sun protection...')
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? 'Новый вопрос')
+                            ->addActionLabel('Добавить вопрос')
+                            ->reorderable('sort_order')
+                            ->orderColumn('sort_order')
+                            ->cloneable()
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
+
                 Section::make('Рейтинги и отзывы')
                     ->description('Автоматически обновляется из отзывов')
                     ->schema([
