@@ -36,40 +36,18 @@
     </div>
 
     @if($tour->meeting_lat && $tour->meeting_lng)
-        @php
-            // Check if Google Maps API key is configured
-            $googleMapsKey = config('services.google_maps.api_key');
-        @endphp
-
-        @if($googleMapsKey)
-            <!-- Google Map Embed with API Key -->
-            <div class="meeting-map" aria-label="Map to meeting point">
-                <iframe
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps/embed/v1/place?key={{ $googleMapsKey }}&q={{ $tour->meeting_lat }},{{ $tour->meeting_lng }}&zoom=15"
-                    width="600"
-                    height="360"
-                    style="border:0;"
-                    allowfullscreen=""
-                    title="Map showing meeting point">
-                </iframe>
-            </div>
-        @else
-            <!-- Fallback: Link to Google Maps (no API key required) -->
-            <div class="meeting-map" aria-label="Map to meeting point">
-                <a
-                    href="https://www.google.com/maps?q={{ $tour->meeting_lat }},{{ $tour->meeting_lng }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="map-link"
-                    style="display: block; width: 600px; max-width: 100%; height: 360px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #1a73e8; font-size: 16px; border: 1px solid #ddd; border-radius: 4px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    View on Google Maps
-                </a>
-            </div>
-        @endif
+        <!-- Google Map Embed (no API key required) -->
+        <div class="meeting-map" aria-label="Map to meeting point">
+            <iframe
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://maps.google.com/maps?q={{ $tour->meeting_lat }},{{ $tour->meeting_lng }}&output=embed"
+                width="600"
+                height="360"
+                style="border:0;"
+                allowfullscreen=""
+                title="Map showing meeting point">
+            </iframe>
+        </div>
     @endif
 </div>
