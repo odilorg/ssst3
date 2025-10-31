@@ -8,13 +8,7 @@
             @foreach($extras as $extra)
                 <div class="extra-service-card">
                     <div class="extra-service__icon">
-                        @if($extra->icon)
-                            {!! $extra->icon !!}
-                        @else
-                            <svg class="icon icon--star" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path d="M10 0l2.5 7.5h7.5l-6 4.5 2.5 7.5-6-4.5-6 4.5 2.5-7.5-6-4.5h7.5z"/>
-                            </svg>
-                        @endif
+                        <x-icons.extra-service-icon :name="$extra->icon ?? 'star'" />
                     </div>
                     <div class="extra-service__content">
                         <h3 class="extra-service__title">{{ $extra->name }}</h3>

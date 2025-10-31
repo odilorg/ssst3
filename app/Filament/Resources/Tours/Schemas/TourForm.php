@@ -355,11 +355,11 @@ class TourForm
                                     ->placeholder('per person')
                                     ->helperText('Например: "per person", "per group", "per car"'),
 
-                                Textarea::make('icon')
-                                    ->label('SVG иконка')
-                                    ->rows(4)
-                                    ->placeholder('<svg>...</svg>')
-                                    ->helperText('Вставьте SVG код для иконки')
+                                Select::make('icon')
+                                    ->label('Иконка')
+                                    ->options(\App\View\Components\Icons\ExtraServiceIcon::getIconOptions())
+                                    ->searchable()
+                                    ->helperText('Выберите иконку из списка')
                                     ->columnSpanFull(),
 
                                 Toggle::make('is_active')
