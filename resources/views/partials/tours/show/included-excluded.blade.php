@@ -21,38 +21,6 @@
                             <span>{{ is_string($item) ? $item : $item->text ?? $item->description ?? '' }}</span>
                         </li>
                     @endforeach
-                @else
-                    {{-- Fallback: Default included items --}}
-                    <li>
-                        <svg class="icon icon--check" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"/>
-                        </svg>
-                        <span>Hotel pickup and drop-off (Samarkand city hotels)</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--check" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"/>
-                        </svg>
-                        <span>Professional English-speaking guide</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--check" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"/>
-                        </svg>
-                        <span>Entrance fees to all monuments (Registan, Shah-i-Zinda, Bibi-Khanym)</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--check" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"/>
-                        </svg>
-                        <span>Bottled water</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--check" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"/>
-                        </svg>
-                        <span>Small group tour (max {{ $tour->max_guests }} guests)</span>
-                    </li>
                 @endif
             </ul>
         </div>
@@ -75,32 +43,6 @@
                             <span>{{ is_string($item) ? $item : $item->text ?? $item->description ?? '' }}</span>
                         </li>
                     @endforeach
-                @else
-                    {{-- Fallback: Default excluded items --}}
-                    <li>
-                        <svg class="icon icon--times" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
-                        </svg>
-                        <span>Tips and gratuities for guide (optional)</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--times" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
-                        </svg>
-                        <span>Lunch (available for purchase at local restaurants)</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--times" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
-                        </svg>
-                        <span>Personal expenses and souvenirs</span>
-                    </li>
-                    <li>
-                        <svg class="icon icon--times" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
-                        </svg>
-                        <span>Photography fees inside certain monuments (if applicable)</span>
-                    </li>
                 @endif
             </ul>
         </div>
