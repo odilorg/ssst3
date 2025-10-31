@@ -179,4 +179,14 @@ class TourController extends Controller
         $tour = $this->getCachedTour($slug);
         return view('partials.tours.show.cancellation', compact('tour'));
     }
+
+    /**
+     * Meeting Point & Pickup section
+     * Returns: Meeting point details, hotel pickup info, and map coordinates
+     */
+    public function meetingPoint(string $slug)
+    {
+        $tour = $this->getCachedTour($slug);
+        return view('partials.tours.show.meeting-point', compact('tour'));
+    }
 }

@@ -357,6 +357,8 @@ Route::prefix('partials')->name('partials.')->group(function () {
         ->name('tours.requirements');
     Route::get('/tours/{slug}/cancellation', [TourController::class, 'cancellation'])
         ->name('tours.cancellation');
+    Route::get('/tours/{slug}/meeting-point', [TourController::class, 'meetingPoint'])
+        ->name('tours.meeting-point');
 
 
     Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs'])

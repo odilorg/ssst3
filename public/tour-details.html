@@ -545,43 +545,17 @@
           </section>
 
           <!-- Meeting Point & Pickup Section -->
-          <section class="tour-meeting" id="meeting-point">
+          <section class="tour-meeting" id="meeting-point"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/meeting-point"
+                   hx-trigger="revealed"
+                   hx-swap="innerHTML"
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
+
+            <!-- Loading Skeleton -->
             <h2 class="section-title">Meeting Point & Pickup</h2>
-
-            <div class="meeting-grid">
-              <div class="meeting-info">
-                <div class="meeting-info__item">
-                  <svg class="icon icon--hotel" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3 2a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V4a2 2 0 00-2-2H3zm0 2h14v10H3V4zm2 2v6h10V6H5zm2 2h6v2H7V8z"/></svg>
-                  <div>
-                    <h3>Hotel Pickup Included</h3>
-                    <p>Free pickup from any hotel within Samarkand city center (5km radius). Please provide your hotel name when booking.</p>
-                  </div>
-                </div>
-
-                <div class="meeting-info__item">
-                  <svg class="icon icon--map-marker" width="16" height="20" viewBox="0 0 16 20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.589 0 0 3.589 0 8c0 7 8 12 8 12s8-5 8-12c0-4.411-3.589-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
-                  <div>
-                    <h3>Alternative Meeting Point</h3>
-                    <p>If you prefer, you can meet us at <strong>Registan Square West Gate</strong> at 09:30 AM. Look for your guide holding a "Jahongir Travel" sign.</p>
-                    <p><strong>Address:</strong> Registan Street, Samarkand 140100, Uzbekistan</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Google Map Embed -->
-              <div class="meeting-map" aria-label="Map to meeting point">
-                <iframe
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3071.234567890123!2d66.97567890000001!3d39.65444440000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4d191506193833%3A0x594b01f4e2303d38!2sRegistan!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s"
-                  width="600"
-                  height="360"
-                  style="border:0;"
-                  allowfullscreen=""
-                  title="Map showing Registan Square meeting point">
-                </iframe>
-              </div>
-            </div>
+            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--rect" style="width: 100%; height: 360px; margin-top: 2rem;"></div>
           </section>
 
           <!-- Know Before You Go Section -->
@@ -956,6 +930,7 @@
             'tour-overview': 'overview',
             'tour-highlights': 'highlights',
             'tour-includes-excludes': 'included-excluded',
+            'tour-meeting': 'meeting-point',
             'tour-cancellation': 'cancellation',
             'tour-itinerary': 'itinerary',
             'tour-faq': 'faqs',
