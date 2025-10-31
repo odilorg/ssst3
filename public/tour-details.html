@@ -384,10 +384,10 @@
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
   <section class="tour-header"
-           hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/hero"
+           hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/hero"
            hx-trigger="load"
            hx-swap="innerHTML"
-           data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+           data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
     <!-- Loading Skeleton -->
     <div class="container">
@@ -421,7 +421,7 @@
            hx-get=""
            hx-trigger="load"
            hx-swap="innerHTML"
-           data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+           data-tour-slug="samarkand-city-toursregistan-square-and-historical">
       </div>
     </div>
   </section>
@@ -463,10 +463,10 @@
 
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/overview"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/overview"
                    hx-trigger="load"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">Overview</h2>
@@ -479,10 +479,10 @@
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/highlights"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">Highlights</h2>
@@ -494,10 +494,10 @@
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/included-excluded"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">What's Included & Excluded</h2>
@@ -517,34 +517,21 @@
           </section>
 
           <!-- Cancellation Policy Section -->
-          <section class="tour-cancellation" id="cancellation">
-            <h2 class="section-title">Cancellation Policy</h2>
-
-            <div class="cancellation-content">
-              <div class="cancellation-notice">
-                <svg class="icon icon--info-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9v-6h2v6zm0-8H9V5h2v2z"/></svg>
-                <p>
-                  <strong>Free cancellation up to 24 hours before the tour start time.</strong>
-                  You can cancel up to 24 hours in advance of the experience for a full refund.
-                </p>
-              </div>
-
-              <ul class="cancellation-list">
-                <li>For a full refund, cancel at least 24 hours before the scheduled departure time.</li>
-                <li>If you cancel less than 24 hours before the experience's start time, the amount you paid will not be refunded.</li>
-                <li>Any changes made less than 24 hours before the experience's start time will not be accepted.</li>
-                <li>Weather-dependent: If canceled due to poor weather, you'll be offered a different date or a full refund.</li>
-              </ul>
-            </div>
+          <section class="tour-cancellation" id="cancellation"
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation"
+                   hx-trigger="revealed"
+                   hx-swap="innerHTML">
+            <div class="loading-spinner">Loading cancellation policy...</div>
           </section>
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/itinerary"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <div class="itinerary-header">
@@ -599,10 +586,10 @@
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/requirements"
+                   hx-get="http://127.0.0.1:8000/partials/tours/5-day-silk-road-classic/requirements"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">Know Before You Go</h2>
@@ -615,10 +602,10 @@
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/faqs"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">Frequently Asked Questions</h2>
@@ -631,10 +618,10 @@
 
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/extras"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/extras"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <h2 class="section-title">Extra Services</h2>
@@ -649,10 +636,10 @@
 
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-tour-registan-square-and-historical-monuments/reviews"
+                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
-                   data-tour-slug="samarkand-city-tour-registan-square-and-historical-monuments">
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
             <!-- Loading Skeleton -->
             <div class="reviews-header">
@@ -969,10 +956,12 @@
             'tour-overview': 'overview',
             'tour-highlights': 'highlights',
             'tour-includes-excludes': 'included-excluded',
+            'tour-cancellation': 'cancellation',
             'tour-itinerary': 'itinerary',
             'tour-faq': 'faqs',
             'tour-extras': 'extras',
-            'tour-reviews': 'reviews'
+            'tour-reviews': 'reviews',
+            'tour-know-before': 'requirements'
           };
 
           // Get the first class name from the element
@@ -1030,3 +1019,19 @@
 
 </body>
 </html>
+  
+  <!-- Dynamic Title Update -->
+  <script>
+    // Update document title when tour hero loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for HTMX to load the hero section
+      document.body.addEventListener('htmx:afterSettle', function(event) {
+        if (event.detail.target.classList.contains('tour-header')) {
+          const tourTitle = document.querySelector('.tour-title');
+          if (tourTitle && tourTitle.textContent) {
+            document.title = tourTitle.textContent.trim() + ' | Jahongir Travel';
+          }
+        }
+      });
+    });
+  </script>

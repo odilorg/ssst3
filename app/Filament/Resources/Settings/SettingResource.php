@@ -11,10 +11,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Select;
-use Filament\Schemas\Components\Textarea;
-use Filament\Schemas\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -30,6 +30,9 @@ class SettingResource extends Resource
     protected static ?string $navigationLabel = 'Settings';
 
     protected static ?int $navigationSort = 99;
+    // Hide from navigation - only accessible via direct URL for developers
+    protected static bool $shouldRegisterNavigation = false;
+
 
     public static function form(Schema $schema): Schema
     {
@@ -126,6 +129,11 @@ class SettingResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Settings';
     }
 
     public static function getPages(): array

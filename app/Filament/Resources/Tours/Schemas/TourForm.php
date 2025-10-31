@@ -185,9 +185,54 @@ class TourForm
                             ->helperText('Нажмите Enter после каждого пункта')
                             ->columnSpanFull(),
 
-                        TagsInput::make('requirements')
+                        Repeater::make('requirements')
                             ->label('Требования')
-                            ->helperText('Нажмите Enter после каждого пункта')
+                            ->schema([
+                                Select::make('icon')
+                                    ->label('Иконка')
+                                    ->options([
+                                        'walking' => '🚶 Walking',
+                                        'tshirt' => '👕 Clothing/Dress Code',
+                                        'money' => '💰 Money/Cash',
+                                        'camera' => '📷 Camera/Photography',
+                                        'sun' => '☀️ Sun/Weather',
+                                        'wheelchair' => '♿ Wheelchair/Accessibility',
+                                        'info' => 'ℹ️ Information/General',
+                                        'clock' => '🕐 Time/Duration',
+                                        'utensils' => '🍴 Food/Meals',
+                                        'bag' => '🎒 Luggage/Baggage',
+                                    ])
+                                    ->required()
+                                    ->searchable()
+                                    ->columnSpanFull(),
+
+                                TextInput::make('title')
+                                    ->label('Заголовок')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('e.g., Moderate walking required')
+                                    ->columnSpanFull(),
+
+                                Textarea::make('text')
+                                    ->label('Описание')
+                                    ->required()
+                                    ->rows(3)
+                                    ->placeholder('Detailed description of the requirement...')
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новое требование')
+                            ->addActionLabel('Добавить требование')
+                            ->reorderable()
+                            ->cloneable()
+                            ->defaultItems(0)
+                            ->columnSpanFull()
+                            ->helperText('Оставьте пустым, чтобы использовать глобальные требования'),
+
+                        Toggle::make('include_global_requirements')
+                            ->label('Включить глобальные требования')
+                            ->helperText('Когда включено, глобальные требования будут показаны вместе с требованиями тура')
+                            ->default(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('languages')

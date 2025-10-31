@@ -9,6 +9,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Tour details page
+Route::get('/tours/{slug}', [\App\Http\Controllers\TourController::class, 'show'])->name('tours.show');
+
+
 // Printable booking estimate route
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
     $pricingService = app(PricingService::class);
@@ -351,6 +355,9 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/tours/{slug}/requirements', [TourController::class, 'requirements'])
         ->name('tours.requirements');
+    Route::get('/tours/{slug}/cancellation', [TourController::class, 'cancellation'])
+        ->name('tours.cancellation');
+
 
     Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs'])
         ->name('tours.faqs');

@@ -39,6 +39,7 @@ class Tour extends Model
         'excluded_items',
         'languages',
         'requirements',
+        'include_global_requirements',
 
         // Tour Meta
         'tour_type',
@@ -68,6 +69,7 @@ class Tour extends Model
     protected $casts = [
         // Booleans
         'is_active' => 'boolean',
+        'include_global_requirements' => 'boolean',
         'has_hotel_pickup' => 'boolean',
 
         // Integers

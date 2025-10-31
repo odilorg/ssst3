@@ -169,4 +169,14 @@ class TourController extends Controller
         
         return view('partials.tours.show.requirements', compact('tour', 'globalRequirements'));
     }
+
+    /**
+     * Cancellation Policy section
+     * Returns: Tour cancellation policy with hours and custom text
+     */
+    public function cancellation(string $slug)
+    {
+        $tour = $this->getCachedTour($slug);
+        return view('partials.tours.show.cancellation', compact('tour'));
+    }
 }
