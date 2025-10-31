@@ -2,6 +2,14 @@
 
 namespace App\Filament\Resources\Tours\RelationManagers;
 
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -184,12 +192,12 @@ class ReviewsRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->label('Добавить отзыв'),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('approve')
+                ActionGroup::make([
+                    Action::make('approve')
                         ->label('Одобрить')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
@@ -197,7 +205,7 @@ class ReviewsRelationManager extends RelationManager
                         ->action(fn ($record) => $record->update(['is_approved' => true]))
                         ->visible(fn ($record) => !$record->is_approved),
 
-                    Tables\Actions\Action::make('unapprove')
+                    Action::make('unapprove')
                         ->label('Отменить одобрение')
                         ->icon('heroicon-o-x-circle')
                         ->color('warning')
@@ -205,27 +213,27 @@ class ReviewsRelationManager extends RelationManager
                         ->action(fn ($record) => $record->update(['is_approved' => false]))
                         ->visible(fn ($record) => $record->is_approved),
 
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\BulkAction::make('approve')
+                BulkActionGroup::make([
+                    BulkAction::make('approve')
                         ->label('Одобрить выбранные')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(fn ($records) => $records->each->update(['is_approved' => true])),
 
-                    Tables\Actions\BulkAction::make('unapprove')
+                    BulkAction::make('unapprove')
                         ->label('Отменить одобрение')
                         ->icon('heroicon-o-x-circle')
                         ->color('warning')
                         ->requiresConfirmation()
                         ->action(fn ($records) => $records->each->update(['is_approved' => false])),
 
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
