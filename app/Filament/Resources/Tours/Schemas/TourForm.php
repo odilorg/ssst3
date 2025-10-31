@@ -274,6 +274,105 @@ class TourForm
                     ])
                     ->collapsible(),
 
+                Section::make('Маршрут (Itinerary)')
+                    ->description('План тура по времени')
+                    ->schema([
+                        Repeater::make('itineraryItems')
+                            ->label('Пункты маршрута')
+                            ->relationship('itineraryItems')
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('Название пункта')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Registan Square')
+                                    ->columnSpanFull(),
+
+                                Textarea::make('description')
+                                    ->label('Описание')
+                                    ->rows(4)
+                                    ->placeholder('Visit the magnificent Registan Square...')
+                                    ->columnSpanFull(),
+
+                                TextInput::make('default_start_time')
+                                    ->label('Время начала')
+                                    ->placeholder('09:00')
+                                    ->helperText('Формат: HH:MM (например, 09:00 или 14:30)'),
+
+                                TextInput::make('duration_minutes')
+                                    ->label('Продолжительность (минуты)')
+                                    ->numeric()
+                                    ->placeholder('60')
+                                    ->helperText('Длительность в минутах'),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый пункт')
+                            ->addActionLabel('Добавить пункт маршрута')
+                            ->reorderable('sort_order')
+                            ->orderColumn('sort_order')
+                            ->cloneable()
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
+
+                Section::make('Дополнительные услуги (Extras)')
+                    ->description('Опциональные услуги, которые можно добавить к туру')
+                    ->schema([
+                        Repeater::make('extras')
+                            ->label('Дополнительные услуги')
+                            ->relationship('extras')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Название')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Private car upgrade')
+                                    ->columnSpanFull(),
+
+                                Textarea::make('description')
+                                    ->label('Описание')
+                                    ->rows(3)
+                                    ->placeholder('Enjoy a private car instead of shared transport...')
+                                    ->columnSpanFull(),
+
+                                TextInput::make('price')
+                                    ->label('Цена')
+                                    ->numeric()
+                                    ->required()
+                                    ->prefix('$')
+                                    ->placeholder('25.00'),
+
+                                TextInput::make('price_unit')
+                                    ->label('Единица цены')
+                                    ->placeholder('per person')
+                                    ->helperText('Например: "per person", "per group", "per car"'),
+
+                                Textarea::make('icon')
+                                    ->label('SVG иконка')
+                                    ->rows(4)
+                                    ->placeholder('<svg>...</svg>')
+                                    ->helperText('Вставьте SVG код для иконки')
+                                    ->columnSpanFull(),
+
+                                Toggle::make('is_active')
+                                    ->label('Активна')
+                                    ->default(true)
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? 'Новая услуга')
+                            ->addActionLabel('Добавить услугу')
+                            ->reorderable('sort_order')
+                            ->orderColumn('sort_order')
+                            ->cloneable()
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible(),
+
                 Section::make('Рейтинги и отзывы')
                     ->description('Автоматически обновляется из отзывов')
                     ->schema([

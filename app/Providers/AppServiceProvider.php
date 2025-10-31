@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Models\Booking;
+use App\Models\ItineraryItem;
 use App\Models\Tour;
+use App\Models\TourExtra;
 use App\Models\TourFaq;
 use App\Models\Transport;
 use App\Models\TransportInstancePrice;
 use App\Observers\BookingObserver;
+use App\Observers\ItineraryItemObserver;
+use App\Observers\TourExtraObserver;
 use App\Observers\TourFaqObserver;
 use App\Observers\TourObserver;
 use App\Observers\TransportObserver;
@@ -35,5 +39,7 @@ class AppServiceProvider extends ServiceProvider
         TransportInstancePrice::observe(TransportInstancePriceObserver::class);
         Tour::observe(TourObserver::class);
         TourFaq::observe(TourFaqObserver::class);
+        ItineraryItem::observe(ItineraryItemObserver::class);
+        TourExtra::observe(TourExtraObserver::class);
     }
 }
