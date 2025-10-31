@@ -350,10 +350,16 @@ class TourForm
                                     ->prefix('$')
                                     ->placeholder('25.00'),
 
-                                TextInput::make('price_unit')
+                                Select::make('price_unit')
                                     ->label('Единица цены')
-                                    ->placeholder('per person')
-                                    ->helperText('Например: "per person", "per group", "per car"'),
+                                    ->options([
+                                        'per_person' => 'Per Person (за человека)',
+                                        'per_group' => 'Per Group (за группу)',
+                                        'per_session' => 'Per Session (за сессию)',
+                                    ])
+                                    ->required()
+                                    ->default('per_person')
+                                    ->helperText('Выберите единицу измерения цены'),
 
                                 Select::make('icon')
                                     ->label('Иконка')
