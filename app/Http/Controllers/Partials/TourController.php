@@ -99,7 +99,9 @@ class TourController extends Controller
             return $tour->faqs()->orderBy('sort_order')->get();
         });
 
-        return view('partials.tours.show.faqs', compact('tour', 'faqs'));
+        $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+
+        return view('partials.tours.show.faqs', compact('tour', 'faqs', 'globalFaqs'));
     }
 
     /**

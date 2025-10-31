@@ -271,6 +271,12 @@ class TourForm
                             ->cloneable()
                             ->defaultItems(0)
                             ->columnSpanFull(),
+
+                        Toggle::make('include_global_faqs')
+                            ->label('Включить глобальные FAQs')
+                            ->helperText('Когда включено, глобальные FAQs будут показаны вместе с FAQs тура')
+                            ->default(false)
+                            ->columnSpanFull(),
                     ])
                     ->collapsible(),
 

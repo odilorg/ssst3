@@ -40,6 +40,7 @@ class Tour extends Model
         'languages',
         'requirements',
         'include_global_requirements',
+        'include_global_faqs',
 
         // Tour Meta
         'tour_type',
@@ -70,6 +71,7 @@ class Tour extends Model
         // Booleans
         'is_active' => 'boolean',
         'include_global_requirements' => 'boolean',
+        'include_global_faqs' => 'boolean',
         'has_hotel_pickup' => 'boolean',
 
         // Integers
