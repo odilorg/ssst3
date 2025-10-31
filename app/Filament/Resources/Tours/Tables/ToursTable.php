@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Tours\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -52,6 +54,12 @@ class ToursTable
                 //
             ])
             ->recordActions([
+                Action::make('view_frontend')
+                    ->label('View Frontend')
+                    ->icon(Heroicon::OutlinedEye)
+                    ->color('info')
+                    ->url(fn ($record) => '/tour-details.html?slug=' . $record->slug)
+                    ->openUrlInNewTab(),
                 ViewAction::make()
                     ->label('View Formatted')
                     ->icon('heroicon-o-document-text'),

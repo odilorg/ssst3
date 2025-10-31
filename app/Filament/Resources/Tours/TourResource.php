@@ -70,6 +70,9 @@ class TourResource extends Resource
         return [
             ItineraryItemsRelationManager::class,
             TourPreviewRelationManager::class,
+            RelationManagers\TourFaqsRelationManager::class,
+            RelationManagers\TourExtrasRelationManager::class,
+            RelationManagers\ReviewsRelationManager::class,
         ];
     }
 
