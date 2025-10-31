@@ -153,4 +153,14 @@ class TourController extends Controller
                 ->firstOrFail();
         });
     }
+
+    /**
+     * Requirements section (Know Before You Go)
+     * Returns: Tour-specific requirements or global defaults
+     */
+    public function requirements(string $slug)
+    {
+        $tour = $this->getCachedTour($slug);
+        return view('partials.tours.show.requirements', compact('tour'));
+    }
 }

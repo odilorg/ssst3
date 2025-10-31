@@ -349,6 +349,9 @@ Route::prefix('partials')->name('partials.')->group(function () {
     Route::get('/tours/{slug}/included-excluded', [TourController::class, 'includedExcluded'])
         ->name('tours.included-excluded');
 
+    Route::get('/tours/{slug}/requirements', [TourController::class, 'requirements'])
+        ->name('tours.requirements');
+
     Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs'])
         ->name('tours.faqs');
 
