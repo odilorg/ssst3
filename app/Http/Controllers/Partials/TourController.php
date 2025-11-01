@@ -11,18 +11,38 @@ class TourController extends Controller
 {
     /**
      * Tour list partial
-     * Returns: Grid of tour cards
+     * Returns: Grid of tour cards with pagination support
+     *
+     * Query params:
+     * - per_page: Number of tours per page (default: 12, min: 6, max: 50)
+     * - page: Current page number (default: 1)
+     * - append: If true, returns only cards without wrapper (for Load More)
+     *
+     * Usage:
+     * - Initial load: GET /partials/tours?per_page=12
+     * - Load more: GET /partials/tours?page=2&per_page=12&append=true
      */
     public function list(Request $request)
     {
-        $tours = Cache::remember('tours.list', 3600, function () {
-            return Tour::with('city')
+        // Get pagination parameters
+        $perPage = $request->get('per_page', 12);
+        $page = $request->get('page', 1);
+        $isAppend = $request->boolean('append', false);
+
+        // Validate per_page (prevent abuse: min 6, max 50)
+        $perPage = min(max($perPage, 6), 50);
+
+        // Cache key includes page and per_page for proper caching
+        $cacheKey = "tours.list.page.{$page}.per_page.{$perPage}";
+
+        $tours = Cache::remember($cacheKey, 3600, function () use ($perPage) {
+            return Tour::with(['city'])
                 ->where('is_active', true)
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('created_at', 'desc') // Newest first
+                ->paginate($perPage);
         });
 
-        return view('partials.tours.list', compact('tours'));
+        return view('partials.tours.list', compact('tours', 'isAppend'));
     }
 
     /**

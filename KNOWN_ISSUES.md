@@ -81,6 +81,43 @@ Until fixed, users can:
 **Fixed:** October 23, 2025
 **Solution:** Updated LeadImportResource to use Schema instead of Form
 
+### Issue #4: Claude Code "Stop Hook Error" Message
+**Fixed:** November 1, 2025
+**Priority:** 🟡 Medium
+**Affected Component:** Claude Code hooks in `~/.claude/settings.json`
+
+**Description:**
+"Stop hook error" message was appearing when ending Claude Code sessions.
+
+**Root Cause:**
+Hooks were failing because they didn't:
+- Check if directories exist before accessing them
+- Exit cleanly with `exit 0`
+- Handle errors gracefully
+
+**Solution:**
+Updated all hooks in `~/.claude/settings.json` to:
+```bash
+# Before (failing)
+ls /path/*.json 2>/dev/null | wc -l
+
+# After (robust)
+INBOX_DIR="/path";
+if [ -d "$INBOX_DIR" ]; then
+  ls "$INBOX_DIR"/*.json 2>/dev/null | wc -l;
+fi;
+exit 0
+```
+
+**Verification:**
+```bash
+bash -c 'INBOX_DIR="/c/Users/Admin/.swarm/agents/agent1/inbox"; if [ -d "$INBOX_DIR" ]; then task_count=$(ls "$INBOX_DIR"/*.json 2>/dev/null | wc -l); if [ "$task_count" -gt 0 ]; then echo "OK"; fi; fi; exit 0'
+```
+
+**Documentation:** See `HOOK_ERROR_FIX.md` for complete details and prevention guidelines.
+
+---
+
 ### Issue #3: Images Not Loading in Filament Edit Pages
 **Fixed:** November 1, 2025
 **Priority:** 🔴 High

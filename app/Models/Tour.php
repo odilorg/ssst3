@@ -246,4 +246,27 @@ class Tour extends Model
             'review_count' => $approved->count(),
         ]);
     }
+
+    // ==========================================
+    // ACCESSORS
+    // ==========================================
+
+    /**
+     * Get the featured image URL
+     * Accessor for blade templates (uses hero_image field)
+     */
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        if (empty($this->hero_image)) {
+            return null; // Blade will use default image
+        }
+
+        // If hero_image is already a full URL
+        if (str_starts_with($this->hero_image, 'http')) {
+            return $this->hero_image;
+        }
+
+        // If hero_image is a storage path
+        return asset('storage/' . $this->hero_image);
+    }
 }
