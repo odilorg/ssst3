@@ -957,10 +957,24 @@
           if (partialName) {
             const dynamicUrl = backendUrl + '/' + tourSlug + '/' + partialName;
             section.setAttribute('hx-get', dynamicUrl);
+            section.setAttribute('hx-trigger', 'load once');
+            section.setAttribute('hx-swap', 'innerHTML');
             section.setAttribute('data-tour-slug', tourSlug);
             console.log('[Tour] Updated ' + className + ' → ' + dynamicUrl);
           } else {
             console.warn('[Tour] Unknown section class:', className);
+          }
+        });
+
+        // Trigger HTMX processing after attributes are set
+        // Wait for HTMX to load, then process the updated elements
+        window.addEventListener('load', function() {
+          if (window.htmx) {
+            console.log('[Tour] Triggering HTMX process for', sections.length, 'sections');
+            sections.forEach(function(section) {
+              htmx.process(section);
+              htmx.trigger(section, 'load');
+            });
           }
         });
       } else {
