@@ -43,7 +43,7 @@
 
                 {{-- Title --}}
                 <h3 class="tour-card__title">
-                    <a href="/tour-details.html?slug={{ $tour->slug }}">
+                    <a href="/tours/{{ $tour->slug }}">
                         {{ $tour->title }}
                     </a>
                 </h3>
@@ -83,7 +83,7 @@
                         <span class="tour-card__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
                         <span class="tour-card__price-unit">per person</span>
                     </div>
-                    <a href="/tour-details.html?slug={{ $tour->slug }}" class="btn btn--primary">
+                    <a href="/tours/{{ $tour->slug }}" class="btn btn--primary">
                         View Details
                         <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>
