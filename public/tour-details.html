@@ -385,7 +385,7 @@
        ===================================================== -->
   <section class="tour-header"
            hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/hero"
-           hx-trigger="load"
+           hx-trigger="none"
            hx-swap="innerHTML"
            data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -419,7 +419,7 @@
       <!-- Actual Gallery - Loaded via HTMX -->
       <div class="tour-hero__gallery is-hidden"
            hx-get=""
-           hx-trigger="load"
+           hx-trigger="none"
            hx-swap="innerHTML"
            data-tour-slug="samarkand-city-toursregistan-square-and-historical">
       </div>
@@ -464,7 +464,7 @@
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/overview"
-                   hx-trigger="load"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -480,7 +480,7 @@
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -495,7 +495,7 @@
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -520,7 +520,7 @@
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
           </section>
@@ -528,7 +528,7 @@
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -547,7 +547,7 @@
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/meeting-point"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -561,7 +561,7 @@
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
                    hx-get="http://127.0.0.1:8000/partials/tours/5-day-silk-road-classic/requirements"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -577,7 +577,7 @@
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -593,7 +593,7 @@
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/extras"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -611,7 +611,7 @@
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
                    hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews"
-                   hx-trigger="revealed"
+                   hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
 
@@ -966,16 +966,28 @@
           }
         });
 
-        // Trigger HTMX processing after attributes are set
-        // Wait for HTMX to load, then process the updated elements
-        window.addEventListener('load', function() {
-          if (window.htmx) {
-            console.log('[Tour] Triggering HTMX process for', sections.length, 'sections');
-            sections.forEach(function(section) {
-              htmx.process(section);
-              htmx.trigger(section, 'load');
-            });
-          }
+        // Trigger HTMX loading after attributes are set
+        // Store sections to load after HTMX is ready
+        window.tourSectionsToLoad = sections;
+
+        // Wait for HTMX to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+          // Give HTMX a moment to initialize
+          setTimeout(function() {
+            if (window.htmx && window.tourSectionsToLoad) {
+              console.log('[Tour] Loading content for', window.tourSectionsToLoad.length, 'sections');
+              window.tourSectionsToLoad.forEach(function(section) {
+                const url = section.getAttribute('hx-get');
+                if (url) {
+                  console.log('[Tour] Loading:', url);
+                  htmx.ajax('GET', url, {
+                    target: section,
+                    swap: 'innerHTML'
+                  });
+                }
+              });
+            }
+          }, 100);
         });
       } else {
         console.warn('[Tour] No tour slug in URL query parameter');
