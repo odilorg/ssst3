@@ -6,7 +6,7 @@ use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->file(public_path('index.html'));
 });
 
 // Tour details page
