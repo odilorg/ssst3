@@ -914,24 +914,34 @@
       // Get tour slug from URL - supports both /tours/slug and ?slug=...
       let tourSlug = null;
 
+      console.log('[Tour] Current URL:', window.location.href);
+      console.log('[Tour] Pathname:', window.location.pathname);
+      console.log('[Tour] Search:', window.location.search);
+
       // Try to get slug from URL path (/tours/slug-name)
       const pathParts = window.location.pathname.split('/').filter(Boolean);
+      console.log('[Tour] Path parts:', pathParts);
+
       if (pathParts[0] === 'tours' && pathParts[1]) {
         tourSlug = pathParts[1];
-        console.log('[Tour] Path-based slug:', tourSlug);
+        console.log('[Tour] ✅ Path-based slug detected:', tourSlug);
       }
 
       // Fallback to query parameter for backward compatibility
       if (!tourSlug) {
         const urlParams = new URLSearchParams(window.location.search);
         tourSlug = urlParams.get('slug') || urlParams.get('tour');
-        console.log('[Tour] Query parameter slug:', tourSlug);
+        if (tourSlug) {
+          console.log('[Tour] ✅ Query parameter slug detected:', tourSlug);
+        }
       }
 
       if (tourSlug) {
         // Update all sections with dynamic tour slug
         const sections = document.querySelectorAll('[data-tour-slug]');
         const backendUrl = 'http://127.0.0.1:8000/partials/tours';
+
+        console.log('[Tour] Found', sections.length, 'sections to load');
 
         sections.forEach(function(section) {
           // Map section class names to partial endpoint names
@@ -972,25 +982,37 @@
 
         // Wait for HTMX to be ready
         document.addEventListener('DOMContentLoaded', function() {
+          console.log('[Tour] DOMContentLoaded fired');
           // Give HTMX a moment to initialize
           setTimeout(function() {
-            if (window.htmx && window.tourSectionsToLoad) {
-              console.log('[Tour] Loading content for', window.tourSectionsToLoad.length, 'sections');
-              window.tourSectionsToLoad.forEach(function(section) {
-                const url = section.getAttribute('hx-get');
-                if (url) {
-                  console.log('[Tour] Loading:', url);
-                  htmx.ajax('GET', url, {
-                    target: section,
-                    swap: 'innerHTML'
-                  });
-                }
-              });
+            console.log('[Tour] Checking for HTMX...');
+            if (!window.htmx) {
+              console.error('[Tour] ❌ HTMX not loaded!');
+              return;
             }
+            if (!window.tourSectionsToLoad) {
+              console.error('[Tour] ❌ No sections to load!');
+              return;
+            }
+
+            console.log('[Tour] ✅ Starting to load content for', window.tourSectionsToLoad.length, 'sections');
+            window.tourSectionsToLoad.forEach(function(section) {
+              const url = section.getAttribute('hx-get');
+              if (url) {
+                console.log('[Tour] 📡 Loading:', url);
+                htmx.ajax('GET', url, {
+                  target: section,
+                  swap: 'innerHTML'
+                });
+              } else {
+                console.warn('[Tour] ⚠️ Section has no hx-get URL:', section.className);
+              }
+            });
           }, 100);
         });
       } else {
-        console.warn('[Tour] No tour slug in URL query parameter');
+        console.error('[Tour] ❌ No tour slug found in URL path or query parameter!');
+        console.error('[Tour] Expected URL format: /tours/slug-name or ?slug=slug-name');
       }
     })();
   </script>
