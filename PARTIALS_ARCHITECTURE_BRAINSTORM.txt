@@ -1,0 +1,841 @@
+================================================================================
+PARTIALS ARCHITECTURE BRAINSTORM
+Server-Side Rendering vs REST API Approach
+================================================================================
+
+Decision: Using partials (server-side rendering) instead of a full REST API
+
+================================================================================
+PARTIALS APPROACH - KEY BENEFITS
+================================================================================
+
+SEO & Performance:
+  ✅ Server-rendered HTML = fully indexable by search engines
+  ✅ Faster initial page load (no client-side JSON parsing)
+  ✅ Progressive enhancement (works without JavaScript)
+  ✅ Better Core Web Vitals scores
+
+Development Simplicity:
+  ✅ No API authentication complexity
+  ✅ No CORS issues
+  ✅ Single codebase (no API versioning)
+  ✅ Laravel Blade power (components, directives, etc.)
+  ✅ Direct access to Eloquent relationships
+
+User Experience:
+  ✅ Can still use AJAX for dynamic parts
+  ✅ Hybrid approach: initial HTML load + dynamic updates
+  ✅ Smoother navigation with Turbo/Livewire-style partial swaps
+
+================================================================================
+1. INTEGRATION STRATEGY
+================================================================================
+
+How should we integrate the Laravel backend with your static HTML frontend?
+
+--------------------------------------------------------------------------------
+Option A: Full Laravel Blade Conversion
+--------------------------------------------------------------------------------
+- Convert tour-details.html → tour-details.blade.php
+- Backend serves entire pages
+- Use @include('partials.tour-card') for reusable components
+
+Pros:
+  + Single source of truth
+  + Full Laravel features (auth, middleware, etc.)
+  + Easy to maintain
+
+Cons:
+  - Need to convert all static HTML
+  - Lose frontend/backend separation
+  - Slower initial development
+
+--------------------------------------------------------------------------------
+Option B: Hybrid AJAX Partials (RECOMMENDED)
+--------------------------------------------------------------------------------
+- Keep static HTML structure
+- Load dynamic sections via fetch: fetch('/partials/tour-details/123')
+- Backend returns HTML fragments
+- Frontend replaces <div id="tour-content"> with response
+
+Pros:
+  + Keeps frontend/backend separate
+  + Easy to test independently
+  + Progressive development (can migrate page by page)
+  + Static shell = fast initial load
+
+Cons:
+  - Requires JavaScript
+  - Slightly more complex architecture
+  - Need to coordinate data contracts
+
+Example:
+  <!-- tour-details.html -->
+  <div id="tour-hero"></div>
+  <div id="tour-details"></div>
+  <div id="tour-faqs"></div>
+
+  <script>
+    fetch('/partials/tours/samarkand-city-tour')
+      .then(res => res.text())
+      .then(html => {
+        document.querySelector('#tour-details').innerHTML = html;
+      });
+  </script>
+
+--------------------------------------------------------------------------------
+Option C: Server-Side Includes (SSI)
+--------------------------------------------------------------------------------
+- Static HTML with <!--#include virtual="/partials/tour-card?id=123" -->
+- Requires web server configuration (Apache mod_include or Nginx SSI)
+
+Pros:
+  + No JavaScript needed
+  + Simple integration
+
+Cons:
+  - Web server configuration required
+  - Less flexible
+  - Harder to debug
+
+================================================================================
+2. ROUTING STRUCTURE
+================================================================================
+
+Should we use traditional routes or partial-specific routes?
+
+--------------------------------------------------------------------------------
+Option A: Traditional Laravel Routes
+--------------------------------------------------------------------------------
+GET /tours                        → tours.index (list page)
+GET /tours/samarkand-city-tour    → tours.show (detail page)
+GET /tours/search?q=bukhara       → tours.search
+POST /bookings                    → bookings.store
+
+Pros:
+  + Standard Laravel pattern
+  + RESTful
+  + Easy to understand
+
+Cons:
+  - Returns full pages
+  - Not suitable for partial loading
+
+--------------------------------------------------------------------------------
+Option B: Partial-Specific Routes (RECOMMENDED)
+--------------------------------------------------------------------------------
+GET /tours                            → Full page (optional)
+GET /partials/tours/list              → Just tour cards HTML
+GET /partials/tours/{slug}            → Just tour detail HTML
+GET /partials/tours/{slug}/faqs       → Just FAQs section
+GET /partials/tours/{slug}/extras     → Just extras section
+GET /partials/tours/{slug}/reviews    → Just reviews section
+POST /partials/bookings               → Create booking, return confirmation HTML
+
+Example routes/web.php:
+  Route::prefix('partials')->group(function () {
+      Route::get('/tours', [TourController::class, 'list']);
+      Route::get('/tours/{slug}', [TourController::class, 'show']);
+      Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs']);
+      Route::get('/tours/{slug}/extras', [TourController::class, 'extras']);
+      Route::get('/tours/{slug}/reviews', [TourController::class, 'reviews']);
+      Route::post('/bookings', [BookingController::class, 'store']);
+  });
+
+Pros:
+  + Clear separation of concerns
+  + Fine-grained caching control
+  + Can load sections independently
+  + Easy to compose pages
+
+Cons:
+  - More routes to maintain
+  - Need to coordinate partial boundaries
+
+--------------------------------------------------------------------------------
+Option C: Dual-Mode (Both)
+--------------------------------------------------------------------------------
+GET /tours?format=html       → Full page
+GET /tours?format=partial    → Partial HTML
+
+Controller decides based on ?format parameter:
+  public function show(Request $request, string $slug)
+  {
+      $tour = Tour::where('slug', $slug)->firstOrFail();
+
+      if ($request->get('format') === 'partial') {
+          return view('tours.partials.details', compact('tour'));
+      }
+
+      return view('tours.show', compact('tour'));
+  }
+
+Pros:
+  + Single route handles both
+  + Flexible
+
+Cons:
+  - More complex logic
+  - Need to maintain two templates per route
+
+================================================================================
+3. FRONTEND FILE STRUCTURE
+================================================================================
+
+Where should we put the Blade templates?
+
+Current Static Structure:
+  D:/xampp82/htdocs/jahongir-custom-website/
+    ├── tour-details.html
+    ├── index.html
+    ├── assets/
+    │   ├── css/
+    │   ├── js/
+    │   └── images/
+
+--------------------------------------------------------------------------------
+Option A: Move Everything to Laravel Public
+--------------------------------------------------------------------------------
+D:/xampp82/htdocs/ssst3/
+  ├── resources/views/
+  │   ├── layouts/
+  │   │   └── app.blade.php (main layout)
+  │   ├── tours/
+  │   │   ├── index.blade.php (tour list)
+  │   │   ├── show.blade.php (tour detail)
+  │   │   └── partials/
+  │   │       ├── tour-card.blade.php
+  │   │       ├── hero.blade.php
+  │   │       ├── overview.blade.php
+  │   │       ├── highlights.blade.php
+  │   │       ├── itinerary.blade.php
+  │   │       ├── included-excluded.blade.php
+  │   │       ├── faqs.blade.php
+  │   │       ├── extras.blade.php
+  │   │       └── reviews.blade.php
+  │   └── bookings/
+  │       ├── create.blade.php
+  │       └── confirmation.blade.php
+  └── public/
+      └── assets/ (copy from static site)
+          ├── css/
+          ├── js/
+          └── images/
+
+Pros:
+  + Everything in one place
+  + Can use Laravel Mix/Vite for assets
+  + Standard Laravel structure
+
+Cons:
+  - Lose separation between frontend/backend repos
+  - Harder to work on frontend independently
+  - Need to migrate all HTML to Blade
+
+--------------------------------------------------------------------------------
+Option B: Keep Separate + Partials Endpoint (RECOMMENDED)
+--------------------------------------------------------------------------------
+Keep Static Site As-Is:
+  D:/xampp82/htdocs/jahongir-custom-website/
+    ├── tour-details.html (stays as shell)
+    ├── index.html
+    └── assets/
+
+Laravel Only Serves Partials:
+  D:/xampp82/htdocs/ssst3/
+    ├── resources/views/partials/
+    │   └── tours/
+    │       ├── list.blade.php
+    │       ├── detail.blade.php
+    │       ├── hero.blade.php
+    │       ├── overview.blade.php
+    │       ├── highlights.blade.php
+    │       ├── itinerary.blade.php
+    │       ├── included-excluded.blade.php
+    │       ├── faqs.blade.php
+    │       ├── extras.blade.php
+    │       └── reviews.blade.php
+
+Frontend Fetches Partials:
+  // tour-details.html
+  <script>
+    const tourSlug = getTourSlugFromURL(); // e.g., "samarkand-city-tour"
+
+    // Load tour hero
+    fetch(`http://localhost/ssst3/partials/tours/${tourSlug}/hero`)
+      .then(res => res.text())
+      .then(html => document.querySelector('#tour-hero').innerHTML = html);
+
+    // Load tour details
+    fetch(`http://localhost/ssst3/partials/tours/${tourSlug}`)
+      .then(res => res.text())
+      .then(html => document.querySelector('#tour-details').innerHTML = html);
+
+    // Load FAQs
+    fetch(`http://localhost/ssst3/partials/tours/${tourSlug}/faqs`)
+      .then(res => res.text())
+      .then(html => document.querySelector('#tour-faqs').innerHTML = html);
+  </script>
+
+Pros:
+  + Keeps frontend/backend separate
+  + Frontend team can work independently
+  + Easy to test backend partials
+  + Can serve to multiple frontends
+
+Cons:
+  - Need CORS configuration
+  - Slightly more complex setup
+  - Requires coordination on data contracts
+
+--------------------------------------------------------------------------------
+Option C: Hybrid - Shell in Laravel, Partials Dynamic
+--------------------------------------------------------------------------------
+D:/xampp82/htdocs/ssst3/
+  ├── resources/views/
+  │   ├── layouts/
+  │   │   └── app.blade.php (imports CSS/JS from static site)
+  │   ├── tours/
+  │   │   ├── show.blade.php (minimal shell)
+  │   │   └── partials/
+  │   │       └── (all partial components)
+
+tours/show.blade.php:
+  @extends('layouts.app')
+
+  @section('content')
+  <div id="tour-hero"></div>
+  <div id="tour-details"></div>
+  <div id="tour-faqs"></div>
+
+  @push('scripts')
+  <script>
+    // Load partials dynamically
+    loadPartial('/partials/tours/{{ $tour->slug }}/hero', '#tour-hero');
+    loadPartial('/partials/tours/{{ $tour->slug }}', '#tour-details');
+    loadPartial('/partials/tours/{{ $tour->slug }}/faqs', '#tour-faqs');
+  </script>
+  @endpush
+  @endsection
+
+Pros:
+  + Best of both worlds
+  + Laravel handles routing
+  + Can still load partials dynamically
+
+Cons:
+  - Need to maintain Blade layouts
+  - Static site becomes less useful
+
+================================================================================
+4. BOOKING FLOW
+================================================================================
+
+How should booking work with partials?
+
+--------------------------------------------------------------------------------
+Option A: Traditional Form Submission
+--------------------------------------------------------------------------------
+<form action="/bookings" method="POST">
+  @csrf
+  <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+
+  <input name="customer_name" required>
+  <input name="customer_email" type="email" required>
+  <input name="start_date" type="date" required>
+  <input name="pax_total" type="number" required>
+
+  <button type="submit">Book Now</button>
+</form>
+
+Flow:
+  1. User fills form
+  2. Submit → POST /bookings
+  3. Server validates, creates booking
+  4. Redirect to /bookings/{reference}/confirmation
+  5. Show confirmation page
+
+Pros:
+  + Works without JavaScript
+  + Simple to implement
+  + Progressive enhancement
+
+Cons:
+  - Page reload (worse UX)
+  - Lose form state on validation errors
+
+--------------------------------------------------------------------------------
+Option B: AJAX Form + Partial Response (RECOMMENDED)
+--------------------------------------------------------------------------------
+<form id="booking-form">
+  <input name="tour_id" value="{{ $tour->id }}">
+  <input name="customer_name" required>
+  <input name="customer_email" type="email" required>
+  <input name="start_date" type="date" required>
+  <input name="pax_total" type="number" required>
+
+  <button type="submit">Book Now</button>
+</form>
+
+<div id="booking-result"></div>
+
+<script>
+document.querySelector('#booking-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  const response = await fetch('/partials/bookings', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value
+    }
+  });
+
+  const html = await response.text();
+
+  if (response.ok) {
+    // Success - show confirmation partial
+    document.querySelector('#booking-result').innerHTML = html;
+    e.target.style.display = 'none';
+  } else {
+    // Error - show error partial
+    document.querySelector('#booking-result').innerHTML = html;
+  }
+});
+</script>
+
+Backend Controller:
+  public function store(Request $request)
+  {
+      $validated = $request->validate([
+          'tour_id' => 'required|exists:tours,id',
+          'customer_name' => 'required',
+          'customer_email' => 'required|email',
+          'start_date' => 'required|date',
+          'pax_total' => 'required|integer|min:1',
+      ]);
+
+      $booking = Booking::create($validated);
+
+      // Return HTML partial, not JSON
+      return view('partials.bookings.confirmation', compact('booking'));
+  }
+
+partials/bookings/confirmation.blade.php:
+  <div class="booking-success">
+    <h2>✅ Booking Confirmed!</h2>
+    <p>Reference: {{ $booking->reference }}</p>
+    <p>Tour: {{ $booking->tour->title }}</p>
+    <p>Date: {{ $booking->start_date->format('M d, Y') }}</p>
+    <p>Guests: {{ $booking->pax_total }}</p>
+
+    <a href="/bookings/{{ $booking->reference }}" class="btn">View Details</a>
+  </div>
+
+Pros:
+  + Smooth UX, no page reload
+  + Can show success message inline
+  + Still returns HTML (not JSON)
+  + Easy to style/customize
+
+Cons:
+  - Requires JavaScript
+  - Need to handle errors in frontend
+
+--------------------------------------------------------------------------------
+Option C: Multi-Step with Partials
+--------------------------------------------------------------------------------
+Step 1: Select dates & guests
+  GET /partials/booking/step1?tour_id=123
+  Returns form with date picker, pax selector
+
+Step 2: Customer info
+  POST /partials/booking/step2
+  Returns form with name, email, phone
+
+Step 3: Review & confirm
+  POST /partials/booking/step3
+  Returns summary with "Confirm" button
+
+Step 4: Confirmation
+  POST /partials/bookings
+  Returns confirmation HTML
+
+Pros:
+  + Better UX for complex bookings
+  + Can validate each step
+  + Can show pricing dynamically
+
+Cons:
+  - More complex
+  - Need to maintain state between steps
+  - More routes/controllers
+
+================================================================================
+5. DATA FRESHNESS & CACHING
+================================================================================
+
+How should we handle caching?
+
+--------------------------------------------------------------------------------
+Option A: Full Page Caching
+--------------------------------------------------------------------------------
+Cache entire tour pages for 1 hour
+Invalidate on tour update
+
+config/cache.php:
+  'tour_pages' => [
+      'driver' => 'file',
+      'ttl' => 3600, // 1 hour
+  ]
+
+Controller:
+  public function show(string $slug)
+  {
+      $tour = Cache::remember("tour.{$slug}", 3600, function () use ($slug) {
+          return Tour::with(['faqs', 'extras', 'reviews'])
+              ->where('slug', $slug)
+              ->firstOrFail();
+      });
+
+      return view('partials.tours.detail', compact('tour'));
+  }
+
+Model Observer:
+  class TourObserver
+  {
+      public function updated(Tour $tour)
+      {
+          Cache::forget("tour.{$tour->slug}");
+      }
+  }
+
+Pros:
+  + Very fast
+  + Simple implementation
+  + Reduces database load
+
+Cons:
+  - Less dynamic (reviews won't update for 1 hour)
+  - Cache invalidation complexity
+
+--------------------------------------------------------------------------------
+Option B: Partial-Level Caching (RECOMMENDED)
+--------------------------------------------------------------------------------
+Cache different sections with different TTLs:
+- Tour info: 1 hour (rarely changes)
+- FAQs: 1 day (very static)
+- Extras: 1 hour (prices might change)
+- Reviews: 5 minutes (more dynamic)
+
+Controller:
+  public function show(string $slug)
+  {
+      $tour = Cache::remember("tour.{$slug}", 3600, function () use ($slug) {
+          return Tour::where('slug', $slug)->firstOrFail();
+      });
+
+      return view('partials.tours.detail', compact('tour'));
+  }
+
+  public function reviews(string $slug)
+  {
+      $tour = Tour::where('slug', $slug)->firstOrFail();
+
+      $reviews = Cache::remember("tour.{$slug}.reviews", 300, function () use ($tour) {
+          return $tour->approvedReviews()->latest()->get();
+      });
+
+      return view('partials.tours.reviews', compact('tour', 'reviews'));
+  }
+
+Pros:
+  + More granular control
+  + Can update reviews frequently
+  + Cache static content longer
+
+Cons:
+  - More complex cache management
+  - Need to invalidate multiple keys
+
+--------------------------------------------------------------------------------
+Option C: No Caching (Simplest)
+--------------------------------------------------------------------------------
+Always fetch fresh data from database
+
+Pros:
+  + Always up-to-date
+  + No cache invalidation needed
+  + Simpler code
+
+Cons:
+  - Slower (database query on every request)
+  - Higher server load
+
+Best for: Initial development, optimize later
+
+================================================================================
+6. JAVASCRIPT FRAMEWORK
+================================================================================
+
+Should we use any framework for partial loading?
+
+--------------------------------------------------------------------------------
+Option A: Vanilla JavaScript (Current Approach)
+--------------------------------------------------------------------------------
+fetch('/partials/tours/123/reviews')
+  .then(res => res.text())
+  .then(html => {
+    document.querySelector('#reviews-container').innerHTML = html;
+  })
+  .catch(err => console.error('Failed to load reviews', err));
+
+Pros:
+  + No dependencies
+  + Full control
+  + Lightweight
+
+Cons:
+  - More boilerplate code
+  - Need to handle loading states manually
+  - Need to handle errors manually
+
+--------------------------------------------------------------------------------
+Option B: HTMX (Perfect for Partials!) - RECOMMENDED
+--------------------------------------------------------------------------------
+HTMX is a JavaScript library that allows you to access modern browser features
+directly from HTML, without writing JavaScript.
+
+Installation:
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+Usage:
+  <button hx-get="/partials/tours/123/reviews"
+          hx-target="#reviews-container"
+          hx-swap="innerHTML"
+          hx-indicator="#loading">
+    Load Reviews
+  </button>
+
+  <div id="reviews-container"></div>
+  <div id="loading" class="htmx-indicator">Loading...</div>
+
+More examples:
+  <!-- Load partial on page load -->
+  <div hx-get="/partials/tours/{{ $slug }}"
+       hx-trigger="load"
+       hx-swap="innerHTML">
+    Loading tour details...
+  </div>
+
+  <!-- Infinite scroll reviews -->
+  <div hx-get="/partials/tours/123/reviews?page=2"
+       hx-trigger="revealed"
+       hx-swap="afterend">
+  </div>
+
+  <!-- Submit form and replace with confirmation -->
+  <form hx-post="/partials/bookings"
+        hx-target="#booking-result"
+        hx-swap="innerHTML">
+    <!-- form fields -->
+  </form>
+
+Pros:
+  + Zero JavaScript needed for common patterns
+  + Declarative (easy to read/understand)
+  + Built-in loading indicators
+  + Built-in error handling
+  + Perfect for partials architecture
+  + Can progressively enhance existing HTML
+
+Cons:
+  - Another dependency
+  - Learning curve (but small)
+  - Less control than vanilla JS
+
+--------------------------------------------------------------------------------
+Option C: Alpine.js + Partials
+--------------------------------------------------------------------------------
+Alpine.js for interactivity + fetch for partials
+
+<div x-data="{ loading: true, content: '' }">
+  <template x-if="loading">
+    <div>Loading...</div>
+  </template>
+
+  <template x-if="!loading">
+    <div x-html="content"></div>
+  </template>
+
+  <div x-init="
+    fetch('/partials/tours/123')
+      .then(res => res.text())
+      .then(html => {
+        content = html;
+        loading = false;
+      })
+  "></div>
+</div>
+
+Pros:
+  + Alpine.js is great for interactivity
+  + Small footprint
+  + Works well with partials
+
+Cons:
+  - Still need to write fetch code
+  - More complex than HTMX for partials
+
+--------------------------------------------------------------------------------
+Option D: Livewire (Full Laravel Integration)
+--------------------------------------------------------------------------------
+Laravel Livewire is a full-stack framework that makes building dynamic
+interfaces simple, without leaving Laravel.
+
+Component:
+  class TourDetails extends Component
+  {
+      public $tourSlug;
+
+      public function render()
+      {
+          $tour = Tour::where('slug', $this->tourSlug)->firstOrFail();
+          return view('livewire.tour-details', compact('tour'));
+      }
+  }
+
+View:
+  <div>
+    <h1>{{ $tour->title }}</h1>
+    <p>{{ $tour->short_description }}</p>
+
+    <button wire:click="$refresh">Refresh</button>
+  </div>
+
+Usage:
+  <livewire:tour-details :tour-slug="'samarkand-city-tour'" />
+
+Pros:
+  + Most powerful
+  + Real-time reactivity
+  + No need to write JavaScript
+  + Built-in validation
+
+Cons:
+  - Heavier than partials
+  - WebSocket connection required
+  - Need to convert static HTML to Livewire components
+  - Different architecture
+
+================================================================================
+RECOMMENDED APPROACH - SUMMARY
+================================================================================
+
+Based on best practices and your use case, here's the recommended approach:
+
+1. INTEGRATION: Hybrid AJAX Partials (Option B)
+   - Keep jahongir-custom-website as static HTML shell
+   - Laravel serves dynamic partials at /partials/*
+   - Frontend loads partials via HTMX or vanilla fetch
+
+2. ROUTING: Partial-Specific Routes (Option B)
+   Route::prefix('partials')->group(function () {
+       Route::get('/tours', [TourController::class, 'list']);
+       Route::get('/tours/{slug}', [TourController::class, 'show']);
+       Route::get('/tours/{slug}/hero', [TourController::class, 'hero']);
+       Route::get('/tours/{slug}/overview', [TourController::class, 'overview']);
+       Route::get('/tours/{slug}/highlights', [TourController::class, 'highlights']);
+       Route::get('/tours/{slug}/itinerary', [TourController::class, 'itinerary']);
+       Route::get('/tours/{slug}/included-excluded', [TourController::class, 'includedExcluded']);
+       Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs']);
+       Route::get('/tours/{slug}/extras', [TourController::class, 'extras']);
+       Route::get('/tours/{slug}/reviews', [TourController::class, 'reviews']);
+       Route::post('/bookings', [BookingController::class, 'store']);
+   });
+
+3. FILE STRUCTURE: Keep Separate (Option B)
+   - Static site stays in jahongir-custom-website/
+   - Laravel only has resources/views/partials/
+   - Configure CORS for cross-origin requests
+
+4. BOOKING: AJAX + Partial Response (Option B)
+   - Submit form via fetch/HTMX
+   - Return HTML confirmation partial
+   - No page reload
+
+5. CACHING: Partial-Level Caching (Option B)
+   - Cache tour info for 1 hour
+   - Cache reviews for 5 minutes
+   - Invalidate on updates
+
+6. JAVASCRIPT: HTMX (Option B)
+   - Declarative partial loading
+   - Zero boilerplate
+   - Perfect for this architecture
+   - Can fallback to vanilla JS if needed
+
+================================================================================
+QUESTIONS TO CLARIFY
+================================================================================
+
+Before creating the detailed implementation plan, please answer:
+
+1. Do you want to keep jahongir-custom-website separate, or merge into Laravel?
+   [ ] Keep separate (easier to work on frontend independently)
+   [ ] Merge into Laravel (single codebase)
+
+2. Should tour list page (index.html) also use partials, or just tour details?
+   [ ] Just tour details for now
+   [ ] Both list and details
+   [ ] Eventually all pages
+
+3. Do you want real-time availability checking or simple booking forms?
+   [ ] Simple forms (easier, faster to build)
+   [ ] Real-time availability (complex, requires calendar sync)
+
+4. Should we use HTMX for partial loading, or stick with vanilla JavaScript?
+   [ ] HTMX (recommended, less code)
+   [ ] Vanilla JS (no dependencies)
+   [ ] Alpine.js + fetch
+
+5. What about search/filter functionality on tour list page?
+   [ ] Server-side filter with partials
+   [ ] Client-side JavaScript filter
+   [ ] Hybrid (initial load from server, filter on client)
+
+6. Should we handle the Beds24 integration now or later?
+   [ ] Later (focus on tour display first)
+   [ ] Now (need to check real availability)
+
+7. Do you want to keep using the existing Filament admin panel routes (/admin)?
+   [ ] Yes, keep /admin for backend management
+   [ ] Merge with public routes
+   [ ] Create separate subdomain (admin.example.com)
+
+8. CORS Configuration - since frontend and backend are separate:
+   [ ] Configure Laravel CORS for localhost development
+   [ ] Use proxy in frontend (avoid CORS)
+   [ ] Both will be on same domain in production?
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+Once you answer the questions above, I will create a detailed implementation
+plan with:
+
+1. Exact folder structure
+2. Step-by-step implementation tasks
+3. Route definitions
+4. Controller skeletons
+5. Blade template structure
+6. Frontend JavaScript examples
+7. Testing checklist
+8. Deployment considerations
+
+Please answer the 8 questions above and I'll generate the complete plan!
+
+================================================================================

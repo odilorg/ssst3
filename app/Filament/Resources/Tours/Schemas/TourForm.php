@@ -135,6 +135,7 @@ class TourForm
                             ->image()
                             ->directory('tours/heroes')
                             ->disk('public')
+                            ->visibility('public')
                             ->imageEditor()
                             ->columnSpanFull(),
 
@@ -146,6 +147,7 @@ class TourForm
                                     ->image()
                                     ->directory('tours/gallery')
                                     ->disk('public')
+                                    ->visibility('public')
                                     ->imageEditor()
                                     ->imageEditorAspectRatios([
                                         null,

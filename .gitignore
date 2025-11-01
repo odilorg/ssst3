@@ -27,3 +27,12 @@ Thumbs.db
 .env.tmp
 public/ping.txt
 public/css/
+
+# Backup files
+*.backup
+
+# Temporary text files (not all .txt, just temp ones)
+partials-answers.txt
+
+# Keep documentation in repo (they're useful!)
+# *.md files will be committed
