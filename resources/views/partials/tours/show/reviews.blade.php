@@ -21,7 +21,7 @@
         @foreach($tour->reviews as $review)
             <article class="review-card">
                 <div class="review-header">
-                    <img src="{{ $review->avatar_url ?? 'images/reviewers/avatar-placeholder.jpg' }}"
+                    <img src="{{ $review->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->reviewer_name) . '&size=56&background=1a5490&color=fff' }}"
                          alt=""
                          class="reviewer-avatar"
                          width="56"
