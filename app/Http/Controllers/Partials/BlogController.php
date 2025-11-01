@@ -42,7 +42,7 @@ class BlogController extends Controller
 
         // Increment view count (not cached, runs every time)
         // Using a separate database query to avoid caching issues
-        BlogPost::where('id', $post->id)->increment('views');
+        BlogPost::where('id', $post->id)->increment('view_count');
 
         return view('partials.blog.content', compact('post'));
     }
