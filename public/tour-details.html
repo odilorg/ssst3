@@ -911,11 +911,22 @@
   <!-- Dynamic Tour Slug Detection (MUST run before HTMX) -->
   <script>
     (function() {
-      // Get tour slug from URL query parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const tourSlug = urlParams.get('slug') || urlParams.get('tour');
+      // Get tour slug from URL - supports both /tours/slug and ?slug=...
+      let tourSlug = null;
 
-      console.log('[Tour] Query parameter slug:', tourSlug);
+      // Try to get slug from URL path (/tours/slug-name)
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      if (pathParts[0] === 'tours' && pathParts[1]) {
+        tourSlug = pathParts[1];
+        console.log('[Tour] Path-based slug:', tourSlug);
+      }
+
+      // Fallback to query parameter for backward compatibility
+      if (!tourSlug) {
+        const urlParams = new URLSearchParams(window.location.search);
+        tourSlug = urlParams.get('slug') || urlParams.get('tour');
+        console.log('[Tour] Query parameter slug:', tourSlug);
+      }
 
       if (tourSlug) {
         // Update all sections with dynamic tour slug

@@ -9,9 +9,18 @@ Route::get('/', function () {
     return response()->file(public_path('index.html'));
 });
 
-// Tour details page
-Route::get('/tours/{slug}', [\App\Http\Controllers\TourController::class, 'show'])->name('tours.show');
+// Tour details page - SEO-friendly URL that redirects to static HTML
+Route::get('/tours/{slug}', function ($slug) {
+    return response()->file(public_path('tour-details.html'));
+})->name('tours.show');
 
+// Blog listing page
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+
+// Blog article page
+Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
+    ->name('blog.show')
+    ->where('slug', '[a-z0-9-]+');
 
 // Printable booking estimate route
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
@@ -389,4 +398,8 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/blog/{slug}/related', [BlogController::class, 'related'])
         ->name('blog.related');
+
+    // -------- BLOG LISTING (HTMX) --------
+    Route::get('/blog/listing', [BlogController::class, 'listing'])
+        ->name('blog.listing');
 });
