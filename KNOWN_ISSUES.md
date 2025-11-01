@@ -81,6 +81,63 @@ Until fixed, users can:
 **Fixed:** October 23, 2025
 **Solution:** Updated LeadImportResource to use Schema instead of Form
 
+### Issue #3: Images Not Loading in Filament Edit Pages
+**Fixed:** November 1, 2025
+**Priority:** 🔴 High
+**Affected Components:** BlogPostResource, TourResource (FileUpload fields)
+
+**Description:**
+Uploaded images were not displaying in Filament edit pages. When editing a blog post or tour, the FileUpload component showed broken/missing image previews.
+
+**Root Cause:**
+1. `APP_URL` in `.env` was set to `http://localhost` but Laravel server runs on `http://127.0.0.1:8000`
+2. This caused incorrect URL generation for image assets
+3. Some FileUpload fields were missing `visibility('public')` parameter
+
+**Error Symptoms:**
+- Broken image previews in Filament admin edit pages
+- 404 errors for image URLs pointing to wrong host
+- URL mismatch: `http://localhost/storage/...` vs `http://127.0.0.1:8000/storage/...`
+
+**Solution:**
+```diff
+# .env file
+- APP_URL=http://localhost
++ APP_URL=http://127.0.0.1:8000
+```
+
+```php
+// TourForm.php - Added visibility('public')
+FileUpload::make('hero_image')
+    ->disk('public')
++   ->visibility('public')  // ← Added
+    ->directory('tours/heroes')
+
+FileUpload::make('path') // Gallery images
+    ->disk('public')
++   ->visibility('public')  // ← Added
+    ->directory('tours/gallery')
+```
+
+**Verification Steps:**
+1. Check storage symlink exists: `ls -la public/storage`
+2. Verify APP_URL: `php artisan tinker --execute="echo config('app.url');"`
+3. Test image URL: `Storage::disk('public')->url('test.jpg')`
+4. Clear caches: `php artisan config:clear && php artisan cache:clear`
+
+**Affected Files:**
+- `.env` - Updated APP_URL
+- `app/Filament/Resources/Tours/Schemas/TourForm.php` - Added visibility()
+- `app/Filament/Resources/BlogPosts/Schemas/BlogPostForm.php` - Already had visibility()
+
+**Impact:**
+All FileUpload image previews now work correctly in Filament admin panel.
+
+**Prevention:**
+- Always set `visibility('public')` on public FileUpload fields
+- Ensure APP_URL matches actual server URL in development
+- Run `php artisan storage:link` after cloning project
+
 ---
 
 ## 📝 Notes for Developers
