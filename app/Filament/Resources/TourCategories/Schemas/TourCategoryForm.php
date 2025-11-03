@@ -65,25 +65,44 @@ class TourCategoryForm
                     ]),
 
                 Section::make('Visual Settings')
+                    ->description('Manage icons and images for this category')
                     ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icon')
-                                    ->helperText('Font Awesome class (e.g., "fas fa-landmark") or emoji'),
+                        TextInput::make('icon')
+                            ->label('Icon')
+                            ->helperText('Font Awesome class (e.g., "fas fa-landmark") or emoji')
+                            ->placeholder('fas fa-landmark')
+                            ->columnSpanFull(),
 
-                                FileUpload::make('image_path')
-                                    ->label('Card Background Image')
-                                    ->image()
-                                    ->directory('categories')
-                                    ->helperText('Used on homepage category cards'),
-                            ]),
+                        FileUpload::make('image_path')
+                            ->label('Card Background Image')
+                            ->image()
+                            ->directory('categories')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
+                            ->maxSize(5120) // 5MB
+                            ->helperText('Used on homepage category cards. Recommended: 800x600px (4:3 ratio)')
+                            ->columnSpanFull(),
 
                         FileUpload::make('hero_image')
-                            ->label('Hero Image')
+                            ->label('Hero Image (Category Landing Page)')
                             ->image()
                             ->directory('categories/heroes')
-                            ->helperText('Used on category landing pages')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '21:9',
+                                '16:9',
+                                null, // Free aspect ratio
+                            ])
+                            ->maxSize(8192) // 8MB
+                            ->helperText('Used as background on category landing pages. Recommended: 1920x1080px (16:9 ratio)')
                             ->columnSpanFull(),
                     ]),
 
