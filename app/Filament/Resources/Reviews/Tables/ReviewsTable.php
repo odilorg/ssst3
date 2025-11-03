@@ -2,6 +2,12 @@
 
 namespace App\Filament\Resources\Reviews\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -161,7 +167,7 @@ class ReviewsTable
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('approve')
+                Action::make('approve')
                     ->label('Одобрить')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
@@ -170,7 +176,7 @@ class ReviewsTable
                     ->visible(fn ($record) => !$record->is_approved)
                     ->successNotificationTitle('Отзыв одобрен'),
 
-                Tables\Actions\Action::make('unapprove')
+                Action::make('unapprove')
                     ->label('Отменить одобрение')
                     ->icon('heroicon-o-x-circle')
                     ->color('warning')
@@ -179,7 +185,7 @@ class ReviewsTable
                     ->visible(fn ($record) => $record->is_approved)
                     ->successNotificationTitle('Одобрение отменено'),
 
-                Tables\Actions\Action::make('mark_spam')
+                Action::make('mark_spam')
                     ->label('Пометить как спам')
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('danger')
@@ -187,20 +193,20 @@ class ReviewsTable
                     ->action(fn ($record) => $record->markAsSpam())
                     ->successNotificationTitle('Отзыв помечен как спам'),
 
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
 
-                Tables\Actions\Action::make('view_tour')
+                Action::make('view_tour')
                     ->label('Открыть тур')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->color('primary')
                     ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', ['record' => $record->tour_id]) : null)
                     ->openUrlInNewTab(),
 
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\BulkAction::make('approve')
+                BulkActionGroup::make([
+                    BulkAction::make('approve')
                         ->label('Одобрить выбранные')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
@@ -209,7 +215,7 @@ class ReviewsTable
                         ->deselectRecordsAfterCompletion()
                         ->successNotificationTitle('Отзывы одобрены'),
 
-                    Tables\Actions\BulkAction::make('unapprove')
+                    BulkAction::make('unapprove')
                         ->label('Отменить одобрение')
                         ->icon('heroicon-o-x-circle')
                         ->color('warning')
@@ -218,7 +224,7 @@ class ReviewsTable
                         ->deselectRecordsAfterCompletion()
                         ->successNotificationTitle('Одобрение отменено'),
 
-                    Tables\Actions\BulkAction::make('mark_spam')
+                    BulkAction::make('mark_spam')
                         ->label('Пометить как спам')
                         ->icon('heroicon-o-exclamation-triangle')
                         ->color('danger')
@@ -227,7 +233,7 @@ class ReviewsTable
                         ->deselectRecordsAfterCompletion()
                         ->successNotificationTitle('Отзывы помечены как спам'),
 
-                    Tables\Actions\DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
