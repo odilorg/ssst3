@@ -1,0 +1,87 @@
+🎨 1. Color Palette Consistency
+
+✅ Good alignment:
+
+The form background (#FAFAFA–#FFF7F0 range) fits well with the Tour Details light-beige tone.
+
+Blue “Submit Review” button matches the primary CTA color used in the tour detail “Book Now” button area.
+
+⚠️ Minor mismatches:
+
+The beige tone in the form section is slightly warmer/darker than the rest of the page background.
+→ Fix: Use the same neutral background tone as the Tour Detail page (e.g., #FBFCFE or #F8FAFD) for full-page harmony.
+
+The form border lines are very faint compared to the crisper card outlines on the tour page (like “What’s Included” cards).
+→ Fix: Use the same border color token (around #E5E8F0) to maintain visual consistency.
+🧩 2. Typography & Font Hierarchy
+
+✅ Matches well:
+
+Font style and size hierarchy (headings, body text) are similar to the tour detail layout.
+
+Input placeholder typography matches the form style used in your Contact page—good brand consistency.
+
+⚠️ Needs slight refinement:
+
+“Write a Review” heading is smaller and tighter spaced than the Tour Detail’s section headers (e.g., “Highlights”, “Cancellation Policy”).
+→ Fix: Increase font size to 28px semibold (H2 token) and add ~8px bottom margin.
+
+Field labels (“Your Rating”, “Review Title”) use a lighter weight than Contact/Tour Detail forms.
+→ Fix: Make labels medium weight (#4A5874) for visual clarity.
+
+📐 3. Padding & Spacing
+
+⚠️ Inconsistent vertical rhythm:
+
+The space between form fields is tighter than the spacing used on the Tour Detail’s accordion or info blocks.
+→ Fix: Increase vertical gap between input fields to 20–24px.
+
+The entire form block could use more top padding (~48px) before the first field to visually separate it from the previous section (“Customer Reviews”).
+
+✅ Good:
+
+Consistent horizontal padding on input fields matches other components.
+🧱 4. Component Structure & Borders
+
+✅ Aligned:
+
+Inputs, textareas, and the primary button follow the same rounded-rectangle style used elsewhere.
+
+Button color and hover behavior appear identical to “Book Now” → strong consistency.
+
+⚠️ Improve:
+
+The form fields could benefit from a subtle card container (white surface, light shadow, 12px radius, same as “Included” sections).
+→ This aligns it visually with the “cards inside sections” pattern of the Tour Detail page.
+
+⭐ 5. Icons & Interactive Elements
+
+✅ Star rating icons feel consistent with the theme — good yellow accent similar to orange badges elsewhere.
+
+⚠️ But:
+
+The yellow hue (#FFB400) is more saturated than the brand-accent orange (#FFA63D).
+→ Fix: Use the same accent tone as other orange highlights on the site for brand unity.
+
+🧭 6. Alignment & Layout
+
+Inputs and labels are perfectly left-aligned—good structure.
+
+The “Submit Review” button width should match the “Send Message” / “Book Now” button width (full-width desktop, 80% tablet).
+
+♿ 7. Accessibility & UX
+
+✅ Good focus visibility on inputs and button.
+✅ Clear required fields marking (*).
+⚠️ Slightly improve error/validation feedback color — make it use brand-primary red instead of browser default.
+
+🔧 Summary Fix List (for the AI Designer)
+Area	Change	Align To
+Background	Use same neutral tone (#FBFCFE)	Tour Details / Contact
+Heading “Write a Review”	Larger font (H2), add spacing	Tour section headers
+Labels	Medium weight, darker ink (#4A5874)	Contact form
+Field spacing	Increase vertical gap to 24px	FAQ/Contact
+Container	Wrap form in white card (radius 12, shadow 0 6px 20px rgba(16,24,40,.06))	“Included” / “Cancellation Policy” blocks
+Star color	Use #FFA63D	Brand accent
+Button width	Match “Book Now”	Tour Detail CTA
+Border color	Use #E5E8F0 for all inputs	Global UI token
