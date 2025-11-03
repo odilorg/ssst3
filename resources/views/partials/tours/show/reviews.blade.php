@@ -60,10 +60,11 @@
 
     {{-- Review Submission Form --}}
     <div class="review-form-wrapper">
-        <h3 class="review-form-title">Write a Review</h3>
-        <p class="review-form-subtitle">Share your experience with this tour</p>
+        <div class="review-form">
+            <h3 class="review-form-title">Write a Review</h3>
+            <p class="review-form-subtitle">Share your experience with this tour</p>
 
-        <form id="reviewForm" class="review-form" data-tour-slug="{{ $tour->slug }}">
+            <form id="reviewForm" data-tour-slug="{{ $tour->slug }}">
             @csrf
 
             {{-- Honeypot field (hidden from users, trap for bots) --}}
@@ -146,6 +147,7 @@
             </div>
 
             <div class="form-message" id="formMessage" style="display:none"></div>
-        </form>
+            </form>
+        </div>
     </div>
 </section>
