@@ -725,6 +725,12 @@
   padding: 3rem 0;
 }
 
+.blog-comments .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
 .comments-header {
   text-align: center;
   margin-bottom: 3rem;

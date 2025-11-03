@@ -1,14 +1,15 @@
 {{-- Comments Section --}}
 <section class="blog-comments" id="comments">
-    <div class="comments-header">
-        <h2 class="comments-title">
-            {{ $commentCount }} {{ Str::plural('Comment', $commentCount) }}
-        </h2>
-        <p class="comments-subtitle">Share your thoughts and join the conversation</p>
-    </div>
+    <div class="container">
+        <div class="comments-header">
+            <h2 class="comments-title">
+                {{ $commentCount }} {{ Str::plural('Comment', $commentCount) }}
+            </h2>
+            <p class="comments-subtitle">Share your thoughts and join the conversation</p>
+        </div>
 
-    {{-- Comment Form --}}
-    <div class="comment-form-wrapper">
+        {{-- Comment Form --}}
+        <div class="comment-form-wrapper">
         <h3 class="comment-form-title">Leave a Comment</h3>
         <form id="commentForm" class="comment-form" data-post-id="{{ $post->id }}">
             @csrf
@@ -59,17 +60,18 @@
         </form>
     </div>
 
-    {{-- Comments List --}}
-    @if($comments->isNotEmpty())
-        <div class="comments-list">
-            @foreach($comments as $comment)
-                @include('partials.blog.comments.comment-item', ['comment' => $comment, 'level' => 0])
-            @endforeach
-        </div>
-    @else
-        <div class="comments-empty">
-            <i class="fas fa-comments"></i>
-            <p>No comments yet. Be the first to share your thoughts!</p>
-        </div>
-    @endif
+        {{-- Comments List --}}
+        @if($comments->isNotEmpty())
+            <div class="comments-list">
+                @foreach($comments as $comment)
+                    @include('partials.blog.comments.comment-item', ['comment' => $comment, 'level' => 0])
+                @endforeach
+            </div>
+        @else
+            <div class="comments-empty">
+                <i class="fas fa-comments"></i>
+                <p>No comments yet. Be the first to share your thoughts!</p>
+            </div>
+        @endif
+    </div>
 </section>
