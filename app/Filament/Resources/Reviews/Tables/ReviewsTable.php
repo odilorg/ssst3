@@ -22,7 +22,7 @@ class ReviewsTable
                     ->searchable()
                     ->sortable()
                     ->limit(30)
-                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', ['record' => $record->tour_id]) : null)
+                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.edit', ['record' => $record->tour_id]) : null)
                     ->color('primary'),
 
                 Tables\Columns\TextColumn::make('reviewer_name')
@@ -199,7 +199,7 @@ class ReviewsTable
                     ->label('Открыть тур')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->color('primary')
-                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', ['record' => $record->tour_id]) : null)
+                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.edit', ['record' => $record->tour_id]) : null)
                     ->openUrlInNewTab(),
 
                 DeleteAction::make(),
