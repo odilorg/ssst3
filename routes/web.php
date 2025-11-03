@@ -131,6 +131,16 @@ Route::get('/tours/{slug}', function ($slug) {
     return response($html)->header('Content-Type', 'text/html');
 })->name('tours.show');
 
+// About page
+Route::get('/about', function () {
+    return response()->file(public_path('about.html'));
+})->name('about');
+
+// Contact page
+Route::get('/contact', function () {
+    return response()->file(public_path('contact.html'));
+})->name('contact');
+
 // Blog listing page
 Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 
