@@ -251,6 +251,13 @@ Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store
 Route::post('/comments/{comment}/flag', [\App\Http\Controllers\CommentController::class, 'flag'])
     ->name('comments.flag');
 
+// Tour reviews
+Route::post('/tours/{slug}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])
+    ->name('reviews.store');
+
+Route::post('/reviews/{review}/flag', [\App\Http\Controllers\ReviewController::class, 'flag'])
+    ->name('reviews.flag');
+
 // Printable booking estimate route
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
     $pricingService = app(PricingService::class);

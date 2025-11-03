@@ -63,6 +63,29 @@ class ReviewsTable
                     ->boolean()
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('spam_score')
+                    ->label('Спам-балл')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state) => match (true) {
+                        $state >= 70 => 'danger',
+                        $state >= 50 => 'warning',
+                        $state >= 30 => 'info',
+                        default => 'success',
+                    })
+                    ->formatStateUsing(fn ($state) => $state . '/100')
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('review_ip')
+                    ->label('IP адрес')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('review_user_agent')
+                    ->label('User Agent')
+                    ->limit(50)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Дата')
                     ->date()
@@ -108,6 +131,34 @@ class ReviewsTable
                     ->relationship('tour', 'title')
                     ->searchable()
                     ->preload(),
+
+                Tables\Filters\Filter::make('spam_score')
+                    ->label('Спам-балл')
+                    ->form([
+                        \Filament\Forms\Components\Select::make('spam_range')
+                            ->label('Диапазон спам-балла')
+                            ->options([
+                                'low' => 'Низкий (0-29)',
+                                'medium' => 'Средний (30-69)',
+                                'high' => 'Высокий (70-100)',
+                            ])
+                            ->placeholder('Все баллы'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['spam_range'] === 'low',
+                                fn ($query) => $query->where('spam_score', '<', 30)
+                            )
+                            ->when(
+                                $data['spam_range'] === 'medium',
+                                fn ($query) => $query->whereBetween('spam_score', [30, 69])
+                            )
+                            ->when(
+                                $data['spam_range'] === 'high',
+                                fn ($query) => $query->where('spam_score', '>=', 70)
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -128,6 +179,14 @@ class ReviewsTable
                         ->action(fn ($record) => $record->update(['is_approved' => false]))
                         ->visible(fn ($record) => $record->is_approved)
                         ->successNotificationTitle('Одобрение отменено'),
+
+                    Tables\Actions\Action::make('mark_spam')
+                        ->label('Пометить как спам')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(fn ($record) => $record->markAsSpam())
+                        ->successNotificationTitle('Отзыв помечен как спам'),
 
                     Tables\Actions\EditAction::make(),
 
@@ -160,6 +219,15 @@ class ReviewsTable
                         ->action(fn ($records) => $records->each->update(['is_approved' => false]))
                         ->deselectRecordsAfterCompletion()
                         ->successNotificationTitle('Одобрение отменено'),
+
+                    Tables\Actions\BulkAction::make('mark_spam')
+                        ->label('Пометить как спам')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(fn ($records) => $records->each->markAsSpam())
+                        ->deselectRecordsAfterCompletion()
+                        ->successNotificationTitle('Отзывы помечены как спам'),
 
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
