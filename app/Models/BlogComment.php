@@ -139,6 +139,9 @@ class BlogComment extends Model
             'approved_at' => now(),
             'approved_by' => $approvedBy,
         ]);
+
+        // Clear comment cache for this blog post
+        $this->clearCommentCache();
     }
 
     /**
@@ -147,6 +150,9 @@ class BlogComment extends Model
     public function markAsSpam(): void
     {
         $this->update(['status' => 'spam']);
+
+        // Clear comment cache for this blog post
+        $this->clearCommentCache();
     }
 
     /**
@@ -155,6 +161,9 @@ class BlogComment extends Model
     public function trash(): void
     {
         $this->update(['status' => 'trash']);
+
+        // Clear comment cache for this blog post
+        $this->clearCommentCache();
     }
 
     /**
@@ -167,6 +176,20 @@ class BlogComment extends Model
         // Auto-mark as spam if too many flags
         if ($this->flag_count >= 3) {
             $this->markAsSpam();
+        }
+    }
+
+    /**
+     * Clear comment cache for this blog post
+     * Called when comment status changes to ensure frontend shows updated data
+     */
+    protected function clearCommentCache(): void
+    {
+        if ($this->post) {
+            $slug = $this->post->slug;
+            \Cache::forget("blog.{$slug}.comments.data");
+            \Cache::forget("blog.{$slug}.comments.count");
+            \Cache::forget("blog.{$slug}.comments.post");
         }
     }
 }
