@@ -71,13 +71,13 @@
 
             {{-- Star Rating Selector --}}
             <div class="form-group">
-                <label for="rating">Your Rating <span class="required">*</span></label>
+                <label for="rating">Rate your experience <span class="required">*</span></label>
                 <div class="star-rating-input" id="starRatingInput">
                     <input type="hidden" name="rating" id="ratingValue" value="0" required>
                     <div class="star-buttons">
                         @for($i = 1; $i <= 5; $i++)
                             <button type="button" class="star-btn" data-rating="{{ $i }}" aria-label="Rate {{ $i }} stars">
-                                <svg class="icon icon--star" width="32" height="32" viewBox="0 0 16 16" fill="currentColor">
+                                <svg class="icon icon--star" width="24" height="24" viewBox="0 0 16 16">
                                     <path d="M8 0l2.163 5.331 5.837.423-4.437 3.798 1.363 5.648L8 12.331 3.074 15.2l1.363-5.648L.563 5.754l5.837-.423L8 0z"/>
                                 </svg>
                             </button>
@@ -90,7 +90,7 @@
 
             {{-- Review Title --}}
             <div class="form-group">
-                <label for="reviewTitle">Review Title <span class="required">*</span></label>
+                <label for="reviewTitle">Summarize your experience <span class="required">*</span></label>
                 <input type="text" id="reviewTitle" name="title" required minlength="5" maxlength="150"
                        placeholder="Sum up your experience in a few words">
                 <span class="error-message" id="error-title"></span>
@@ -98,7 +98,7 @@
 
             {{-- Review Content --}}
             <div class="form-group">
-                <label for="reviewContent">Your Review <span class="required">*</span></label>
+                <label for="reviewContent">Share your feedback <span class="required">*</span></label>
                 <textarea id="reviewContent" name="content" required minlength="20" maxlength="2000" rows="6"
                           placeholder="Share your thoughts about this tour..."></textarea>
                 <span class="error-message" id="error-content"></span>
@@ -128,9 +128,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="bookingReference">Booking Reference</label>
+                    <label for="bookingReference">Booking Reference (for verification)</label>
                     <input type="text" id="bookingReference" name="booking_reference" maxlength="50"
-                           placeholder="Optional (for verification)">
+                           placeholder="Optional">
                     <span class="error-message" id="error-booking_reference"></span>
                     <span class="field-hint">Enter your booking reference to verify your review</span>
                 </div>
