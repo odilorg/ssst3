@@ -43,9 +43,8 @@ class BlogCommentsTable
                 TextColumn::make('comment')
                     ->label('Comment')
                     ->searchable()
-                    ->limit(80)
-                    ->tooltip(fn ($record) => $record->comment)
-                    ->wrap(),
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->comment),
 
                 TextColumn::make('post.title')
                     ->label('Blog Post')
