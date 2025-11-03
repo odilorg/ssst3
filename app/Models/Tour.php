@@ -198,6 +198,15 @@ class Tour extends Model
         return $this->reviews()->where('is_approved', true)->latest();
     }
 
+    /**
+     * Get all categories this tour belongs to
+     */
+    public function categories()
+    {
+        return $this->belongsToMany(TourCategory::class, 'tour_category_tour')
+            ->withTimestamps();
+    }
+
     // ==========================================
     // HELPER METHODS
     // ==========================================

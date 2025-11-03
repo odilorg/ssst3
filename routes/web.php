@@ -14,6 +14,101 @@ Route::get('/tours', function () {
     return response()->file(public_path('tours.html'));
 })->name('tours.index');
 
+// Category landing page - SEO-friendly URL with server-side meta tag injection
+Route::get('/tours/category/{slug}', function ($slug) {
+    // Find category or 404
+    $category = \App\Models\TourCategory::where('slug', $slug)
+        ->where('is_active', true)
+        ->firstOrFail();
+
+    // Read the static HTML template
+    $html = file_get_contents(public_path('category-landing.html'));
+
+    // Prepare SEO-friendly data
+    $locale = app()->getLocale();
+
+    $pageTitle = $category->meta_title[$locale] ?? null;
+    if (!$pageTitle) {
+        $categoryName = $category->name[$locale] ?? $category->name['en'] ?? 'Category';
+        $pageTitle = $categoryName . ' Tours in Uzbekistan | Jahongir Travel';
+    }
+
+    $metaDescription = $category->meta_description[$locale] ?? $category->description[$locale] ?? '';
+    $metaDescription = substr($metaDescription, 0, 160); // Limit to 160 chars
+
+    $ogImage = $category->hero_image
+        ? asset('storage/' . $category->hero_image)
+        : asset('images/default-category.jpg');
+
+    $canonicalUrl = url('/tours/category/' . $category->slug);
+
+    // Replace hardcoded meta tags with category-specific ones
+    $html = preg_replace(
+        '/<title>.*?<\/title>/',
+        '<title>' . htmlspecialchars($pageTitle) . '</title>',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="description" content=".*?">/',
+        '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    // Update canonical URL
+    $html = preg_replace(
+        '/<link rel="canonical" href=".*?">/',
+        '<link rel="canonical" href="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Open Graph tags
+    $html = preg_replace(
+        '/<meta property="og:title" content=".*?">/',
+        '<meta property="og:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:description" content=".*?">/',
+        '<meta property="og:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:image" content=".*?">/',
+        '<meta property="og:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:url" content=".*?">/',
+        '<meta property="og:url" content="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Twitter Card tags
+    $html = preg_replace(
+        '/<meta name="twitter:title" content=".*?">/',
+        '<meta name="twitter:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:description" content=".*?">/',
+        '<meta name="twitter:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:image" content=".*?">/',
+        '<meta name="twitter:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    return response($html)->header('Content-Type', 'text/html');
+})->name('tours.category');
+
 // Tour details page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/{slug}', function ($slug) {
     // Find tour or 404
@@ -466,8 +561,19 @@ use App\Http\Controllers\Partials\TourController;
 use App\Http\Controllers\Partials\BookingController;
 use App\Http\Controllers\Partials\SearchController;
 use App\Http\Controllers\Partials\BlogController;
+use App\Http\Controllers\Partials\CategoryController;
 
 Route::prefix('partials')->name('partials.')->group(function () {
+
+    // -------- CATEGORIES --------
+    Route::get('/categories/homepage', [CategoryController::class, 'homepage'])
+        ->name('categories.homepage');
+
+    Route::get('/categories/related', [CategoryController::class, 'related'])
+        ->name('categories.related');
+
+    Route::get('/categories/{slug}/data', [CategoryController::class, 'data'])
+        ->name('categories.data');
 
     // -------- TOUR LIST --------
     Route::get('/tours', [TourController::class, 'list'])
