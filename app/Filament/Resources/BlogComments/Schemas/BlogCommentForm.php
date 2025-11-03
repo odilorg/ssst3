@@ -102,7 +102,7 @@ class BlogCommentForm
 
                         Select::make('approved_by')
                             ->label('Approved By')
-                            ->relationship('approvedBy', 'name')
+                            ->relationship('approver', 'name')
                             ->disabled()
                             ->placeholder('N/A'),
                     ])
