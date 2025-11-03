@@ -117,7 +117,7 @@ class BlogCommentsTable
                     ->placeholder('Not approved')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('approvedBy.name')
+                TextColumn::make('approver.name')
                     ->label('Approved By')
                     ->placeholder('N/A')
                     ->toggleable(isToggledHiddenByDefault: true),
