@@ -6,12 +6,250 @@ use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->file(public_path('index.html'));
 });
 
-// Tour details page
-Route::get('/tours/{slug}', [\App\Http\Controllers\TourController::class, 'show'])->name('tours.show');
+// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
+Route::get('/tours', function () {
+    return response()->file(public_path('tours.html'));
+})->name('tours.index');
 
+// Category landing page - SEO-friendly URL with server-side meta tag injection
+Route::get('/tours/category/{slug}', function ($slug) {
+    // Find category or 404
+    $category = \App\Models\TourCategory::where('slug', $slug)
+        ->where('is_active', true)
+        ->firstOrFail();
+
+    // Read the static HTML template
+    $html = file_get_contents(public_path('category-landing.html'));
+
+    // Prepare SEO-friendly data
+    $locale = app()->getLocale();
+
+    $pageTitle = $category->meta_title[$locale] ?? null;
+    if (!$pageTitle) {
+        $categoryName = $category->name[$locale] ?? $category->name['en'] ?? 'Category';
+        $pageTitle = $categoryName . ' Tours in Uzbekistan | Jahongir Travel';
+    }
+
+    $metaDescription = $category->meta_description[$locale] ?? $category->description[$locale] ?? '';
+    $metaDescription = substr($metaDescription, 0, 160); // Limit to 160 chars
+
+    $ogImage = $category->hero_image
+        ? asset('storage/' . $category->hero_image)
+        : asset('images/default-category.jpg');
+
+    $canonicalUrl = url('/tours/category/' . $category->slug);
+
+    // Replace hardcoded meta tags with category-specific ones
+    $html = preg_replace(
+        '/<title>.*?<\/title>/',
+        '<title>' . htmlspecialchars($pageTitle) . '</title>',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="description" content=".*?">/',
+        '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    // Update canonical URL
+    $html = preg_replace(
+        '/<link rel="canonical" href=".*?">/',
+        '<link rel="canonical" href="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Open Graph tags
+    $html = preg_replace(
+        '/<meta property="og:title" content=".*?">/',
+        '<meta property="og:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:description" content=".*?">/',
+        '<meta property="og:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:image" content=".*?">/',
+        '<meta property="og:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:url" content=".*?">/',
+        '<meta property="og:url" content="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Twitter Card tags
+    $html = preg_replace(
+        '/<meta name="twitter:title" content=".*?">/',
+        '<meta name="twitter:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:description" content=".*?">/',
+        '<meta name="twitter:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:image" content=".*?">/',
+        '<meta name="twitter:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    return response($html)->header('Content-Type', 'text/html');
+})->name('tours.category');
+
+// Tour details page - SEO-friendly URL with server-side meta tag injection
+Route::get('/tours/{slug}', function ($slug) {
+    // Find tour or 404
+    $tour = \App\Models\Tour::where('slug', $slug)->firstOrFail();
+
+    // Read the static HTML template
+    $html = file_get_contents(public_path('tour-details.html'));
+
+    // Prepare SEO-friendly data
+    $pageTitle = $tour->seo_title ?? ($tour->title . ' | Jahongir Travel');
+    $metaDescription = $tour->seo_description ?? strip_tags($tour->short_description ?? $tour->description ?? '');
+    $metaDescription = substr($metaDescription, 0, 160); // Limit to 160 chars
+
+    $ogImage = $tour->hero_image
+        ? asset('storage/' . $tour->hero_image)
+        : 'https://jahongirtravel.com/images/tours/default-tour.webp';
+
+    $canonicalUrl = url('/tours/' . $tour->slug);
+
+    // Replace hardcoded meta tags with tour-specific ones
+    $html = preg_replace(
+        '/<title>.*?<\/title>/',
+        '<title>' . htmlspecialchars($pageTitle) . '</title>',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="description" content=".*?">/',
+        '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    // Update canonical URL
+    $html = preg_replace(
+        '/<link rel="canonical" href=".*?">/',
+        '<link rel="canonical" href="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Open Graph tags
+    $html = preg_replace(
+        '/<meta property="og:title" content=".*?">/',
+        '<meta property="og:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:description" content=".*?">/',
+        '<meta property="og:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:image" content=".*?">/',
+        '<meta property="og:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta property="og:url" content=".*?">/',
+        '<meta property="og:url" content="' . $canonicalUrl . '">',
+        $html
+    );
+
+    // Update Twitter Card tags
+    $html = preg_replace(
+        '/<meta name="twitter:title" content=".*?">/',
+        '<meta name="twitter:title" content="' . htmlspecialchars($pageTitle) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:description" content=".*?">/',
+        '<meta name="twitter:description" content="' . htmlspecialchars($metaDescription) . '">',
+        $html
+    );
+
+    $html = preg_replace(
+        '/<meta name="twitter:image" content=".*?">/',
+        '<meta name="twitter:image" content="' . $ogImage . '">',
+        $html
+    );
+
+    // Update JSON-LD structured data
+    $jsonLd = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Tour',
+        'name' => $tour->title,
+        'description' => strip_tags($tour->description ?? ''),
+        'image' => $ogImage,
+        'provider' => [
+            '@type' => 'Organization',
+            'name' => 'Jahongir Travel',
+            'url' => url('/'),
+        ],
+        'url' => $canonicalUrl,
+    ];
+
+    if ($tour->price_per_person) {
+        $jsonLd['offers'] = [
+            '@type' => 'Offer',
+            'price' => $tour->price_per_person,
+            'priceCurrency' => 'USD',
+        ];
+    }
+
+    // Replace JSON-LD script (find the script tag and replace its content)
+    $html = preg_replace(
+        '/<script type="application\/ld\+json">.*?<\/script>/s',
+        '<script type="application/ld+json">' . json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>',
+        $html,
+        1 // Only replace the first occurrence
+    );
+
+    return response($html)->header('Content-Type', 'text/html');
+})->name('tours.show');
+
+// About page
+Route::get('/about', function () {
+    return response()->file(public_path('about.html'));
+})->name('about');
+
+// Contact page
+Route::get('/contact', function () {
+    return response()->file(public_path('contact.html'));
+})->name('contact');
+
+// Blog listing page
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+
+// Blog article page
+Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
+    ->name('blog.show')
+    ->where('slug', '[a-z0-9-]+');
+
+// Blog comments
+Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])
+    ->name('comments.store');
+
+Route::post('/comments/{comment}/flag', [\App\Http\Controllers\CommentController::class, 'flag'])
+    ->name('comments.flag');
 
 // Printable booking estimate route
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
@@ -323,8 +561,19 @@ use App\Http\Controllers\Partials\TourController;
 use App\Http\Controllers\Partials\BookingController;
 use App\Http\Controllers\Partials\SearchController;
 use App\Http\Controllers\Partials\BlogController;
+use App\Http\Controllers\Partials\CategoryController;
 
 Route::prefix('partials')->name('partials.')->group(function () {
+
+    // -------- CATEGORIES --------
+    Route::get('/categories/homepage', [CategoryController::class, 'homepage'])
+        ->name('categories.homepage');
+
+    Route::get('/categories/related', [CategoryController::class, 'related'])
+        ->name('categories.related');
+
+    Route::get('/categories/{slug}/data', [CategoryController::class, 'data'])
+        ->name('categories.data');
 
     // -------- TOUR LIST --------
     Route::get('/tours', [TourController::class, 'list'])
@@ -357,6 +606,8 @@ Route::prefix('partials')->name('partials.')->group(function () {
         ->name('tours.requirements');
     Route::get('/tours/{slug}/cancellation', [TourController::class, 'cancellation'])
         ->name('tours.cancellation');
+    Route::get('/tours/{slug}/meeting-point', [TourController::class, 'meetingPoint'])
+        ->name('tours.meeting-point');
 
 
     Route::get('/tours/{slug}/faqs', [TourController::class, 'faqs'])
@@ -387,4 +638,11 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/blog/{slug}/related', [BlogController::class, 'related'])
         ->name('blog.related');
+
+    Route::get('/blog/{slug}/comments', [BlogController::class, 'comments'])
+        ->name('blog.comments');
+
+    // -------- BLOG LISTING (HTMX) --------
+    Route::get('/blog/listing', [BlogController::class, 'listing'])
+        ->name('blog.listing');
 });

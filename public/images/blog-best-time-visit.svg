@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <!-- Placeholder: Best Time to Visit (Seasonal landscape with blue sky and golden elements) -->
+  <rect width="800" height="450" fill="#E3F2FD"/>
+  <circle cx="700" cy="100" r="60" fill="#FFB703" opacity="0.8"/>
+  <path d="M 0 300 Q 200 250, 400 280 T 800 300 L 800 450 L 0 450 Z" fill="#0D4C92" opacity="0.7"/>
+  <path d="M 100 350 L 200 280 L 250 320 L 300 260 L 400 310 L 500 270 L 600 320 L 700 290 L 800 340 L 800 450 L 0 450 Z" fill="#1565C0" opacity="0.5"/>
+  <text x="400" y="225" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#0D4C92">Best Time to Visit Uzbekistan</text>
+</svg>

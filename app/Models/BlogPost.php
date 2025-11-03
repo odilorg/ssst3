@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BlogPost extends Model
 {
@@ -48,6 +49,35 @@ class BlogPost extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(BlogTag::class, 'blog_post_tag');
+    }
+
+    /**
+     * Get all comments for this post
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'blog_post_id');
+    }
+
+    /**
+     * Get approved comments for this post
+     */
+    public function approvedComments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'blog_post_id')
+            ->where('status', 'approved')
+            ->oldest();
+    }
+
+    /**
+     * Get top-level approved comments (not replies)
+     */
+    public function topLevelComments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'blog_post_id')
+            ->whereNull('parent_id')
+            ->where('status', 'approved')
+            ->latest();
     }
 
     /**

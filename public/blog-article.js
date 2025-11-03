@@ -4,6 +4,10 @@
  * Purpose: Interactive features for blog article pages
  */
 
+// Wrap in IIFE to avoid global scope pollution and redeclaration errors
+(function() {
+'use strict';
+
 // ===================================
 // 1. Reading Time Calculator
 // ===================================
@@ -414,3 +418,5 @@ window.addEventListener('resize', () => {
     console.log('Window resized - recalculating layouts');
   }, 250);
 });
+
+})(); // End of IIFE

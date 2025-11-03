@@ -40,6 +40,7 @@ class Tour extends Model
         'languages',
         'requirements',
         'include_global_requirements',
+        'include_global_faqs',
 
         // Tour Meta
         'tour_type',
@@ -70,6 +71,7 @@ class Tour extends Model
         // Booleans
         'is_active' => 'boolean',
         'include_global_requirements' => 'boolean',
+        'include_global_faqs' => 'boolean',
         'has_hotel_pickup' => 'boolean',
 
         // Integers
@@ -196,6 +198,15 @@ class Tour extends Model
         return $this->reviews()->where('is_approved', true)->latest();
     }
 
+    /**
+     * Get all categories this tour belongs to
+     */
+    public function categories()
+    {
+        return $this->belongsToMany(TourCategory::class, 'tour_category_tour')
+            ->withTimestamps();
+    }
+
     // ==========================================
     // HELPER METHODS
     // ==========================================
@@ -243,5 +254,28 @@ class Tour extends Model
             'rating' => round($approved->avg('rating'), 2) ?? 0,
             'review_count' => $approved->count(),
         ]);
+    }
+
+    // ==========================================
+    // ACCESSORS
+    // ==========================================
+
+    /**
+     * Get the featured image URL
+     * Accessor for blade templates (uses hero_image field)
+     */
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        if (empty($this->hero_image)) {
+            return null; // Blade will use default image
+        }
+
+        // If hero_image is already a full URL
+        if (str_starts_with($this->hero_image, 'http')) {
+            return $this->hero_image;
+        }
+
+        // If hero_image is a storage path
+        return asset('storage/' . $this->hero_image);
     }
 }

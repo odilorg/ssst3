@@ -3,6 +3,10 @@
  * Purpose: Navigation, counter animations, and interactions
  */
 
+// Wrap in IIFE to avoid global scope pollution and redeclaration errors
+(function() {
+'use strict';
+
 // ==========================================
 // 1. STICKY NAVIGATION ON SCROLL
 // ==========================================
@@ -197,3 +201,5 @@ document.querySelectorAll('.footer-accordion__item').forEach((accordionItem) => 
 });
 
 console.log('Jahongir Travel - JavaScript Loaded Successfully ✓');
+
+})(); // End of IIFE

@@ -1,8 +1,14 @@
 {{-- Tour FAQs Partial --}}
+@php
+    $hasCustomFaqs = $tour->faqs && $tour->faqs->isNotEmpty();
+    $shouldShowGlobal = !$hasCustomFaqs || $tour->include_global_faqs;
+@endphp
+
 <h2 class="section-title">Frequently Asked Questions</h2>
 
 <div class="faq-accordion">
-        @if($tour->faqs && $tour->faqs->isNotEmpty())
+        @if($hasCustomFaqs)
+            {{-- Tour-specific FAQs --}}
             @foreach($tour->faqs as $faq)
                 <details class="faq-item">
                     <summary class="faq-question">
@@ -16,7 +22,24 @@
                     </div>
                 </details>
             @endforeach
-        @else
+        @endif
+
+        @if($shouldShowGlobal && isset($globalFaqs) && count($globalFaqs) > 0)
+            {{-- Global FAQs --}}
+            @foreach($globalFaqs as $faq)
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>{{ $faq['question'] }}</span>
+                        <svg class="icon icon--chevron-down" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M3.646 5.646a.5.5 0 01.708 0L8 9.293l3.646-3.647a.5.5 0 01.708.708l-4 4a.5.5 0 01-.708 0l-4-4a.5.5 0 010-.708z"/>
+                        </svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{!! nl2br(e($faq['answer'])) !!}</p>
+                    </div>
+                </details>
+            @endforeach
+        @elseif(!$hasCustomFaqs)
             {{-- Fallback: Default FAQs if none in database --}}
             <details class="faq-item">
                 <summary class="faq-question">

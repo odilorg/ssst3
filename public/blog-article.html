@@ -18,21 +18,18 @@
   <meta name="twitter:description" content="Discover the top 10 must-visit countries in Asia for 2025.">
   <meta name="twitter:image" content="/images/blog/taj-mahal-hero.jpg">
 
-  <!-- Google Fonts: Poppins, Inter & Playfair Display -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="blog-article.css">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/blog-article.css">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon.png">
-
-  <!-- HTMX -->
-  <script src="js/htmx.min.js"></script>
 
   <!-- Schema.org Markup -->
   <script type="application/ld+json">
@@ -57,6 +54,29 @@
     "dateModified": "2025-10-22",
     "description": "Discover the top 10 must-visit countries in Asia for 2025. From ancient temples to modern cities, explore the best destinations for your next adventure."
   }
+  </script>
+
+  <!-- Dynamic Blog Slug Detection -->
+  <script>
+    (function() {
+      // Get blog slug from URL query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const blogSlug = urlParams.get('slug');
+
+      console.log('[Blog] Query parameter slug:', blogSlug);
+
+      if (blogSlug) {
+        // Store slug globally for HTMX to use
+        window.BLOG_SLUG = blogSlug;
+        window.BACKEND_URL = 'http://127.0.0.1:8000';
+        console.log('[Blog] Slug set:', blogSlug);
+      } else {
+        console.warn('[Blog] No slug in URL query parameter');
+        // Fallback to default slug for testing
+        window.BLOG_SLUG = 'uzbekistan-cuisine-must-try-dishes';
+        window.BACKEND_URL = 'http://127.0.0.1:8000';
+      }
+    })();
   </script>
 </head>
 <body>
@@ -96,26 +116,23 @@
   </header>
 
   <!-- =====================================================
-       ARTICLE HERO SECTION
+       ARTICLE HERO SECTION (Dynamic with HTMX)
        ===================================================== -->
-  <section class="article-hero"
-           hx-get=""
-           hx-trigger="load"
-           hx-swap="innerHTML"
-           hx-indicator=".hero-skeleton">
-    <!-- Skeleton Loader -->
-    <div class="hero-skeleton skeleton-loader" aria-hidden="true">
-      <div class="container">
-        <div class="skeleton-breadcrumb"></div>
-        <div class="skeleton-meta">
-          <div class="skeleton-badge"></div>
-          <div class="skeleton-text skeleton-text--small"></div>
-          <div class="skeleton-text skeleton-text--small"></div>
-        </div>
-        <div class="skeleton-title"></div>
-        <div class="skeleton-title" style="width: 60%;"></div>
-        <div class="skeleton-image"></div>
+  <section class="article-hero">
+    <div class="container"
+         hx-get=""
+         hx-trigger="load once"
+         hx-swap="innerHTML"
+         data-blog-section="hero">
+
+      <!-- Loading Skeleton -->
+      <div class="skeleton-loader">
+        <div class="skeleton skeleton--breadcrumb"></div>
+        <div class="skeleton skeleton--meta"></div>
+        <div class="skeleton skeleton--title"></div>
+        <div class="skeleton skeleton--image"></div>
       </div>
+
     </div>
   </section>
 
@@ -126,53 +143,37 @@
     <div class="container">
       <div class="article-layout-grid">
 
-        <!-- Main Article Content -->
+        <!-- Main Article Content (Dynamic with HTMX) -->
         <main class="article-main"
               hx-get=""
-              hx-trigger="load"
-              hx-swap="innerHTML"
-              hx-indicator=".content-skeleton">
-          <!-- Skeleton Loader -->
-          <div class="content-skeleton skeleton-loader" aria-hidden="true">
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text" style="width: 80%;"></div>
-            <div class="skeleton-heading"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-image"></div>
-            <div class="skeleton-heading"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text" style="width: 70%;"></div>
+              hx-trigger="load once"
+              hx-swap="outerHTML"
+              data-blog-section="content">
+
+          <!-- Loading Skeleton -->
+          <div class="skeleton-loader">
+            <div class="skeleton skeleton--text-large"></div>
+            <div class="skeleton skeleton--text"></div>
+            <div class="skeleton skeleton--text"></div>
+            <div class="skeleton skeleton--text"></div>
           </div>
+
         </main>
 
-        <!-- Sidebar -->
+        <!-- Sidebar (Dynamic with HTMX) -->
         <aside class="article-sidebar"
                hx-get=""
-               hx-trigger="load"
+               hx-trigger="load once"
                hx-swap="innerHTML"
-               hx-indicator=".sidebar-skeleton">
-          <!-- Skeleton Loader -->
-          <div class="sidebar-skeleton skeleton-loader" aria-hidden="true">
-            <div class="skeleton-widget">
-              <div class="skeleton-heading" style="width: 40%;"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text" style="width: 80%;"></div>
-            </div>
-            <div class="skeleton-widget">
-              <div class="skeleton-heading" style="width: 50%;"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-            </div>
-            <div class="skeleton-widget">
-              <div class="skeleton-heading" style="width: 45%;"></div>
-              <div class="skeleton-text"></div>
-              <div class="skeleton-text"></div>
-            </div>
+               data-blog-section="sidebar">
+
+          <!-- Loading Skeleton -->
+          <div class="skeleton-loader">
+            <div class="skeleton skeleton--widget"></div>
+            <div class="skeleton skeleton--widget"></div>
+            <div class="skeleton skeleton--widget"></div>
           </div>
+
         </aside>
 
       </div>
@@ -180,113 +181,45 @@
   </div>
 
   <!-- =====================================================
-       RELATED ARTICLES SECTION
+       RELATED ARTICLES SECTION (Dynamic with HTMX)
        ===================================================== -->
   <section class="related-articles"
            hx-get=""
-           hx-trigger="load"
-           hx-swap="innerHTML"
-           hx-indicator=".related-skeleton">
-    <!-- Skeleton Loader -->
-    <div class="related-skeleton skeleton-loader" aria-hidden="true">
-      <div class="container">
-        <div class="skeleton-heading" style="width: 200px; margin-bottom: 2rem;"></div>
-        <div class="related-articles-grid">
-          <div class="skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text" style="width: 70%;"></div>
-          </div>
-          <div class="skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text" style="width: 70%;"></div>
-          </div>
-          <div class="skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text"></div>
-            <div class="skeleton-text" style="width: 70%;"></div>
-          </div>
-        </div>
+           hx-trigger="load once"
+           hx-swap="outerHTML"
+           data-blog-section="related">
+
+    <!-- Loading Skeleton -->
+    <div class="container">
+      <h2 class="section-title">Related Articles</h2>
+      <div class="related-articles-grid">
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
       </div>
     </div>
+
   </section>
 
   <!-- =====================================================
-       COMMENTS SECTION
+       COMMENTS SECTION (Dynamic with HTMX)
        ===================================================== -->
-  <section class="article-comments" id="comments">
+  <div class="article-comments"
+       hx-get=""
+       hx-trigger="load once"
+       hx-swap="outerHTML"
+       data-blog-section="comments">
+
+    <!-- Loading Skeleton -->
     <div class="container">
-      <h2 class="section-title">Leave a Reply</h2>
-      <p class="comments-note">Your email address will not be published. Required fields are marked *</p>
-
-      <form class="comment-form" id="commentForm" novalidate>
-
-        <!-- Comment Textarea -->
-        <div class="form-group">
-          <label for="comment">Comment *</label>
-          <textarea id="comment"
-                    name="comment"
-                    rows="6"
-                    required
-                    placeholder="Write your comment here..."
-                    aria-required="true"></textarea>
-          <span class="form-error" id="comment-error"></span>
-        </div>
-
-        <!-- Name and Email Row -->
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Name *</label>
-            <input type="text"
-                   id="name"
-                   name="name"
-                   required
-                   aria-required="true">
-            <span class="form-error" id="name-error"></span>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email"
-                   id="email"
-                   name="email"
-                   required
-                   aria-required="true">
-            <span class="form-error" id="email-error"></span>
-          </div>
-        </div>
-
-        <!-- Website Field (Optional) -->
-        <div class="form-group">
-          <label for="website">Website</label>
-          <input type="url"
-                 id="website"
-                 name="website"
-                 placeholder="https://">
-          <span class="form-error" id="website-error"></span>
-        </div>
-
-        <!-- Save Info Checkbox -->
-        <div class="form-group form-checkbox">
-          <input type="checkbox"
-                 id="save-info"
-                 name="save-info">
-          <label for="save-info">
-            Save my name, email, and website in this browser for the next time I comment.
-          </label>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn--primary">
-          Post Comment
-        </button>
-      </form>
+      <div class="skeleton-loader">
+        <div class="skeleton skeleton--text"></div>
+        <div class="skeleton skeleton--widget"></div>
+        <div class="skeleton skeleton--text"></div>
+      </div>
     </div>
-  </section>
+
+  </div>
 
   <!-- =====================================================
        FOOTER
@@ -372,67 +305,78 @@
     </div>
   </footer>
 
-  <!-- Main JavaScript -->
-  <script src="js/main.js" defer></script>
-  <script src="blog-article.js"></script>
-
-  <!-- HTMX Dynamic Slug Detection -->
+  <!-- HTMX Dynamic URL Initialization (must run BEFORE HTMX loads) -->
   <script>
     (function() {
-      // Extract blog post slug from URL
-      // Expected URL format: /blog/article/top-10-must-visit-places-uzbekistan
-      // or query parameter: ?slug=top-10-must-visit-places-uzbekistan
-      function getBlogSlug() {
-        // Try to get slug from URL path
-        const pathParts = window.location.pathname.split('/').filter(Boolean);
+      // Guard to prevent re-execution
+      if (window.BLOG_HTMX_INITIALIZED) return;
+      window.BLOG_HTMX_INITIALIZED = true;
 
-        // Check for different URL patterns
-        if (pathParts.length >= 2 && pathParts[0] === 'blog') {
-          // Pattern: /blog/article/slug or /blog/slug
-          return pathParts[pathParts.length - 1].replace('.html', '');
-        }
-
-        // Fallback: Check query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const slugParam = urlParams.get('slug');
-        if (slugParam) {
-          return slugParam;
-        }
-
-        // Default fallback for testing
-        return 'top-10-must-visit-places-uzbekistan';
+      if (!window.BLOG_SLUG) {
+        console.warn('[Blog] No slug detected, HTMX will not load content');
+        return;
       }
 
-      // Get the slug
-      const blogSlug = getBlogSlug();
-      console.log('Blog slug detected:', blogSlug);
+      console.log('[Blog] Setting HTMX URLs for slug:', window.BLOG_SLUG);
 
-      // Set HTMX URLs for each section
-      document.addEventListener('DOMContentLoaded', function() {
-        const heroSection = document.querySelector('.article-hero[hx-get]');
-        const mainSection = document.querySelector('.article-main[hx-get]');
-        const sidebarSection = document.querySelector('.article-sidebar[hx-get]');
-        const relatedSection = document.querySelector('.related-articles[hx-get]');
+      // Set hero section URL
+      const heroSection = document.querySelector('[data-blog-section="hero"]');
+      if (heroSection) {
+        heroSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/hero`);
+      }
 
-        if (heroSection) {
-          heroSection.setAttribute('hx-get', `/partials/blog/${blogSlug}/hero`);
-        }
-        if (mainSection) {
-          mainSection.setAttribute('hx-get', `/partials/blog/${blogSlug}/content`);
-        }
-        if (sidebarSection) {
-          sidebarSection.setAttribute('hx-get', `/partials/blog/${blogSlug}/sidebar`);
-        }
-        if (relatedSection) {
-          relatedSection.setAttribute('hx-get', `/partials/blog/${blogSlug}/related`);
-        }
+      // Set content section URL
+      const contentSection = document.querySelector('[data-blog-section="content"]');
+      if (contentSection) {
+        contentSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/content`);
+      }
 
-        // Trigger HTMX processing after setting attributes
-        if (typeof htmx !== 'undefined') {
-          htmx.process(document.body);
-        }
+      // Set sidebar section URL
+      const sidebarSection = document.querySelector('[data-blog-section="sidebar"]');
+      if (sidebarSection) {
+        sidebarSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/sidebar`);
+      }
+
+      // Set related articles section URL
+      const relatedSection = document.querySelector('[data-blog-section="related"]');
+      if (relatedSection) {
+        relatedSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/related`);
+      }
+
+      // Set comments section URL
+      const commentsSection = document.querySelector('[data-blog-section="comments"]');
+      if (commentsSection) {
+        commentsSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/comments`);
+      }
+
+      console.log('[Blog] HTMX URLs set successfully, now loading HTMX library');
+    })();
+  </script>
+
+  <!-- HTMX Library (loads after URLs are set) -->
+  <script src="/js/htmx.min.js"></script>
+
+  <!-- HTMX Event Handlers -->
+  <script>
+    (function() {
+      // Guard to prevent multiple event listener registration
+      if (window.HTMX_EVENTS_REGISTERED) return;
+      window.HTMX_EVENTS_REGISTERED = true;
+
+      document.body.addEventListener('htmx:afterSwap', function(evt) {
+        console.log('[HTMX] Loaded:', evt.detail.pathInfo.requestPath);
+      });
+
+      document.body.addEventListener('htmx:responseError', function(evt) {
+        console.error('[HTMX] Error:', evt.detail.pathInfo.requestPath);
+        evt.detail.target.innerHTML = '<div style="padding:20px;background:#fee;color:#c33;">Failed to load content. Please refresh the page.</div>';
       });
     })();
   </script>
+
+  <!-- Main JavaScript -->
+  <script src="/js/main.js" defer></script>
+  <script src="/blog-article.js" defer></script>
+  <script src="/js/blog-comments.js" defer></script>
 </body>
 </html>
