@@ -52,7 +52,7 @@ class BlogCommentsTable
                     ->searchable()
                     ->sortable()
                     ->limit(40)
-                    ->url(fn ($record) => $record->post ? route('filament.admin.resources.blog-posts.posts.edit', $record->post) : null)
+                    ->url(fn ($record) => $record->post ? route('filament.admin.resources.blog-posts.edit', $record->post) : null)
                     ->openUrlInNewTab(),
 
                 BadgeColumn::make('status')
