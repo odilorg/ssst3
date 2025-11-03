@@ -666,17 +666,24 @@
             </div>
 
             <!-- Booking Form -->
-            <form class="booking-form" id="booking-form" data-form-type="booking">
+            <form class="booking-form" id="booking-form" data-form-type="booking"
+                  hx-post="http://127.0.0.1:8000/partials/bookings"
+                  hx-target="#booking-response"
+                  hx-indicator="#booking-spinner"
+                  hx-swap="innerHTML scroll:top">
+
+              <!-- Hidden field for tour ID -->
+              <input type="hidden" name="tour_id" id="tour-id" value="">
 
               <!-- Date Picker -->
               <div class="form-group">
                 <label for="tour-date" class="form-label">
-                  Date
+                  Date <span class="required">*</span>
                 </label>
                 <input
                   type="date"
                   id="tour-date"
-                  name="tour-date"
+                  name="start_date"
                   class="form-input"
                   required
                   aria-required="true"
@@ -691,11 +698,11 @@
               <!-- Guest Selector -->
               <div class="form-group">
                 <label for="tour-guests" class="form-label">
-                  Guest
+                  Number of Guests <span class="required">*</span>
                 </label>
                 <select
                   id="tour-guests"
-                  name="tour-guests"
+                  name="pax_total"
                   class="form-input"
                   required
                   aria-required="true"
@@ -717,14 +724,242 @@
                 <span id="guests-error" class="form-error" role="alert"></span>
               </div>
 
-              <!-- Action Button -->
+              <!-- SECTION 2: Your Information -->
+              <div class="form-section">
+                <h3 class="form-section__title">Your Information</h3>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                  <label for="customer-name" class="form-label">
+                    Full Name <span class="required">*</span>
+                  </label>
+                  <input type="text"
+                         id="customer-name"
+                         name="customer[name]"
+                         class="form-input"
+                         placeholder="John Doe"
+                         required
+                         aria-required="true"
+                         aria-describedby="name-error">
+                  <span id="name-error" class="form-error" role="alert"></span>
+                </div>
+
+                <!-- Email and Phone (side by side) -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="customer-email" class="form-label">
+                      Email <span class="required">*</span>
+                    </label>
+                    <input type="email"
+                           id="customer-email"
+                           name="customer[email]"
+                           class="form-input"
+                           placeholder="john@example.com"
+                           required
+                           aria-required="true"
+                           aria-describedby="email-error">
+                    <span id="email-error" class="form-error" role="alert"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-phone" class="form-label">
+                      Phone <span class="required">*</span>
+                    </label>
+                    <input type="tel"
+                           id="customer-phone"
+                           name="customer[phone]"
+                           class="form-input"
+                           placeholder="+998 91 123 45 67"
+                           required
+                           aria-required="true"
+                           aria-describedby="phone-error">
+                    <span id="phone-error" class="form-error" role="alert"></span>
+                  </div>
+                </div>
+
+                <!-- Country (optional) -->
+                <div class="form-group">
+                  <label for="customer-country" class="form-label">
+                    Country (Optional)
+                  </label>
+                  <input type="text"
+                         id="customer-country"
+                         name="customer[country]"
+                         class="form-input"
+                         placeholder="United States">
+                </div>
+              </div>
+
+              <!-- SECTION 3: Extras (Initially Hidden) -->
+              <div class="form-section" id="extras-section" style="display:none;">
+                <h3 class="form-section__title">
+                  ✨ Enhance Your Experience
+                </h3>
+                <div id="extras-container">
+                  <!-- Extras will be dynamically loaded via HTMX -->
+                </div>
+              </div>
+
+              <!-- SECTION 4: Special Requests -->
+              <div class="form-section">
+                <h3 class="form-section__title">Special Requests (Optional)</h3>
+                <div class="form-group">
+                  <textarea id="booking-notes"
+                            name="notes"
+                            class="form-input"
+                            rows="3"
+                            placeholder="Any special requirements or preferences?"></textarea>
+                  <span class="form-hint">
+                    Dietary restrictions, accessibility needs, preferred start time, etc.
+                  </span>
+                </div>
+              </div>
+
+              <!-- SECTION 5: Price Breakdown -->
+              <div class="price-breakdown-updated">
+                <div class="price-line">
+                  <span>Tour (<span id="guest-count-display">2</span> guests)</span>
+                  <span id="tour-price-display">$100.00</span>
+                </div>
+                <div class="price-line" id="extras-price-line" style="display:none;">
+                  <span>Extras</span>
+                  <span id="extras-price-display">$0.00</span>
+                </div>
+                <div class="price-line price-line--total">
+                  <strong>Total</strong>
+                  <strong id="total-price-display">$100.00</strong>
+                </div>
+              </div>
+
+              <!-- SECTION 6: Payment Method Selection -->
+              <div class="form-section">
+                <h3 class="form-section__title">Choose Booking Method</h3>
+
+                <div class="payment-methods">
+                  <!-- Option 1: Deposit Payment (30%) -->
+                  <label class="payment-option">
+                    <input type="radio"
+                           name="payment_method"
+                           value="deposit"
+                           class="payment-radio"
+                           required>
+                    <div class="payment-card">
+                      <div class="payment-header">
+                        <span class="payment-icon">⚡</span>
+                        <span class="payment-badge payment-badge--instant">INSTANT</span>
+                      </div>
+                      <h4 class="payment-title">Pay Deposit Now</h4>
+                      <div class="payment-price">
+                        <span class="payment-amount">$<span id="deposit-amount">30</span></span>
+                        <span class="payment-detail">(30% now)</span>
+                      </div>
+                      <ul class="payment-benefits">
+                        <li>✓ Confirmed immediately</li>
+                        <li>✓ Guaranteed spot</li>
+                        <li>✓ Pay balance before tour</li>
+                      </ul>
+                    </div>
+                  </label>
+
+                  <!-- Option 2: Full Payment (10% discount) -->
+                  <label class="payment-option">
+                    <input type="radio"
+                           name="payment_method"
+                           value="full_payment"
+                           class="payment-radio">
+                    <div class="payment-card payment-card--featured">
+                      <div class="payment-header">
+                        <span class="payment-icon">💎</span>
+                        <span class="payment-badge payment-badge--best">SAVE 10%</span>
+                      </div>
+                      <h4 class="payment-title">Pay Full Amount</h4>
+                      <div class="payment-price">
+                        <span class="payment-amount">$<span id="full-amount">90</span></span>
+                        <span class="payment-original">$<span id="full-original">100</span></span>
+                      </div>
+                      <ul class="payment-benefits">
+                        <li>✓ Instant confirmation</li>
+                        <li>✓ $10 discount</li>
+                        <li>✓ Nothing to pay later</li>
+                      </ul>
+                    </div>
+                  </label>
+
+                  <!-- Option 3: Request to Book (FREE) -->
+                  <label class="payment-option">
+                    <input type="radio"
+                           name="payment_method"
+                           value="request"
+                           class="payment-radio"
+                           checked>
+                    <div class="payment-card">
+                      <div class="payment-header">
+                        <span class="payment-icon">📋</span>
+                        <span class="payment-badge payment-badge--free">FREE</span>
+                      </div>
+                      <h4 class="payment-title">Request to Book</h4>
+                      <div class="payment-price">
+                        <span class="payment-amount">$0</span>
+                        <span class="payment-detail">now</span>
+                      </div>
+                      <ul class="payment-benefits">
+                        <li>• Confirmation within 24 hours</li>
+                        <li>• Pay after confirmation</li>
+                        <li>• Flexible cancellation</li>
+                      </ul>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- SECTION 7: Terms & Conditions -->
+              <div class="form-section">
+                <label class="form-checkbox">
+                  <input type="checkbox"
+                         name="agree_terms"
+                         id="agree-terms"
+                         required
+                         aria-required="true">
+                  <span class="form-checkbox__checkmark"></span>
+                  <span class="form-checkbox__label">
+                    I agree to the <a href="/terms" target="_blank">Terms & Conditions</a>
+                    and <a href="/privacy" target="_blank">Privacy Policy</a>
+                  </span>
+                </label>
+              </div>
+
+              <!-- SECTION 8: Submit Button -->
               <div class="form-actions">
-                <button type="button" class="btn btn--primary btn--block" id="check-availability">
-                  Check availability
+                <button type="submit"
+                        class="btn btn--primary btn--large btn--block"
+                        id="submit-booking">
+                  <span class="btn__text">Send Booking Request</span>
+                  <span class="btn__spinner" style="display:none;">●●●</span>
                 </button>
               </div>
 
+              <!-- Trust Badges -->
+              <div class="trust-badges-new">
+                <div class="trust-badge">
+                  <span class="trust-badge__icon">🔒</span>
+                  <span class="trust-badge__text">Secure payment by Octobank</span>
+                </div>
+                <div class="trust-badge">
+                  <span class="trust-badge__icon">✓</span>
+                  <span class="trust-badge__text">Full refund if we cancel</span>
+                </div>
+              </div>
+
             </form>
+
+            <!-- Response Container (HTMX target) -->
+            <div id="booking-response"></div>
+
+            <!-- Loading Indicator -->
+            <div id="booking-spinner" class="booking-spinner htmx-indicator">
+              <div class="spinner"></div>
+              <p>Processing your booking...</p>
+            </div>
 
             <!-- Price Breakdown -->
             <div class="price-breakdown" data-breakdown-visible="true">
