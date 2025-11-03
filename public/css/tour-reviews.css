@@ -26,7 +26,7 @@
    ====================================================== */
 
 .review-form-wrapper {
-    margin-top: 48px; /* Separate from reviews section */
+    margin-top: 64px; /* Increased separation from reviews section */
     padding: 0;
 }
 
@@ -37,6 +37,7 @@
     padding: 48px 32px; /* 48px top/bottom, 32px sides per spec */
     box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
     border: 1px solid var(--stroke-1);
+    border-top: 3px solid var(--stroke-1); /* Subtle top accent for visual separation */
 }
 
 .review-form-title {
@@ -80,21 +81,18 @@
     display: block;
     width: 24px; /* 24px size per spec */
     height: 24px;
-    fill: none; /* Default: outline, no fill */
-    stroke: var(--stroke-1); /* Outline color */
-    stroke-width: 2;
+    fill: #E5E7EB; /* Light gray fill - no borders */
+    transition: all 0.2s ease;
 }
 
 .star-btn:hover svg {
     fill: var(--brand-accent-hover); /* #FFC864 on hover */
-    stroke: none;
     transform: scale(1.05);
 }
 
 .star-btn.active svg,
 .star-btn.selected svg {
     fill: var(--brand-accent); /* #FFA63D when active */
-    stroke: none;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
