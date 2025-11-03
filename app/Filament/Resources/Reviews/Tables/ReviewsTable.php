@@ -161,44 +161,42 @@ class ReviewsTable
                     }),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('approve')
-                        ->label('Одобрить')
-                        ->icon('heroicon-o-check-circle')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->action(fn ($record) => $record->update(['is_approved' => true]))
-                        ->visible(fn ($record) => !$record->is_approved)
-                        ->successNotificationTitle('Отзыв одобрен'),
+                Tables\Actions\Action::make('approve')
+                    ->label('Одобрить')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => $record->update(['is_approved' => true]))
+                    ->visible(fn ($record) => !$record->is_approved)
+                    ->successNotificationTitle('Отзыв одобрен'),
 
-                    Tables\Actions\Action::make('unapprove')
-                        ->label('Отменить одобрение')
-                        ->icon('heroicon-o-x-circle')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->action(fn ($record) => $record->update(['is_approved' => false]))
-                        ->visible(fn ($record) => $record->is_approved)
-                        ->successNotificationTitle('Одобрение отменено'),
+                Tables\Actions\Action::make('unapprove')
+                    ->label('Отменить одобрение')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => $record->update(['is_approved' => false]))
+                    ->visible(fn ($record) => $record->is_approved)
+                    ->successNotificationTitle('Одобрение отменено'),
 
-                    Tables\Actions\Action::make('mark_spam')
-                        ->label('Пометить как спам')
-                        ->icon('heroicon-o-exclamation-triangle')
-                        ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(fn ($record) => $record->markAsSpam())
-                        ->successNotificationTitle('Отзыв помечен как спам'),
+                Tables\Actions\Action::make('mark_spam')
+                    ->label('Пометить как спам')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => $record->markAsSpam())
+                    ->successNotificationTitle('Отзыв помечен как спам'),
 
-                    Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
 
-                    Tables\Actions\Action::make('view_tour')
-                        ->label('Открыть тур')
-                        ->icon('heroicon-o-arrow-top-right-on-square')
-                        ->color('primary')
-                        ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', ['record' => $record->tour_id]) : null)
-                        ->openUrlInNewTab(),
+                Tables\Actions\Action::make('view_tour')
+                    ->label('Открыть тур')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->color('primary')
+                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', ['record' => $record->tour_id]) : null)
+                    ->openUrlInNewTab(),
 
-                    Tables\Actions\DeleteAction::make(),
-                ]),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
