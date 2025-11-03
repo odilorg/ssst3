@@ -375,19 +375,29 @@
      * Reload comments section using HTMX
      */
     function reloadComments() {
-        // Get current slug from URL
-        const slug = window.location.pathname.split('/').pop();
+        // Get current slug from window global (set by blog-article.html)
+        // or fallback to extracting from URL pathname for dynamic pages
+        const slug = window.BLOG_SLUG || window.location.pathname.split('/').filter(Boolean).pop();
         const commentsSection = document.querySelector('#comments');
 
-        if (!commentsSection || !slug) return;
+        if (!commentsSection || !slug) {
+            console.warn('[Comments] Cannot reload - missing slug or comments section');
+            return;
+        }
+
+        console.log('[Comments] Reloading comments for slug:', slug);
 
         // Use HTMX to reload comments
         if (window.htmx) {
-            htmx.ajax('GET', `/partials/blog/${slug}/comments`, {
+            const url = `${window.BACKEND_URL || ''}/partials/blog/${slug}/comments`;
+            console.log('[Comments] HTMX reload URL:', url);
+
+            htmx.ajax('GET', url, {
                 target: '#comments',
                 swap: 'outerHTML',
             });
         } else {
+            console.warn('[Comments] HTMX not available, reloading page');
             // Fallback: reload page
             window.location.reload();
         }
