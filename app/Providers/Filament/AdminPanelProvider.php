@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 \App\Filament\Widgets\LeadStatsWidget::class,
+                \App\Filament\Widgets\CategoryStatsWidget::class,
                 \App\Filament\Widgets\LeadFollowUpWidget::class,
                 AccountWidget::class,
             ])
