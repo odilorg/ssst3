@@ -36,12 +36,16 @@
      */
     function setupCommentForm() {
         const form = document.querySelector(config.commentFormSelector);
-        if (!form) return;
+        if (!form) {
+            console.log('[Comments] Form not found, will initialize on HTMX load');
+            return;
+        }
 
         // Store original form parent for cancel reply
         originalFormParent = form.parentElement;
 
         form.addEventListener('submit', handleCommentSubmit);
+        console.log('[Comments] Form initialized');
     }
 
     /**
@@ -395,5 +399,19 @@
     } else {
         init();
     }
+
+    // Re-initialize after HTMX loads comments section
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        // Check if comments section was loaded
+        const isCommentsSection = event.detail.target.id === 'comments' ||
+                                   event.detail.target.classList.contains('blog-comments') ||
+                                   event.detail.target.querySelector('#comments') ||
+                                   event.detail.target.getAttribute('data-blog-section') === 'comments';
+
+        if (isCommentsSection) {
+            console.log('[Comments] Re-initializing after HTMX load');
+            setTimeout(init, 100); // Small delay to ensure DOM is ready
+        }
+    });
 
 })();
