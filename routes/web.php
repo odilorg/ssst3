@@ -139,6 +139,13 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show']
     ->name('blog.show')
     ->where('slug', '[a-z0-9-]+');
 
+// Blog comments
+Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])
+    ->name('comments.store');
+
+Route::post('/comments/{comment}/flag', [\App\Http\Controllers\CommentController::class, 'flag'])
+    ->name('comments.flag');
+
 // Printable booking estimate route
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
     $pricingService = app(PricingService::class);
@@ -515,6 +522,9 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/blog/{slug}/related', [BlogController::class, 'related'])
         ->name('blog.related');
+
+    Route::get('/blog/{slug}/comments', [BlogController::class, 'comments'])
+        ->name('blog.comments');
 
     // -------- BLOG LISTING (HTMX) --------
     Route::get('/blog/listing', [BlogController::class, 'listing'])

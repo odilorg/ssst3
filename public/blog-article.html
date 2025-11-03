@@ -202,77 +202,24 @@
   </section>
 
   <!-- =====================================================
-       COMMENTS SECTION
+       COMMENTS SECTION (Dynamic with HTMX)
        ===================================================== -->
-  <section class="article-comments" id="comments">
+  <div class="article-comments"
+       hx-get=""
+       hx-trigger="load once"
+       hx-swap="outerHTML"
+       data-blog-section="comments">
+
+    <!-- Loading Skeleton -->
     <div class="container">
-      <h2 class="section-title">Leave a Reply</h2>
-      <p class="comments-note">Your email address will not be published. Required fields are marked *</p>
-
-      <form class="comment-form" id="commentForm" novalidate>
-
-        <!-- Comment Textarea -->
-        <div class="form-group">
-          <label for="comment">Comment *</label>
-          <textarea id="comment"
-                    name="comment"
-                    rows="6"
-                    required
-                    placeholder="Write your comment here..."
-                    aria-required="true"></textarea>
-          <span class="form-error" id="comment-error"></span>
-        </div>
-
-        <!-- Name and Email Row -->
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Name *</label>
-            <input type="text"
-                   id="name"
-                   name="name"
-                   required
-                   aria-required="true">
-            <span class="form-error" id="name-error"></span>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email"
-                   id="email"
-                   name="email"
-                   required
-                   aria-required="true">
-            <span class="form-error" id="email-error"></span>
-          </div>
-        </div>
-
-        <!-- Website Field (Optional) -->
-        <div class="form-group">
-          <label for="website">Website</label>
-          <input type="url"
-                 id="website"
-                 name="website"
-                 placeholder="https://">
-          <span class="form-error" id="website-error"></span>
-        </div>
-
-        <!-- Save Info Checkbox -->
-        <div class="form-group form-checkbox">
-          <input type="checkbox"
-                 id="save-info"
-                 name="save-info">
-          <label for="save-info">
-            Save my name, email, and website in this browser for the next time I comment.
-          </label>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn--primary">
-          Post Comment
-        </button>
-      </form>
+      <div class="skeleton-loader">
+        <div class="skeleton skeleton--text"></div>
+        <div class="skeleton skeleton--widget"></div>
+        <div class="skeleton skeleton--text"></div>
+      </div>
     </div>
-  </section>
+
+  </div>
 
   <!-- =====================================================
        FOOTER
@@ -396,6 +343,12 @@
         relatedSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/related`);
       }
 
+      // Set comments section URL
+      const commentsSection = document.querySelector('[data-blog-section="comments"]');
+      if (commentsSection) {
+        commentsSection.setAttribute('hx-get', `${window.BACKEND_URL}/partials/blog/${window.BLOG_SLUG}/comments`);
+      }
+
       console.log('[Blog] HTMX URLs set successfully, now loading HTMX library');
     })();
   </script>
@@ -424,5 +377,6 @@
   <!-- Main JavaScript -->
   <script src="/js/main.js" defer></script>
   <script src="/blog-article.js" defer></script>
+  <script src="/js/blog-comments.js" defer></script>
 </body>
 </html>

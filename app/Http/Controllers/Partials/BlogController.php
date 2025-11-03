@@ -137,4 +137,110 @@ class BlogController extends Controller
 
         return view('partials.blog.related', compact('relatedPosts'));
     }
+
+    /**
+     * Get comments section for a blog post
+     * Cached for 10 minutes (600 seconds)
+     */
+    public function comments(string $slug): View
+    {
+        // Get blog post
+        $post = Cache::remember("blog.{$slug}.comments.post", 3600, function () use ($slug) {
+            return BlogPost::where('slug', $slug)
+                ->where('is_published', true)
+                ->firstOrFail();
+        });
+
+        // Get approved top-level comments with their approved replies
+        // Cached for 10 minutes to show new comments relatively quickly
+        $comments = Cache::remember("blog.{$slug}.comments.data", 600, function () use ($post) {
+            return $post->topLevelComments()
+                ->with(['replies' => function ($query) {
+                    $query->where('status', 'approved')->oldest();
+                }])
+                ->get();
+        });
+
+        // Get comment count (only approved comments)
+        $commentCount = Cache::remember("blog.{$slug}.comments.count", 600, function () use ($post) {
+            return $post->comments()->where('status', 'approved')->count();
+        });
+
+        return view('partials.blog.comments.comments', compact('post', 'comments', 'commentCount'));
+    }
+
+    /**
+     * Get blog listing partial for HTMX load more
+     * Used for infinite scroll and dynamic filtering
+     *
+     * Query Parameters:
+     * - category: Filter by category slug
+     * - tag: Filter by tag slug
+     * - search: Search term
+     * - sort: Sort order
+     * - page: Page number
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function listing(Request $request): View
+    {
+        // Validate query parameters
+        $validated = $request->validate([
+            'category' => 'nullable|string|max:100',
+            'tag' => 'nullable|string|max:100',
+            'search' => 'nullable|string|max:200',
+            'sort' => 'nullable|in:latest,popular,oldest',
+            'page' => 'nullable|integer|min:1',
+        ]);
+
+        // Start query
+        $query = BlogPost::published()
+            ->with(['category', 'tags'])
+            ->select(['id', 'slug', 'title', 'excerpt', 'featured_image',
+                     'category_id', 'reading_time', 'view_count', 'published_at']);
+
+        // Apply category filter
+        if (!empty($validated['category'])) {
+            $query->whereHas('category', function ($q) use ($validated) {
+                $q->where('slug', $validated['category']);
+            });
+        }
+
+        // Apply tag filter
+        if (!empty($validated['tag'])) {
+            $query->whereHas('tags', function ($q) use ($validated) {
+                $q->where('slug', $validated['tag']);
+            });
+        }
+
+        // Apply search filter
+        if (!empty($validated['search'])) {
+            $searchTerm = $validated['search'];
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('excerpt', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Apply sorting
+        $sort = $validated['sort'] ?? 'latest';
+        switch ($sort) {
+            case 'popular':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('published_at', 'asc');
+                break;
+            case 'latest':
+            default:
+                $query->orderBy('published_at', 'desc');
+                break;
+        }
+
+        // Paginate (9 per page for load more)
+        $posts = $query->paginate(9)->withQueryString();
+
+        return view('partials.blog.listing', compact('posts'));
+    }
 }
