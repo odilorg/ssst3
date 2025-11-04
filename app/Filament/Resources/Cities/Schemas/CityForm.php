@@ -70,6 +70,7 @@ class CityForm
                         FileUpload::make('featured_image')
                             ->label('Featured Image')
                             ->image()
+                            ->disk('public')
                             ->directory('cities/featured')
                             ->imageEditor()
                             ->helperText('Main image for city cards on homepage'),
@@ -77,6 +78,7 @@ class CityForm
                         FileUpload::make('hero_image')
                             ->label('Hero Image')
                             ->image()
+                            ->disk('public')
                             ->directory('cities/hero')
                             ->imageEditor()
                             ->helperText('Large hero image for city detail pages'),
@@ -85,6 +87,7 @@ class CityForm
                             ->label('Gallery Images')
                             ->image()
                             ->multiple()
+                            ->disk('public')
                             ->directory('cities/gallery')
                             ->imageEditor()
                             ->helperText('Additional images for city gallery'),
