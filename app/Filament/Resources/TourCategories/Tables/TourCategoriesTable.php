@@ -33,10 +33,22 @@ class TourCategoriesTable
                     ->color('gray'),
 
                 ImageColumn::make('image_path')
-                    ->label('Image')
-                    ->square(),
+                    ->label('Card Image')
+                    ->circular()
+                    ->defaultImageUrl(fn () => asset('images/placeholder-category.png'))
+                    ->tooltip('Homepage card background'),
+
+                ImageColumn::make('hero_image')
+                    ->label('Hero Image')
+                    ->circular()
+                    ->defaultImageUrl(fn () => asset('images/placeholder-hero.png'))
+                    ->tooltip('Landing page hero'),
 
                 TextColumn::make('icon')
+                    ->label('Icon')
+                    ->badge()
+                    ->color('info')
+                    ->formatStateUsing(fn ($state) => $state ?: 'No icon')
                     ->limit(20),
 
                 IconColumn::make('is_active')

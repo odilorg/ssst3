@@ -69,6 +69,19 @@ class TourForm
                                 Textarea::make('description'),
                             ]),
 
+                        Select::make('categories')
+                            ->label('Категории')
+                            ->relationship(
+                                name: 'categories',
+                                modifyQueryUsing: fn ($query) => $query->where('is_active', true)->orderBy('display_order')
+                            )
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->translated_name)
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Выберите одну или несколько категорий для этого тура')
+                            ->columnSpanFull(),
+
                         TextInput::make('short_description')
                             ->label('Краткое описание')
                             ->maxLength(255)
