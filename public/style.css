@@ -954,7 +954,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(11, 19, 33, 0.85), rgba(11, 19, 33, 0.75));
+  background: linear-gradient(to bottom, rgba(11, 19, 33, 0.92), rgba(11, 19, 33, 0.85));
   z-index: 1;
 }
 
@@ -1033,7 +1033,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) 35%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0, 0, 0, 0.7) 100%
   );
   z-index: 1;
   transition: background 0.3s ease;
@@ -1053,7 +1053,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   inset: auto 0 0 0;
   padding: 16px;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   z-index: 2;
   display: flex;
   flex-direction: column;
