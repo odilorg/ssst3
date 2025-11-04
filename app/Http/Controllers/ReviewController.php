@@ -76,7 +76,9 @@ class ReviewController extends Controller
         if (!empty($validated['booking_reference'])) {
             $booking = Booking::where('reference', $validated['booking_reference'])
                 ->where('tour_id', $tour->id)
-                ->where('email', $validated['reviewer_email'])
+                ->whereHas('customer', function ($query) use ($validated) {
+                    $query->where('email', $validated['reviewer_email']);
+                })
                 ->whereIn('status', ['completed', 'confirmed'])
                 ->first();
 
