@@ -1,6 +1,6 @@
 {{-- Tour Reviews Partial --}}
 <section class="tour-reviews" id="reviews">
-    @if($tour->reviews && $tour->reviews->isNotEmpty())
+    @if(isset($reviews) && $reviews->isNotEmpty())
         <div class="reviews-header">
             <h2 class="section-title">Customer Reviews</h2>
             <div class="reviews-summary">
@@ -19,7 +19,7 @@
         </div>
 
         <div class="reviews-list">
-            @foreach($tour->reviews as $review)
+            @foreach($reviews as $review)
                 <article class="review-card">
                     <div class="review-header">
                         <img src="{{ $review->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->reviewer_name) . '&size=56&background=1a5490&color=fff' }}"
