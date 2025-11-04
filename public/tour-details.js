@@ -611,3 +611,105 @@ if (typeof module !== 'undefined' && module.exports) {
     updatePrice
   };
 }
+
+// =============================================================================
+// PROGRESSIVE DISCLOSURE - 2-STEP BOOKING FORM
+// =============================================================================
+
+/**
+ * Initialize progressive disclosure for booking form
+ */
+function initProgressiveBookingForm() {
+  const checkAvailBtn = document.getElementById('check-availability');
+  const step2 = document.getElementById('step-2-full-form');
+  const dateInput = document.getElementById('tour-date');
+  const guestsInput = document.getElementById('tour-guests');
+
+  if (!checkAvailBtn || !step2) return;
+
+  checkAvailBtn.addEventListener('click', () => {
+    // Basic validation
+    if (dateInput && !dateInput.value) {
+      dateInput.focus();
+      return;
+    }
+
+    if (guestsInput && !guestsInput.value) {
+      guestsInput.focus();
+      return;
+    }
+
+    // Show step 2
+    step2.style.display = 'block';
+
+    // Scroll to step 2 smoothly
+    step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Track event
+    if (typeof gtag === 'function') {
+      gtag('event', 'check_availability_clicked', {
+        tour_date: dateInput?.value,
+        guests: guestsInput?.value
+      });
+    }
+  });
+}
+
+/**
+ * Initialize payment card interactions
+ */
+function initPaymentCardInteractions() {
+  const paymentCards = document.querySelectorAll('.payment-card');
+
+  paymentCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Remove selected class from all cards
+      paymentCards.forEach(c => c.classList.remove('payment-card--selected'));
+
+      // Add selected class to clicked card
+      card.classList.add('payment-card--selected');
+
+      // Check the radio button
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+      }
+    });
+  });
+
+  // Also handle direct radio button clicks
+  const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      // Update card selected state
+      paymentCards.forEach(card => {
+        const cardRadio = card.querySelector('input[type="radio"]');
+        if (cardRadio === radio) {
+          card.classList.add('payment-card--selected');
+        } else {
+          card.classList.remove('payment-card--selected');
+        }
+      });
+    });
+  });
+
+  // Set initial state
+  const checkedRadio = document.querySelector('input[name="payment_method"]:checked');
+  if (checkedRadio) {
+    const selectedCard = checkedRadio.closest('.payment-card');
+    if (selectedCard) {
+      selectedCard.classList.add('payment-card--selected');
+    }
+  }
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initProgressiveBookingForm();
+    initPaymentCardInteractions();
+  });
+} else {
+  initProgressiveBookingForm();
+  initPaymentCardInteractions();
+}
