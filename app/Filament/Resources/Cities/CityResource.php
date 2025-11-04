@@ -18,38 +18,30 @@ class CityResource extends Resource
 {
     protected static ?string $model = City::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
-    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-building-library';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlineMapPin;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Destinations';
+    }
 
     public static function getNavigationLabel(): string
     {
-        return 'Города';
+        return 'Cities';
     }
 
     public static function getModelLabel(): string
     {
-        return 'Город';
+        return 'City';
     }
 
-    public static function getNavigationGroup(): ?string
+    public static function getPluralModelLabel(): string
     {
-        return 'System Management';
-    }
-
-    public static function getNavigationSort(): ?int
-    {
-        return 1;
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
-
-    public static function getNavigationBadgeColor(): ?string
-    {
-        $count = static::getModel()::count();
-        return $count > 5 ? 'success' : 'primary';
+        return 'Cities';
     }
 
     public static function form(Schema $schema): Schema
