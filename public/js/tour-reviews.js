@@ -139,7 +139,7 @@
         const tourSlug = form.dataset.tourSlug;
 
         try {
-            const response = await fetch(`/partials/tours/${tourSlug}/reviews`, {
+            const response = await fetch(`/tours/${tourSlug}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
