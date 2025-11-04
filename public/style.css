@@ -991,7 +991,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  background: #000;
+  background: transparent;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
@@ -1021,6 +1021,8 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+  filter: brightness(1.0);
+  opacity: 1;
 }
 
 .city-card:hover .city-card__media img {
