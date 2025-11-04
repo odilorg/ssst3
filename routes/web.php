@@ -195,10 +195,7 @@ HTML;
     return response($html)->header('Content-Type', 'text/html');
 });
 
-// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
-Route::get('/tours', function () {
-    return response()->file(public_path('tours.html'));
-})->name('tours.index');
+// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)Route::get('/tours', function (Request $request) {    $cityId = $request->get('city');    return view('tours', compact('cityId'));})->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/category/{slug}', function ($slug) {
@@ -840,13 +837,31 @@ Route::prefix('partials')->name('partials.')->group(function () {
         ->name('blog.listing');
 });
 
-// City/Destination detail page - Redirect to tours filtered by city
+// City/Destination landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/destinations/{slug}', function ($slug) {
     // Find city or 404
     $city = \App\Models\City::where('slug', $slug)
         ->where('is_active', true)
         ->firstOrFail();
-    
-    // Redirect to tours page with city filter
-    return redirect('/tours?city=' . $city->id);
+
+    // Read the static HTML template
+    $html = file_get_contents(public_path('destination-landing.html'));
+
+    // Prepare SEO-friendly data
+    $pageTitle = $city->meta_title ?? ($city->name . ' Tours & Travel Guide | Jahongir Travel');
+    $metaDescription = $city->meta_description ?? ($city->short_description ?? '');
+    $metaDescription = substr($metaDescription, 0, 160);
+
+    $ogImage = $city->hero_image_url ?? $city->featured_image_url ?? asset('images/default-city.jpg');
+    $canonicalUrl = url('/destinations/' . $city->slug);
+
+    // Replace DEFAULT_CITY_ID with actual city ID
+    $html = str_replace('DEFAULT_CITY_ID', $city->id, $html);
+
+    // Replace hardcoded meta tags
+    $html = preg_replace('/<title>.*?<\/title>/', '<title>' . htmlspecialchars($pageTitle) . '</title>', $html);
+    $html = preg_replace('/<meta name="description" content=".*?">/', '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">', $html);
+    $html = preg_replace('/<link rel="canonical" href=".*?">/', '<link rel="canonical" href="' . $canonicalUrl . '">', $html);
+
+    return response($html)->header('Content-Type', 'text/html');
 })->name('city.show');
