@@ -307,7 +307,7 @@
 
         // Use HTMX if available to reload reviews
         if (window.htmx) {
-            const url = `${window.BACKEND_URL || ''}/tours/${tourSlug}/reviews-section`;
+            const url = `${window.BACKEND_URL || ''}/tours/${tourSlug}/reviews`;
             console.log('[Reviews] HTMX reload URL:', url);
 
             htmx.ajax('GET', url, {
