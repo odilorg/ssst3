@@ -99,7 +99,7 @@ class Tour extends Model
     ];
 
     /**
-     * Boot method - Auto-generate slug
+     * Boot method - Auto-generate slug and handle cache invalidation
      */
     protected static function boot()
     {
@@ -119,6 +119,18 @@ class Tour extends Model
 
                 $tour->slug = $slug;
             }
+        });
+
+        // Clear category caches when tour active status changes
+        static::updated(function ($tour) {
+            if ($tour->isDirty('is_active')) {
+                $tour->clearCategoryCaches();
+            }
+        });
+
+        // Clear category caches when tour is deleted
+        static::deleting(function ($tour) {
+            $tour->clearCategoryCaches();
         });
     }
 
@@ -204,7 +216,26 @@ class Tour extends Model
     public function categories()
     {
         return $this->belongsToMany(TourCategory::class, 'tour_category_tour')
-            ->withTimestamps();
+            ->withTimestamps()
+            ->withPivot([]) // Enable pivot events
+            ->using(new class extends \Illuminate\Database\Eloquent\Relations\Pivot {
+                protected static function boot()
+                {
+                    parent::boot();
+
+                    // Clear caches when pivot is created (category assigned)
+                    static::created(function ($pivot) {
+                        \Illuminate\Support\Facades\Cache::forget("category_{$pivot->tour_category_id}_tour_count");
+                        \Illuminate\Support\Facades\Cache::forget("related_categories.{$pivot->tour_category_id}");
+                    });
+
+                    // Clear caches when pivot is deleted (category removed)
+                    static::deleted(function ($pivot) {
+                        \Illuminate\Support\Facades\Cache::forget("category_{$pivot->tour_category_id}_tour_count");
+                        \Illuminate\Support\Facades\Cache::forget("related_categories.{$pivot->tour_category_id}");
+                    });
+                }
+            });
     }
 
     // ==========================================
@@ -254,6 +285,19 @@ class Tour extends Model
             'rating' => round($approved->avg('rating'), 2) ?? 0,
             'review_count' => $approved->count(),
         ]);
+    }
+
+    /**
+     * Clear all category-related caches for this tour
+     */
+    public function clearCategoryCaches(): void
+    {
+        // Clear cache for each category this tour belongs to
+        foreach ($this->categories as $category) {
+            \Illuminate\Support\Facades\Cache::forget("category_{$category->id}_tour_count");
+            \Illuminate\Support\Facades\Cache::forget("related_categories.{$category->slug}");
+            \Illuminate\Support\Facades\Cache::forget("category_data.{$category->slug}." . app()->getLocale());
+        }
     }
 
     // ==========================================

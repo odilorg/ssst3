@@ -720,9 +720,157 @@
               <!-- Action Button -->
               <div class="form-actions">
                 <button type="button" class="btn btn--primary btn--block" id="check-availability">
-                  Check availability
+                  Check Availability
                 </button>
               </div>
+
+              <!-- STEP 2: Full Booking Form (Hidden Initially) -->
+              <div id="step-2-full-form" style="display: none;">
+
+                <!-- Customer Information -->
+                <div class="form-section">
+                  <h3 class="form-section__title">Your Information</h3>
+
+                  <div class="form-group">
+                    <label for="customer-name" class="form-label">
+                      Full Name <span class="required">*</span>
+                    </label>
+                    <input type="text"
+                           id="customer-name"
+                           name="customer_name"
+                           class="form-input"
+                           placeholder="John Doe"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-email" class="form-label">
+                      Email <span class="required">*</span>
+                    </label>
+                    <input type="email"
+                           id="customer-email"
+                           name="customer_email"
+                           class="form-input"
+                           placeholder="john@example.com"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-phone" class="form-label">
+                      Phone <span class="required">*</span>
+                    </label>
+                    <input type="tel"
+                           id="customer-phone"
+                           name="customer_phone"
+                           class="form-input"
+                           placeholder="+998 91 123 45 67"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-country" class="form-label">
+                      Country (Optional)
+                    </label>
+                    <input type="text"
+                           id="customer-country"
+                           name="customer_country"
+                           class="form-input"
+                           placeholder="United States">
+                  </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="form-section">
+                  <div class="payment-methods">
+                    <h3 class="payment-methods__title">Choose Booking Method</h3>
+
+                    <div class="payment-cards">
+                      <!-- Deposit (30%) -->
+                      <div class="payment-card">
+                        <input type="radio" name="payment_method" value="deposit" id="payment-deposit">
+                        <div class="payment-card__content">
+                          <div class="payment-card__left">
+                            <div class="payment-card__header">
+                              <h4 class="payment-card__title">Pay Deposit</h4>
+                              <span class="payment-card__badge payment-card__badge--deposit">30% NOW</span>
+                            </div>
+                            <p class="payment-card__description">Pay 30% now, rest before tour. Instant confirmation.</p>
+                          </div>
+                          <div class="payment-card__right"></div>
+                        </div>
+                      </div>
+
+                      <!-- Full Payment (10% discount) -->
+                      <div class="payment-card">
+                        <input type="radio" name="payment_method" value="full_payment" id="payment-full">
+                        <div class="payment-card__content">
+                          <div class="payment-card__left">
+                            <div class="payment-card__header">
+                              <h4 class="payment-card__title">Pay Full Amount</h4>
+                              <span class="payment-card__badge">SAVE 10%</span>
+                            </div>
+                            <p class="payment-card__description">Get 10% discount. Pay everything now, nothing later.</p>
+                          </div>
+                          <div class="payment-card__right"></div>
+                        </div>
+                      </div>
+
+                      <!-- Request to Book (Default) -->
+                      <div class="payment-card">
+                        <input type="radio" name="payment_method" value="request" id="payment-request" checked>
+                        <div class="payment-card__content">
+                          <div class="payment-card__left">
+                            <div class="payment-card__header">
+                              <h4 class="payment-card__title">Request to Book</h4>
+                              <span class="payment-card__badge payment-card__badge--free">FREE</span>
+                            </div>
+                            <p class="payment-card__description">No payment now. Confirmation within 24 hours.</p>
+                          </div>
+                          <div class="payment-card__right"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="form-section">
+                  <div class="form-group">
+                    <label for="special-requests" class="form-label">
+                      Special Requests (Optional)
+                    </label>
+                    <textarea id="special-requests"
+                              name="special_requests"
+                              class="form-input"
+                              rows="3"
+                              placeholder="Any special requirements or preferences?"></textarea>
+                  </div>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="form-section">
+                  <label class="terms-checkbox__label">
+                    <input type="checkbox"
+                           name="agree_terms"
+                           id="agree-terms"
+                           class="terms-checkbox__input"
+                           required>
+                    <span class="terms-checkbox__text">
+                      I agree to the <a href="/terms" target="_blank">Terms & Conditions</a>
+                      and <a href="/privacy" target="_blank">Privacy Policy</a>
+                    </span>
+                  </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                  <button type="submit" class="btn--submit btn--block">
+                    <span class="btn__text">Send Booking Request</span>
+                    <span class="spinner"></span>
+                  </button>
+                </div>
+
+              </div><!-- End Step 2 -->
 
             </form>
 

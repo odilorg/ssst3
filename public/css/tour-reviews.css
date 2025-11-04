@@ -1,0 +1,338 @@
+/**
+ * Tour Reviews Form Styling
+ * Extends tour-details.css for review submission form
+ * Matches the existing tour page design system
+ */
+
+/* ======================================================
+   REVIEW SUBMISSION FORM
+   ====================================================== */
+
+.review-form-wrapper {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    background: #F9FAFB;
+    border-radius: var(--radius-card, 12px);
+    border: 1px solid #DEDEDE;
+}
+
+.review-form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1E1E1E;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+
+.review-form-subtitle {
+    font-size: 0.9375rem;
+    color: #555;
+    margin: 0 0 1.5rem 0;
+}
+
+/* ======================================================
+   STAR RATING INPUT
+   ====================================================== */
+
+.star-rating-input {
+    margin: 0.75rem 0 1rem 0;
+}
+
+.star-buttons {
+    display: flex;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #E5E7EB;
+    transition: all 0.2s ease;
+}
+
+.star-btn:hover {
+    color: #F4B400;
+    transform: scale(1.1);
+}
+
+.star-btn.active {
+    color: #F4B400;
+}
+
+.star-btn svg {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+.rating-label {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: #777;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.rating-label.selected {
+    color: #1E1E1E;
+    font-weight: 600;
+}
+
+/* ======================================================
+   FORM ELEMENTS
+   ====================================================== */
+
+.review-form .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.review-form .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1E1E1E;
+    font-size: 0.9375rem;
+}
+
+.review-form .form-group input,
+.review-form .form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #DEDEDE;
+    border-radius: var(--radius-button, 8px);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: #fff;
+    color: #1E1E1E;
+}
+
+.review-form .form-group input:focus,
+.review-form .form-group textarea:focus {
+    outline: none;
+    border-color: var(--brand-blue, #1C54B2);
+    box-shadow: 0 0 0 3px rgba(28, 84, 178, 0.1);
+}
+
+.review-form .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+.review-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .review-form .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Required indicator */
+.required {
+    color: #DC2626;
+}
+
+/* Field hint */
+.field-hint {
+    display: block;
+    font-size: 0.8125rem;
+    color: #777;
+    margin-top: 0.375rem;
+    line-height: 1.4;
+}
+
+/* Error messages */
+.error-message {
+    display: none;
+    color: #DC2626;
+    font-size: 0.8125rem;
+    margin-top: 0.375rem;
+    line-height: 1.4;
+}
+
+.error-message:not(:empty) {
+    display: block;
+}
+
+/* Character count */
+.char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.8125rem;
+    color: #777;
+    margin-top: 0.375rem;
+}
+
+/* ======================================================
+   FORM ACTIONS
+   ====================================================== */
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-button, 8px);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    font-family: inherit;
+    border: none;
+}
+
+.btn--primary {
+    background: var(--brand-blue, #1C54B2);
+    color: white;
+    box-shadow: var(--shadow-light, 0 2px 6px rgba(0, 0, 0, 0.04));
+}
+
+.btn--primary:hover:not(:disabled) {
+    background: var(--brand-blue-dark, #143d85);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium, 0 2px 12px rgba(0, 0, 0, 0.05));
+}
+
+.btn--primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn--primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-loader {
+    display: none;
+}
+
+/* ======================================================
+   FORM MESSAGES
+   ====================================================== */
+
+.form-message {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-button, 8px);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.form-message.success {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.form-message.error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+.form-message:not(:empty) {
+    display: block;
+}
+
+/* ======================================================
+   RESPONSIVE DESIGN
+   ====================================================== */
+
+@media (max-width: 768px) {
+    .review-form-wrapper {
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .review-form-title {
+        font-size: 1.25rem;
+    }
+
+    .star-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .btn--primary {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-form-wrapper {
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .star-buttons {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+}
+
+/* ======================================================
+   ACCESSIBILITY
+   ====================================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Form validation animation */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+.form-group.error input,
+.form-group.error textarea {
+    border-color: #DC2626;
+    animation: shake 0.3s ease;
+}
+
+/* Focus visible for keyboard navigation */
+.star-btn:focus-visible {
+    outline: 2px solid var(--brand-blue, #1C54B2);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--brand-blue, #1C54B2);
+    outline-offset: 2px;
+}
