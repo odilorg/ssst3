@@ -34,6 +34,7 @@ class ReviewsTable
                 Tables\Columns\TextColumn::make('reviewer_location')
                     ->label('Откуда')
                     ->searchable()
+                    ->limit(15)
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('rating')
