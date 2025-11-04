@@ -149,7 +149,6 @@ HTML;
                   loading="lazy"
                   decoding="async"
                 >
-                <div class="city-card__overlay"></div>
               </div>
               <div class="city-card__content">
                 <h3 class="city-card__title">{$cityName}</h3>
