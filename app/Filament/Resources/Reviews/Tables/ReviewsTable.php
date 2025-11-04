@@ -21,19 +21,20 @@ class ReviewsTable
                     ->label('Тур')
                     ->searchable()
                     ->sortable()
-                    ->limit(30)
+                    ->limit(25)
                     ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.edit', ['record' => $record->tour_id]) : null)
                     ->color('primary'),
 
                 Tables\Columns\TextColumn::make('reviewer_name')
                     ->label('Рецензент')
                     ->searchable()
+                    ->limit(20)
                     ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('reviewer_location')
                     ->label('Откуда')
                     ->searchable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('rating')
                     ->label('Рейтинг')
@@ -43,12 +44,13 @@ class ReviewsTable
                         $state >= 3 => 'warning',
                         default => 'danger',
                     })
-                    ->formatStateUsing(fn ($state) => str_repeat('⭐', $state) . " ({$state})")
+                    ->formatStateUsing(fn ($state) => str_repeat('⭐', $state))
+                    ->alignCenter()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('title')
                     ->label('Заголовок')
-                    ->limit(40)
+                    ->limit(30)
                     ->searchable()
                     ->wrap(),
 
@@ -56,18 +58,19 @@ class ReviewsTable
                     ->label('Источник')
                     ->badge()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('is_verified')
                     ->label('Верифицирован')
                     ->boolean()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('is_approved')
                     ->label('Одобрен')
                     ->boolean()
-                    ->sortable(),
+                    ->sortable()
+                    ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('spam_score')
                     ->label('Спам-балл')
@@ -80,7 +83,7 @@ class ReviewsTable
                         default => 'success',
                     })
                     ->formatStateUsing(fn ($state) => $state . '/100')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('review_ip')
                     ->label('IP адрес')
