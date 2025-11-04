@@ -1032,8 +1032,8 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0) 35%,
-    rgba(0, 0, 0, 0.7) 100%
+    rgba(0, 0, 0, 0) 20%,
+    rgba(0, 0, 0, 0.85) 100%
   );
   z-index: 1;
   transition: background 0.3s ease;
@@ -1042,8 +1042,8 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 .city-card:hover .city-card__overlay {
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0) 35%,
-    rgba(0, 0, 0, 0.75) 100%
+    rgba(0, 0, 0, 0) 20%,
+    rgba(0, 0, 0, 0.9) 100%
   );
 }
 
