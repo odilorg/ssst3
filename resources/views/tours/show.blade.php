@@ -980,7 +980,6 @@
       }
     })();
   </script>
-  </script>
 
   <!-- HTMX Library -->
   <script src="js/htmx.min.js"></script>
