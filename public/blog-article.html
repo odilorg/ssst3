@@ -68,13 +68,13 @@
       if (blogSlug) {
         // Store slug globally for HTMX to use
         window.BLOG_SLUG = blogSlug;
-        window.BACKEND_URL = 'http://127.0.0.1:8001';
+        window.BACKEND_URL = 'http://127.0.0.1:8000';
         console.log('[Blog] Slug set:', blogSlug);
       } else {
         console.warn('[Blog] No slug in URL query parameter');
         // Fallback to default slug for testing
         window.BLOG_SLUG = 'uzbekistan-cuisine-must-try-dishes';
-        window.BACKEND_URL = 'http://127.0.0.1:8001';
+        window.BACKEND_URL = 'http://127.0.0.1:8000';
       }
     })();
   </script>
