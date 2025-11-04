@@ -16,6 +16,9 @@ Route::get('/', function () {
         ->take(3)
         ->get();
 
+    // Get featured cities for homepage
+    $cities = \App\Models\City::getHomepageCities();
+
     // Read static HTML
     $html = file_get_contents(public_path('index.html'));
 
@@ -112,6 +115,60 @@ HTML;
 HTML;
     }
 
+    // Generate dynamic city cards HTML
+    $citiesHtml = '';
+    foreach ($cities as $city) {
+        $tourCount = $city->tour_count;
+        $tourText = $tourCount === 1 ? 'tour' : 'tours';
+        
+        // Get city image - use featured_image or placeholder
+        $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
+        
+        // Get tagline or use default
+        $tagline = $city->tagline ?? '';
+        
+        // Get city name
+        $cityName = htmlspecialchars($city->name);
+        $citySlug = $city->slug;
+        
+        // Short description for alt text
+        $altText = $city->short_description 
+            ? htmlspecialchars(strip_tags($city->short_description))
+            : "{$cityName}, Uzbekistan";
+
+        $citiesHtml .= <<<HTML
+          <!-- City Card: {$cityName} -->
+          <article class="city-card">
+            <a href="/destinations/{$citySlug}/" class="city-card__link" aria-label="Discover {$cityName}">
+              <div class="city-card__media">
+                <img
+                  src="{$imageUrl}"
+                  alt="{$altText}"
+                  width="400"
+                  height="533"
+                  loading="lazy"
+                  decoding="async"
+                >
+                <div class="city-card__overlay"></div>
+              </div>
+              <div class="city-card__content">
+                <h3 class="city-card__title">{$cityName}</h3>
+                <p class="city-card__tagline">{$tagline}</p>
+                <p class="city-card__stats">
+                  <i class="fas fa-route" aria-hidden="true"></i>
+                  {$tourCount} {$tourText} available
+                </p>
+                <span class="city-card__cta">
+                  Discover {$cityName}
+                  <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                </span>
+              </div>
+            </a>
+          </article>
+
+HTML;
+    }
+
     // Replace the activities__grid content with dynamic categories
     // Match from opening activities__grid to its closing </div>
     $html = preg_replace(
@@ -125,6 +182,14 @@ HTML;
     $html = preg_replace(
         '/(<div class="blog-grid">).*?(<\/div>\s*\n\s*<!-- Section Footer CTA -->)/s',
         '$1' . "\n" . $blogPostsHtml . "\n        $2",
+        $html
+    );
+
+    // Replace the places__grid content with dynamic city cards
+    // Match from opening places__grid to its closing </div> before View All Destinations CTA
+    $html = preg_replace(
+        '/(<div class="places__grid">).*?(<\/div>\s*\n\s*<!-- View All Destinations CTA -->)/s',
+        '$1' . "\n" . $citiesHtml . "\n        $2",
         $html
     );
 
