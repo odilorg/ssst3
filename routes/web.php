@@ -6,7 +6,69 @@ use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 
 Route::get('/', function () {
-    return response()->file(public_path('index.html'));
+    // Get homepage categories from database
+    $categories = \App\Models\TourCategory::getHomepageCategories();
+
+    // Read static HTML
+    $html = file_get_contents(public_path('index.html'));
+
+    // Generate dynamic category cards HTML
+    $categoriesHtml = '';
+    foreach ($categories as $category) {
+        $tourCount = $category->cached_tour_count;
+        $tourText = $tourCount === 1 ? 'tour' : 'tours';
+
+        // Image priority: 1) Category image, 2) Featured tour hero image, 3) Placeholder
+        $imageUrl = null;
+        if ($category->image_path) {
+            $imageUrl = asset('storage/' . $category->image_path);
+        } else {
+            // Get a featured tour from this category to use its hero image
+            $featuredTour = $category->tours()
+                ->where('is_active', true)
+                ->whereNotNull('hero_image')
+                ->first();
+
+            if ($featuredTour && $featuredTour->hero_image) {
+                $imageUrl = asset('storage/' . $featuredTour->hero_image);
+            } else {
+                $imageUrl = 'https://placehold.co/400x300/0D4C92/FFFFFF?text=' . urlencode($category->translated_name);
+            }
+        }
+
+        $categoriesHtml .= <<<HTML
+          <!-- Card: {$category->translated_name} -->
+          <a href="/tours/category/{$category->slug}/" class="activity-card" aria-label="Explore {$category->translated_name} tours">
+            <div class="activity-card__media">
+              <img src="{$imageUrl}"
+                   alt="{$category->translated_description}"
+                   width="400"
+                   height="300"
+                   loading="lazy"
+                   decoding="async">
+              <div class="activity-card__overlay"></div>
+              <span class="activity-card__badge">{$tourCount} {$tourText}</span>
+            </div>
+            <div class="activity-card__content">
+              <i class="activity-card__icon {$category->icon}" aria-hidden="true"></i>
+              <h3 class="activity-card__title">{$category->translated_name}</h3>
+              <p class="activity-card__description">{$category->translated_description}</p>
+              <span class="activity-card__link">Explore Tours <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+            </div>
+          </a>
+
+HTML;
+    }
+
+    // Replace the activities__grid content with dynamic categories
+    // Match from opening activities__grid to its closing </div>
+    $html = preg_replace(
+        '/(<div class="activities__grid">).*?(<\/div>\s*\n\s*<!-- View All Tours Link -->)/s',
+        '$1' . "\n" . $categoriesHtml . "\n        $2",
+        $html
+    );
+
+    return response($html)->header('Content-Type', 'text/html');
 });
 
 // Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)

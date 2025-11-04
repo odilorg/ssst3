@@ -73,9 +73,9 @@ class TourForm
                             ->label('Категории')
                             ->relationship(
                                 name: 'categories',
-                                titleAttribute: 'name',
                                 modifyQueryUsing: fn ($query) => $query->where('is_active', true)->orderBy('display_order')
                             )
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->translated_name)
                             ->multiple()
                             ->searchable()
                             ->preload()

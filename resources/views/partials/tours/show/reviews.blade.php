@@ -58,94 +58,96 @@
         </div>
     @endif
 
-    {{-- Review Submission Form --}}
+    {{-- Review Submission Form - Matches "Extra Services" section pattern --}}
     <div class="review-form-wrapper">
-        <h3 class="review-form-title">Write a Review</h3>
-        <p class="review-form-subtitle">Share your experience with this tour</p>
+        <h2 class="section-title">Write a Review</h2>
+        <p class="section-intro">Share your experience with this tour</p>
 
-        <form id="reviewForm" class="review-form" data-tour-slug="{{ $tour->slug }}">
-            @csrf
+        <div class="review-form">
+            <form id="reviewForm" data-tour-slug="{{ $tour->slug }}">
+                @csrf
 
-            {{-- Honeypot field (hidden from users, trap for bots) --}}
-            <input type="text" name="honeypot" style="display:none" tabindex="-1" autocomplete="off">
+                {{-- Honeypot field (hidden from users, trap for bots) --}}
+                <input type="text" name="honeypot" style="display:none" tabindex="-1" autocomplete="off">
 
-            {{-- Star Rating Selector --}}
-            <div class="form-group">
-                <label for="rating">Your Rating <span class="required">*</span></label>
-                <div class="star-rating-input" id="starRatingInput">
-                    <input type="hidden" name="rating" id="ratingValue" value="0" required>
-                    <div class="star-buttons">
-                        @for($i = 1; $i <= 5; $i++)
-                            <button type="button" class="star-btn" data-rating="{{ $i }}" aria-label="Rate {{ $i }} stars">
-                                <svg class="icon icon--star" width="32" height="32" viewBox="0 0 16 16" fill="currentColor">
-                                    <path d="M8 0l2.163 5.331 5.837.423-4.437 3.798 1.363 5.648L8 12.331 3.074 15.2l1.363-5.648L.563 5.754l5.837-.423L8 0z"/>
-                                </svg>
-                            </button>
-                        @endfor
+                {{-- Star Rating Selector --}}
+                <div class="form-group">
+                    <label for="rating">Rate your experience <span class="required">*</span></label>
+                    <div class="star-rating-input" id="starRatingInput">
+                        <input type="hidden" name="rating" id="ratingValue" value="0" required>
+                        <div class="star-buttons">
+                            @for($i = 1; $i <= 5; $i++)
+                                <button type="button" class="star-btn" data-rating="{{ $i }}" aria-label="Rate {{ $i }} stars">
+                                    <svg class="review-star" width="24" height="24" viewBox="0 0 16 16">
+                                        <path d="M8 0l2.163 5.331 5.837.423-4.437 3.798 1.363 5.648L8 12.331 3.074 15.2l1.363-5.648L.563 5.754l5.837-.423L8 0z"/>
+                                    </svg>
+                                </button>
+                            @endfor
+                        </div>
+                        <span class="rating-label" id="ratingLabel">Select a rating</span>
                     </div>
-                    <span class="rating-label" id="ratingLabel">Select a rating</span>
+                    <span class="error-message" id="error-rating"></span>
                 </div>
-                <span class="error-message" id="error-rating"></span>
-            </div>
 
-            {{-- Review Title --}}
-            <div class="form-group">
-                <label for="reviewTitle">Review Title <span class="required">*</span></label>
-                <input type="text" id="reviewTitle" name="title" required minlength="5" maxlength="150"
-                       placeholder="Sum up your experience in a few words">
-                <span class="error-message" id="error-title"></span>
-            </div>
-
-            {{-- Review Content --}}
-            <div class="form-group">
-                <label for="reviewContent">Your Review <span class="required">*</span></label>
-                <textarea id="reviewContent" name="content" required minlength="20" maxlength="2000" rows="6"
-                          placeholder="Share your thoughts about this tour..."></textarea>
-                <span class="error-message" id="error-content"></span>
-                <span class="char-count"><span id="charCount">0</span>/2000</span>
-            </div>
-
-            {{-- Reviewer Information --}}
-            <div class="form-row">
+                {{-- Review Title --}}
                 <div class="form-group">
-                    <label for="reviewerName">Name <span class="required">*</span></label>
-                    <input type="text" id="reviewerName" name="reviewer_name" required maxlength="100" placeholder="Your name">
-                    <span class="error-message" id="error-reviewer_name"></span>
+                    <label for="reviewTitle">Summarize your experience <span class="required">*</span></label>
+                    <input type="text" id="reviewTitle" name="title" required minlength="5" maxlength="150"
+                           placeholder="Sum up your experience in a few words">
+                    <span class="error-message" id="error-title"></span>
                 </div>
 
+                {{-- Review Content --}}
                 <div class="form-group">
-                    <label for="reviewerEmail">Email <span class="required">*</span></label>
-                    <input type="email" id="reviewerEmail" name="reviewer_email" required maxlength="150" placeholder="your@email.com">
-                    <span class="error-message" id="error-reviewer_email"></span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="reviewerLocation">Location</label>
-                    <input type="text" id="reviewerLocation" name="reviewer_location" maxlength="100" placeholder="City, Country (optional)">
-                    <span class="error-message" id="error-reviewer_location"></span>
+                    <label for="reviewContent">Share your feedback <span class="required">*</span></label>
+                    <textarea id="reviewContent" name="content" required minlength="20" maxlength="2000" rows="6"
+                              placeholder="Share your thoughts about this tour..."></textarea>
+                    <span class="error-message" id="error-content"></span>
+                    <span class="char-count"><span id="charCount">0</span>/2000</span>
                 </div>
 
-                <div class="form-group">
-                    <label for="bookingReference">Booking Reference</label>
-                    <input type="text" id="bookingReference" name="booking_reference" maxlength="50"
-                           placeholder="Optional (for verification)">
-                    <span class="error-message" id="error-booking_reference"></span>
-                    <span class="field-hint">Enter your booking reference to verify your review</span>
+                {{-- Reviewer Information --}}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reviewerName">Name <span class="required">*</span></label>
+                        <input type="text" id="reviewerName" name="reviewer_name" required maxlength="100" placeholder="Your name">
+                        <span class="error-message" id="error-reviewer_name"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reviewerEmail">Email <span class="required">*</span></label>
+                        <input type="email" id="reviewerEmail" name="reviewer_email" required maxlength="150" placeholder="your@email.com">
+                        <span class="error-message" id="error-reviewer_email"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn--primary" id="submitReview">
-                    <span class="btn-text">Submit Review</span>
-                    <span class="btn-loader" style="display:none">
-                        <i class="fas fa-spinner fa-spin"></i> Submitting...
-                    </span>
-                </button>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reviewerLocation">Location</label>
+                        <input type="text" id="reviewerLocation" name="reviewer_location" maxlength="100" placeholder="City, Country (optional)">
+                        <span class="error-message" id="error-reviewer_location"></span>
+                    </div>
 
-            <div class="form-message" id="formMessage" style="display:none"></div>
-        </form>
+                    <div class="form-group">
+                        <label for="bookingReference">Booking Reference (for verification)</label>
+                        <input type="text" id="bookingReference" name="booking_reference" maxlength="50"
+                               placeholder="Optional">
+                        <span class="error-message" id="error-booking_reference"></span>
+                        <span class="field-hint">Enter your booking reference to verify your review</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary" id="submitReview">
+                        <span class="btn-text">Submit Review</span>
+                        <span class="btn-loader" style="display:none">
+                            <i class="fas fa-spinner fa-spin"></i> Submitting...
+                        </span>
+                    </button>
+                </div>
+
+                <div class="form-message" id="formMessage" style="display:none"></div>
+            </form>
+        </div>
     </div>
 </section>

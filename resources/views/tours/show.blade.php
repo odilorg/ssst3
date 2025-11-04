@@ -159,6 +159,9 @@
   <link rel="preload" href="tour-details.css" as="style">
   <link rel="stylesheet" href="tour-details.css">
 
+  <!-- Tour reviews stylesheet -->
+  <link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
@@ -977,7 +980,6 @@
       }
     })();
   </script>
-  </script>
 
   <!-- HTMX Library -->
   <script src="js/htmx.min.js"></script>
@@ -1009,6 +1011,9 @@
   <!-- Tour Details JavaScript -->
   <script src="tour-details.js" defer></script>
   <script src="js/gallery-lightbox.js" defer></script>
+
+  <!-- Tour Reviews JavaScript -->
+  <script src="{{ asset('js/tour-reviews.js') }}" defer></script>
 
   <!-- Main JavaScript -->
   <script src="js/main.js" defer></script>
