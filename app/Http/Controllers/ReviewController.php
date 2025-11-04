@@ -133,6 +133,11 @@ class ReviewController extends Controller
             'review_user_agent' => $request->userAgent(),
         ]);
 
+        // Clear review cache for this tour (all pages)
+        for ($page = 1; $page <= 10; $page++) {
+            Cache::forget("tour.{$slug}.reviews.page.{$page}");
+        }
+
         // Increment rate limiters
         RateLimiter::hit($key, 600); // 10 minutes
         RateLimiter::hit($dailyKey, 86400); // 24 hours

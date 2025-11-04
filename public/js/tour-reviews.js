@@ -139,7 +139,7 @@
         const tourSlug = form.dataset.tourSlug;
 
         try {
-            const response = await fetch(`/tours/${tourSlug}/reviews`, {
+            const response = await fetch(`/partials/tours/${tourSlug}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -307,7 +307,7 @@
 
         // Use HTMX if available to reload reviews
         if (window.htmx) {
-            const url = `${window.BACKEND_URL || ''}/tours/${tourSlug}/reviews`;
+            const url = `${window.BACKEND_URL || ''}/partials/tours/${tourSlug}/reviews`;
             console.log('[Reviews] HTMX reload URL:', url);
 
             htmx.ajax('GET', url, {
