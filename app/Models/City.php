@@ -154,7 +154,12 @@ class City extends Model
             return $this->featured_image;
         }
 
-        // Otherwise, prepend storage path
+        // If path starts with 'images/', it's in public folder
+        if (str_starts_with($this->featured_image, 'images/')) {
+            return asset($this->featured_image);
+        }
+
+        // Otherwise, it's in storage (Filament uploads)
         return asset('storage/' . $this->featured_image);
     }
 
