@@ -384,7 +384,7 @@
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
   <section class="tour-header"
-           hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/hero"
+           hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/hero"
            hx-trigger="none"
            hx-swap="innerHTML"
            data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -463,7 +463,7 @@
 
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/overview"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/overview"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -479,7 +479,7 @@
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -494,7 +494,7 @@
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -519,7 +519,7 @@
           <!-- Cancellation Policy Section -->
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation"
                    hx-trigger="none"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
@@ -527,7 +527,7 @@
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
@@ -546,7 +546,7 @@
 
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/meeting-point"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/meeting-point"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -560,7 +560,7 @@
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
-                   hx-get="http://127.0.0.1:8000/partials/tours/5-day-silk-road-classic/requirements"
+                   hx-get="http://127.0.0.1:8001/partials/tours/5-day-silk-road-classic/requirements"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -576,7 +576,7 @@
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -592,7 +592,7 @@
 
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/extras"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/extras"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -610,7 +610,7 @@
 
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews"
+                   hx-get="http://127.0.0.1:8001/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews"
                    hx-trigger="none"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -1174,7 +1174,7 @@
       if (tourSlug) {
         // Update all sections with dynamic tour slug
         const sections = document.querySelectorAll('[data-tour-slug]');
-        const backendUrl = 'http://127.0.0.1:8000/partials/tours';
+        const backendUrl = 'http://127.0.0.1:8001/partials/tours';
 
         console.log('[Tour] Found', sections.length, 'sections to load');
 
@@ -1258,7 +1258,7 @@
   <!-- HTMX Debug Script -->
   <script>
     console.log('[HTMX] Page loaded - tour-details.html');
-    console.log('[HTMX] Backend URL: http://127.0.0.1:8000');
+    console.log('[HTMX] Backend URL: http://127.0.0.1:8001');
 
     // HTMX event listeners for debugging and error handling
     document.body.addEventListener('htmx:beforeRequest', function(evt) {

@@ -49,7 +49,7 @@
                     </div>
                     @if($review->title)
                         <h4 class="review-title">{{ $review->title }}</h4>
-                    @endif>
+                    @endif
                     <p class="review-text">
                         {{ $review->content }}
                     </p>
