@@ -939,7 +939,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 .places {
   position: relative;
   background: linear-gradient(135deg, #0D4C92 0%, #093870 50%, #0B1321 100%);
-  background-image: url('images/places-collage.jpg');
+  /* background-image: url('images/places-collage.jpg'); */
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
