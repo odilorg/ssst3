@@ -9,6 +9,13 @@ Route::get('/', function () {
     // Get homepage categories from database
     $categories = \App\Models\TourCategory::getHomepageCategories();
 
+    // Get latest blog posts for homepage (3 posts)
+    $blogPosts = \App\Models\BlogPost::published()
+        ->with('category')
+        ->orderBy('published_at', 'desc')
+        ->take(3)
+        ->get();
+
     // Read static HTML
     $html = file_get_contents(public_path('index.html'));
 
@@ -60,11 +67,64 @@ Route::get('/', function () {
 HTML;
     }
 
+    // Generate dynamic blog post cards HTML
+    $blogPostsHtml = '';
+    foreach ($blogPosts as $post) {
+        $featuredImage = $post->featured_image
+            ? asset('storage/' . $post->featured_image)
+            : asset('images/default-blog.svg');
+
+        $categoryName = $post->category?->name ?? 'Uncategorized';
+        $publishedDate = $post->published_at->format('M d, Y');
+        $publishedDatetime = $post->published_at->format('Y-m-d');
+        $readingTime = $post->reading_time ?? 5;
+
+        $blogPostsHtml .= <<<HTML
+          <!-- Blog Card: {$post->title} -->
+          <article class="blog-card">
+            <a href="/blog/{$post->slug}" class="blog-card__link">
+              <div class="blog-card__media">
+                <img
+                  src="{$featuredImage}"
+                  alt="{$post->title}"
+                  width="800"
+                  height="450"
+                  loading="lazy"
+                  fetchpriority="low"
+                  decoding="async">
+                <span class="blog-card__category" data-category="{$post->category?->slug}">{$categoryName}</span>
+              </div>
+              <div class="blog-card__content">
+                <h3 class="blog-card__title">{$post->title}</h3>
+                <p class="blog-card__excerpt">
+                  {$post->excerpt}
+                </p>
+                <div class="blog-card__meta">
+                  <time class="blog-card__date" datetime="{$publishedDatetime}">{$publishedDate}</time>
+                  <span class="blog-card__reading-time" aria-label="Reading time">
+                    <i class="far fa-clock" aria-hidden="true"></i> {$readingTime} min read
+                  </span>
+                </div>
+              </div>
+            </a>
+          </article>
+
+HTML;
+    }
+
     // Replace the activities__grid content with dynamic categories
     // Match from opening activities__grid to its closing </div>
     $html = preg_replace(
         '/(<div class="activities__grid">).*?(<\/div>\s*\n\s*<!-- View All Tours Link -->)/s',
         '$1' . "\n" . $categoriesHtml . "\n        $2",
+        $html
+    );
+
+    // Replace the blog-grid content with dynamic blog posts
+    // Match from opening blog-grid to its closing </div> before Section Footer CTA
+    $html = preg_replace(
+        '/(<div class="blog-grid">).*?(<\/div>\s*\n\s*<!-- Section Footer CTA -->)/s',
+        '$1' . "\n" . $blogPostsHtml . "\n        $2",
         $html
     );
 
