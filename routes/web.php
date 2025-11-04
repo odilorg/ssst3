@@ -17,9 +17,24 @@ Route::get('/', function () {
     foreach ($categories as $category) {
         $tourCount = $category->cached_tour_count;
         $tourText = $tourCount === 1 ? 'tour' : 'tours';
-        $imageUrl = $category->image_path
-            ? asset('storage/' . $category->image_path)
-            : 'https://placehold.co/400x300/0D4C92/FFFFFF?text=' . urlencode($category->translated_name);
+
+        // Image priority: 1) Category image, 2) Featured tour hero image, 3) Placeholder
+        $imageUrl = null;
+        if ($category->image_path) {
+            $imageUrl = asset('storage/' . $category->image_path);
+        } else {
+            // Get a featured tour from this category to use its hero image
+            $featuredTour = $category->tours()
+                ->where('is_active', true)
+                ->whereNotNull('hero_image')
+                ->first();
+
+            if ($featuredTour && $featuredTour->hero_image) {
+                $imageUrl = asset('storage/' . $featuredTour->hero_image);
+            } else {
+                $imageUrl = 'https://placehold.co/400x300/0D4C92/FFFFFF?text=' . urlencode($category->translated_name);
+            }
+        }
 
         $categoriesHtml .= <<<HTML
           <!-- Card: {$category->translated_name} -->
