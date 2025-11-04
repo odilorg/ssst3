@@ -839,3 +839,14 @@ Route::prefix('partials')->name('partials.')->group(function () {
     Route::get('/blog/listing', [BlogController::class, 'listing'])
         ->name('blog.listing');
 });
+
+// City/Destination detail page - Redirect to tours filtered by city
+Route::get('/destinations/{slug}', function ($slug) {
+    // Find city or 404
+    $city = \App\Models\City::where('slug', $slug)
+        ->where('is_active', true)
+        ->firstOrFail();
+    
+    // Redirect to tours page with city filter
+    return redirect('/tours?city=' . $city->id);
+})->name('city.show');
