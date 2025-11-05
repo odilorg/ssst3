@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
+
+        // Exclude webhook from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            '/payment/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
