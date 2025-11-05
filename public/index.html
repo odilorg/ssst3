@@ -20,9 +20,18 @@
 
   <!-- Google Fonts: Poppins, Inter & Playfair Display -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="/style.css">
+
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+  <!-- Reviews Carousel Custom CSS -->
+  <link rel="stylesheet" href="/css/reviews-carousel.css">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -904,8 +913,7 @@
           </p>
         </div>
 
-        <!-- Reviews Grid -->
-        <div class="reviews__grid">
+        <!-- Reviews Carousel -->        <div class="swiper reviews-swiper">          <div class="swiper-wrapper">
 
           <!-- Review Card 1 -->
           <article class="review-card">
@@ -1043,7 +1051,13 @@
               </p>
             </div>
           </article>
+          </div>
+          <!-- Swiper Navigation -->
+          <div class="swiper-button-prev reviews-swiper-prev"></div>
+          <div class="swiper-button-next reviews-swiper-next"></div>
 
+          <!-- Swiper Pagination -->
+          <div class="swiper-pagination reviews-swiper-pagination"></div>
         </div>
 
         <!-- TripAdvisor Badge and CTA -->
@@ -1365,7 +1379,13 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
   <!-- Main JavaScript -->
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
   <script src="/js/main.js" defer></script>
 
 </body>
 </html>
+
+  <!-- Reviews Carousel -->
+  <script src="/js/reviews-carousel.js"></script>

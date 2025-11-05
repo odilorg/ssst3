@@ -168,6 +168,59 @@ HTML;
 HTML;
     }
 
+    // Get 5-star reviews for homepage carousel (7 reviews, mix from different tours)
+    $reviews = \App\Models\Review::approved()
+        ->where('rating', 5)
+        ->with('tour')
+        ->orderBy('created_at', 'desc')
+        ->take(7)
+        ->get();
+
+    // Generate dynamic review cards HTML
+    $reviewsHtml = '';
+    foreach ($reviews as $review) {
+        $avatarUrl = $review->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->reviewer_name) . '&size=60&background=0D4C92&color=fff';
+        $location = $review->reviewer_location ?? 'Travel Enthusiast';
+        $date = $review->created_at->format('F Y');
+        $sourceIcon = $review->source === 'tripadvisor' ? 'fab fa-tripadvisor' : 'fas fa-star';
+        $sourceName = ucfirst($review->source ?? 'Website');
+        $reviewerName = htmlspecialchars($review->reviewer_name);
+        $reviewTitle = htmlspecialchars($review->title);
+        $reviewContent = htmlspecialchars($review->content);
+
+        $reviewsHtml .= <<<HTML
+          <!-- Review Slide: {$reviewerName} -->
+          <div class="swiper-slide">
+            <article class="review-card">
+            <div class="review-card__header">
+              <img src="{$avatarUrl}" alt="{$reviewerName}" class="review-card__avatar" width="60" height="60" loading="lazy">
+              <div class="review-card__author">
+                <h3 class="review-card__name">{$reviewerName}</h3>
+                <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> {$location}</p>
+              </div>
+            </div>
+            <div class="review-card__rating">
+              <div class="stars" aria-label="Rated 5 out of 5 stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p class="review-card__date">Traveled in {$date}</p>
+            </div>
+            <div class="review-card__content">
+              <i class="fas fa-quote-left review-card__quote"></i>
+              <h4 class="review-card__title">{$reviewTitle}</h4>
+              <p class="review-card__text">{$reviewContent}</p>
+              <p class="review-card__source"><i class="{$sourceIcon}"></i> Reviewed on {$sourceName}</p>
+            </div>
+          </article>
+            </div>
+
+HTML;
+    }
+
     // Replace the activities__grid content with dynamic categories
     // Match from opening activities__grid to its closing </div>
     $html = preg_replace(
@@ -189,6 +242,17 @@ HTML;
     $html = preg_replace(
         '/(<div class="places__grid">).*?(<\/div>\s*\n\s*<!-- View All Destinations CTA -->)/s',
         '$1' . "\n" . $citiesHtml . "\n        $2",
+        $html
+    );
+
+    // Replace the swiper-wrapper content with dynamic review slides
+    // Match from opening swiper-wrapper to its closing </div>
+    $html = preg_replace(
+        '/(<div class="swiper-wrapper">).*?(<\/div>\s*
+\s*<!-- Swiper Navigation -->)/s',
+        '$1' . "
+" . $reviewsHtml . "
+          " . '$2',
         $html
     );
 
