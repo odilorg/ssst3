@@ -8,6 +8,8 @@ use App\Filament\Resources\Bookings\Pages\ListBookings;
 use App\Filament\Resources\Bookings\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\Bookings\RelationManagers\AssignmentsRelationManager;
 use App\Filament\Resources\Bookings\RelationManagers\SupplierRequestsRelationManager;
+use App\Filament\Resources\Bookings\RelationManagers\PaymentsRelationManager;
+use App\Filament\Resources\Bookings\RelationManagers\TravelersRelationManager;
 use App\Filament\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Resources\Bookings\Tables\BookingsTable;
 use App\Models\Booking;
@@ -68,6 +70,8 @@ class BookingResource extends Resource
     public static function getRelations(): array
     {
         return [
+            PaymentsRelationManager::class,
+            TravelersRelationManager::class,
             ItemsRelationManager::class,
             SupplierRequestsRelationManager::class,
         ];
