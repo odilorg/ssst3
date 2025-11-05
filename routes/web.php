@@ -807,6 +807,37 @@ Route::get('/supplier-request/{request}/download', function (\App\Models\Supplie
 })->name('supplier.request.download');
 
 // ============================================
+// ============================================
+// PAYMENT ROUTES - OCTO Integration
+// ============================================
+
+use App\Http\Controllers\PaymentController;
+
+// Payment review page (before redirecting to OCTO)
+Route::get('/payment/review', [PaymentController::class, 'review'])
+    ->name('payment.review');
+
+// Initialize payment with OCTO gateway
+Route::post('/payment/initialize', [PaymentController::class, 'initialize'])
+    ->name('payment.initialize');
+
+// OCTO webhook endpoint (no CSRF protection needed)
+Route::post('/payment/webhook', [PaymentController::class, 'webhook'])    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->name('payment.webhook');
+
+// Payment success callback
+Route::get('/payment/{payment}/success', [PaymentController::class, 'success'])
+    ->name('payment.success');
+
+// Payment cancel callback
+Route::get('/payment/{payment}/cancel', [PaymentController::class, 'cancel'])
+    ->name('payment.cancel');
+
+// Check payment status (AJAX endpoint)
+Route::get('/payment/{payment}/status', [PaymentController::class, 'checkStatus'])
+    ->name('payment.status');
+
+// ============================================
 // PUBLIC PARTIAL ROUTES
 // Serve HTML partials for frontend consumption
 // ============================================

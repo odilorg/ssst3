@@ -39,4 +39,11 @@ return [
         'api_key' => env('DEEPSEEK_API_KEY'),
     ],
 
+    'octo' => [
+        'base_url' => env('OCTO_BASE_URL', 'https://api.octo.uz/v1'),
+        'api_key' => env('OCTO_API_KEY'),
+        'webhook_secret' => env('OCTO_WEBHOOK_SECRET'),
+        'merchant_id' => env('OCTO_MERCHANT_ID'),
+    ],
+
 ];

@@ -1,0 +1,17 @@
+https://help.octo.uz/en/payment-via-web.html
+https://help.octo.uz/en/payment-via-web/one-stage.html
+https://help.octo.uz/en/payment-via-web/two-stage.html
+https://help.octo.uz/en/payment-via-partner-web.html
+https://help.octo.uz/en/payment-via-partner-web/one-stage.html
+https://help.octo.uz/en/payment-via-partner-web/two-stage.html
+https://help.octo.uz/en/payment-confirm-pay.html
+https://help.octo.uz/en/confirm-pay/token.html
+https://help.octo.uz/en/otp-resend.html
+https://help.octo.uz/en/refunds.html
+https://help.octo.uz/en/cancel.html
+https://help.octo.uz/en/check-status.html
+https://help.octo.uz/en/tokenization.html
+https://help.octo.uz/en/notifications.html
+https://help.octo.uz/en/fiscal-data.html
+https://help.octo.uz/en/statuses.html
+

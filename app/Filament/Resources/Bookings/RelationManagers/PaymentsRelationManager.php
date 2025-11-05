@@ -7,6 +7,9 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\Enums\FontWeight;
+use Filament\Forms;
+use App\Services\OctoPaymentService;
+use Filament\Notifications\Notification;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -115,6 +118,71 @@ class PaymentsRelationManager extends RelationManager
                         'gatewayResponse' => $record->gateway_response,
                     ]))
                     ->modalWidth('2xl'),
+
+                Tables\Actions\Action::make('refund')
+                    ->label('Возврат')
+                    ->icon('heroicon-o-arrow-uturn-left')
+                    ->color('danger')
+                    ->visible(fn ($record) =>
+                        $record->status === 'completed' &&
+                        !$record->isRefund() &&
+                        $record->payment_method === 'octo'
+                    )
+                    ->requiresConfirmation()
+                    ->modalHeading('Возврат платежа')
+                    ->modalDescription('Создать возврат для этого платежа через OCTO')
+                    ->form([
+                        Forms\Components\TextInput::make('refund_amount')
+                            ->label('Сумма возврата')
+                            ->numeric()
+                            ->required()
+                            ->prefix('$')
+                            ->default(fn ($record) => $record->amount)
+                            ->maxValue(fn ($record) => $record->amount)
+                            ->helperText(fn ($record) => "Максимум: $" . number_format($record->amount, 2))
+                            ->rules(['required', 'numeric', 'min:0.01']),
+
+                        Forms\Components\Textarea::make('refund_reason')
+                            ->label('Причина возврата')
+                            ->required()
+                            ->rows(3)
+                            ->placeholder('Опишите причину возврата...')
+                            ->helperText('Эта информация будет отправлена в платежный шлюз'),
+                    ])
+                    ->action(function ($record, array $data) {
+                        try {
+                            $octoService = app(OctoPaymentService::class);
+
+                            $refundAmount = (float) $data['refund_amount'];
+                            $refundReason = $data['refund_reason'];
+
+                            // Validate refund amount
+                            if ($refundAmount > $record->amount) {
+                                Notification::make()
+                                    ->title('Ошибка возврата')
+                                    ->body('Сумма возврата не может превышать сумму платежа')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+                            // Process refund through OCTO
+                            $refundPayment = $octoService->processRefund($record, $refundAmount, $refundReason);
+
+                            Notification::make()
+                                ->title('Возврат обработан')
+                                ->body("Возврат на сумму $" . number_format($refundAmount, 2) . " успешно создан")
+                                ->success()
+                                ->send();
+
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Ошибка возврата')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
             ])
             ->bulkActions([
                 // No bulk actions for payments

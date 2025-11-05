@@ -1,0 +1,120 @@
+
+================================================================================
+BOOKING SYSTEM IMPLEMENTATION – CLIENT DECISIONS SUMMARY
+================================================================================
+Project: Jahongir Travel – Tour Booking System
+Date: 2025-11-05
+Status: DECISIONS FINALIZED – READY FOR DEVELOPMENT
+================================================================================
+
+This document summarizes all key decisions and implementation notes based on the 
+planning file (BOOKING_WORKFLOW_PLANNING.txt) and subsequent client discussions. 
+It is intended for AI coders to begin coding the system architecture.
+
+================================================================================
+1. TOUR TYPES AND AVAILABILITY
+================================================================================
+✅ The system will support BOTH:
+   - Group tours (multi-day, fixed departures)
+   - Private tours (shorter one/two-day, open dates)
+
+✅ Group tours run on schedule regardless of participant count.
+
+✅ Dynamic pricing model implemented:
+   - Price starts higher for smaller groups to cover fixed costs.
+   - As more participants join (50–70% capacity), per-person price decreases.
+   - Transparent, fair pricing used as a **marketing advantage**.
+
+✅ Availability will be tracked at **departure level**.
+
+================================================================================
+2. BOOKING MODEL STRUCTURE
+================================================================================
+✅ One booking = one group transaction (pax_total per booking).
+
+✅ Traveler details stored per individual when required:
+   - For tours requiring tickets → collect each traveler’s details (passport, etc.)
+   - For simple tours → only main booker’s info required.
+   - Toggle per tour for “Require traveler details”.
+
+================================================================================
+3. SUPPLIER ASSIGNMENT
+================================================================================
+✅ Manual assignment (initial phase)
+   - Admin assigns driver/guide after booking confirmation.
+   - Automation may be added later.
+
+================================================================================
+4. PAYMENT SYSTEM
+================================================================================
+✅ Payment gateway: **Oktobank** (local bank in Uzbekistan).
+
+✅ Payment options implemented:
+   1. Pay Deposit (30%) – confirm booking, balance due before tour.
+   2. Pay Full (100%) – possibly with discount incentive.
+   3. Request to Book – no payment, admin approval required.
+
+✅ Payment policy:
+   - Remaining balance due **3 days before tour**.
+   - For last-minute bookings (within booking window) → **full payment upfront**.
+
+================================================================================
+5. MINIMUM BOOKING WINDOW
+================================================================================
+✅ Dynamic booking window based on tour length:
+   - Short tours: ~18 hours notice
+   - Longer tours: several days (configurable)
+
+================================================================================
+6. CANCELLATION POLICY
+================================================================================
+✅ Custom per-tour policy (not global):
+   - Each tour defines its own cancellation terms.
+   - Example structure:
+     • Full refund until X days before tour.
+     • Partial refund based on timing.
+     • Non-refundable close to start date.
+
+================================================================================
+7. MARKETING POSITIONING
+================================================================================
+✅ Highlight fair and dynamic pricing as key selling point:
+   - Transparency and fairness are brand values.
+   - Use messaging: “Fair Pricing – Adjusts with Group Size.”
+
+================================================================================
+8. DATABASE STRUCTURE (FROM PLANNING DOC + DECISIONS)
+================================================================================
+Tables:
+1. **tours**
+2. **tour_departures**
+3. **bookings**
+   - Add fields: departure_id, payment_method, payment_status, amount_paid, 
+     amount_remaining, discount_applied, customer details, etc.
+4. **booking_travelers** (optional)
+5. **supplier_assignments**
+6. **payments** (audit log)
+
+================================================================================
+9. DEVELOPMENT PRIORITIES
+================================================================================
+Phase 1 – Database & Models  
+Phase 2 – Availability System  
+Phase 3 – Booking Flow & Payment Logic  
+Phase 4 – Oktobank Integration  
+Phase 5 – Filament Admin Features  
+Phase 6 – Testing, Notifications, Final Polish
+
+================================================================================
+NOTES TO AI CODERS
+================================================================================
+- Use dynamic pricing rules (group-based adjustments).  
+- Add per-tour settings for traveler data requirements.  
+- Manual supplier assignment workflow for now.  
+- Use configurable settings for booking window and balance due.  
+- Implement per-tour cancellation terms.  
+- Integrate Oktobank payment flow with webhook or manual confirmation.  
+- Focus on clarity, modular code, and maintainability.  
+================================================================================
+END OF DOCUMENT
+================================================================================

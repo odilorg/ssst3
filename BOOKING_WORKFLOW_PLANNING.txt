@@ -1,0 +1,590 @@
+================================================================================
+BOOKING SYSTEM WORKFLOW ARCHITECTURE - PLANNING DOCUMENT
+================================================================================
+Project: Jahongir Travel - Tour Booking System
+Date: 2025-11-05
+Status: PLANNING PHASE - AWAITING DECISIONS
+================================================================================
+
+================================================================================
+1. ANALYSIS OF PROPOSED ARCHITECTURE
+================================================================================
+
+WHAT YOU GOT RIGHT:
+✅ Booking Model Purpose - Yes, tracking bookings + supplier assignments is correct
+✅ Availability-First Approach - Smart! Calendar shows real availability
+✅ Progressive Workflow - Tour → Date → People → Payment makes sense
+✅ 3-Tier Payment System - Matches the documented design
+
+================================================================================
+2. CRITICAL QUESTIONS & CONSIDERATIONS
+================================================================================
+
+QUESTION 1: AVAILABILITY MANAGEMENT
+───────────────────────────────────────────────────────────────────────────────
+Your proposal: Configure from BE
+
+Key Decision: Is availability PER TOUR or PER TOUR INSTANCE/DEPARTURE?
+
+Example: "Silk Road Tour" runs every Saturday in May - do we track:
+
+  OPTION A: Tour-level availability
+  - "Silk Road Tour has 20 total spots"
+  - Simple but risky
+  - Can't track which specific date is full
+
+  OPTION B: Departure-level availability (RECOMMENDED)
+  - "May 4th departure has 5 spots left"
+  - "May 11th departure has 12 spots left"
+  - More realistic for tour operations
+  - Prevents overbooking specific dates
+  - Allows for different group sizes per departure
+
+RECOMMENDATION: Departure-level availability (Option B)
+
+
+QUESTION 2: BOOKING MODEL SCOPE
+───────────────────────────────────────────────────────────────────────────────
+Current model stores: reference, customer_id, tour_id, dates, pax, status, price
+
+Key Decision: Does one booking = one customer or one group?
+
+Example: Family of 4 books together - is this:
+
+  OPTION A: 1 booking with pax_total=4 (RECOMMENDED)
+  - Simpler for payment processing
+  - Matches how tours are sold (per group/family)
+  - Can still track individual travelers if needed (separate table)
+
+  OPTION B: 4 separate bookings linked together
+  - More complex
+  - Harder to manage payments
+  - Overkill for most use cases
+
+RECOMMENDATION: Option A (1 booking per transaction)
+
+================================================================================
+3. COMPLETE WORKFLOW ARCHITECTURE (PROPOSED)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: AVAILABILITY SYSTEM                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Backend: Admin Configures Availability
+        ↓
+Two Approaches to Consider:
+
+───────────────────────────────────────────────────────────────────────────────
+APPROACH A: Fixed Departures (Recommended for Group Tours)
+───────────────────────────────────────────────────────────────────────────────
+- Admin creates specific departure dates
+- Each departure has:
+  ✓ Date range (start/end)
+  ✓ Max capacity (e.g., 12 people)
+  ✓ Min capacity (e.g., 4 people to confirm)
+  ✓ Price per person
+  ✓ Status (open/confirmed/full/cancelled)
+
+Example DB Structure:
+  tours_table:
+    - id, name, slug, base_price, duration_days
+
+  departures_table:
+    - id, tour_id, start_date, end_date
+    - max_pax, booked_pax, min_pax, status
+
+───────────────────────────────────────────────────────────────────────────────
+APPROACH B: Open Dates (Recommended for Private Tours)
+───────────────────────────────────────────────────────────────────────────────
+- Tour is always available
+- Customer picks any date
+- Availability depends on supplier availability
+- Admin confirms after checking resources
+
+DECISION NEEDED: Group tours? Private tours? Both?
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2: CUSTOMER BOOKING FLOW                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+STEP 1: Tour Selection
+───────────────────────────────────────────────────────────────────────────────
+- Customer browses tours
+- Clicks "Book Now" on tour details page
+
+STEP 2: Date & Capacity Check
+───────────────────────────────────────────────────────────────────────────────
+IF Fixed Departures:
+  - Calendar shows available departure dates only
+  - Grayed out: Full dates, past dates
+  - Customer selects from available dates
+
+IF Open Dates:
+  - Calendar allows any future date
+  - System checks: blackout dates, supplier calendar
+
+STEP 3: Number of Travelers
+───────────────────────────────────────────────────────────────────────────────
+- Customer enters number of people (pax_total)
+- System validates:
+  ✓ Doesn't exceed available spots
+  ✓ Meets minimum group size (if required)
+- System calculates total price
+  Price = tour_base_price × pax_total × duration
+
+STEP 4: Payment Method Selection
+───────────────────────────────────────────────────────────────────────────────
+Three cards displayed with calculated amounts
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 3: PAYMENT METHOD WORKFLOWS                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+OPTION 1: PAY DEPOSIT (30%)
+═══════════════════════════════════════════════════════════════════════════════
+When: Customer wants to secure booking but pay later
+Amount: 30% of total_price
+Status Flow: draft → pending_payment → confirmed
+
+WORKFLOW:
+───────────────────────────────────────────────────────────────────────────────
+1. Customer fills form (name, email, phone, etc.)
+2. Terms & conditions checkbox
+3. Submit → Creates booking with:
+   - status = 'pending_payment'
+   - payment_method = 'deposit'
+   - amount_paid = 0
+   - amount_remaining = total_price × 0.30
+
+4. System Actions:
+   ✓ Generate unique booking reference (BK-XXXXXX)
+   ✓ Send email with payment instructions
+   ✓ Payment link (Stripe/PayPal/Bank transfer)
+   ✓ Reduce available spots immediately (hold)
+
+5. Payment Received (webhook/manual confirmation):
+   ✓ Update: amount_paid = deposit_amount
+   ✓ Update: payment_status = 'deposit_paid'
+   ✓ Update: status = 'confirmed'
+   ✓ Send confirmation email
+   ✓ Notify admin
+
+6. Remaining Balance:
+   ✓ Due: [X days before tour - configurable]
+   ✓ Automated reminder emails
+   ✓ Final payment link
+
+═══════════════════════════════════════════════════════════════════════════════
+OPTION 2: PAY FULL AMOUNT (100% + 10% Discount)
+═══════════════════════════════════════════════════════════════════════════════
+When: Customer pays everything upfront
+Amount: 90% of total_price (10% discount applied)
+Status Flow: draft → pending_payment → confirmed
+
+WORKFLOW:
+───────────────────────────────────────────────────────────────────────────────
+1. Customer fills form
+2. Submit → Creates booking with:
+   - status = 'pending_payment'
+   - payment_method = 'full'
+   - discount_applied = total_price × 0.10
+   - amount_remaining = total_price × 0.90
+   - amount_paid = 0
+
+3. System Actions:
+   ✓ Generate booking reference
+   ✓ Send payment link with discounted amount
+   ✓ Show savings: "You save $XXX with full payment!"
+   ✓ Reduce available spots immediately
+
+4. Payment Received:
+   ✓ Update: amount_paid = discounted_total
+   ✓ Update: payment_status = 'paid_in_full'
+   ✓ Update: status = 'confirmed'
+   ✓ Update: amount_remaining = 0
+   ✓ Send confirmation + e-tickets/voucher
+   ✓ Trigger supplier assignment workflow
+
+═══════════════════════════════════════════════════════════════════════════════
+OPTION 3: REQUEST TO BOOK (Free - No Payment)
+═══════════════════════════════════════════════════════════════════════════════
+When: Customer wants price quote / custom arrangements
+Amount: $0 (inquiry only)
+Status Flow: draft → inquiry → [admin decision]
+
+WORKFLOW:
+───────────────────────────────────────────────────────────────────────────────
+1. Customer fills form + special requests field
+   - Extra checkbox: "I have special requirements"
+   - Textarea: Describe custom needs
+
+2. Submit → Creates booking with:
+   - status = 'inquiry'
+   - payment_method = 'request'
+   - amount_paid = 0
+   - amount_remaining = 0 (TBD)
+   - special_requests = [customer notes]
+
+3. System Actions:
+   ✓ Generate inquiry reference (INQ-XXXXXX)
+   ✓ Send acknowledgment email to customer
+     "We received your request. We'll respond within 24 hours
+      with availability and pricing."
+   ✓ Notify admin with customer details
+   ✓ DO NOT reduce available spots (not confirmed)
+
+4. Admin Reviews Inquiry:
+   ✓ Checks availability (suppliers, dates, custom)
+   ✓ Calculates custom price if needed
+   ✓ Two outcomes:
+
+     A) APPROVE:
+        - Update status = 'pending_payment'
+        - Update total_price (if custom)
+        - Send quote email with payment link
+        - Customer pays → becomes confirmed booking
+
+     B) DECLINE:
+        - Update status = 'declined'
+        - Send polite email explaining why
+        - Suggest alternative dates/tours
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 4: SUPPLIER ASSIGNMENT WORKFLOW                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+CRITICAL QUESTION: When do suppliers get assigned?
+
+PROPOSED LOGIC:
+───────────────────────────────────────────────────────────────────────────────
+Trigger: When booking status changes to 'confirmed'
+
+Auto-Assignment Rules:
+1. Check tour requirements (needs driver? guide? both?)
+2. Query suppliers available for date range
+3. Filter by:
+   ✓ Supplier type (driver/guide/accommodation)
+   ✓ Availability calendar (not already assigned)
+   ✓ Preferred suppliers (star rating/past performance)
+
+4. IF suppliers available:
+   → Auto-assign
+   → Update supplier_requests table
+   → Send notification to suppliers
+   → Status: 'assigned'
+
+5. IF no suppliers available:
+   → Mark for manual assignment
+   → Alert admin
+   → Status: 'pending_supplier_assignment'
+
+ALTERNATIVE: Always manual assignment by admin
+
+DECISION NEEDED: Auto, Manual, or Hybrid?
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 5: STATUS LIFECYCLE                                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+BOOKING STATUS STATES:
+───────────────────────────────────────────────────────────────────────────────
+1. draft           → Customer started form but didn't submit
+2. inquiry         → Request to Book submitted (awaiting admin review)
+3. pending_payment → Payment link sent (awaiting payment)
+4. confirmed       → Payment received + spot secured
+5. in_progress     → Tour is currently happening
+6. completed       → Tour finished (trigger review request)
+7. cancelled       → Customer or admin cancelled
+8. declined        → Admin declined inquiry
+
+PAYMENT STATUS STATES:
+───────────────────────────────────────────────────────────────────────────────
+1. pending         → No payment received yet
+2. deposit_paid    → 30% deposit received
+3. paid_in_full    → 100% paid
+4. partially_refunded → Some money returned
+5. fully_refunded  → Complete refund processed
+6. failed          → Payment attempt failed
+
+================================================================================
+4. CRITICAL DECISIONS NEEDED
+================================================================================
+
+☐ DECISION 1: Tour Type
+  [ ] Fixed departures (group tours with set dates)
+  [ ] Open dates (private tours, any date)
+  [ ] Both (some tours fixed, some private)
+
+☐ DECISION 2: Availability Tracking
+  [ ] Track at tour level (simple but risky)
+  [ ] Track at departure level (recommended)
+  [ ] Track with supplier integration (advanced)
+
+☐ DECISION 3: Payment Gateway
+  [ ] Stripe (recommended - easy integration)
+  [ ] PayPal
+  [ ] Bank transfer (manual confirmation)
+  [ ] Multiple options
+
+☐ DECISION 4: Supplier Assignment
+  [ ] Automatic (requires supplier availability system)
+  [ ] Manual (admin assigns after confirmation)
+  [ ] Hybrid (auto-suggest, admin confirms)
+
+☐ DECISION 5: Minimum Booking Window
+  [ ] How many days before tour date can customer book?
+  [ ] Example: "Must book at least 3 days in advance"
+
+☐ DECISION 6: Cancellation Policy
+  [ ] Free cancellation until X days before
+  [ ] Partial refund based on timing
+  [ ] No refunds
+
+================================================================================
+5. DATABASE SCHEMA IMPLICATIONS
+================================================================================
+
+TABLES NEEDED:
+───────────────────────────────────────────────────────────────────────────────
+
+1. tours (existing)
+   - Current schema adequate
+
+2. tour_departures (NEW - if fixed departures approach)
+   ├─ id
+   ├─ tour_id
+   ├─ start_date
+   ├─ end_date
+   ├─ max_pax
+   ├─ booked_pax
+   ├─ min_pax
+   ├─ price_override (nullable - if different from base tour price)
+   ├─ status (open/confirmed/full/cancelled)
+   ├─ created_at
+   └─ updated_at
+
+3. bookings (existing - needs fields added)
+   CURRENT FIELDS:
+   ├─ id
+   ├─ reference
+   ├─ customer_id
+   ├─ tour_id
+   ├─ start_date
+   ├─ end_date
+   ├─ pax_total
+   ├─ status
+   ├─ currency
+   ├─ total_price
+   └─ notes
+
+   MISSING FIELDS TO ADD:
+   ├─ departure_id (if using departures table)
+   ├─ payment_method (deposit/full/request)
+   ├─ payment_status (pending/deposit_paid/paid_in_full/etc)
+   ├─ amount_paid
+   ├─ amount_remaining
+   ├─ discount_applied
+   ├─ customer_name
+   ├─ customer_email
+   ├─ customer_phone
+   ├─ customer_country
+   ├─ special_requests (text)
+   ├─ inquiry_notes (text)
+   ├─ terms_agreed_at (timestamp)
+   └─ balance_due_date (date)
+
+4. booking_travelers (NEW - optional)
+   ├─ id
+   ├─ booking_id
+   ├─ name
+   ├─ age
+   ├─ passport_number
+   ├─ nationality
+   ├─ dietary_requirements
+   └─ special_needs
+
+   Purpose: Track individual travelers in a group booking
+
+5. supplier_assignments (possibly exists?)
+   ├─ id
+   ├─ booking_id
+   ├─ supplier_id
+   ├─ type (driver/guide/accommodation)
+   ├─ status (pending/confirmed/declined)
+   ├─ assigned_at
+   └─ confirmed_at
+
+6. payments (NEW - transaction log)
+   ├─ id
+   ├─ booking_id
+   ├─ amount
+   ├─ payment_method (stripe/paypal/bank_transfer)
+   ├─ status (pending/completed/failed/refunded)
+   ├─ transaction_id (from payment gateway)
+   ├─ gateway_response (json)
+   ├─ payment_type (deposit/balance/full)
+   ├─ processed_at
+   ├─ created_at
+   └─ updated_at
+
+   Purpose: Audit trail for all payment transactions
+
+================================================================================
+6. RECOMMENDATIONS (Based on Best Practices)
+================================================================================
+
+1. ✅ Start with Fixed Departures
+   - Easier to manage inventory
+   - Clear availability display
+   - Can add private tours later
+
+2. ✅ Departure-level availability
+   - Prevents overbooking
+   - More professional
+   - Better customer experience
+
+3. ✅ Stripe for payments
+   - Best developer experience
+   - Excellent documentation
+   - Secure and reliable
+   - Supports webhooks for automation
+
+4. ✅ Manual supplier assignment initially
+   - Simpler to implement
+   - More control for admin
+   - Can automate later as business grows
+
+5. ✅ Separate payments table
+   - Better audit trail
+   - Track payment history
+   - Handle refunds properly
+   - Support multiple payments per booking
+
+6. ✅ Email notifications at every status change
+   - Transparency builds trust
+   - Reduces support questions
+   - Professional communication
+
+7. ✅ Admin dashboard to manage inquiries
+   - Filament panel already exists
+   - Easy to add booking management
+   - Real-time status tracking
+
+================================================================================
+7. IMPLEMENTATION PHASES (Once Decisions Made)
+================================================================================
+
+PHASE 1: Database & Models (Week 1)
+───────────────────────────────────────────────────────────────────────────────
+☐ Create/update migrations
+☐ Update Booking model
+☐ Create Departure model (if needed)
+☐ Create Payment model
+☐ Set up relationships
+☐ Run migrations
+
+PHASE 2: Availability System (Week 1-2)
+───────────────────────────────────────────────────────────────────────────────
+☐ Admin interface to create departures
+☐ Calendar availability endpoint
+☐ Availability checking logic
+☐ Spot reservation system
+
+PHASE 3: Booking Form Backend (Week 2-3)
+───────────────────────────────────────────────────────────────────────────────
+☐ Create blade view (convert HTML)
+☐ Form validation
+☐ Booking creation logic
+☐ Payment method workflows
+☐ Email notifications setup
+
+PHASE 4: Payment Integration (Week 3-4)
+───────────────────────────────────────────────────────────────────────────────
+☐ Stripe/PayPal setup
+☐ Payment link generation
+☐ Webhook handlers
+☐ Status updates on payment
+☐ Refund handling
+
+PHASE 5: Admin Features (Week 4-5)
+───────────────────────────────────────────────────────────────────────────────
+☐ Filament booking resource
+☐ Inquiry management
+☐ Manual payment confirmation
+☐ Supplier assignment interface
+
+PHASE 6: Testing & Polish (Week 5-6)
+───────────────────────────────────────────────────────────────────────────────
+☐ End-to-end testing
+☐ Email template design
+☐ Error handling
+☐ Security audit
+☐ Performance optimization
+
+================================================================================
+8. QUESTIONS FOR CLIENT
+================================================================================
+
+ANSWER THESE TO PROCEED WITH IMPLEMENTATION:
+
+1. What type of tours do you primarily offer?
+   [ ] Group tours with fixed departure dates
+   [ ] Private tours with flexible dates
+   [ ] Both
+
+2. Do departures have fixed dates or can customers pick any date?
+   Answer: _________________________________________________________________
+
+3. Payment gateway preference?
+   [ ] Stripe
+   [ ] PayPal
+   [ ] Bank transfer only
+   [ ] Multiple options
+
+4. Supplier assignment preference?
+   [ ] Automatic assignment
+   [ ] Manual assignment by admin
+   [ ] Hybrid (auto-suggest, admin confirms)
+
+5. Minimum booking window?
+   Answer: ____ days before tour start date
+
+6. Cancellation policy?
+   [ ] Free cancellation until ___ days before
+   [ ] Partial refund based on timing (specify percentages)
+   [ ] No refunds
+
+7. Are there any specific business rules or workflows I missed?
+   Answer: _________________________________________________________________
+   _________________________________________________________________________
+   _________________________________________________________________________
+
+8. Do you need to track individual travelers in group bookings?
+   (Names, passport numbers, dietary requirements, etc.)
+   [ ] Yes
+   [ ] No
+
+9. Payment timing for deposit bookings:
+   When is the remaining balance due?
+   [ ] ___ days before tour
+   [ ] On arrival
+   [ ] At tour end
+
+10. Special requirements:
+    Any unique features or integrations needed?
+    Answer: _________________________________________________________________
+    _________________________________________________________________________
+
+================================================================================
+END OF PLANNING DOCUMENT
+================================================================================
+
+Next Steps:
+1. Review this document
+2. Answer all questions in section 8
+3. We'll create detailed technical implementation plan
+4. Begin development
+
+================================================================================
