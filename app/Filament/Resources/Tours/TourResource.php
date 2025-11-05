@@ -8,6 +8,7 @@ use App\Filament\Resources\Tours\Pages\ListTours;
 use App\Filament\Resources\Tours\Pages\ViewTour;
 use App\Filament\Resources\Tours\RelationManagers\ItineraryItemsRelationManager;
 use App\Filament\Resources\Tours\RelationManagers\TourPreviewRelationManager;
+use App\Filament\Resources\Tours\RelationManagers\DeparturesRelationManager;
 use App\Filament\Resources\Tours\Schemas\TourForm;
 use App\Filament\Resources\Tours\Tables\ToursTable;
 use App\Models\Tour;
@@ -68,6 +69,7 @@ class TourResource extends Resource
     public static function getRelations(): array
     {
         return [
+            DeparturesRelationManager::class,
             ItineraryItemsRelationManager::class,
             TourPreviewRelationManager::class,
             RelationManagers\TourFaqsRelationManager::class,

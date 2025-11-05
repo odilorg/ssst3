@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -24,6 +25,9 @@ class Tour extends Model
         // Pricing
         'price_per_person',
         'currency',
+        'group_price_per_person',
+        'private_price_per_person',
+        'private_minimum_charge',
 
         // Capacity
         'max_guests',
@@ -55,6 +59,10 @@ class Tour extends Model
         'min_booking_hours',
         'has_hotel_pickup',
         'pickup_radius_km',
+        'booking_window_hours',
+        'balance_due_days',
+        'allow_last_minute_full_payment',
+        'requires_traveler_details',
 
         // Meeting Point
         'meeting_point_address',
@@ -73,6 +81,8 @@ class Tour extends Model
         'include_global_requirements' => 'boolean',
         'include_global_faqs' => 'boolean',
         'has_hotel_pickup' => 'boolean',
+        'allow_last_minute_full_payment' => 'boolean',
+        'requires_traveler_details' => 'boolean',
 
         // Integers
         'duration_days' => 'integer',
@@ -82,12 +92,17 @@ class Tour extends Model
         'min_booking_hours' => 'integer',
         'pickup_radius_km' => 'integer',
         'cancellation_hours' => 'integer',
+        'booking_window_hours' => 'integer',
+        'balance_due_days' => 'integer',
 
         // Decimals
         'price_per_person' => 'decimal:2',
         'rating' => 'decimal:2',
         'meeting_lat' => 'decimal:8',
         'meeting_lng' => 'decimal:8',
+        'group_price_per_person' => 'decimal:2',
+        'private_price_per_person' => 'decimal:2',
+        'private_minimum_charge' => 'decimal:2',
 
         // JSON Arrays
         'gallery_images' => 'array',
@@ -168,6 +183,35 @@ class Tour extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Get all departures for this tour
+     */
+    public function departures()
+    {
+        return $this->hasMany(TourDeparture::class);
+    }
+
+    /**
+     * Get upcoming departures only
+     */
+    public function upcomingDepartures()
+    {
+        return $this->departures()
+            ->where('start_date', '>=', now())
+            ->whereIn('status', ['open', 'guaranteed'])
+            ->orderBy('start_date');
+    }
+
+    /**
+     * Get available departures (using scope)
+     */
+    public function availableDepartures()
+    {
+        return $this->departures()
+            ->available()
+            ->orderBy('start_date');
     }
 
     /**
@@ -298,6 +342,58 @@ class Tour extends Model
             \Illuminate\Support\Facades\Cache::forget("related_categories.{$category->slug}");
             \Illuminate\Support\Facades\Cache::forget("category_data.{$category->slug}." . app()->getLocale());
         }
+    }
+
+    /**
+     * Check if tour supports group bookings
+     */
+    public function supportsGroupBookings(): bool
+    {
+        return in_array($this->tour_type, ['group_only', 'hybrid']);
+    }
+
+    /**
+     * Check if tour supports private bookings
+     */
+    public function supportsPrivateBookings(): bool
+    {
+        return in_array($this->tour_type, ['private_only', 'hybrid']);
+    }
+
+    /**
+     * Get price for booking type
+     */
+    public function getPriceForType(string $type): float
+    {
+        return $type === 'group'
+            ? (float) $this->group_price_per_person
+            : (float) $this->private_price_per_person;
+    }
+
+    /**
+     * Calculate total for private booking
+     */
+    public function calculatePrivateTotal(int $pax): float
+    {
+        $perPersonTotal = $this->private_price_per_person * $pax;
+        return max($perPersonTotal, $this->private_minimum_charge ?? 0);
+    }
+
+    /**
+     * Check if booking window allows booking for given date
+     */
+    public function isBookableForDate(Carbon $departureDate): bool
+    {
+        $hoursDifference = now()->diffInHours($departureDate, false);
+        return $hoursDifference >= ($this->booking_window_hours ?? 72);
+    }
+
+    /**
+     * Calculate balance due date for departure
+     */
+    public function calculateBalanceDueDate(Carbon $departureDate): Carbon
+    {
+        return $departureDate->copy()->subDays($this->balance_due_days ?? 3);
     }
 
     // ==========================================

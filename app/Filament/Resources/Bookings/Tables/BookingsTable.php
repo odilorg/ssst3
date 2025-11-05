@@ -49,24 +49,87 @@ class BookingsTable
                     ->label('Участников')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('departure.start_date')
+                    ->label('Дата отправления')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('booking_type')
+                    ->label('Тип')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'group' => 'Группа',
+                        'private' => 'Приватный',
+                        default => 'Н/Д',
+                    })
+                    ->colors([
+                        'primary' => 'group',
+                        'warning' => 'private',
+                        'gray' => fn ($state) => $state === null,
+                    ])
+                    ->toggleable(),
+                TextColumn::make('customer_name')
+                    ->label('Имя клиента')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('customer_email')
+                    ->label('Email')
+                    ->searchable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('payment_status')
+                    ->label('Статус оплаты')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'unpaid' => 'Не оплачено',
+                        'payment_pending' => 'Ожидание',
+                        'deposit_paid' => 'Депозит',
+                        'fully_paid' => 'Оплачено',
+                        default => 'Н/Д',
+                    })
+                    ->colors([
+                        'danger' => 'unpaid',
+                        'warning' => 'payment_pending',
+                        'info' => 'deposit_paid',
+                        'success' => 'fully_paid',
+                        'gray' => fn ($state) => $state === null,
+                    ])
+                    ->sortable(),
+                TextColumn::make('amount_paid')
+                    ->label('Оплачено')
+                    ->money('USD')
+                    ->sortable()
+                    ->toggleable(),
+                TextColumn::make('amount_remaining')
+                    ->label('Остаток')
+                    ->money('USD')
+                    ->sortable()
+                    ->color(fn ($record) => $record->isBalanceOverdue() ? 'danger' : null)
+                    ->toggleable(),
                 TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
+                        'inquiry' => 'info',
+                        'pending_payment' => 'warning',
                         'pending' => 'warning',
                         'confirmed' => 'success',
                         'in_progress' => 'info',
                         'completed' => 'primary',
                         'cancelled' => 'danger',
+                        'declined' => 'danger',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'draft' => 'Черновик',
+                        'inquiry' => 'Запрос',
+                        'pending_payment' => 'Ожидание оплаты',
                         'pending' => 'В ожидании',
                         'confirmed' => 'Подтверждено',
                         'in_progress' => 'В процессе',
                         'completed' => 'Завершено',
                         'cancelled' => 'Отменено',
+                        'declined' => 'Отклонено',
                     })
                     ->sortable(),
                 TextColumn::make('currency')

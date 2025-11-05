@@ -52,12 +52,13 @@ class TourForm
                         Select::make('tour_type')
                             ->label('Тип тура')
                             ->options([
-                                'private' => 'Private',
-                                'group' => 'Group',
-                                'shared' => 'Shared',
+                                'group_only' => 'Group Only (только группа)',
+                                'private_only' => 'Private Only (только приватный)',
+                                'hybrid' => 'Hybrid (оба типа)',
                             ])
                             ->required()
-                            ->default('private'),
+                            ->default('group_only')
+                            ->helperText('Тип доступных бронирований'),
 
                         Select::make('city_id')
                             ->label('Город')
@@ -113,17 +114,43 @@ class TourForm
                     ->description('Информация о ценах и количестве гостей')
                     ->schema([
                         TextInput::make('price_per_person')
-                            ->label('Цена за человека')
+                            ->label('Цена за человека (устаревшая)')
                             ->numeric()
-                            ->required()
                             ->minValue(0)
-                            ->prefix('$'),
+                            ->prefix('$')
+                            ->helperText('Используйте для обратной совместимости')
+                            ->columnSpan(1),
 
                         TextInput::make('currency')
                             ->label('Валюта')
                             ->required()
                             ->default('USD')
-                            ->maxLength(3),
+                            ->maxLength(3)
+                            ->columnSpan(1),
+
+                        TextInput::make('group_price_per_person')
+                            ->label('Цена группа (за человека)')
+                            ->numeric()
+                            ->prefix('$')
+                            ->required()
+                            ->minValue(0)
+                            ->helperText('Цена для групповых туров'),
+
+                        TextInput::make('private_price_per_person')
+                            ->label('Цена приватный (за человека)')
+                            ->numeric()
+                            ->prefix('$')
+                            ->required()
+                            ->minValue(0)
+                            ->helperText('Цена для приватных туров'),
+
+                        TextInput::make('private_minimum_charge')
+                            ->label('Минимальная плата (приватный)')
+                            ->numeric()
+                            ->prefix('$')
+                            ->minValue(0)
+                            ->helperText('Минимальная плата за приватный тур')
+                            ->columnSpan(2),
 
                         TextInput::make('max_guests')
                             ->label('Максимум гостей')
@@ -454,6 +481,30 @@ class TourForm
                             ->required()
                             ->default(24)
                             ->helperText('За сколько часов нужно бронировать'),
+
+                        TextInput::make('booking_window_hours')
+                            ->label('Окно бронирования (часы)')
+                            ->numeric()
+                            ->required()
+                            ->default(72)
+                            ->helperText('Минимум часов до отправления для бронирования'),
+
+                        TextInput::make('balance_due_days')
+                            ->label('Оплата баланса (дни до)')
+                            ->numeric()
+                            ->required()
+                            ->default(3)
+                            ->helperText('За сколько дней до отправления нужно оплатить баланс'),
+
+                        Toggle::make('allow_last_minute_full_payment')
+                            ->label('Разрешить бронирование в последнюю минуту')
+                            ->helperText('Разрешить бронирование внутри окна при полной оплате')
+                            ->default(false),
+
+                        Toggle::make('requires_traveler_details')
+                            ->label('Требуются данные путешественников')
+                            ->helperText('Собирать паспорт и личную информацию каждого пассажира')
+                            ->default(false),
 
                         Toggle::make('has_hotel_pickup')
                             ->label('Есть трансфер из отеля')
