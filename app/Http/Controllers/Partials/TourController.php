@@ -16,10 +16,12 @@ class TourController extends Controller
      * Query params:
      * - per_page: Number of tours per page (default: 12, min: 6, max: 50)
      * - page: Current page number (default: 1)
+     * - city: City ID to filter by (optional)
      * - append: If true, returns only cards without wrapper (for Load More)
      *
      * Usage:
      * - Initial load: GET /partials/tours?per_page=12
+     * - With city filter: GET /partials/tours?per_page=12&city=2
      * - Load more: GET /partials/tours?page=2&per_page=12&append=true
      */
     public function list(Request $request)
@@ -27,18 +29,25 @@ class TourController extends Controller
         // Get pagination parameters
         $perPage = $request->get('per_page', 12);
         $page = $request->get('page', 1);
+        $cityId = $request->get('city');
         $isAppend = $request->boolean('append', false);
 
         // Validate per_page (prevent abuse: min 6, max 50)
         $perPage = min(max($perPage, 6), 50);
 
-        // Cache key includes page and per_page for proper caching
-        $cacheKey = "tours.list.page.{$page}.per_page.{$perPage}";
+        // Cache key includes page, per_page, and city for proper caching
+        $cacheKey = "tours.list.page.{$page}.per_page.{$perPage}.city." . ($cityId ?? 'all');
 
-        $tours = Cache::remember($cacheKey, 3600, function () use ($perPage) {
-            return Tour::with(['city'])
-                ->where('is_active', true)
-                ->orderBy('created_at', 'desc') // Newest first
+        $tours = Cache::remember($cacheKey, 3600, function () use ($perPage, $cityId) {
+            $query = Tour::with(['city'])
+                ->where('is_active', true);
+
+            // Apply city filter if provided
+            if (!empty($cityId)) {
+                $query->where('city_id', $cityId);
+            }
+
+            return $query->orderBy('created_at', 'desc') // Newest first
                 ->paginate($perPage);
         });
 
@@ -188,7 +197,7 @@ class TourController extends Controller
     {
         $tour = $this->getCachedTour($slug);
         $globalRequirements = \App\Models\Setting::get('global_requirements', []);
-        
+
         return view('partials.tours.show.requirements', compact('tour', 'globalRequirements'));
     }
 

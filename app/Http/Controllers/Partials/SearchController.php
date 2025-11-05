@@ -15,6 +15,7 @@ class SearchController extends Controller
      * Query params:
      * - q: Search keyword (searches title, short_description, long_description)
      * - category: Category slug to filter by
+     * - city: City ID to filter by
      * - duration: Duration filter (1, 2-5, 6+, or empty for all)
      * - sort: Sort order (latest, price_low, price_high, rating, popular)
      * - per_page: Results per page (default: 12, min: 6, max: 50)
@@ -26,6 +27,7 @@ class SearchController extends Controller
         // Get parameters
         $keyword = $request->get('q');
         $categorySlug = $request->get('category');
+        $cityId = $request->get('city');
         $duration = $request->get('duration');
         $sortBy = $request->get('sort', 'latest');
         $perPage = $request->get('per_page', 12);
@@ -38,6 +40,11 @@ class SearchController extends Controller
         $query = Tour::query()
             ->with(['city'])
             ->where('is_active', true);
+
+        // Apply city filter
+        if (!empty($cityId)) {
+            $query->where('city_id', $cityId);
+        }
 
         // Apply category filter
         if (!empty($categorySlug)) {
