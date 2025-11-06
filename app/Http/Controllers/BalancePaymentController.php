@@ -97,6 +97,7 @@ class BalancePaymentController extends Controller
                 'currency' => $booking->currency ?? 'UZS',
                 'payment_method' => 'octo',
                 'status' => 'pending',
+                'payment_type' => 'balance',
                 'metadata' => json_encode([
                     'payment_type' => 'balance',
                     'token_used' => substr($token, 0, 10) . '...',
@@ -105,7 +106,44 @@ class BalancePaymentController extends Controller
                 ]),
             ]);
 
-            // Initialize OCTO payment
+            // Check if we're in test mode (local testing without OCTO)
+            $testMode = config('app.env') === 'local' && !config('services.octo.api_key');
+
+            if ($testMode) {
+                // TEST MODE: Simulate payment without calling OCTO
+                $testTransactionId = 'TEST-' . time() . '-' . rand(1000, 9999);
+
+                $payment->update([
+                    'transaction_id' => $testTransactionId,
+                    'octo_payment_url' => route('balance-payment.callback', [
+                        'token' => $token,
+                        'test_mode' => 1,
+                        'transaction_id' => $testTransactionId
+                    ]),
+                ]);
+
+                DB::commit();
+
+                Log::info('Balance payment initialized (TEST MODE)', [
+                    'booking_id' => $booking->id,
+                    'payment_id' => $payment->id,
+                    'transaction_id' => $testTransactionId,
+                    'test_mode' => true,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'payment_url' => route('balance-payment.callback', [
+                        'token' => $token,
+                        'test_mode' => 1,
+                        'transaction_id' => $testTransactionId
+                    ]),
+                    'test_mode' => true,
+                    'message' => 'Test mode: Payment will be automatically completed',
+                ]);
+            }
+
+            // PRODUCTION MODE: Initialize OCTO payment
             $octoResponse = $this->octoService->createPayment([
                 'amount' => $booking->amount_remaining,
                 'currency' => $booking->currency ?? 'UZS',
@@ -160,10 +198,13 @@ class BalancePaymentController extends Controller
      */
     public function callback(Request $request, string $token)
     {
+        $testMode = $request->get('test_mode') == 1;
+
         Log::info('Payment callback received', [
             'token_prefix' => substr($token, 0, 10) . '...',
             'status' => $request->get('status'),
             'transaction_id' => $request->get('transaction_id'),
+            'test_mode' => $testMode,
         ]);
 
         // Validate token
@@ -176,8 +217,41 @@ class BalancePaymentController extends Controller
             return view('balance-payment.expired');
         }
 
-        // Verify payment status with OCTO
         $transactionId = $request->get('transaction_id');
+
+        if ($testMode) {
+            // TEST MODE: Auto-complete the payment
+            $payment = Payment::where('booking_id', $booking->id)
+                ->where('transaction_id', $transactionId)
+                ->first();
+
+            if ($payment) {
+                $payment->update([
+                    'status' => 'completed',
+                    'processed_at' => now(),
+                ]);
+
+                Log::info('Test payment auto-completed', [
+                    'payment_id' => $payment->id,
+                    'booking_id' => $booking->id,
+                ]);
+            }
+
+            // Mark token as used
+            $this->tokenService->markTokenAsUsed(
+                $token,
+                $request->ip(),
+                $request->userAgent()
+            );
+
+            return view('balance-payment.success', [
+                'booking' => $booking->fresh(),
+                'transaction_id' => $transactionId,
+                'test_mode' => true,
+            ]);
+        }
+
+        // PRODUCTION MODE: Verify payment status with OCTO
         $paymentStatus = $this->octoService->verifyPayment($transactionId);
 
         if ($paymentStatus['success'] && $paymentStatus['status'] === 'completed') {

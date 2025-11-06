@@ -15,6 +15,13 @@
                 </svg>
             </div>
             <h1 class="text-2xl font-bold text-gray-900 mb-4">Payment Successful!</h1>
+            @if(isset($test_mode) && $test_mode)
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                    <p class="text-sm text-yellow-800 font-semibold">
+                        🧪 TEST MODE - Payment simulated for local testing
+                    </p>
+                </div>
+            @endif
             <p class="text-gray-600 mb-6">
                 Your payment has been processed successfully. Your booking is now confirmed.
             </p>
