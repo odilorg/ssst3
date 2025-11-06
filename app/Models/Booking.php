@@ -112,6 +112,7 @@ class Booking extends Model
     {
         return $this->payments()->where('status', 'completed');
     }
+public function paymentTokens()    {        return $this->hasMany(PaymentToken::class);    }    public function hasValidPaymentToken(): bool    {        return $this->paymentTokens()            ->where('expires_at', '>', now())            ->whereNull('used_at')            ->exists();    }
 
     public function travelers()
     {
