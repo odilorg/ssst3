@@ -76,27 +76,41 @@ class SendBalancePaymentReminder implements ShouldQueue
         $token = $tokenService->generateBalancePaymentToken($this->booking, $expiryDays);
 
         // Build payment URL
-        // TODO: This route will be created in Day 3 - Tokenized Payment Flow
-        // $paymentUrl = route('balance-payment.show', ['token' => $token]);
-        $paymentUrl = url('/balance-payment/' . $token); // Placeholder until route is created
+        $paymentUrl = route('balance-payment.show', ['token' => $token]);
 
         \Log::info('Payment token generated for reminder', [
             'booking_id' => $this->booking->id,
             'days_before_tour' => $this->daysBeforeTour,
-            'token_expiry_days' => max($this->daysBeforeTour + 2, 7),
+            'token_expiry_days' => $expiryDays,
             'payment_url' => $paymentUrl,
         ]);
 
-        // TODO: Send email with payment link (Day 4 - Email Templates)
-        // This is a placeholder - actual email sending will be implemented in Day 4
-        \Log::info('Email sending placeholder - will be implemented in Day 4', [
-            'booking_id' => $this->booking->id,
-            'customer_email' => $this->booking->customer_email,
-            'payment_url' => $paymentUrl,
-            'balance_due' => $this->booking->amount_remaining,
-        ]);
+        // Send balance payment reminder email
+        try {
+            \Mail::to($this->booking->customer_email)
+                ->send(new \App\Mail\BalancePaymentReminder(
+                    $this->booking,
+                    $paymentUrl,
+                    $this->daysBeforeTour
+                ));
 
-        // For now, just log success
+            \Log::info('Balance payment reminder email sent', [
+                'booking_id' => $this->booking->id,
+                'customer_email' => $this->booking->customer_email,
+                'days_before_tour' => $this->daysBeforeTour,
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to send balance payment reminder email', [
+                'booking_id' => $this->booking->id,
+                'customer_email' => $this->booking->customer_email,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Don't fail the job if email sending fails
+            // Token is already generated and logged
+        }
+
         \Log::info('Balance payment reminder processed successfully', [
             'booking_id' => $this->booking->id,
             'days_before_tour' => $this->daysBeforeTour,

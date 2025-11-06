@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Booking;
 use App\Models\ItineraryItem;
+use App\Models\Payment;
 use App\Models\Tour;
 use App\Models\TourExtra;
 use App\Models\TourFaq;
@@ -11,6 +12,7 @@ use App\Models\Transport;
 use App\Models\TransportInstancePrice;
 use App\Observers\BookingObserver;
 use App\Observers\ItineraryItemObserver;
+use App\Observers\PaymentObserver;
 use App\Observers\TourExtraObserver;
 use App\Observers\TourFaqObserver;
 use App\Observers\TourObserver;
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register observers
         Booking::observe(BookingObserver::class);
+        Payment::observe(PaymentObserver::class);
         Transport::observe(TransportObserver::class);
         TransportInstancePrice::observe(TransportInstancePriceObserver::class);
         Tour::observe(TourObserver::class);
