@@ -85,7 +85,7 @@ class PaymentObserver
         $booking->update([
             'amount_paid' => $totalPaid,
             'amount_remaining' => max(0, $booking->total_price - $totalPaid),
-            'payment_status' => $totalPaid >= $booking->total_price ? 'paid_in_full' : 'deposit_paid',
+            'payment_status' => $totalPaid >= $booking->total_price ? 'fully_paid' : 'deposit_paid',
             'paid_at' => $totalPaid >= $booking->total_price ? now() : null,
         ]);
 
