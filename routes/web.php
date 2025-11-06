@@ -960,3 +960,16 @@ Route::get('/destinations/{slug}', function ($slug) {
 
     return response($html)->header('Content-Type', 'text/html');
 })->name('city.show');
+
+// Balance Payment Routes (Tokenized)
+Route::get('/balance-payment/{token}', [App\Http\Controllers\BalancePaymentController::class, 'show'])
+    ->name('balance-payment.show');
+
+Route::post('/balance-payment/{token}/process', [App\Http\Controllers\BalancePaymentController::class, 'process'])
+    ->name('balance-payment.process');
+
+Route::get('/balance-payment/{token}/callback', [App\Http\Controllers\BalancePaymentController::class, 'callback'])
+    ->name('balance-payment.callback');
+
+Route::post('/balance-payment/webhook', [App\Http\Controllers\BalancePaymentController::class, 'webhook'])
+    ->name('balance-payment.webhook');

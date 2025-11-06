@@ -274,15 +274,130 @@ class OctoPaymentService
     }
 
     /**
-     * Verify OCTO webhook signature
+     * Create a payment (wrapper for balance payments)
      *
-     * @param array $payload
-     * @param string $signature
-     * @return bool
+     * @param array $data
+     * @return array
      */
-    public function verifyWebhookSignature(array $payload, string $signature): bool
+    public function createPayment(array $data): array
     {
         try {
+            $amount = $data['amount'];
+            $currency = $data['currency'] ?? 'UZS';
+
+            // Convert USD to UZS if needed
+            if ($currency === 'USD') {
+                $amount = $amount * 12500;
+            }
+
+            $payload = [
+                'merchant_id' => $this->merchantId,
+                'amount' => (int) round($amount * 100), // Amount in tiyin
+                'currency' => 'UZS',
+                'order_id' => $data['order_id'],
+                'description' => $data['description'],
+                'return_url' => $data['return_url'],
+                'cancel_url' => $data['return_url'] . '?status=cancelled',
+                'webhook_url' => route('balance-payment.webhook'),
+                'customer' => [
+                    'name' => $data['customer_name'],
+                    'email' => $data['customer_email'],
+                ],
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->post($this->baseUrl . '/payments/create', $payload);
+
+            $responseData = $response->json();
+
+            if (!$response->successful()) {
+                return [
+                    'success' => false,
+                    'message' => $responseData['message'] ?? 'Payment initialization failed',
+                ];
+            }
+
+            return [
+                'success' => true,
+                'payment_url' => $responseData['payment_url'] ?? null,
+                'transaction_id' => $responseData['transaction_id'] ?? null,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Create payment failed', ['error' => $e->getMessage()]);
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Verify payment by transaction ID
+     *
+     * @param string $transactionId
+     * @return array
+     */
+    public function verifyPayment(string $transactionId): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Accept' => 'application/json',
+            ])->get($this->baseUrl . '/payments/' . $transactionId);
+
+            $responseData = $response->json();
+
+            if (!$response->successful()) {
+                return [
+                    'success' => false,
+                    'status' => 'failed',
+                    'message' => $responseData['message'] ?? 'Verification failed',
+                ];
+            }
+
+            return [
+                'success' => true,
+                'status' => $responseData['status'] ?? 'pending',
+                'data' => $responseData,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Verify payment failed', ['error' => $e->getMessage()]);
+
+            return [
+                'success' => false,
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Verify OCTO webhook signature (overloaded for Request)
+     *
+     * @param \Illuminate\Http\Request|array $payload
+     * @param string|null $signature
+     * @return bool
+     */
+    public function verifyWebhookSignature($payload, ?string $signature = null): bool
+    {
+        try {
+            // Handle Request object
+            if ($payload instanceof \Illuminate\Http\Request) {
+                $signature = $payload->header('X-Octo-Signature') ?? $payload->get('signature');
+                $payload = $payload->all();
+            }
+
+            if (!$signature) {
+                Log::warning('No signature provided for webhook verification');
+                return false;
+            }
+
             // Sort payload keys alphabetically
             ksort($payload);
 
