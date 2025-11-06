@@ -981,3 +981,10 @@ Route::middleware(['throttle:100,1'])->group(function () {
     Route::post('/balance-payment/webhook', [App\Http\Controllers\BalancePaymentController::class, 'webhook'])
         ->name('balance-payment.webhook');
 });
+
+// Frontend Testing Routes (For local testing only - remove or protect in production)
+Route::get('/test/payment', [App\Http\Controllers\TestPaymentController::class, 'index'])
+    ->name('test.payment.index');
+
+Route::post('/api/test/generate-payment-token', [App\Http\Controllers\TestPaymentController::class, 'generateToken'])
+    ->name('test.payment.generate-token');
