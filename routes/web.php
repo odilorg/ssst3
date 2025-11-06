@@ -961,15 +961,23 @@ Route::get('/destinations/{slug}', function ($slug) {
     return response($html)->header('Content-Type', 'text/html');
 })->name('city.show');
 
-// Balance Payment Routes (Tokenized)
-Route::get('/balance-payment/{token}', [App\Http\Controllers\BalancePaymentController::class, 'show'])
-    ->name('balance-payment.show');
+// Balance Payment Routes (Tokenized) - With Rate Limiting
+Route::middleware(['throttle:60,1'])->group(function () {
+    Route::get('/balance-payment/{token}', [App\Http\Controllers\BalancePaymentController::class, 'show'])
+        ->name('balance-payment.show');
 
-Route::post('/balance-payment/{token}/process', [App\Http\Controllers\BalancePaymentController::class, 'process'])
-    ->name('balance-payment.process');
+    Route::get('/balance-payment/{token}/callback', [App\Http\Controllers\BalancePaymentController::class, 'callback'])
+        ->name('balance-payment.callback');
+});
 
-Route::get('/balance-payment/{token}/callback', [App\Http\Controllers\BalancePaymentController::class, 'callback'])
-    ->name('balance-payment.callback');
+// Stricter rate limiting for payment processing
+Route::middleware(['throttle:10,1'])->group(function () {
+    Route::post('/balance-payment/{token}/process', [App\Http\Controllers\BalancePaymentController::class, 'process'])
+        ->name('balance-payment.process');
+});
 
-Route::post('/balance-payment/webhook', [App\Http\Controllers\BalancePaymentController::class, 'webhook'])
-    ->name('balance-payment.webhook');
+// Webhook with higher rate limit (OCTO can send multiple webhooks)
+Route::middleware(['throttle:100,1'])->group(function () {
+    Route::post('/balance-payment/webhook', [App\Http\Controllers\BalancePaymentController::class, 'webhook'])
+        ->name('balance-payment.webhook');
+});
