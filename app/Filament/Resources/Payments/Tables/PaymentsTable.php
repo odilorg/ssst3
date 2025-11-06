@@ -171,6 +171,78 @@ class PaymentsTable
                     ]))
                     ->modalWidth('2xl'),
 
+                Tables\Actions\Action::make('mark_completed')
+                    ->label('Завершить')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Подтвердить завершение платежа')
+                    ->modalDescription('Вы уверены, что хотите пометить этот платеж как завершенный? Это обновит бронирование и отправит email подтверждения.')
+                    ->modalSubmitActionLabel('Да, завершить')
+                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->action(function ($record) {
+                        $record->update([
+                            'status' => 'completed',
+                            'processed_at' => now(),
+                        ]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Платеж завершен')
+                            ->body('Платеж #' . $record->id . ' успешно завершен.')
+                            ->success()
+                            ->send();
+
+                        \Log::info('Payment manually marked as completed by admin', [
+                            'payment_id' => $record->id,
+                            'booking_id' => $record->booking_id,
+                            'admin_id' => auth()->id(),
+                        ]);
+                    }),
+
+                Tables\Actions\Action::make('mark_failed')
+                    ->label('Отклонить')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->form([
+                        \Filament\Forms\Components\Textarea::make('failure_reason')
+                            ->label('Причина отклонения')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->modalHeading('Отклонить платеж')
+                    ->modalDescription('Укажите причину отклонения платежа.')
+                    ->modalSubmitActionLabel('Да, отклонить')
+                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->action(function ($record, array $data) {
+                        $record->update([
+                            'status' => 'failed',
+                            'processed_at' => now(),
+                            'gateway_response' => array_merge(
+                                $record->gateway_response ?? [],
+                                [
+                                    'manual_failure' => true,
+                                    'failure_reason' => $data['failure_reason'],
+                                    'failed_by_admin' => auth()->id(),
+                                    'failed_at' => now()->toIso8601String(),
+                                ]
+                            ),
+                        ]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Платеж отклонен')
+                            ->body('Платеж #' . $record->id . ' отклонен.')
+                            ->danger()
+                            ->send();
+
+                        \Log::warning('Payment manually marked as failed by admin', [
+                            'payment_id' => $record->id,
+                            'booking_id' => $record->booking_id,
+                            'reason' => $data['failure_reason'],
+                            'admin_id' => auth()->id(),
+                        ]);
+                    }),
+
                 Tables\Actions\Action::make('view_booking')
                     ->label('Посмотреть бронирование')
                     ->icon('heroicon-o-calendar')
