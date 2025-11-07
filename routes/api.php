@@ -23,3 +23,10 @@ Route::get('/tours/{slug}', function ($slug) {
         'title' => $tour->title
     ]);
 })->name('api.tours.show');
+
+// Get CSRF token
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+});

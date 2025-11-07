@@ -686,6 +686,7 @@
             <!-- Booking Form -->
             <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
               <!-- Hidden fields -->
+              <input type="hidden" name="_token" id="csrf-token" value="">
               <input type="hidden" name="tour_id" id="tour-id" value="">
 
               <!-- Date Picker -->
@@ -1229,6 +1230,18 @@
       const tourDateField = document.getElementById('tour-date');
       const tourGuestsField = document.getElementById('tour-guests');
       const tourIdField = document.getElementById('tour-id');
+      const csrfTokenField = document.getElementById('csrf-token');
+
+      // Fetch CSRF token and populate field
+      fetch('http://127.0.0.1:8000/csrf-token')
+        .then(response => response.json())
+        .then(data => {
+          if (data.token && csrfTokenField) {
+            csrfTokenField.value = data.token;
+            console.log('[Booking] CSRF token loaded');
+          }
+        })
+        .catch(error => console.error('[Booking] Error loading CSRF token:', error));
 
       // Extract tour slug from URL and fetch tour ID
       const pathParts = window.location.pathname.split('/').filter(Boolean);

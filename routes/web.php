@@ -5,6 +5,11 @@ use App\Models\Booking;
 use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 
+// CSRF Token endpoint for frontend
+Route::get('/csrf-token', function () {
+    return response()->json(['token' => csrf_token()]);
+});
+
 Route::get('/', function () {
     // Get homepage categories from database
     $categories = \App\Models\TourCategory::getHomepageCategories();
