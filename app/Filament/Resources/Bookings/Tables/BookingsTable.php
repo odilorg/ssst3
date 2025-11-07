@@ -9,6 +9,7 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Schemas\Components\View;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Models\Guide;
 use App\Models\Restaurant;
@@ -27,28 +28,48 @@ class BookingsTable
                 TextColumn::make('reference')
                     ->label('Номер бронирования')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold')
+                    ->icon('heroicon-o-ticket')
+                    ->copyable()
+                    ->copyMessage('Номер скопирован')
+                    ->copyMessageDuration(1500),
+
                 TextColumn::make('customer.name')
                     ->label('Клиент')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->icon('heroicon-o-user'),
+
                 TextColumn::make('tour.title')
                     ->label('Тур')
                     ->searchable()
                     ->sortable()
+                    ->icon('heroicon-o-map')
                     ->limit(30),
+
                 TextColumn::make('start_date')
                     ->label('Дата начала')
-                    ->date()
-                    ->sortable(),
+                    ->date('d.m.Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar'),
+
                 TextColumn::make('end_date')
                     ->label('Дата окончания')
-                    ->date()
-                    ->sortable(),
+                    ->date('d.m.Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar')
+                    ->toggleable(),
+
                 TextColumn::make('pax_total')
                     ->label('Участников')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('warning')
+                    ->icon('heroicon-o-users')
+                    ->formatStateUsing(fn ($state) => $state . ' чел.'),
+
                 TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
@@ -69,26 +90,62 @@ class BookingsTable
                         'cancelled' => 'Отменено',
                     })
                     ->sortable(),
-                TextColumn::make('currency')
-                    ->label('Валюта')
-                    ->searchable(),
+
                 TextColumn::make('total_price')
                     ->label('Стоимость')
                     ->money('USD')
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('success')
+                    ->icon('heroicon-o-currency-dollar'),
+
+                TextColumn::make('currency')
+                    ->label('Валюта')
+                    ->badge()
+                    ->color('info')
+                    ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->label('Создано')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
                     ->label('Обновлено')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Статус')
+                    ->options([
+                        'draft' => 'Черновик',
+                        'pending' => 'В ожидании',
+                        'confirmed' => 'Подтверждено',
+                        'in_progress' => 'В процессе',
+                        'completed' => 'Завершено',
+                        'cancelled' => 'Отменено',
+                    ])
+                    ->multiple()
+                    ->indicator('Статус'),
+
+                SelectFilter::make('customer_id')
+                    ->label('Клиент')
+                    ->relationship('customer', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->indicator('Клиент'),
+
+                SelectFilter::make('tour_id')
+                    ->label('Тур')
+                    ->relationship('tour', 'title')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->indicator('Тур'),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -200,6 +257,7 @@ class BookingsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 }

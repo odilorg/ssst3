@@ -17,15 +17,23 @@ class ContractsTable
         return $table
             ->columns([
                 TextColumn::make('contract_number')
-                    ->label('Contract Number')
+                    ->label('Номер договора')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold')
+                    ->icon('heroicon-o-document-text')
+                    ->copyable()
+                    ->copyMessage('Номер скопирован')
+                    ->copyMessageDuration(1500),
+
                 TextColumn::make('title')
-                    ->label('Title')
+                    ->label('Название')
                     ->searchable()
+                    ->icon('heroicon-o-pencil-square')
                     ->limit(30),
+
                 TextColumn::make('supplier.name')
-                    ->label('Supplier')
+                    ->label('Поставщик')
                     ->searchable()
                     ->sortable()
                     ->badge()
@@ -38,68 +46,105 @@ class ContractsTable
                     ->formatStateUsing(fn ($record) =>
                         $record->supplier?->name . ' (' .
                         match($record->supplier_type) {
-                            'App\Models\Company' => 'Company',
-                            'App\Models\Guide' => 'Guide',
-                            'App\Models\Driver' => 'Driver',
-                            default => 'Unknown'
+                            'App\Models\Company' => 'Компания',
+                            'App\Models\Guide' => 'Гид',
+                            'App\Models\Driver' => 'Водитель',
+                            default => 'Неизвестно'
                         } . ')'
                     ),
-                TextColumn::make('start_date')
-                    ->label('Start Date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('end_date')
-                    ->label('End Date')
-                    ->date()
-                    ->sortable(),
+
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label('Статус')
                     ->badge()
+                    ->sortable()
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
                         'active' => 'success',
                         'expired' => 'warning',
                         'terminated' => 'danger',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'draft' => 'Черновик',
+                        'active' => 'Активный',
+                        'expired' => 'Истёк',
+                        'terminated' => 'Расторгнут',
+                        default => $state,
                     }),
+
+                TextColumn::make('start_date')
+                    ->label('Дата начала')
+                    ->date('d.m.Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar'),
+
+                TextColumn::make('end_date')
+                    ->label('Дата окончания')
+                    ->date('d.m.Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar')
+                    ->color(fn ($record) => $record->end_date && $record->end_date->isPast() ? 'danger' : null),
+
                 TextColumn::make('days_remaining')
-                    ->label('Days Remaining')
+                    ->label('Осталось дней')
                     ->getStateUsing(function ($record) {
                         if ($record->status === 'active' && $record->end_date >= now()) {
-                            return $record->end_date->diffInDays(now()) . ' days';
+                            $days = $record->end_date->diffInDays(now());
+                            return $days . ' дн.';
                         }
                         return '—';
                     })
-                    ->color(fn ($state) => str_contains($state, 'days') && (int) $state < 30 ? 'warning' : null),
-                TextColumn::make('signed_by')
-                    ->label('Signed By')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge()
+                    ->color(fn ($state) => {
+                        if ($state === '—') return 'gray';
+                        $days = (int) $state;
+                        if ($days < 30) return 'danger';
+                        if ($days < 90) return 'warning';
+                        return 'success';
+                    }),
+
                 TextColumn::make('contractServices_count')
                     ->counts('contractServices')
-                    ->label('Services')
+                    ->label('Услуги')
                     ->badge()
-                    ->color('info'),
+                    ->icon('heroicon-o-squares-2x2')
+                    ->color('info')
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state > 0 ? $state : '—'),
+
+                TextColumn::make('signed_by')
+                    ->label('Подписант')
+                    ->searchable()
+                    ->icon('heroicon-o-user-circle')
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
-                    ->label('Created')
-                    ->dateTime()
+                    ->label('Создано')
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')
+                    ->label('Статус')
                     ->options([
-                        'draft' => 'Draft',
-                        'active' => 'Active',
-                        'expired' => 'Expired',
-                        'terminated' => 'Terminated',
-                    ]),
+                        'draft' => 'Черновик',
+                        'active' => 'Активный',
+                        'expired' => 'Истёк',
+                        'terminated' => 'Расторгнут',
+                    ])
+                    ->multiple()
+                    ->indicator('Статус'),
+
                 SelectFilter::make('supplier_type')
-                    ->label('Supplier Type')
+                    ->label('Тип поставщика')
                     ->options([
-                        'App\Models\Company' => 'Company',
-                        'App\Models\Guide' => 'Individual Guide',
-                        'App\Models\Driver' => 'Individual Driver',
-                    ]),
+                        'App\Models\Company' => 'Компания',
+                        'App\Models\Guide' => 'Гид',
+                        'App\Models\Driver' => 'Водитель',
+                    ])
+                    ->multiple()
+                    ->indicator('Тип поставщика'),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -110,6 +155,7 @@ class ContractsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->striped();
     }
 }
