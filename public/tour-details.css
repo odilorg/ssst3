@@ -1903,9 +1903,11 @@
   /* Sidebar becomes sticky - positioned below sticky tabs to avoid overlap */
   .booking-sidebar {
     position: sticky;
-    top: 220px; /* Below header (88px) + sticky tabs (~50px) + gap (82px) */
+    top: 100px; /* Reduced from 220px for better accessibility */
     align-self: flex-start;
     z-index: 30; /* Above section navigation (z-index: 10) */
+    max-height: calc(100vh - 120px); /* Leave 120px space (top offset + buffer) */
+    overflow-y: auto; /* Allow scrolling when content is tall */
   }
 
   /* Hero gallery responsive */
@@ -2449,9 +2451,33 @@
 /* Booking Card - Reference Style */
 .booking-sidebar {
   position: sticky;
-  top: 220px; /* Below header (88px) + sticky tabs (~50px) + gap (82px) */
+  top: 100px; /* Reduced from 220px for better accessibility */
   align-self: flex-start;
   z-index: 30; /* Above section navigation (z-index: 10) */
+  max-height: calc(100vh - 120px); /* Leave 120px space (top offset + buffer) */
+  overflow-y: auto; /* Allow scrolling when content is tall */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  scrollbar-width: thin; /* Firefox: thin scrollbar */
+  scrollbar-color: #D1D1D1 #F5F5F5; /* Firefox: thumb and track colors */
+}
+
+/* Custom scrollbar for webkit browsers */
+.booking-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.booking-sidebar::-webkit-scrollbar-track {
+  background: #F5F5F5;
+  border-radius: 4px;
+}
+
+.booking-sidebar::-webkit-scrollbar-thumb {
+  background: #D1D1D1;
+  border-radius: 4px;
+}
+
+.booking-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #B1B1B1;
 }
 
 .booking-card {
