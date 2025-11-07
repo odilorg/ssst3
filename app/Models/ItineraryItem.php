@@ -19,18 +19,29 @@ class ItineraryItem extends Model
         'default_start_time',
         'duration_minutes',
         'meta',
+        'day_number',
+        'city_id',
+        'meals',
+        'accommodation',
+        'transport',
     ];
 
     protected $casts = [
         'meta' => 'array',
         'sort_order' => 'integer',
         'duration_minutes' => 'integer',
+        'day_number' => 'integer',
     ];
 
     // Relationships
     public function tour()
     {
         return $this->belongsTo(Tour::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function parent()
