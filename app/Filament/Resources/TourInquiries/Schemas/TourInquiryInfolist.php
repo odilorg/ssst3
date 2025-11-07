@@ -72,7 +72,7 @@ class TourInquiryInfolist
                                 TextEntry::make('tour.title')
                                     ->label('Tour')
                                     ->columnSpan(3)
-                                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', $record->tour) : null)
+                                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.edit', $record->tour) : null)
                                     ->openUrlInNewTab(),
 
                                 TextEntry::make('preferred_date')

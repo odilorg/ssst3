@@ -23,6 +23,11 @@ class TourInquiryResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Tours & Bookings';
+    }
+
     public static function infolist(Schema $schema): Schema
     {
         return TourInquiryInfolist::configure($schema);
@@ -46,11 +51,6 @@ class TourInquiryResource extends Resource
             'index' => ListTourInquiries::route('/'),
             'view' => ViewTourInquiry::route('/{record}'),
         ];
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return 'Tours';
     }
 
     public static function getNavigationLabel(): string

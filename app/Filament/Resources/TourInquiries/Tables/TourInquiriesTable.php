@@ -40,7 +40,7 @@ class TourInquiriesTable
                     ->sortable()
                     ->limit(40)
                     ->tooltip(fn ($record) => $record->tour?->title)
-                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.tours.edit', $record->tour) : null)
+                    ->url(fn ($record) => $record->tour ? route('filament.admin.resources.tours.edit', $record->tour) : null)
                     ->openUrlInNewTab(),
 
                 TextColumn::make('message')

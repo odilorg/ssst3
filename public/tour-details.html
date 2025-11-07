@@ -1365,8 +1365,18 @@
               bookingBtn.classList.remove('active');
               inquiryBtn.classList.remove('active');
             } else {
-              // Show error message
-              alert('Error: ' + (data.message || 'Please check your form and try again.'));
+              // Show error message with validation errors if available
+              let errorMessage = data.message || 'Please check your form and try again.';
+
+              if (data.errors) {
+                errorMessage += '\n\nValidation errors:\n';
+                Object.keys(data.errors).forEach(field => {
+                  errorMessage += '- ' + field + ': ' + data.errors[field].join(', ') + '\n';
+                });
+              }
+
+              alert('Error: ' + errorMessage);
+              console.error('[Booking] Validation errors:', data.errors);
             }
           })
           .catch(error => {

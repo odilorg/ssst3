@@ -91,6 +91,7 @@ class BookingController extends Controller
                     'name' => $request->customer_name,
                     'phone' => $request->customer_phone,
                     'country' => $request->customer_country,
+                    'address' => '', // Default empty address
                 ]
             );
 
@@ -109,7 +110,7 @@ class BookingController extends Controller
                 'price_per_person' => $pricePerPerson,
                 'total_amount' => $totalAmount,
                 'special_requests' => $request->special_requests,
-                'status' => 'pending_confirmation',
+                'status' => 'pending',
             ]);
 
             DB::commit();
