@@ -155,6 +155,23 @@
 
     /* Loading State */
     @media (prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+
+    /* Booking Actions - Two-Button Choice */
+    .booking-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+    .action-btn{display:flex;align-items:center;gap:0.75rem;padding:1rem;border:2px solid #E3E3E3;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;min-height:80px;text-align:left;width:100%}
+    .action-btn:hover{border-color:#0D4C92;transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,76,146,0.15)}
+    .action-btn:active{transform:translateY(0)}
+    .action-btn.active{border-color:#0D4C92;background:#F0F7FF;box-shadow:0 0 0 3px rgba(13,76,146,0.1)}
+    .action-btn i{font-size:1.5rem;color:#0D4C92;flex-shrink:0}
+    .action-btn--booking i{color:#4CAF50}
+    .action-btn--inquiry i{color:#FF9800}
+    .action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
+    .action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
+    .action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
+    @media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
+
+    /* Form Section Visibility */
+    #message-section{margin-top:1rem}
   </style>
 
   <!-- Tour details stylesheet - guaranteed load -->
@@ -667,7 +684,9 @@
             </div>
 
             <!-- Booking Form -->
-            <form class="booking-form" id="booking-form" data-form-type="booking">
+            <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
+              <!-- Hidden fields -->
+              <input type="hidden" name="tour_id" id="tour-id" value="">
 
               <!-- Date Picker -->
               <div class="form-group">
@@ -718,10 +737,22 @@
                 <span id="guests-error" class="form-error" role="alert"></span>
               </div>
 
-              <!-- Action Button -->
-              <div class="form-actions">
-                <button type="button" class="btn btn--primary btn--block" id="check-availability">
-                  Check Availability
+              <!-- Action Buttons: Book or Inquire -->
+              <div class="booking-actions">
+                <button type="button" class="action-btn action-btn--booking" data-action="booking">
+                  <i class="fas fa-calendar-check"></i>
+                  <div class="action-btn__content">
+                    <span class="action-btn__title">Book This Tour</span>
+                    <span class="action-btn__subtitle">Confirm your dates & guests</span>
+                  </div>
+                </button>
+
+                <button type="button" class="action-btn action-btn--inquiry" data-action="inquiry">
+                  <i class="fas fa-question-circle"></i>
+                  <div class="action-btn__content">
+                    <span class="action-btn__title">Ask a Question</span>
+                    <span class="action-btn__subtitle">Get personalized information</span>
+                  </div>
                 </button>
               </div>
 
@@ -780,57 +811,21 @@
                   </div>
                 </div>
 
-                <!-- Payment Methods -->
-                <div class="form-section">
-                  <div class="payment-methods">
-                    <h3 class="payment-methods__title">Choose Booking Method</h3>
+                <!-- Hidden field to track action type -->
+                <input type="hidden" name="action_type" id="action-type" value="booking">
 
-                    <div class="payment-cards">
-                      <!-- Deposit (30%) -->
-                      <div class="payment-card">
-                        <input type="radio" name="payment_method" value="deposit" id="payment-deposit">
-                        <div class="payment-card__content">
-                          <div class="payment-card__left">
-                            <div class="payment-card__header">
-                              <h4 class="payment-card__title">Pay Deposit</h4>
-                              <span class="payment-card__badge payment-card__badge--deposit">30% NOW</span>
-                            </div>
-                            <p class="payment-card__description">Pay 30% now, rest before tour. Instant confirmation.</p>
-                          </div>
-                          <div class="payment-card__right"></div>
-                        </div>
-                      </div>
-
-                      <!-- Full Payment (10% discount) -->
-                      <div class="payment-card">
-                        <input type="radio" name="payment_method" value="full_payment" id="payment-full">
-                        <div class="payment-card__content">
-                          <div class="payment-card__left">
-                            <div class="payment-card__header">
-                              <h4 class="payment-card__title">Pay Full Amount</h4>
-                              <span class="payment-card__badge">SAVE 10%</span>
-                            </div>
-                            <p class="payment-card__description">Get 10% discount. Pay everything now, nothing later.</p>
-                          </div>
-                          <div class="payment-card__right"></div>
-                        </div>
-                      </div>
-
-                      <!-- Request to Book (Default) -->
-                      <div class="payment-card">
-                        <input type="radio" name="payment_method" value="request" id="payment-request" checked>
-                        <div class="payment-card__content">
-                          <div class="payment-card__left">
-                            <div class="payment-card__header">
-                              <h4 class="payment-card__title">Request to Book</h4>
-                              <span class="payment-card__badge payment-card__badge--free">FREE</span>
-                            </div>
-                            <p class="payment-card__description">No payment now. Confirmation within 24 hours.</p>
-                          </div>
-                          <div class="payment-card__right"></div>
-                        </div>
-                      </div>
-                    </div>
+                <!-- Message Field (Required for Inquiry, Optional for Booking) -->
+                <div class="form-section" id="message-section" style="display: none;">
+                  <div class="form-group">
+                    <label for="inquiry-message" class="form-label">
+                      Your Message <span class="required" id="message-required">*</span>
+                    </label>
+                    <textarea id="inquiry-message"
+                              name="message"
+                              class="form-input"
+                              rows="4"
+                              placeholder="Please tell us about your questions or any specific requirements..."></textarea>
+                    <span class="form-hint">Let us know what information you need about this tour</span>
                   </div>
                 </div>
 
@@ -865,8 +860,8 @@
 
                 <!-- Submit Button -->
                 <div class="form-actions">
-                  <button type="submit" class="btn--submit btn--block">
-                    <span class="btn__text">Send Booking Request</span>
+                  <button type="submit" class="btn--submit btn--block" id="submit-button">
+                    <span class="btn__text" id="submit-text">Send Booking Request</span>
                     <span class="spinner"></span>
                   </button>
                 </div>
@@ -1217,5 +1212,168 @@
           }
         }
       });
+    });
+  </script>
+
+  <!-- Booking Action Buttons Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bookingBtn = document.querySelector('[data-action="booking"]');
+      const inquiryBtn = document.querySelector('[data-action="inquiry"]');
+      const bookingForm = document.getElementById('booking-form');
+      const step2Form = document.getElementById('step-2-full-form');
+      const actionTypeField = document.getElementById('action-type');
+      const messageSection = document.getElementById('message-section');
+      const messageField = document.getElementById('inquiry-message');
+      const submitText = document.getElementById('submit-text');
+      const tourDateField = document.getElementById('tour-date');
+      const tourGuestsField = document.getElementById('tour-guests');
+      const tourIdField = document.getElementById('tour-id');
+
+      // Extract tour slug from URL and fetch tour ID
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      if (pathParts[0] === 'tours' && pathParts[1]) {
+        const tourSlug = pathParts[1];
+        console.log('[Booking] Tour slug:', tourSlug);
+
+        // Fetch tour ID from backend
+        fetch('http://127.0.0.1:8000/api/tours/' + tourSlug)
+          .then(response => response.json())
+          .then(data => {
+            if (data.id && tourIdField) {
+              tourIdField.value = data.id;
+              console.log('[Booking] Tour ID set:', data.id);
+            }
+          })
+          .catch(error => console.error('[Booking] Error fetching tour ID:', error));
+      }
+
+      // Handle booking button click
+      if (bookingBtn) {
+        bookingBtn.addEventListener('click', function() {
+          // Set action type
+          if (actionTypeField) actionTypeField.value = 'booking';
+
+          // Update button states
+          bookingBtn.classList.add('active');
+          inquiryBtn.classList.remove('active');
+
+          // Make date & guests required for booking
+          if (tourDateField) tourDateField.required = true;
+          if (tourGuestsField) tourGuestsField.required = true;
+
+          // Hide message section (optional for booking)
+          if (messageSection) messageSection.style.display = 'none';
+          if (messageField) messageField.required = false;
+
+          // Update submit button text
+          if (submitText) submitText.textContent = 'Send Booking Request';
+
+          // Show step 2 form
+          if (step2Form) {
+            step2Form.style.display = 'block';
+            // Scroll to form
+            step2Form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Focus first input
+            const firstInput = step2Form.querySelector('input[type="text"], input[type="email"]');
+            if (firstInput) setTimeout(() => firstInput.focus(), 300);
+          }
+
+          console.log('[Booking] Action: booking');
+        });
+      }
+
+      // Handle inquiry button click
+      if (inquiryBtn) {
+        inquiryBtn.addEventListener('click', function() {
+          // Set action type
+          if (actionTypeField) actionTypeField.value = 'inquiry';
+
+          // Update button states
+          inquiryBtn.classList.add('active');
+          bookingBtn.classList.remove('active');
+
+          // Make date & guests optional for inquiry
+          if (tourDateField) tourDateField.required = false;
+          if (tourGuestsField) tourGuestsField.required = false;
+
+          // Show message section (required for inquiry)
+          if (messageSection) messageSection.style.display = 'block';
+          if (messageField) messageField.required = true;
+
+          // Update submit button text
+          if (submitText) submitText.textContent = 'Send Inquiry';
+
+          // Show step 2 form
+          if (step2Form) {
+            step2Form.style.display = 'block';
+            // Scroll to form
+            step2Form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Focus first input
+            const firstInput = step2Form.querySelector('input[type="text"], input[type="email"]');
+            if (firstInput) setTimeout(() => firstInput.focus(), 300);
+          }
+
+          console.log('[Booking] Action: inquiry');
+        });
+      }
+
+      // Handle form submission
+      if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          const submitButton = document.getElementById('submit-button');
+          const formData = new FormData(bookingForm);
+
+          // Disable submit button
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.classList.add('loading');
+          }
+
+          // Send AJAX request
+          fetch(bookingForm.action, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Show success message
+              alert('Success! ' + data.message + '\n\nReference: ' + (data.booking?.reference || data.inquiry?.reference));
+              // Reset form
+              bookingForm.reset();
+              step2Form.style.display = 'none';
+              bookingBtn.classList.remove('active');
+              inquiryBtn.classList.remove('active');
+            } else {
+              // Show error message
+              alert('Error: ' + (data.message || 'Please check your form and try again.'));
+            }
+          })
+          .catch(error => {
+            console.error('[Booking] Submission error:', error);
+            alert('An error occurred. Please try again.');
+          })
+          .finally(() => {
+            // Re-enable submit button
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.classList.remove('loading');
+            }
+          });
+        });
+      }
+
+      // Update form field names to match backend expectations
+      if (tourDateField) tourDateField.name = 'start_date';
+      if (tourGuestsField) tourGuestsField.name = 'number_of_guests';
+
+      console.log('[Booking] Action buttons initialized');
     });
   </script>

@@ -211,6 +211,14 @@ class Tour extends Model
     }
 
     /**
+     * Get all inquiries for this tour
+     */
+    public function inquiries()
+    {
+        return $this->hasMany(TourInquiry::class);
+    }
+
+    /**
      * Get all categories this tour belongs to
      */
     public function categories()

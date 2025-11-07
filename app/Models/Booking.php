@@ -90,6 +90,11 @@ class Booking extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function inquiry()
+    {
+        return $this->hasOne(TourInquiry::class);
+    }
+
     // Business Logic Methods
     public function generateReference()
     {
