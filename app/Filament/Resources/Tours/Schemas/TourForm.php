@@ -54,7 +54,7 @@ class TourForm
                             ->options([
                                 'private' => 'Private',
                                 'group' => 'Group',
-                                'shared' => 'Shared',
+                                'day_trip' => 'Day Trip',
                             ])
                             ->required()
                             ->default('private'),
@@ -119,11 +119,17 @@ class TourForm
                             ->minValue(0)
                             ->prefix('$'),
 
-                        TextInput::make('currency')
+                        Select::make('currency')
                             ->label('Валюта')
+                            ->options([
+                                'USD' => 'US Dollar ($)',
+                                'EUR' => 'Euro (€)',
+                                'UZS' => 'Uzbek Som (сўм)',
+                                'RUB' => 'Russian Ruble (₽)',
+                            ])
                             ->required()
                             ->default('USD')
-                            ->maxLength(3),
+                            ->searchable(),
 
                         TextInput::make('max_guests')
                             ->label('Максимум гостей')
@@ -136,7 +142,9 @@ class TourForm
                             ->numeric()
                             ->required()
                             ->default(1)
-                            ->minValue(1),
+                            ->minValue(1)
+                            ->lte('max_guests')
+                            ->helperText('Должно быть меньше или равно максимуму'),
                     ])
                     ->columns(4),
 
@@ -302,6 +310,21 @@ class TourForm
                             ->label('Пункты маршрута')
                             ->relationship('itineraryItems')
                             ->schema([
+                                TextInput::make('day_number')
+                                    ->label('День №')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(1)
+                                    ->default(1)
+                                    ->helperText('День тура (1, 2, 3...)'),
+
+                                Select::make('city_id')
+                                    ->label('Город')
+                                    ->relationship('city', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Город где проходит активность'),
+
                                 TextInput::make('title')
                                     ->label('Название пункта')
                                     ->required()
@@ -314,6 +337,24 @@ class TourForm
                                     ->rows(4)
                                     ->placeholder('Visit the magnificent Registan Square...')
                                     ->columnSpanFull(),
+
+                                TextInput::make('meals')
+                                    ->label('Питание')
+                                    ->maxLength(255)
+                                    ->placeholder('Breakfast, Lunch')
+                                    ->helperText('Какие приемы пищи включены'),
+
+                                TextInput::make('accommodation')
+                                    ->label('Размещение')
+                                    ->maxLength(255)
+                                    ->placeholder('Hotel in Samarkand')
+                                    ->helperText('Где остановка на ночь'),
+
+                                TextInput::make('transport')
+                                    ->label('Транспорт')
+                                    ->maxLength(255)
+                                    ->placeholder('High-speed train')
+                                    ->helperText('Вид транспорта для этого дня'),
 
                                 TextInput::make('default_start_time')
                                     ->label('Время начала')
@@ -435,12 +476,18 @@ class TourForm
                         TextInput::make('meeting_lat')
                             ->label('Широта')
                             ->numeric()
-                            ->helperText('Например: 39.6542'),
+                            ->minValue(-90)
+                            ->maxValue(90)
+                            ->step(0.000001)
+                            ->helperText('Например: 39.6542 (диапазон: -90 до 90)'),
 
                         TextInput::make('meeting_lng')
                             ->label('Долгота')
                             ->numeric()
-                            ->helperText('Например: 66.9597'),
+                            ->minValue(-180)
+                            ->maxValue(180)
+                            ->step(0.000001)
+                            ->helperText('Например: 66.9597 (диапазон: -180 до 180)'),
                     ])
                     ->columns(2)
                     ->collapsible(),
@@ -480,6 +527,30 @@ class TourForm
                     ])
                     ->columns(2)
                     ->collapsible(),
+
+                Section::make('SEO (Поисковая оптимизация)')
+                    ->description('Настройки для поисковых систем и социальных сетей')
+                    ->schema([
+                        TextInput::make('meta_title')
+                            ->label('Meta заголовок')
+                            ->maxLength(60)
+                            ->helperText('Рекомендовано: 50-60 символов. Оставьте пустым для использования названия тура')
+                            ->columnSpanFull(),
+
+                        Textarea::make('meta_description')
+                            ->label('Meta описание')
+                            ->maxLength(160)
+                            ->rows(3)
+                            ->helperText('Рекомендовано: 150-160 символов. Оставьте пустым для использования краткого описания')
+                            ->columnSpanFull(),
+
+                        TagsInput::make('meta_keywords')
+                            ->label('Ключевые слова')
+                            ->helperText('Нажмите Enter после каждого ключевого слова')
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 }

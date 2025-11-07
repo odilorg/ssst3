@@ -65,6 +65,11 @@ class Tour extends Model
         // Cancellation
         'cancellation_hours',
         'cancellation_policy',
+
+        // SEO
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [
@@ -96,6 +101,7 @@ class Tour extends Model
         'excluded_items' => 'array',
         'languages' => 'array',
         'requirements' => 'array',
+        'meta_keywords' => 'array',
     ];
 
     /**
