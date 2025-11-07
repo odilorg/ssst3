@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Drivers\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -168,7 +169,7 @@ class DriversTable
                 Filter::make('license_expiry_status')
                     ->label('Статус ВУ')
                     ->form([
-                        SelectFilter::make('status')
+                        Select::make('status')
                             ->options([
                                 'expired' => '⚠️ Истекшие',
                                 'expiring_soon' => '⚡ Истекают < 30 дней',
