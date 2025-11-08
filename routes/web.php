@@ -885,6 +885,10 @@ Route::prefix('partials')->name('partials.')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])
         ->name('bookings.store');
 
+    // Simple inquiry submission (3 fields only: name, email, message)
+    Route::post('/inquiries', [BookingController::class, 'store'])
+        ->name('inquiries.store');
+
     // -------- BLOG POST SECTIONS --------
     Route::get('/blog/{slug}/hero', [BlogController::class, 'hero'])
         ->name('blog.hero');
