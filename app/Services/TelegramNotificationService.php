@@ -97,6 +97,37 @@ class TelegramNotificationService
     }
 
     /**
+     * Send contact form notification to admin
+     */
+    public function sendContactNotification($contact)
+    {
+        $message = $this->formatContactMessage($contact);
+        return $this->sendMessage($message);
+    }
+
+    /**
+     * Format contact form message for Telegram
+     */
+    protected function formatContactMessage($contact)
+    {
+        $message = "📧 *NEW CONTACT FORM SUBMISSION*\n\n";
+        $message .= "📋 *Reference:* `{$contact->reference}`\n";
+        $message .= "👤 *Name:* {$contact->name}\n";
+        $message .= "📧 *Email:* {$contact->email}\n";
+
+        if ($contact->phone) {
+            $message .= "📞 *Phone:* {$contact->phone}\n";
+        }
+
+        $message .= "\n💬 *Message:*\n_{$contact->message}_\n";
+
+        $adminUrl = config('app.url') . '/admin/contacts/' . $contact->id;
+        $message .= "\n[View in Admin Panel]({$adminUrl})";
+
+        return $message;
+    }
+
+    /**
      * Send message to Telegram
      */
     protected function sendMessage($message)

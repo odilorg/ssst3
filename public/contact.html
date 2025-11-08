@@ -207,80 +207,75 @@
                         </div>
                     </div>
 
-                    <form class="contact-form" id="contactForm" novalidate>
-                        <!-- First Row: First Name & Last Name -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName" class="form-label">First name <span class="required">*</span></label>
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
-                                    class="form-input"
-                                    placeholder="First name"
-                                    required
-                                    aria-required="true"
-                                    aria-describedby="firstName-error"
-                                >
-                                <span class="form-error" id="firstName-error" role="alert"></span>
-                            </div>
+                                        <form class="contact-form" id="contactForm">
+                        <!-- Hidden CSRF Token -->
+                        <input type="hidden" id="csrf-token" name="_token" value="">
 
-                            <div class="form-group">
-                                <label for="lastName" class="form-label">Last name <span class="required">*</span></label>
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
-                                    class="form-input"
-                                    placeholder="Last name"
-                                    required
-                                    aria-required="true"
-                                    aria-describedby="lastName-error"
-                                >
-                                <span class="form-error" id="lastName-error" role="alert"></span>
-                            </div>
+                        <!-- Name Field -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                Your Name <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="form-input"
+                                placeholder="e.g., John Smith"
+                                required
+                                aria-required="true"
+                                aria-describedby="name-error"
+                            >
+                            <span class="form-error" id="name-error" role="alert"></span>
                         </div>
 
-                        <!-- Second Row: Email & Phone -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email" class="form-label">Email <span class="required">*</span></label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    class="form-input"
-                                    placeholder="Email"
-                                    required
-                                    aria-required="true"
-                                    aria-describedby="email-error"
-                                >
-                                <span class="form-error" id="email-error" role="alert"></span>
-                            </div>
+                        <!-- Email Field -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                Email Address <span class="required">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-input"
+                                placeholder="you@example.com"
+                                required
+                                inputmode="email"
+                                aria-required="true"
+                                aria-describedby="email-error"
+                            >
+                            <span class="form-error" id="email-error" role="alert"></span>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input
-                                    type="tel"
-                                    id="phone"
-                                    name="phone"
-                                    class="form-input"
-                                    placeholder="Phone"
-                                    aria-describedby="phone-error"
-                                >
-                                <span class="form-error" id="phone-error" role="alert"></span>
-                            </div>
+                        <!-- Phone Field (Optional) -->
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                Phone <span class="optional">(optional)</span>
+                            </label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                class="form-input"
+                                placeholder="+998 90 123 4567"
+                                inputmode="tel"
+                                aria-describedby="phone-error"
+                            >
+                            <span class="form-error" id="phone-error" role="alert"></span>
                         </div>
 
                         <!-- Message Field -->
                         <div class="form-group">
-                            <label for="message" class="form-label">Message <span class="required">*</span></label>
+                            <label for="message" class="form-label">
+                                Your Message <span class="required">*</span>
+                            </label>
                             <textarea
                                 id="message"
                                 name="message"
-                                class="form-textarea"
-                                placeholder="Your message here..."
-                                rows="6"
+                                class="form-input form-textarea"
+                                rows="4"
+                                placeholder="Tell us about your travel plans..."
                                 required
                                 aria-required="true"
                                 aria-describedby="message-error"
@@ -288,44 +283,30 @@
                             <span class="form-error" id="message-error" role="alert"></span>
                         </div>
 
-                        <!-- Newsletter Checkbox -->
-                        <div class="form-group form-group--checkbox">
-                            <label class="form-checkbox">
-                                <input
-                                    type="checkbox"
-                                    id="newsletter"
-                                    name="newsletter"
-                                    class="form-checkbox__input"
-                                >
-                                <span class="form-checkbox__checkmark"></span>
-                                <span class="form-checkbox__label">
-                                    I want to get the latest updates, exclusive offers, and valuable insights in a
-                                    monthly newsletter from Jahongir Travel. You can always unsubscribe at any time
-                                    by clicking a link in the newsletter.
-                                </span>
-                            </label>
-                        </div>
-
                         <!-- Submit Button -->
                         <button type="submit" class="btn btn--primary btn--large form-submit">
-                            Send Message
+                            <span class="button-text">Send Message</span>
+                            <i class="fas fa-arrow-right button-icon"></i>
                         </button>
 
-                        <!-- Form Status Live Region -->
-                        <div id="form-status" aria-live="polite" class="visually-hidden"></div>
-
-                        <!-- Success Message -->
-                        <div class="form-success" id="formSuccess" role="status" aria-live="polite">
-                            <i class="fas fa-check-circle"></i>
-                            <p>Thank you! Your message has been sent successfully. We'll get back to you soon.</p>
-                        </div>
-
-                        <!-- Error Message -->
-                        <div class="form-error-message" id="formError" role="alert" aria-live="assertive">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <p>Oops! Something went wrong. Please check the form and try again.</p>
-                        </div>
+                        <!-- Trust Signal -->
+                        <p class="form-trust-signal">
+                            <i class="fas fa-lock"></i> Your information is secure & private
+                        </p>
                     </form>
+
+                    <!-- Alternative Contact Methods -->
+                    <div class="alternative-contact">
+                        <p class="alt-contact-title">Need immediate help?</p>
+                        <div class="alt-contact-methods">
+                            <a href="https://wa.me/998915550808" class="alt-contact-link" target="_blank" rel="noopener">
+                                <i class="fab fa-whatsapp"></i> WhatsApp: +998 91 555 0808
+                            </a>
+                            <a href="mailto:info@jahongirtravel.com" class="alt-contact-link">
+                                <i class="fas fa-envelope"></i> info@jahongirtravel.com
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Testimonial Card -->
                     <div class="contact-card contact-card--testimonial animate-on-scroll">
@@ -720,5 +701,226 @@
     <!-- JavaScript -->
     <script src="/js/main.js" defer></script>
     <script src="/contact.js"></script>
+
+
+<script>
+// ========================================
+// AUTO-EXPANDING TEXTAREA
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const messageTextarea = document.getElementById('message');
+    if (messageTextarea) {
+        messageTextarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+});
+
+// ========================================
+// CONTACT FORM SUBMISSION
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+
+    const submitButton = contactForm.querySelector('.form-submit');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonIcon = submitButton.querySelector('.button-icon');
+
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // 1. DISABLE BUTTON & SHOW LOADING
+        submitButton.disabled = true;
+        buttonText.textContent = 'Sending...';
+        buttonIcon.className = 'fas fa-spinner fa-spin button-icon';
+
+        // 2. CLEAR PREVIOUS ERRORS
+        document.querySelectorAll('.form-error').forEach(error => {
+            error.textContent = '';
+        });
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.classList.remove('form-input--error');
+        });
+
+        // 3. GET FORM DATA
+        const formData = new FormData(contactForm);
+
+        // 4. GET CSRF TOKEN
+        let csrfToken = document.getElementById('csrf-token')?.value;
+        if (!csrfToken) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/csrf-token');
+                const data = await response.json();
+                csrfToken = data.token;
+                document.getElementById('csrf-token').value = csrfToken;
+            } catch (error) {
+                console.error('Failed to get CSRF token:', error);
+            }
+        }
+        formData.append('_token', csrfToken);
+
+        // 5. SUBMIT TO BACKEND
+        try {
+            const response = await fetch('http://127.0.0.1:8000/contact', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // SUCCESS
+                showContactSuccessModal(result.contact);
+                contactForm.reset();
+                const messageTextarea = document.getElementById('message');
+                if (messageTextarea) {
+                    messageTextarea.style.height = 'auto';
+                }
+            } else {
+                // VALIDATION ERRORS
+                if (result.errors) {
+                    Object.keys(result.errors).forEach(field => {
+                        const errorElement = document.getElementById(field + '-error');
+                        const inputElement = document.getElementById(field);
+
+                        if (errorElement) {
+                            errorElement.textContent = result.errors[field][0];
+                        }
+                        if (inputElement) {
+                            inputElement.classList.add('form-input--error');
+                        }
+                    });
+
+                    const firstError = document.querySelector('.form-input--error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                }
+
+                showErrorNotification(result.message || 'Please fix the errors and try again.');
+            }
+        } catch (error) {
+            console.error('Contact form error:', error);
+            showErrorNotification('An error occurred. Please try again or contact us via WhatsApp.');
+        } finally {
+            // 6. RE-ENABLE BUTTON
+            submitButton.disabled = false;
+            buttonText.textContent = 'Send Message';
+            buttonIcon.className = 'fas fa-arrow-right button-icon';
+        }
+    });
+});
+
+// ========================================
+// MODAL FUNCTIONS
+// ========================================
+function showContactSuccessModal(contact) {
+    const modal = document.getElementById('contactSuccessModal');
+    document.getElementById('modal-contact-name').textContent = contact.name;
+    document.getElementById('modal-contact-reference').textContent = contact.reference;
+    document.getElementById('modal-contact-email').textContent = contact.email;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeContactModal() {
+    const modal = document.getElementById('contactSuccessModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close on outside click
+document.getElementById('contactSuccessModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeContactModal();
+    }
+});
+
+// Close on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeContactModal();
+    }
+});
+
+function showErrorNotification(message) {
+    alert(message);
+}
+</script>
+
+<!-- Contact Success Modal -->
+<div id="contactSuccessModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container modal-container--medium">
+        <!-- Success Icon -->
+        <div class="modal-header">
+            <div class="success-icon success-icon--large">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="38" stroke="#10B981" stroke-width="4"/>
+                    <path d="M25 40L35 50L55 30" stroke="#10B981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <h2 class="modal-title">Message Sent Successfully!</h2>
+            <p class="modal-subtitle">We'll get back to you soon</p>
+
+            <button class="modal-close" onclick="closeContactModal()" aria-label="Close modal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Thank You Message -->
+            <div class="success-message">
+                <p class="success-greeting">Thank you, <strong id="modal-contact-name"></strong>!</p>
+            </div>
+
+            <!-- Reference Number -->
+            <div class="confirmation-reference">
+                <span class="reference-label">Reference Number</span>
+                <span class="reference-number" id="modal-contact-reference">CON-2025-XXXX</span>
+            </div>
+
+            <!-- Email Confirmation -->
+            <div class="booking-summary">
+                <h3>We've sent a confirmation to:</h3>
+                <p class="contact-email" id="modal-contact-email">customer@example.com</p>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>What happens next:</h3>
+                <ol>
+                    <li>✓ We'll review your message carefully</li>
+                    <li>✓ You'll get a personalized reply within <strong>24 hours</strong></li>
+                    <li>✓ Check your inbox (and spam folder just in case)</li>
+                </ol>
+            </div>
+
+            <!-- Urgent Help -->
+            <div class="modal-alternative-contact">
+                <p class="modal-alt-title">Need faster help?</p>
+                <a href="https://wa.me/998915550808" class="btn btn--success" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Us
+                </a>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <button class="btn btn--primary btn--large" onclick="closeContactModal()">
+                Got it!
+            </button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

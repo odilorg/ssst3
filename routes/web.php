@@ -496,6 +496,10 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show']
     ->name('blog.show')
     ->where('slug', '[a-z0-9-]+');
 
+// Contact form submission
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])
+    ->name('contact.store');
+
 // Blog comments
 Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])
     ->name('comments.store');
