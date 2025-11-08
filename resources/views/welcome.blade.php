@@ -273,5 +273,15 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+        <!-- WhatsApp Floating Button -->
+        <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+           class="whatsapp-float"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Chat with us on WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+            <span class="whatsapp-float__tooltip">Chat with us!</span>
+        </a>
+
     </body>
 </html>
