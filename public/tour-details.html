@@ -1899,6 +1899,13 @@
             if (data.id && tourIdField) {
               tourIdField.value = data.id;
               console.log('[Booking] Tour ID set:', data.id);
+
+              // Also set inquiry form tour ID
+              const inquiryTourIdField = document.getElementById('inquiry-tour-id');
+              if (inquiryTourIdField) {
+                inquiryTourIdField.value = data.id;
+                console.log('[Inquiry] Tour ID pre-populated:', data.id);
+              }
             }
           })
           .catch(error => console.error('[Booking] Error fetching tour ID:', error));
@@ -1967,10 +1974,23 @@
             simpleInquiryForm.style.display = 'block';
 
             // Set tour ID in inquiry form
-            const tourId = document.getElementById('tour-id').value;
+            const tourIdField = document.getElementById('tour-id');
+            const tourId = tourIdField ? tourIdField.value : null;
             const inquiryTourId = document.getElementById('inquiry-tour-id');
+
             if (inquiryTourId) {
-              inquiryTourId.value = tourId;
+              if (tourId) {
+                inquiryTourId.value = tourId;
+                console.log('[Inquiry] Tour ID set:', tourId);
+              } else {
+                console.error('[Inquiry] Tour ID not found in hidden field');
+                // Try to get from booking form tour_id
+                const bookingTourId = document.getElementById('tour-id');
+                if (bookingTourId && bookingTourId.value) {
+                  inquiryTourId.value = bookingTourId.value;
+                  console.log('[Inquiry] Tour ID copied from booking form:', bookingTourId.value);
+                }
+              }
             }
 
             // Scroll to inquiry form
