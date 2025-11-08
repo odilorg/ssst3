@@ -910,7 +910,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   }
 
   .tours .container {
-    padding-inline: 0.5rem;
+    padding-inline: 0.25rem;
   }
 
   .tours__grid {
