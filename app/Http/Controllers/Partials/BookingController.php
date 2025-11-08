@@ -164,15 +164,25 @@ class BookingController extends Controller
                 ]);
             }
 
+            // Refresh to get latest data with relationships
+            $booking->load(['tour', 'customer']);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Booking request submitted successfully!',
                 'booking' => [
+                    'id' => $booking->id,
                     'reference' => $booking->reference,
-                    'tour_title' => $tour->title,
-                    'start_date' => $booking->start_date->format('F j, Y'),
-                    'guests' => $booking->number_of_guests,
-                    'total_amount' => $booking->total_amount,
+                    'tour' => [
+                        'title' => $booking->tour->title,
+                    ],
+                    'start_date' => $booking->start_date->format('Y-m-d'),
+                    'pax_total' => $booking->pax_total,
+                    'total_price' => number_format($booking->total_price, 2, '.', ''),
+                    'customer' => [
+                        'email' => $booking->customer->email,
+                        'name' => $booking->customer->name,
+                    ],
                 ],
             ]);
 

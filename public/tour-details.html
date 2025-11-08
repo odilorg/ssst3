@@ -1761,9 +1761,12 @@
               const record = data.booking || data.inquiry;
               const isBooking = !!data.booking;
 
+              console.log('[Booking] Success response:', data);
+              console.log('[Booking] Record data:', record);
+
               // Populate modal with data
               document.getElementById('modal-reference').textContent = record.reference || 'N/A';
-              document.getElementById('modal-tour-name').textContent = record.tour?.title || tourIdField?.options[tourIdField.selectedIndex]?.text || 'Your Selected Tour';
+              document.getElementById('modal-tour-name').textContent = record.tour?.title || 'Your Selected Tour';
               document.getElementById('modal-date').textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
               document.getElementById('modal-guests').textContent = (record.pax_total || formData.get('number_of_guests') || '1') + ' guest(s)';
               document.getElementById('modal-total').textContent = record.total_price ? '$' + parseFloat(record.total_price).toFixed(2) : 'TBD';
