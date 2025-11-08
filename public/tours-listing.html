@@ -313,7 +313,7 @@
             </div>
 
             <!-- Filter Tabs -->
-            <div class="filter-tabs" id="category-filters">
+            <div class="filter-tabs" id="category-filters" style="display: none;">
                 <button class="filter-tab active" data-category="">All Tours</button>
             </div>
 
@@ -421,17 +421,14 @@
             let allTours = [];
             let currentCategory = '';
 
-            // Fetch all tours and categories
-            Promise.all([
-                fetch('http://127.0.0.1:8000/api/tours').then(r => r.json()),
-                fetch('http://127.0.0.1:8000/api/categories').then(r => r.json())
-            ])
-            .then(([tours, categories]) => {
-                console.log('[Tours Listing] Loaded:', tours.length, 'tours,', categories.length, 'categories');
-                allTours = tours;
-                renderCategoryFilters(categories);
-                renderTours(tours);
-            })
+            // Fetch all tours
+            fetch('http://127.0.0.1:8000/api/tours')
+                .then(r => r.json())
+                .then(tours => {
+                    console.log('[Tours Listing] Loaded:', tours.length, 'tours');
+                    allTours = tours;
+                    renderTours(tours);
+                })
             .catch(error => {
                 console.error('[Tours Listing] Error loading data:', error);
                 showErrorState();
@@ -499,7 +496,7 @@
                                  class="tour-card__image"
                                  loading="lazy">
                             <div class="tour-card__content">
-                                ${tour.category_name ? `<span class="tour-card__category">${tour.category_name}</span>` : ''}
+                                
                                 <h3 class="tour-card__title">${tour.title}</h3>
                                 <p class="tour-card__description">
                                     ${tour.short_description || tour.description || 'Explore this amazing tour in Uzbekistan'}

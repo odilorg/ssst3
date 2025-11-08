@@ -58,7 +58,7 @@ Route::get('/cities', function () {
 // Tours API - Get all active tours
 Route::get('/tours', function () {
     $tours = \App\Models\Tour::where('is_active', true)
-        ->with(['category', 'city'])
+        ->with(['city'])
         ->orderBy('created_at', 'desc')
         ->get()
         ->map(function ($tour) {
@@ -66,15 +66,13 @@ Route::get('/tours', function () {
                 'id' => $tour->id,
                 'slug' => $tour->slug,
                 'title' => $tour->title,
-                'description' => $tour->description,
+                'description' => $tour->long_description,
                 'short_description' => $tour->short_description,
-                'featured_image' => $tour->featured_image_url ?? null,
+                'featured_image' => $tour->hero_image ? asset('storage/' . $tour->hero_image) : null,
                 'price_per_person' => $tour->price_per_person,
-                'duration' => $tour->duration,
-                'category_name' => $tour->category->translated_name ?? null,
-                'category_slug' => $tour->category->slug ?? null,
-                'city_name' => $tour->city->name ?? null,
-                'city_slug' => $tour->city->slug ?? null,
+                'duration' => $tour->duration_days,
+                'city_name' => $tour->city ? $tour->city->name : null,
+                'city_slug' => $tour->city ? $tour->city->slug : null,
             ];
         });
 
