@@ -14,10 +14,13 @@
 | **Status** | {{ ucfirst(str_replace('_', ' ', $booking->status)) }} |
 | **Tour** | {{ $booking->tour->title }} |
 | **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
-| **Duration** | {{ $booking->duration_days }} {{ $booking->duration_days === 1 ? 'day' : 'days' }} |
-| **Guests** | {{ $booking->number_of_guests }} {{ $booking->number_of_guests === 1 ? 'guest' : 'guests' }} |
-| **Price per Person** | ${{ number_format($booking->price_per_person, 2) }} USD |
-| **Total Amount** | **${{ number_format($booking->total_amount, 2) }} USD** |
+@if($booking->end_date && $booking->start_date->ne($booking->end_date))
+| **End Date** | {{ $booking->end_date->format('F j, Y (l)') }} |
+| **Duration** | {{ $booking->start_date->diffInDays($booking->end_date) + 1 }} {{ $booking->start_date->diffInDays($booking->end_date) === 0 ? 'day' : 'days' }} |
+@endif
+| **Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'guest' : 'guests' }} |
+| **Price per Person** | ${{ number_format($booking->tour->price_per_person ?? 0, 2) }} USD |
+| **Total Amount** | **${{ number_format($booking->total_price, 2) }} USD** |
 | **Submitted** | {{ $booking->created_at->format('F j, Y g:i A') }} |
 @endcomponent
 

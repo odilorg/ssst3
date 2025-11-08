@@ -14,10 +14,13 @@ We have successfully received your booking request and our team is now reviewing
 | :--- | :--- |
 | **Reference Number** | {{ $booking->reference }} |
 | **Tour** | {{ $booking->tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y') }} |
-| **Duration** | {{ $booking->duration_days }} {{ $booking->duration_days === 1 ? 'day' : 'days' }} |
-| **Number of Guests** | {{ $booking->number_of_guests }} {{ $booking->number_of_guests === 1 ? 'guest' : 'guests' }} |
-| **Total Amount** | ${{ number_format($booking->total_amount, 2) }} USD |
+| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
+@if($booking->end_date && $booking->start_date->ne($booking->end_date))
+| **End Date** | {{ $booking->end_date->format('F j, Y (l)') }} |
+| **Duration** | {{ $booking->start_date->diffInDays($booking->end_date) + 1 }} {{ $booking->start_date->diffInDays($booking->end_date) === 0 ? 'day' : 'days' }} |
+@endif
+| **Number of Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'guest' : 'guests' }} |
+| **Total Amount** | ${{ number_format($booking->total_price, 2) }} USD |
 @endcomponent
 
 @if($booking->special_requests)
