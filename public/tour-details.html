@@ -2136,6 +2136,12 @@
         // Prepare form data
         const formData = new FormData(inquiryForm);
 
+        // Add CSRF token from hidden field
+        const csrfToken = document.getElementById('csrf-token');
+        if (csrfToken && csrfToken.value) {
+          formData.append('_token', csrfToken.value);
+        }
+
         console.log('[Inquiry] Sending data:', {
           tour_id: formData.get('tour_id'),
           customer_name: formData.get('customer_name'),
@@ -2147,8 +2153,8 @@
         fetch('/partials/inquiries', {
           method: 'POST',
           headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
           },
           body: formData
         })
