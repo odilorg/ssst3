@@ -2138,29 +2138,21 @@
 
         // Add CSRF token from hidden field
         const csrfToken = document.getElementById('csrf-token');
-        if (csrfToken && csrfToken.value) {
-          formData.append('_token', csrfToken.value);
-        } else {
-          console.error('[Inquiry] CSRF token not found!');
-          alert('Security token not loaded. Please refresh the page and try again.');
 
-          // Reset button state
-          submitBtn.disabled = false;
-          btnText.textContent = 'Send Question';
-          spinner.style.display = 'none';
-          return;
-        }
+        // Function to actually submit the form
+        const doSubmit = (token) => {
+          formData.append('_token', token);
 
-        console.log('[Inquiry] Sending data:', {
-          tour_id: formData.get('tour_id'),
-          customer_name: formData.get('customer_name'),
-          customer_email: formData.get('customer_email'),
-          message: formData.get('message'),
-          _token: formData.get('_token') ? 'present' : 'missing',
-        });
+          console.log('[Inquiry] Sending data:', {
+            tour_id: formData.get('tour_id'),
+            customer_name: formData.get('customer_name'),
+            customer_email: formData.get('customer_email'),
+            message: formData.get('message'),
+            _token: 'present',
+          });
 
-        // Submit to backend
-        fetch('/partials/inquiries', {
+          // Submit to backend
+          fetch('/partials/inquiries', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -2226,6 +2218,36 @@
 
           alert('An error occurred. Please try again.');
         });
+        };
+
+        // Check if token exists, if not fetch it
+        if (!csrfToken || !csrfToken.value) {
+          console.warn('[Inquiry] CSRF token not loaded, fetching now...');
+
+          fetch('http://127.0.0.1:8000/csrf-token')
+            .then(response => response.json())
+            .then(data => {
+              if (data.token) {
+                if (csrfToken) csrfToken.value = data.token;
+                console.log('[Inquiry] CSRF token fetched');
+                doSubmit(data.token);
+              } else {
+                throw new Error('No token in response');
+              }
+            })
+            .catch(error => {
+              console.error('[Inquiry] Failed to load CSRF token:', error);
+              alert('Security token not available. Please refresh the page.');
+
+              // Reset button state
+              submitBtn.disabled = false;
+              btnText.textContent = 'Send Question';
+              spinner.style.display = 'none';
+            });
+        } else {
+          // Token already loaded, submit immediately
+          doSubmit(csrfToken.value);
+        }
       });
     }
 
