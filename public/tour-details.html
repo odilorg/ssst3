@@ -214,7 +214,10 @@
       text-align: center;
       padding: 2rem 2rem 1.5rem;
       border-bottom: 1px solid #e5e7eb;
-      position: relative;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
     }
 
     .success-icon {
@@ -247,7 +250,7 @@
       top: 1rem; right: 1rem;
       width: 36px; height: 36px;
       border: none;
-      background: #f3f4f6;
+      background: rgba(243, 244, 246, 0.95);
       color: #6b7280;
       font-size: 24px;
       line-height: 1;
@@ -257,6 +260,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 20;
+      backdrop-filter: blur(4px);
     }
 
     .modal-close:hover {
@@ -1583,7 +1588,7 @@
       </div>
 
       <div class="modal-footer">
-        <a href="#" id="view-full-confirmation" class="btn btn--primary btn--large">
+        <a href="/booking/confirmation/" id="view-full-confirmation" class="btn btn--primary btn--large" target="_blank">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
@@ -1836,6 +1841,7 @@
       const modal = document.getElementById('booking-confirmation-modal');
       const closeBtn = document.querySelector('.modal-close');
       const continueBrowsingBtn = document.getElementById('continue-browsing');
+      const viewConfirmationBtn = document.getElementById('view-full-confirmation');
 
       // Close modal function
       function closeModal() {
@@ -1853,6 +1859,16 @@
       // Close on "Continue Browsing" button
       if (continueBrowsingBtn) {
         continueBrowsingBtn.addEventListener('click', closeModal);
+      }
+
+      // Prevent main.js smooth scroll from intercepting confirmation link
+      if (viewConfirmationBtn) {
+        viewConfirmationBtn.addEventListener('click', function(e) {
+          // Don't prevent default - let the link work normally
+          // Just stop propagation so main.js doesn't catch it
+          e.stopPropagation();
+          console.log('[Modal] Opening confirmation page:', this.href);
+        }, true); // Use capture phase to run before main.js
       }
 
       // Close on overlay click (clicking outside modal)

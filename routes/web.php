@@ -906,6 +906,12 @@ Route::prefix('partials')->name('partials.')->group(function () {
         ->name('blog.listing');
 });
 
+// ============================================
+// BOOKING CONFIRMATION PAGE (Public-facing)
+// ============================================
+Route::get('/booking/confirmation/{reference}', [\App\Http\Controllers\Partials\BookingController::class, 'confirmation'])
+    ->name('booking.confirmation');
+
 // City/Destination landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/destinations/{slug}', function ($slug) {
     // Find city or 404

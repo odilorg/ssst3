@@ -282,4 +282,20 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show booking confirmation page
+     *
+     * @param string $reference
+     * @return \Illuminate\View\View
+     */
+    public function confirmation(string $reference)
+    {
+        // Find booking by reference with relationships
+        $booking = Booking::where('reference', $reference)
+            ->with(['tour', 'customer'])
+            ->firstOrFail();
+
+        return view('booking-confirmation', compact('booking'));
+    }
 }
