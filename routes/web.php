@@ -929,6 +929,11 @@ Route::get('/booking/confirmation/{reference}', [\App\Http\Controllers\Partials\
     ->name('booking.confirmation');
 
 // City/Destination landing page - SEO-friendly URL with server-side meta tag injection
+// Destinations index page
+Route::get('/destinations/', function () {
+    return response()->file(public_path('destinations.html'));
+})->name('destinations.index');
+
 Route::get('/destinations/{slug}', function ($slug) {
     // Find city or 404
     $city = \App\Models\City::where('slug', $slug)
