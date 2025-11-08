@@ -906,7 +906,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 @media (max-width: 768px) {
   .tours {
-    padding: 40px 0;
+    padding: 40px 0 20px;
   }
 
   .tours .container {
@@ -917,6 +917,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   .tours-catalog .tours__grid {
     grid-template-columns: 1fr !important;
     gap: 12px;
+    margin-bottom: 16px;
   }
 }
 
@@ -925,6 +926,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   .tours-catalog .tours__grid {
     grid-template-columns: 1fr !important;
     gap: 12px;
+    margin-bottom: 16px;
   }
 
   .tour-card__footer {
@@ -942,7 +944,6 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
     text-align: center;
   }
 }
-
 /* --------------------------------------
    10. PLACES SECTION (SECTION 5)
 -----------------------------------------*/
