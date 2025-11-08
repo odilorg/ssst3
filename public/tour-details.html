@@ -491,6 +491,105 @@
         padding: 1rem 1.5rem 1.5rem;
       }
     }
+
+    /* ================================================================ */
+    /* SIMPLE INQUIRY FORM                                             */
+    /* ================================================================ */
+    .simple-inquiry-form {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-top: 2rem;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .inquiry-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .inquiry-back-btn {
+      background: #f3f4f6;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inquiry-back-btn:hover {
+      background: #e5e7eb;
+      transform: translateX(-2px);
+    }
+
+    .inquiry-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0;
+    }
+
+    .inquiry-subtitle {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .inquiry-form-fields {
+      /* Inherits form styles from existing booking form */
+    }
+
+    .inquiry-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: #eff6ff;
+      border-left: 3px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #1e40af;
+      line-height: 1.5;
+    }
+
+    .inquiry-note svg {
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    @media (max-width: 640px) {
+      .simple-inquiry-form {
+        padding: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .inquiry-title {
+        font-size: 1.25rem;
+      }
+
+      .inquiry-back-btn {
+        padding: 0.375rem;
+      }
+    }
   </style>
 
   <!-- Tour details stylesheet - guaranteed load -->
@@ -1209,6 +1308,82 @@
 
             </form>
 
+            <!-- ================================================================ -->
+            <!-- SIMPLE INQUIRY FORM (Separate from booking form)                -->
+            <!-- ================================================================ -->
+            <div id="simple-inquiry-form" class="simple-inquiry-form" style="display: none;">
+              <div class="inquiry-header">
+                <button type="button" class="inquiry-back-btn" id="inquiry-back-btn" aria-label="Go back">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                  </svg>
+                </button>
+                <h3 class="inquiry-title">Ask Us About This Tour</h3>
+              </div>
+
+              <p class="inquiry-subtitle">
+                Have questions? We're here to help! We'll respond to your email within 24 hours.
+              </p>
+
+              <form id="inquiry-form" class="inquiry-form-fields">
+                <input type="hidden" name="tour_id" id="inquiry-tour-id" value="">
+
+                <div class="form-group">
+                  <label for="inquiry-name" class="form-label">
+                    Your Name <span class="required">*</span>
+                  </label>
+                  <input type="text"
+                         id="inquiry-name"
+                         name="customer_name"
+                         class="form-input"
+                         placeholder="John Doe"
+                         required
+                         autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                  <label for="inquiry-email" class="form-label">
+                    Email Address <span class="required">*</span>
+                  </label>
+                  <input type="email"
+                         id="inquiry-email"
+                         name="customer_email"
+                         class="form-input"
+                         placeholder="john@example.com"
+                         required
+                         autocomplete="email">
+                  <span class="form-hint">We'll send our response to this email</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="inquiry-message" class="form-label">
+                    Your Question <span class="required">*</span>
+                  </label>
+                  <textarea id="inquiry-message"
+                            name="message"
+                            class="form-input"
+                            rows="6"
+                            placeholder="What would you like to know about this tour?"
+                            required></textarea>
+                  <span class="form-hint">Ask about itinerary, pricing, availability, group sizes, or anything else!</span>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn--primary btn--large btn--block" id="submit-inquiry-btn">
+                    <span class="btn__text">Send Question</span>
+                    <span class="spinner" style="display: none;"></span>
+                  </button>
+                </div>
+              </form>
+
+              <div class="inquiry-note">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <span>No dates or guest counts needed - just ask your question and we'll help!</span>
+              </div>
+            </div>
+
             <!-- Trust Badges -->
             <div class="trust-badges">
               <div class="badge-item">
@@ -1595,6 +1770,75 @@
     </div>
   </div>
 
+  <!-- ================================================================ -->
+  <!-- SIMPLE INQUIRY CONFIRMATION MODAL                               -->
+  <!-- ================================================================ -->
+  <div id="inquiry-confirmation-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h2 class="modal-title">Question Received!</h2>
+        <p class="modal-subtitle">We'll respond to your email within 24 hours</p>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Reference Number -->
+        <div class="confirmation-reference">
+          <span class="label">Reference Number</span>
+          <span class="reference-number" id="inquiry-modal-reference">INQ-2025-XXX</span>
+          <p class="reference-note">Save this for your records</p>
+        </div>
+
+        <!-- Tour Info -->
+        <div class="booking-summary">
+          <h3 class="section-title">Your Question About</h3>
+          <div class="summary-grid">
+            <div class="summary-item" style="grid-column: 1 / -1;">
+              <span class="label">Tour</span>
+              <span class="value" id="inquiry-modal-tour" style="font-size: 1.125rem;">Tour Name</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Confirmation -->
+        <div class="customer-info">
+          <h3 class="section-title">We'll Reply To</h3>
+          <p class="email-address" id="inquiry-modal-email">customer@example.com</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3 class="section-title">What Happens Next?</h3>
+          <ol class="steps-list">
+            <li>Our travel experts will review your question</li>
+            <li>You'll receive a detailed response within <strong>24 hours</strong></li>
+            <li>Check your email for our personalized reply</li>
+            <li>We're here to help you plan the perfect trip!</li>
+          </ol>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important-note">
+          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <p><strong>Check your spam folder</strong> if you don't receive our email within an hour.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--large" id="close-inquiry-modal">
+          Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
   
@@ -1659,15 +1903,23 @@
           .catch(error => console.error('[Booking] Error fetching tour ID:', error));
       }
 
-      // Handle booking button click
+      // Handle booking button click - SHOWS FULL BOOKING FORM
       if (bookingBtn) {
         bookingBtn.addEventListener('click', function() {
+          console.log('[Booking] Book This Tour clicked');
+
           // Set action type
           if (actionTypeField) actionTypeField.value = 'booking';
 
           // Update button states
           bookingBtn.classList.add('active');
           inquiryBtn.classList.remove('active');
+
+          // Hide simple inquiry form if showing
+          const simpleInquiryForm = document.getElementById('simple-inquiry-form');
+          if (simpleInquiryForm) {
+            simpleInquiryForm.style.display = 'none';
+          }
 
           // Make date & guests required for booking
           if (tourDateField) tourDateField.required = true;
@@ -1690,42 +1942,80 @@
             if (firstInput) setTimeout(() => firstInput.focus(), 300);
           }
 
-          console.log('[Booking] Action: booking');
+          console.log('[Booking] Full booking form shown');
         });
       }
 
-      // Handle inquiry button click
+      // Handle inquiry button click - SHOWS SIMPLE INQUIRY FORM
       if (inquiryBtn) {
         inquiryBtn.addEventListener('click', function() {
-          // Set action type
-          if (actionTypeField) actionTypeField.value = 'inquiry';
+          console.log('[Inquiry] Ask a Question clicked');
 
           // Update button states
           inquiryBtn.classList.add('active');
           bookingBtn.classList.remove('active');
 
-          // Make date & guests optional for inquiry
-          if (tourDateField) tourDateField.required = false;
-          if (tourGuestsField) tourGuestsField.required = false;
-
-          // Show message section (required for inquiry)
-          if (messageSection) messageSection.style.display = 'block';
-          if (messageField) messageField.required = true;
-
-          // Update submit button text
-          if (submitText) submitText.textContent = 'Send Inquiry';
-
-          // Show step 2 form
+          // Hide STEP 2 (full booking form)
           if (step2Form) {
-            step2Form.style.display = 'block';
-            // Scroll to form
-            step2Form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            // Focus first input
-            const firstInput = step2Form.querySelector('input[type="text"], input[type="email"]');
-            if (firstInput) setTimeout(() => firstInput.focus(), 300);
+            step2Form.style.display = 'none';
           }
 
-          console.log('[Booking] Action: inquiry');
+          // Show simple inquiry form
+          const simpleInquiryForm = document.getElementById('simple-inquiry-form');
+          if (simpleInquiryForm) {
+            simpleInquiryForm.style.display = 'block';
+
+            // Set tour ID in inquiry form
+            const tourId = document.getElementById('tour-id').value;
+            const inquiryTourId = document.getElementById('inquiry-tour-id');
+            if (inquiryTourId) {
+              inquiryTourId.value = tourId;
+            }
+
+            // Scroll to inquiry form
+            simpleInquiryForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Focus first input after animation
+            setTimeout(() => {
+              const firstInput = document.getElementById('inquiry-name');
+              if (firstInput) firstInput.focus();
+            }, 350);
+          }
+
+          console.log('[Inquiry] Simple inquiry form shown');
+        });
+      }
+
+      // Handle inquiry back button click
+      const inquiryBackBtn = document.getElementById('inquiry-back-btn');
+      if (inquiryBackBtn) {
+        inquiryBackBtn.addEventListener('click', function() {
+          console.log('[Inquiry] Back button clicked');
+
+          // Hide inquiry form
+          const simpleInquiryForm = document.getElementById('simple-inquiry-form');
+          if (simpleInquiryForm) {
+            simpleInquiryForm.style.display = 'none';
+          }
+
+          // Clear form
+          const inquiryForm = document.getElementById('inquiry-form');
+          if (inquiryForm) {
+            inquiryForm.reset();
+          }
+
+          // Remove active state from inquiry button
+          if (inquiryBtn) {
+            inquiryBtn.classList.remove('active');
+          }
+
+          // Scroll back to action buttons
+          const bookingActions = document.querySelector('.booking-actions');
+          if (bookingActions) {
+            bookingActions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+
+          console.log('[Inquiry] Returned to action buttons');
         });
       }
 
@@ -1825,6 +2115,105 @@
     });
 
     // ================================================================
+    // SIMPLE INQUIRY FORM SUBMISSION
+    // ================================================================
+    const inquiryForm = document.getElementById('inquiry-form');
+
+    if (inquiryForm) {
+      inquiryForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('[Inquiry] Form submitted');
+
+        const submitBtn = document.getElementById('submit-inquiry-btn');
+        const btnText = submitBtn.querySelector('.btn__text');
+        const spinner = submitBtn.querySelector('.spinner');
+
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.textContent = 'Sending...';
+        spinner.style.display = 'inline-block';
+
+        // Prepare form data
+        const formData = new FormData(inquiryForm);
+
+        console.log('[Inquiry] Sending data:', {
+          tour_id: formData.get('tour_id'),
+          customer_name: formData.get('customer_name'),
+          customer_email: formData.get('customer_email'),
+          message: formData.get('message'),
+        });
+
+        // Submit to backend
+        fetch('/partials/inquiries', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('[Inquiry] Response:', data);
+
+          // Reset button state
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Question';
+          spinner.style.display = 'none';
+
+          if (data.success) {
+            const inquiry = data.inquiry;
+
+            // Populate inquiry confirmation modal
+            document.getElementById('inquiry-modal-reference').textContent = inquiry.reference || 'N/A';
+            document.getElementById('inquiry-modal-tour').textContent = inquiry.tour?.title || 'Your Selected Tour';
+            document.getElementById('inquiry-modal-email').textContent = inquiry.customer_email || 'your email';
+
+            // Show inquiry confirmation modal
+            document.getElementById('inquiry-confirmation-modal').style.display = 'flex';
+
+            // Hide inquiry form
+            document.getElementById('simple-inquiry-form').style.display = 'none';
+
+            // Reset form
+            inquiryForm.reset();
+
+            // Remove active state from inquiry button
+            const inquiryBtn = document.querySelector('.action-btn--inquiry');
+            if (inquiryBtn) {
+              inquiryBtn.classList.remove('active');
+            }
+
+            console.log('[Inquiry] Confirmation modal shown for:', inquiry.reference);
+          } else {
+            // Show error
+            let errorMessage = data.message || 'Please check your form and try again.';
+
+            if (data.errors) {
+              errorMessage += '\n\nValidation errors:\n';
+              Object.keys(data.errors).forEach(field => {
+                errorMessage += '- ' + field + ': ' + data.errors[field].join(', ') + '\n';
+              });
+            }
+
+            alert('Error: ' + errorMessage);
+            console.error('[Inquiry] Submission failed:', data);
+          }
+        })
+        .catch(error => {
+          console.error('[Inquiry] Submission error:', error);
+
+          // Reset button state
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Question';
+          spinner.style.display = 'none';
+
+          alert('An error occurred. Please try again.');
+        });
+      });
+    }
+
+    // ================================================================
     // BOOKING CONFIRMATION MODAL - CLOSE HANDLERS
     // ================================================================
     document.addEventListener('DOMContentLoaded', function() {
@@ -1867,5 +2256,50 @@
       });
 
       console.log('[Modal] Close handlers initialized');
+    });
+
+    // ================================================================
+    // INQUIRY CONFIRMATION MODAL - CLOSE HANDLERS
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const inquiryModal = document.getElementById('inquiry-confirmation-modal');
+      const inquiryCloseBtn = inquiryModal ? inquiryModal.querySelector('.modal-close') : null;
+      const closeInquiryModalBtn = document.getElementById('close-inquiry-modal');
+
+      // Close modal function
+      function closeInquiryModal() {
+        if (inquiryModal) {
+          inquiryModal.style.display = 'none';
+          console.log('[Modal] Inquiry confirmation modal closed');
+        }
+      }
+
+      // Close on X button
+      if (inquiryCloseBtn) {
+        inquiryCloseBtn.addEventListener('click', closeInquiryModal);
+      }
+
+      // Close on "Got It, Thanks!" button
+      if (closeInquiryModalBtn) {
+        closeInquiryModalBtn.addEventListener('click', closeInquiryModal);
+      }
+
+      // Close on overlay click (clicking outside modal)
+      if (inquiryModal) {
+        inquiryModal.addEventListener('click', function(e) {
+          if (e.target === inquiryModal) {
+            closeInquiryModal();
+          }
+        });
+      }
+
+      // Close on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && inquiryModal && inquiryModal.style.display === 'flex') {
+          closeInquiryModal();
+        }
+      });
+
+      console.log('[Modal] Inquiry modal close handlers initialized');
     });
   </script>

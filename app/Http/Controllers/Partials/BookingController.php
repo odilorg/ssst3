@@ -205,16 +205,14 @@ class BookingController extends Controller
      */
     private function handleInquiry(Request $request)
     {
-        // Validation
+        // Validation - SIMPLIFIED: Only 3 required fields for quick inquiry
         $validator = Validator::make($request->all(), [
             'tour_id' => 'required|exists:tours,id',
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'required|email|max:255',
-            'customer_phone' => 'nullable|string|max:50',
-            'customer_country' => 'nullable|string|max:100',
-            'preferred_date' => 'nullable|date|after_or_equal:today',
-            'estimated_guests' => 'nullable|integer|min:1|max:50',
             'message' => 'required|string|max:1000',
+            // Removed: customer_phone, customer_country, preferred_date, estimated_guests
+            // These are not collected in the simplified inquiry form
         ]);
 
         if ($validator->fails()) {
@@ -230,17 +228,14 @@ class BookingController extends Controller
             // Get tour
             $tour = Tour::findOrFail($request->tour_id);
 
-            // Create inquiry
+            // Create inquiry - Only essential fields
             $inquiry = TourInquiry::create([
                 'tour_id' => $tour->id,
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
-                'customer_phone' => $request->customer_phone,
-                'customer_country' => $request->customer_country,
-                'preferred_date' => $request->preferred_date,
-                'estimated_guests' => $request->estimated_guests,
                 'message' => $request->message,
                 'status' => 'new',
+                // Phone, country, date, guests are now NULL (optional fields)
             ]);
 
             DB::commit();
@@ -265,10 +260,14 @@ class BookingController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Inquiry submitted successfully! We will get back to you shortly.',
+                'message' => 'Question submitted successfully! We will respond within 24 hours.',
                 'inquiry' => [
                     'reference' => $inquiry->reference,
-                    'tour_title' => $tour->title,
+                    'customer_name' => $inquiry->customer_name,
+                    'customer_email' => $inquiry->customer_email,
+                    'tour' => [
+                        'title' => $tour->title,
+                    ],
                 ],
             ]);
 

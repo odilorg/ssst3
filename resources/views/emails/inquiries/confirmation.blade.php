@@ -1,67 +1,57 @@
 @component('mail::message')
-# We Received Your Inquiry
+# Thanks for Your Question!
 
 Dear {{ $inquiry->customer_name }},
 
-Thank you for your interest in exploring Uzbekistan with Jahongir Travel! We're delighted that you reached out to us.
+Thank you for your interest in **{{ $tour->title }}**! We've received your question and our travel experts are preparing a detailed response for you.
 
-We have successfully received your inquiry about **{{ $tour->title }}** and our travel experts are preparing a personalized response for you.
+## Your Question
 
-## Your Inquiry Details
+@component('mail::panel')
+{{ $inquiry->message }}
+@endcomponent
+
+## Inquiry Reference
 
 @component('mail::table')
 | Detail | Information |
 | :--- | :--- |
 | **Reference Number** | {{ $inquiry->reference }} |
 | **Tour** | {{ $tour->title }} |
-@if($inquiry->preferred_date)
-| **Preferred Date** | {{ $inquiry->preferred_date->format('F j, Y') }} |
-@endif
-@if($inquiry->estimated_guests)
-| **Estimated Guests** | {{ $inquiry->estimated_guests }} {{ $inquiry->estimated_guests === 1 ? 'guest' : 'guests' }} |
-@endif
-@endcomponent
-
-### Your Message
-
-@component('mail::panel')
-{{ $inquiry->message }}
 @endcomponent
 
 ## What Happens Next?
 
-Our knowledgeable travel consultants will carefully review your inquiry and respond with detailed information within **24 hours**. You can expect:
+Our team will:
+- ✓ Review your question carefully
+- ✓ Prepare a detailed, personalized response
+- ✓ Send you helpful information within **24 hours**
+- ✓ Answer any follow-up questions you may have
 
-- ✓ Answers to all your questions
-- ✓ Personalized recommendations
-- ✓ Available dates and pricing options
-- ✓ Suggestions for customizing your experience
+## Explore More
 
-## In the Meantime...
-
-Feel free to explore more about this tour and other exciting destinations in Uzbekistan on our website.
+While you wait, feel free to explore more about this tour on our website:
 
 @component('mail::button', ['url' => config('app.url') . '/tours/' . $tour->slug, 'color' => 'success'])
 View Tour Details
 @endcomponent
 
-## Need Immediate Assistance?
+## Need Faster Response?
 
-If you have urgent questions or need to add more information to your inquiry, please contact us:
-
+For urgent questions, you can also:
 - **Email:** {{ config('mail.from.address') }}
-- **Reference:** {{ $inquiry->reference }} *(Please include this in your message)*
+- **Reference:** {{ $inquiry->reference }}
 
 @component('mail::panel')
-**Tip:** Save your reference number **{{ $inquiry->reference }}** for easy tracking of our conversation.
+**Important:** Please keep this reference number **{{ $inquiry->reference }}** for your records.
 @endcomponent
 
-We're excited to help plan your perfect Uzbekistan adventure!
+We look forward to helping you plan an unforgettable journey!
 
-Warm regards,<br>
+Best regards,<br>
 **The Jahongir Travel Team**
 
 ---
 
-*This is an automated confirmation. Our travel experts will contact you personally within 24 hours.*
+*This is an automated confirmation. Our team will contact you personally within 24 hours.*
 @endcomponent

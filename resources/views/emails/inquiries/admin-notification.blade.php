@@ -1,11 +1,11 @@
 @component('mail::message')
-# New Tour Inquiry from Potential Customer
+# New Tour Question from Potential Customer
 
 @component('mail::panel')
-**SALES OPPORTUNITY:** A potential customer has submitted an inquiry about one of your tours. Prompt response can help convert this inquiry into a booking!
+**ACTION REQUIRED:** A potential customer has asked a question about **{{ $tour->title }}**. Quick response can help convert this inquiry into a booking!
 @endcomponent
 
-## Customer's Message
+## Customer's Question
 
 @component('mail::panel')
 {{ $inquiry->message }}
