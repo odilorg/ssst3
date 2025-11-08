@@ -222,10 +222,10 @@ function initGalleryLoader() {
  * Initialize mobile navigation toggle
  */
 function initNavigationToggle() {
-  const navToggle = document.querySelector('.nav-toggle');
-  const navMenu = document.querySelector('.site-nav__menu');
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
 
-  if (!navToggle) return;
+  if (!navToggle || !navMenu) return;
 
   navToggle.addEventListener('click', () => {
     const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
@@ -234,14 +234,16 @@ function initNavigationToggle() {
     navToggle.setAttribute('aria-expanded', !isExpanded);
 
     // Toggle menu visibility
-    navMenu?.classList.toggle('is-open');
+    navMenu.classList.toggle('is-open');
 
-    // Toggle icon (hamburger <-> close)
-    navToggle.classList.toggle('is-active');
+    // Toggle body scroll lock on mobile
+    if (window.innerWidth < 768) {
+      document.body.style.overflow = !isExpanded ? 'hidden' : '';
+    }
 
     // Focus first menu link when opening
     if (!isExpanded) {
-      navMenu?.querySelector('a')?.focus();
+      navMenu.querySelector('a')?.focus();
     }
   });
 
@@ -252,6 +254,22 @@ function initNavigationToggle() {
       navToggle.focus();
     }
   });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (navToggle.getAttribute('aria-expanded') === 'true' &&
+        !navMenu.contains(e.target) &&
+        !navToggle.contains(e.target)) {
+      navToggle.click();
+    }
+  });
+}
+
+// Initialize navigation toggle on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNavigationToggle);
+} else {
+  initNavigationToggle();
 }
 
 // =============================================================================
