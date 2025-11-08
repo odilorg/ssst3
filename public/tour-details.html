@@ -118,8 +118,8 @@
     .nav__toggle[aria-expanded="true"] .nav__toggle-icon::after{bottom:0;transform:rotate(-45deg)}
     @media (max-width:900px){
       .nav__toggle{display:inline-flex;align-items:center;justify-content:center}
-      .nav__menu{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:16px;padding:16px;box-shadow:0 4px 6px rgba(0,0,0,0.1)}
-      .nav__menu.is-open{display:flex}
+      .nav__menu{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:16px;padding:16px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1000}
+      .nav__menu.is-open,.nav__menu.nav__menu--open{display:flex}
       .nav__cta{display:none}
     }
 
