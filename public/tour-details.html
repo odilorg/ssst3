@@ -2140,6 +2140,15 @@
         const csrfToken = document.getElementById('csrf-token');
         if (csrfToken && csrfToken.value) {
           formData.append('_token', csrfToken.value);
+        } else {
+          console.error('[Inquiry] CSRF token not found!');
+          alert('Security token not loaded. Please refresh the page and try again.');
+
+          // Reset button state
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Question';
+          spinner.style.display = 'none';
+          return;
         }
 
         console.log('[Inquiry] Sending data:', {
@@ -2147,6 +2156,7 @@
           customer_name: formData.get('customer_name'),
           customer_email: formData.get('customer_email'),
           message: formData.get('message'),
+          _token: formData.get('_token') ? 'present' : 'missing',
         });
 
         // Submit to backend
