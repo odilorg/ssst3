@@ -713,3 +713,58 @@ if (document.readyState === 'loading') {
   initProgressiveBookingForm();
   initPaymentCardInteractions();
 }
+// =============================================================================
+// BOOK NOW BUTTON - SCROLL TO BOOKING FORM
+// =============================================================================
+
+/**
+ * Handle "Book Now" buttons that scroll to booking form
+ */
+function initBookNowButtons() {
+  const bookNowButtons = document.querySelectorAll('[data-scroll-to="booking-form"]');
+  
+  bookNowButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const bookingForm = document.getElementById('booking-form');
+      if (!bookingForm) return;
+      
+      // Calculate offset (accounting for sticky header)
+      const header = document.querySelector('.site-header');
+      const headerHeight = header ? header.offsetHeight : 0;
+      const offset = headerHeight + 20; // Add 20px padding
+      
+      const elementPosition = bookingForm.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      // Smooth scroll to booking form
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      // Focus on first input field for accessibility
+      setTimeout(() => {
+        const firstInput = bookingForm.querySelector('input, select, textarea');
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 500);
+      
+      // Track event
+      if (typeof gtag === 'function') {
+        gtag('event', 'book_now_clicked', {
+          button_location: button.classList.contains('mobile-cta__button') ? 'mobile_cta' : 'desktop'
+        });
+      }
+    });
+  });
+}
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initBookNowButtons);
+} else {
+  initBookNowButtons();
+}
