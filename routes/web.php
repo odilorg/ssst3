@@ -825,7 +825,7 @@ use App\Http\Controllers\Partials\BookingController;
 use App\Http\Controllers\Partials\SearchController;
 use App\Http\Controllers\Partials\BlogController;
 use App\Http\Controllers\Partials\CategoryController;
-use AppHttpControllersPartialsCityController;
+use App\Http\Controllers\Partials\CityController;
 
 Route::prefix('partials')->name('partials.')->group(function () {
 
@@ -837,6 +837,7 @@ Route::prefix('partials')->name('partials.')->group(function () {
         ->name('categories.related');
 
     Route::get('/categories/{slug}/data', [CategoryController::class, 'data'])
+        ->name('categories.data');
 
     // -------- CITIES / DESTINATIONS --------
     Route::get('/cities/related', [CityController::class, 'related'])
@@ -844,7 +845,6 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/cities/{slug}/data', [CityController::class, 'data'])
         ->name('cities.data');
-        ->name('categories.data');
 
     // -------- TOUR LIST --------
     Route::get('/tours', [TourController::class, 'list'])
