@@ -11,6 +11,7 @@ use App\Mail\BookingConfirmation;
 use App\Mail\BookingAdminNotification;
 use App\Mail\InquiryConfirmation;
 use App\Mail\InquiryAdminNotification;
+use App\Services\TelegramNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -164,6 +165,14 @@ class BookingController extends Controller
                 ]);
             }
 
+            // Send Telegram notification
+            try {
+                $telegramService = new TelegramNotificationService();
+                $telegramService->sendBookingNotification($booking);
+            } catch (\Exception $e) {
+                Log::error('Failed to send Telegram notification: ' . $e->getMessage());
+            }
+
             // Refresh to get latest data with relationships
             $booking->load(['tour', 'customer']);
 
@@ -256,6 +265,14 @@ class BookingController extends Controller
                     'inquiry_id' => $inquiry->id,
                     'customer_email' => $inquiry->customer_email,
                 ]);
+            }
+
+            // Send Telegram notification
+            try {
+                $telegramService = new TelegramNotificationService();
+                $telegramService->sendInquiryNotification($inquiry, $tour);
+            } catch (\Exception $e) {
+                Log::error('Failed to send Telegram notification: ' . $e->getMessage());
             }
 
             return response()->json([

@@ -55,18 +55,22 @@ class BookingsTable
                     ->color(fn (string $state): string => match ($state) {
                         'draft' => 'gray',
                         'pending' => 'warning',
+                        'pending_payment' => 'warning',
                         'confirmed' => 'success',
                         'in_progress' => 'info',
                         'completed' => 'primary',
                         'cancelled' => 'danger',
+                        default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'draft' => 'Черновик',
                         'pending' => 'В ожидании',
+                        'pending_payment' => 'Ожидание оплаты',
                         'confirmed' => 'Подтверждено',
                         'in_progress' => 'В процессе',
                         'completed' => 'Завершено',
                         'cancelled' => 'Отменено',
+                        default => ucfirst($state),
                     })
                     ->sortable(),
                 TextColumn::make('currency')

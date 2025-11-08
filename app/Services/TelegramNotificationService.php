@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class TelegramNotificationService
+{
+    protected $botToken;
+    protected $adminChatId;
+
+    public function __construct()
+    {
+        $this->botToken = config('services.telegram.bot_token');
+        $this->adminChatId = config('services.telegram.admin_chat_id');
+    }
+
+    /**
+     * Send booking notification to admin
+     */
+    public function sendBookingNotification($booking)
+    {
+        $message = $this->formatBookingMessage($booking);
+        return $this->sendMessage($message);
+    }
+
+    /**
+     * Send inquiry notification to admin
+     */
+    public function sendInquiryNotification($inquiry, $tour)
+    {
+        $message = $this->formatInquiryMessage($inquiry, $tour);
+        return $this->sendMessage($message);
+    }
+
+    /**
+     * Format booking message
+     */
+    protected function formatBookingMessage($booking)
+    {
+        $tour = $booking->tour;
+        $customer = $booking->customer;
+
+        $message = "🎉 *NEW BOOKING REQUEST*\n\n";
+        $message .= "📋 *Reference:* `{$booking->reference}`\n";
+        $message .= "👤 *Customer:* {$customer->name}\n";
+        $message .= "📧 *Email:* {$customer->email}\n";
+
+        if ($customer->phone) {
+            $message .= "📞 *Phone:* {$customer->phone}\n";
+        }
+
+        if ($customer->country) {
+            $message .= "🌍 *Country:* {$customer->country}\n";
+        }
+
+        $message .= "\n🗺️ *Tour:* {$tour->title}\n";
+        $message .= "📅 *Date:* {$booking->start_date->format('F j, Y')}\n";
+
+        if ($booking->end_date && $booking->start_date->ne($booking->end_date)) {
+            $message .= "📅 *End Date:* {$booking->end_date->format('F j, Y')}\n";
+        }
+
+        $message .= "👥 *Guests:* {$booking->pax_total}\n";
+        $message .= "💰 *Total:* \${$booking->total_price} {$booking->currency}\n";
+
+        if ($booking->special_requests) {
+            $message .= "\n📝 *Special Requests:*\n_{$booking->special_requests}_\n";
+        }
+
+        $adminUrl = config('app.url') . '/admin/bookings/' . $booking->id;
+        $message .= "\n[View in Admin Panel]({$adminUrl})";
+
+        return $message;
+    }
+
+    /**
+     * Format inquiry message
+     */
+    protected function formatInquiryMessage($inquiry, $tour)
+    {
+        $message = "❓ *NEW QUESTION*\n\n";
+        $message .= "📋 *Reference:* `{$inquiry->reference}`\n";
+        $message .= "👤 *Customer:* {$inquiry->customer_name}\n";
+        $message .= "📧 *Email:* {$inquiry->customer_email}\n\n";
+
+        $message .= "🗺️ *Tour:* {$tour->title}\n\n";
+
+        $message .= "💬 *Question:*\n";
+        $message .= "_{$inquiry->message}_\n";
+
+        $adminUrl = config('app.url') . '/admin/tour-inquiries/' . $inquiry->id;
+        $message .= "\n[View in Admin Panel]({$adminUrl})";
+
+        return $message;
+    }
+
+    /**
+     * Send message to Telegram
+     */
+    protected function sendMessage($message)
+    {
+        if (!$this->botToken || !$this->adminChatId) {
+            Log::warning('Telegram credentials not configured');
+            return false;
+        }
+
+        try {
+            $response = Http::post("https://api.telegram.org/bot{$this->botToken}/sendMessage", [
+                'chat_id' => $this->adminChatId,
+                'text' => $message,
+                'parse_mode' => 'Markdown',
+                'disable_web_page_preview' => true,
+            ]);
+
+            if ($response->successful()) {
+                Log::info('Telegram notification sent successfully');
+                return true;
+            } else {
+                Log::error('Failed to send Telegram notification', [
+                    'response' => $response->json()
+                ]);
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram notification error: ' . $e->getMessage());
+            return false;
+        }
+    }
+}
