@@ -172,6 +172,320 @@
 
     /* Form Section Visibility */
     #message-section{margin-top:1rem}
+
+    /* ===================================================================
+       BOOKING CONFIRMATION MODAL STYLES
+       =================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-container {
+      background: #ffffff;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      text-align: center;
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      position: relative;
+    }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      font-size: 1rem;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      border: none;
+      background: #f3f4f6;
+      color: #6b7280;
+      font-size: 24px;
+      line-height: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .confirmation-reference {
+      text-align: center;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      border: 2px solid #3b82f6;
+    }
+
+    .confirmation-reference .label {
+      display: block;
+      font-size: 0.875rem;
+      color: #1e40af;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .reference-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+      margin-bottom: 0.25rem;
+    }
+
+    .reference-note {
+      font-size: 0.875rem;
+      color: #3b82f6;
+      margin: 0;
+    }
+
+    .booking-summary,
+    .customer-info,
+    .next-steps {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .summary-grid {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item--total {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    .summary-item .label {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .summary-item .value {
+      color: #111827;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .summary-item .value.highlight {
+      color: #059669;
+      font-size: 1.25rem;
+    }
+
+    .email-address {
+      font-size: 1rem;
+      color: #2563eb;
+      font-weight: 600;
+      background: #eff6ff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding-left: 1.5rem;
+      color: #374151;
+      line-height: 1.8;
+    }
+
+    .steps-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .steps-list strong {
+      color: #111827;
+    }
+
+    .important-note {
+      display: flex;
+      gap: 0.75rem;
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 1rem;
+      border-radius: 8px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      flex-shrink: 0;
+      color: #d97706;
+    }
+
+    .important-note p {
+      margin: 0;
+      color: #78350f;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      padding: 1.5rem 2rem 2rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn--large {
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn--primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn--secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn--secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      .modal-container {
+        max-height: 95vh;
+        border-radius: 12px;
+      }
+
+      .modal-header {
+        padding: 1.5rem 1.5rem 1rem;
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+      }
+
+      .reference-number {
+        font-size: 1.5rem;
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .summary-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      .summary-item .value {
+        text-align: left;
+      }
+
+      .modal-footer {
+        padding: 1rem 1.5rem 1.5rem;
+      }
+    }
   </style>
 
   <!-- Tour details stylesheet - guaranteed load -->
@@ -1197,6 +1511,92 @@
   <!-- Main JavaScript -->
   <script src="/js/main.js" defer></script>
 
+  <!-- Booking Confirmation Modal -->
+  <div id="booking-confirmation-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 class="modal-title">Booking Request Submitted!</h2>
+        <p class="modal-subtitle">We've received your request and will get back to you soon</p>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Booking Reference -->
+        <div class="confirmation-reference">
+          <span class="label">Your Reference Number</span>
+          <span class="reference-number" id="modal-reference">BK-2025-XXX</span>
+          <p class="reference-note">Save this number for your records</p>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+          <h3 class="section-title">Booking Summary</h3>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="label">Tour</span>
+              <span class="value" id="modal-tour-name">...</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Date</span>
+              <span class="value" id="modal-date">...</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Guests</span>
+              <span class="value" id="modal-guests">...</span>
+            </div>
+            <div class="summary-item summary-item--total">
+              <span class="label">Estimated Total</span>
+              <span class="value highlight" id="modal-total">$200.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+          <h3 class="section-title">Confirmation Email Sent To</h3>
+          <p class="email-address" id="modal-customer-email">customer@example.com</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3 class="section-title">What Happens Next?</h3>
+          <ol class="steps-list">
+            <li>We'll check availability for your requested dates</li>
+            <li>You'll receive confirmation within <strong>24 hours</strong></li>
+            <li>Check your email (<strong id="modal-customer-email-inline">...</strong>) for details</li>
+            <li>No payment required until we confirm availability</li>
+          </ol>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important-note">
+          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <p><strong>Please check your spam folder</strong> if you don't receive our email within an hour.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <a href="#" id="view-full-confirmation" class="btn btn--primary btn--large">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          View Full Confirmation
+        </a>
+        <button class="btn btn--secondary btn--large" id="continue-browsing">
+          Continue Browsing Tours
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
   
@@ -1357,13 +1757,39 @@
           .then(response => response.json())
           .then(data => {
             if (data.success) {
-              // Show success message
-              alert('Success! ' + data.message + '\n\nReference: ' + (data.booking?.reference || data.inquiry?.reference));
+              // Get booking/inquiry data
+              const record = data.booking || data.inquiry;
+              const isBooking = !!data.booking;
+
+              // Populate modal with data
+              document.getElementById('modal-reference').textContent = record.reference || 'N/A';
+              document.getElementById('modal-tour-name').textContent = record.tour?.title || tourIdField?.options[tourIdField.selectedIndex]?.text || 'Your Selected Tour';
+              document.getElementById('modal-date').textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
+              document.getElementById('modal-guests').textContent = (record.pax_total || formData.get('number_of_guests') || '1') + ' guest(s)';
+              document.getElementById('modal-total').textContent = record.total_price ? '$' + parseFloat(record.total_price).toFixed(2) : 'TBD';
+              document.getElementById('modal-customer-email').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+              document.getElementById('modal-customer-email-inline').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+
+              // Set confirmation page link (will create this route later)
+              document.getElementById('view-full-confirmation').href = `/booking/confirmation/${record.reference}`;
+
+              // Update modal title for inquiry
+              if (!isBooking) {
+                document.querySelector('.modal-title').textContent = 'Inquiry Submitted!';
+                document.querySelector('.modal-subtitle').textContent = 'We\'ve received your question and will respond soon';
+                document.querySelector('.summary-item--total').style.display = 'none';
+              }
+
+              // Show modal
+              document.getElementById('booking-confirmation-modal').style.display = 'flex';
+
               // Reset form
               bookingForm.reset();
               step2Form.style.display = 'none';
               bookingBtn.classList.remove('active');
               inquiryBtn.classList.remove('active');
+
+              console.log('[Booking] Confirmation modal shown for:', record.reference);
             } else {
               // Show error message with validation errors if available
               let errorMessage = data.message || 'Please check your form and try again.';
@@ -1398,5 +1824,50 @@
       if (tourGuestsField) tourGuestsField.name = 'number_of_guests';
 
       console.log('[Booking] Action buttons initialized');
+    });
+
+    // ================================================================
+    // BOOKING CONFIRMATION MODAL - CLOSE HANDLERS
+    // ================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('booking-confirmation-modal');
+      const closeBtn = document.querySelector('.modal-close');
+      const continueBrowsingBtn = document.getElementById('continue-browsing');
+
+      // Close modal function
+      function closeModal() {
+        if (modal) {
+          modal.style.display = 'none';
+          console.log('[Modal] Confirmation modal closed');
+        }
+      }
+
+      // Close on X button click
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+      }
+
+      // Close on "Continue Browsing" button
+      if (continueBrowsingBtn) {
+        continueBrowsingBtn.addEventListener('click', closeModal);
+      }
+
+      // Close on overlay click (clicking outside modal)
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+      }
+
+      // Close on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+          closeModal();
+        }
+      });
+
+      console.log('[Modal] Close handlers initialized');
     });
   </script>

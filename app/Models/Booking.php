@@ -18,9 +18,14 @@ class Booking extends Model
         'end_date',
         'pax_total',
         'status',
+        'payment_status',
+        'payment_method',
         'currency',
         'total_price',
         'notes',
+        'special_requests',
+        // Removed: customer_name, customer_email, customer_phone, customer_country
+        // Using normalized approach - access via $booking->customer relationship
     ];
 
     protected $casts = [

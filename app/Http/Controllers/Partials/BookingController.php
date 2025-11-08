@@ -59,7 +59,16 @@ class BookingController extends Controller
      */
     private function handleBooking(Request $request)
     {
-        // Validation
+        // Debug: Log what we're actually receiving
+        Log::info('Booking Request Received', [
+            'all_data' => $request->all(),
+            'has_tour_date' => $request->has('tour-date'),
+            'has_tour_guests' => $request->has('tour-guests'),
+            'tour_date_value' => $request->input('tour-date'),
+            'tour_guests_value' => $request->input('tour-guests'),
+        ]);
+
+        // Validation - JS is sending start_date and number_of_guests (not tour-date/tour-guests)
         $validator = Validator::make($request->all(), [
             'tour_id' => 'required|exists:tours,id',
             'start_date' => 'required|date|after_or_equal:today',
@@ -72,8 +81,13 @@ class BookingController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('Booking Validation Failed', [
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $request->all(),
+            ]);
             return response()->json([
                 'success' => false,
+                'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -100,17 +114,34 @@ class BookingController extends Controller
             $numberOfGuests = $request->number_of_guests;
             $totalAmount = $pricePerPerson * $numberOfGuests;
 
+            // Debug logging
+            Log::info('Booking Creation Debug', [
+                'tour_id' => $tour->id,
+                'price_per_person' => $pricePerPerson,
+                'number_of_guests' => $numberOfGuests,
+                'calculated_total' => $totalAmount,
+                'payment_method_from_request' => $request->payment_method,
+                'all_request_data' => $request->all(),
+            ]);
+
             // Create booking
             $booking = Booking::create([
                 'tour_id' => $tour->id,
                 'customer_id' => $customer->id,
                 'start_date' => $request->start_date,
-                'duration_days' => $tour->duration_days,
-                'number_of_guests' => $numberOfGuests,
-                'price_per_person' => $pricePerPerson,
-                'total_amount' => $totalAmount,
+                'pax_total' => $numberOfGuests,
+                'total_price' => $totalAmount,
                 'special_requests' => $request->special_requests,
-                'status' => 'pending',
+                'status' => 'pending_payment',
+                'payment_method' => $request->payment_method ?? 'request',
+                'payment_status' => 'unpaid',
+            ]);
+
+            Log::info('Booking Created', [
+                'booking_id' => $booking->id,
+                'reference' => $booking->reference,
+                'total_price_saved' => $booking->total_price,
+                'payment_method_saved' => $booking->payment_method,
             ]);
 
             DB::commit();
