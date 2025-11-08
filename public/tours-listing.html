@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse all tours in Uzbekistan - Silk Road adventures, cultural experiences, historical tours, and more. Expert guides, flexible itineraries, best prices.">
+    <title>All Tours in Uzbekistan | Jahongir Travel</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jahongirtravel.com/tours/">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="All Tours in Uzbekistan | Jahongir Travel">
+    <meta property="og:description" content="Browse all tours in Uzbekistan - Silk Road adventures, cultural experiences, and more.">
+    <meta property="og:image" content="https://jahongirtravel.com/images/tours-hero.jpg">
+    <meta property="og:url" content="https://jahongirtravel.com/tours/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="All Tours in Uzbekistan | Jahongir Travel">
+    <meta name="twitter:description" content="Browse all tours in Uzbekistan.">
+    <meta name="twitter:image" content="https://jahongirtravel.com/images/tours-hero.jpg">
+
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .tours-hero {
+            background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+            padding: 120px 0 80px;
+            color: white;
+            text-align: center;
+        }
+
+        .tours-hero__title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .tours-hero__subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .tours-grid {
+            padding: 80px 0;
+        }
+
+        .tours-grid__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .tours-grid__title {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+        }
+
+        .tours-grid__count {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .tours-grid__container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .tour-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .tour-card__image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .tour-card__content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tour-card__category {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1a5490;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+            width: fit-content;
+        }
+
+        .tour-card__title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+
+        .tour-card__description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .tour-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .tour-card__meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tour-card__price {
+            margin-left: auto;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a5490;
+        }
+
+        .loading-skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .skeleton-card {
+            height: 420px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 12px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-tab:hover {
+            border-color: #1a5490;
+            color: #1a5490;
+        }
+
+        .filter-tab.active {
+            background: #1a5490;
+            color: white;
+            border-color: #1a5490;
+        }
+
+        @media (max-width: 768px) {
+            .tours-hero {
+                padding: 80px 0 60px;
+            }
+
+            .tours-hero__title {
+                font-size: 2rem;
+            }
+
+            .tours-hero__subtitle {
+                font-size: 1rem;
+            }
+
+            .tours-grid {
+                padding: 60px 0;
+            }
+
+            .tours-grid__header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .tours-grid__title {
+                font-size: 2rem;
+            }
+
+            .tours-grid__container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .filter-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+            }
+
+            .filter-tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Skip to Main Content -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- =====================================================
+         HEADER / NAVIGATION
+         ===================================================== -->
+    <header class="site-header" role="banner">
+        <nav class="nav" aria-label="Main navigation">
+            <div class="container">
+                <a href="/" class="nav__logo">
+                    <span class="nav__logo-text">Jahongir <strong>Travel</strong></span>
+                </a>
+
+                <ul class="nav__menu" id="navMenu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/tours" class="active">Tours</a></li>
+                    <li><a href="/destinations/">Destinations</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+
+                <a href="tel:+998991234567" class="btn btn--accent nav__cta">
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6.62 10.79a15.09 15.09 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.24 11.72 11.72 0 003.67.59 1 1 0 011 1v3.54a1 1 0 01-1 1A18.5 18.5 0 013 5a1 1 0 011-1h3.55a1 1 0 011 1 11.72 11.72 0 00.59 3.67 1 1 0 01-.25 1.11z"/>
+                    </svg>
+                    +998 99 123 4567
+                </a>
+
+                <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span class="nav__toggle-icon"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- =====================================================
+         HERO SECTION
+         ===================================================== -->
+    <section class="tours-hero">
+        <div class="container">
+            <h1 class="tours-hero__title">Discover Amazing Tours</h1>
+            <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         TOURS GRID
+         ===================================================== -->
+    <section class="tours-grid" id="main-content">
+        <div class="container">
+            <div class="tours-grid__header">
+                <h2 class="tours-grid__title">All Tours</h2>
+                <div class="tours-grid__count" id="tour-count">Loading...</div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs" id="category-filters">
+                <button class="filter-tab active" data-category="">All Tours</button>
+            </div>
+
+            <div id="tours-container" class="tours-grid__container">
+                <!-- Loading Skeleton -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-main">
+                <!-- Footer Brand -->
+                <div class="footer-brand">
+                    <div class="footer-brand__text">Jahongir <strong>Travel</strong></div>
+                    <p>Discover the magic of Uzbekistan with expert-guided tours through the ancient Silk Road.</p>
+                    <p>📧 info@jahongirtravel.com</p>
+                    <p>📞 +998 99 123 4567</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-col">
+                    <h3 class="footer-nav__title">Quick Links</h3>
+                    <ul class="footer-nav__list">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/tours">All Tours</a></li>
+                        <li><a href="/destinations/">Destinations</a></li>
+                        <li><a href="/about">About Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Popular Tours -->
+                <div class="footer-col">
+                    <h3 class="footer-nav__title">Popular Tours</h3>
+                    <ul class="footer-nav__list">
+                        <li><a href="/tours/5-day-silk-road-classic">Silk Road Classic</a></li>
+                        <li><a href="/tours/samarkand-city-tour-registan-square-and-historical-monuments">Samarkand City Tour</a></li>
+                        <li><a href="/tours/full-day-bukhara-city-tour">Bukhara City Tour</a></li>
+                        <li><a href="/tours/konigil-day-tour">Konigil Day Tour</a></li>
+                    </ul>
+                </div>
+
+                <!-- Destinations -->
+                <div class="footer-col">
+                    <h3 class="footer-nav__title">Destinations</h3>
+                    <ul class="footer-nav__list">
+                        <li><a href="/destinations/samarkand/">Samarkand</a></li>
+                        <li><a href="/destinations/bukhara/">Bukhara</a></li>
+                        <li><a href="/destinations/khiva/">Khiva</a></li>
+                        <li><a href="/destinations/tashkent/">Tashkent</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social -->
+                <div class="footer-col">
+                    <h3 class="footer-nav__title">Follow Us</h3>
+                    <ul class="footer-social__list">
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                        <li><a href="#"><i class="fab fa-tripadvisor"></i> TripAdvisor</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom__wrap">
+                    <p>&copy; 2025 Jahongir Travel. All rights reserved.</p>
+                    <div class="footer-bottom__legal">
+                        <a href="/privacy/">Privacy Policy</a>
+                        <span>|</span>
+                        <a href="/terms/">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
+
+    <!-- Main JavaScript -->
+    <script src="/js/main.js"></script>
+
+    <!-- Tours Listing Page Specific JS -->
+    <script>
+        (function() {
+            'use strict';
+
+            console.log('[Tours Listing] Initializing...');
+
+            let allTours = [];
+            let currentCategory = '';
+
+            // Fetch all tours and categories
+            Promise.all([
+                fetch('http://127.0.0.1:8000/api/tours').then(r => r.json()),
+                fetch('http://127.0.0.1:8000/api/categories').then(r => r.json())
+            ])
+            .then(([tours, categories]) => {
+                console.log('[Tours Listing] Loaded:', tours.length, 'tours,', categories.length, 'categories');
+                allTours = tours;
+                renderCategoryFilters(categories);
+                renderTours(tours);
+            })
+            .catch(error => {
+                console.error('[Tours Listing] Error loading data:', error);
+                showErrorState();
+            });
+
+            function renderCategoryFilters(categories) {
+                const container = document.getElementById('category-filters');
+                const allButton = container.querySelector('[data-category=""]');
+
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-tab';
+                    button.setAttribute('data-category', category.slug);
+                    button.textContent = category.name;
+                    button.addEventListener('click', () => filterByCategory(category.slug));
+                    container.appendChild(button);
+                });
+
+                // All button handler
+                allButton.addEventListener('click', () => filterByCategory(''));
+            }
+
+            function filterByCategory(categorySlug) {
+                currentCategory = categorySlug;
+
+                // Update active tab
+                document.querySelectorAll('.filter-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.getAttribute('data-category') === categorySlug);
+                });
+
+                // Filter tours
+                const filteredTours = categorySlug
+                    ? allTours.filter(tour => tour.category_slug === categorySlug)
+                    : allTours;
+
+                renderTours(filteredTours);
+            }
+
+            function renderTours(tours) {
+                const container = document.getElementById('tours-container');
+                const countElement = document.getElementById('tour-count');
+
+                // Update count
+                countElement.textContent = `${tours.length} ${tours.length === 1 ? 'tour' : 'tours'}`;
+
+                if (!tours || tours.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                            <i class="fas fa-map fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                            <h3>No tours found</h3>
+                            <p style="color: #666;">Try selecting a different category or check back soon for new tours!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = tours.map(tour => {
+                    const price = tour.price_per_person ? `$${tour.price_per_person}` : 'Contact us';
+                    const duration = tour.duration ? `${tour.duration} ${tour.duration === 1 ? 'day' : 'days'}` : 'Flexible';
+
+                    return `
+                        <a href="/tours/${tour.slug}" class="tour-card">
+                            <img src="${tour.featured_image || '/images/default-tour.jpg'}"
+                                 alt="${tour.title}"
+                                 class="tour-card__image"
+                                 loading="lazy">
+                            <div class="tour-card__content">
+                                ${tour.category_name ? `<span class="tour-card__category">${tour.category_name}</span>` : ''}
+                                <h3 class="tour-card__title">${tour.title}</h3>
+                                <p class="tour-card__description">
+                                    ${tour.short_description || tour.description || 'Explore this amazing tour in Uzbekistan'}
+                                </p>
+                                <div class="tour-card__meta">
+                                    <div class="tour-card__meta-item">
+                                        <i class="far fa-clock"></i>
+                                        <span>${duration}</span>
+                                    </div>
+                                    ${tour.city_name ? `
+                                    <div class="tour-card__meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>${tour.city_name}</span>
+                                    </div>
+                                    ` : ''}
+                                    <div class="tour-card__price">${price}</div>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            function showErrorState() {
+                const container = document.getElementById('tours-container');
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <i class="fas fa-exclamation-triangle fa-3x" style="color: #e74c3c; margin-bottom: 1rem;"></i>
+                        <h3>Error Loading Tours</h3>
+                        <p style="color: #666;">We couldn't load the tours. Please try again later.</p>
+                        <a href="/" class="btn btn--primary" style="margin-top: 1rem;">Go to Homepage</a>
+                    </div>
+                `;
+            }
+        })();
+    </script>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+       class="whatsapp-float"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-float__tooltip">Chat with us!</span>
+    </a>
+
+</body>
+</html>

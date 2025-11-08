@@ -264,7 +264,10 @@ HTML;
     return response($html)->header('Content-Type', 'text/html');
 });
 
-// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)Route::get('/tours', function (Request $request) {    $cityId = $request->get('city');    return view('tours', compact('cityId'));})->name('tours.index');
+// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
+Route::get('/tours', function () {
+    return response()->file(public_path('tours-listing.html'));
+})->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/category/{slug}', function ($slug) {

@@ -54,3 +54,47 @@ Route::get('/cities', function () {
 
     return response()->json($cities);
 })->name('api.cities.index');
+
+// Tours API - Get all active tours
+Route::get('/tours', function () {
+    $tours = \App\Models\Tour::where('is_active', true)
+        ->with(['category', 'city'])
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($tour) {
+            return [
+                'id' => $tour->id,
+                'slug' => $tour->slug,
+                'title' => $tour->title,
+                'description' => $tour->description,
+                'short_description' => $tour->short_description,
+                'featured_image' => $tour->featured_image_url ?? null,
+                'price_per_person' => $tour->price_per_person,
+                'duration' => $tour->duration,
+                'category_name' => $tour->category->translated_name ?? null,
+                'category_slug' => $tour->category->slug ?? null,
+                'city_name' => $tour->city->name ?? null,
+                'city_slug' => $tour->city->slug ?? null,
+            ];
+        });
+
+    return response()->json($tours);
+})->name('api.tours.index');
+
+// Categories API - Get all active categories
+Route::get('/categories', function () {
+    $categories = \App\Models\TourCategory::active()
+        ->orderBy('display_order')
+        ->get()
+        ->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'slug' => $category->slug,
+                'name' => $category->translated_name,
+                'icon' => $category->icon,
+                'tour_count' => $category->cached_tour_count ?? 0,
+            ];
+        });
+
+    return response()->json($categories);
+})->name('api.categories.index');
