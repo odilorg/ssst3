@@ -908,6 +908,11 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   .tours {
     padding: 40px 0;
   }
+
+  .tours__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 640px) {
