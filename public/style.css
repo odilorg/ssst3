@@ -913,15 +913,17 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
     padding-inline: 0.25rem;
   }
 
-  .tours__grid {
-    grid-template-columns: 1fr;
+  .tours__grid,
+  .tours-catalog .tours__grid {
+    grid-template-columns: 1fr !important;
     gap: 12px;
   }
 }
 
 @media (max-width: 640px) {
-  .tours__grid {
-    grid-template-columns: 1fr;
+  .tours__grid,
+  .tours-catalog .tours__grid {
+    grid-template-columns: 1fr !important;
     gap: 12px;
   }
 
