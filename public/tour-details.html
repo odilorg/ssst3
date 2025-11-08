@@ -1588,15 +1588,8 @@
       </div>
 
       <div class="modal-footer">
-        <a href="/booking/confirmation/" id="view-full-confirmation" class="btn btn--primary btn--large" target="_blank">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>
-          View Full Confirmation
-        </a>
-        <button class="btn btn--secondary btn--large" id="continue-browsing">
-          Continue Browsing Tours
+        <button class="btn btn--primary btn--large" id="continue-browsing">
+          Got It, Thanks!
         </button>
       </div>
     </div>
@@ -1778,9 +1771,6 @@
               document.getElementById('modal-customer-email').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
               document.getElementById('modal-customer-email-inline').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
 
-              // Set confirmation page link (will create this route later)
-              document.getElementById('view-full-confirmation').href = `/booking/confirmation/${record.reference}`;
-
               // Update modal title for inquiry
               if (!isBooking) {
                 document.querySelector('.modal-title').textContent = 'Inquiry Submitted!';
@@ -1841,7 +1831,6 @@
       const modal = document.getElementById('booking-confirmation-modal');
       const closeBtn = document.querySelector('.modal-close');
       const continueBrowsingBtn = document.getElementById('continue-browsing');
-      const viewConfirmationBtn = document.getElementById('view-full-confirmation');
 
       // Close modal function
       function closeModal() {
@@ -1856,19 +1845,9 @@
         closeBtn.addEventListener('click', closeModal);
       }
 
-      // Close on "Continue Browsing" button
+      // Close on "Got It, Thanks!" button
       if (continueBrowsingBtn) {
         continueBrowsingBtn.addEventListener('click', closeModal);
-      }
-
-      // Prevent main.js smooth scroll from intercepting confirmation link
-      if (viewConfirmationBtn) {
-        viewConfirmationBtn.addEventListener('click', function(e) {
-          // Don't prevent default - let the link work normally
-          // Just stop propagation so main.js doesn't catch it
-          e.stopPropagation();
-          console.log('[Modal] Opening confirmation page:', this.href);
-        }, true); // Use capture phase to run before main.js
       }
 
       // Close on overlay click (clicking outside modal)
