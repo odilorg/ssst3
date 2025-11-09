@@ -2138,8 +2138,8 @@ button:focus-visible {
 /* 8.2 Main Layout Grid */
 .footer-main {
   display: grid;
-  grid-template-columns: 1.4fr repeat(4, 1fr);
-  gap: 48px;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 64px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 64px 24px;
