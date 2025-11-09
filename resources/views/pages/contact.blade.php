@@ -5,6 +5,17 @@
 @section('meta_keywords', 'Contact Jahongir Travel, Uzbekistan tour inquiry, Silk Road tours contact, Samarkand travel agency')
 @section('canonical', 'https://jahongirtravel.com/contact')
 
+
+@push('styles')
+<style>
+/* Force visibility of animated elements */
+.animate-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+}
+</style>
+<link rel="stylesheet" href="{{ asset('contact.css') }}">
+@endpush
 @section('content')
     <!-- ========================================
          HERO SECTION
@@ -463,3 +474,7 @@
          FOOTER
          ======================================== -->
 @endsection
+
+@push('scripts')
+<script src="{{ asset('contact.js') }}"></script>
+@endpush
