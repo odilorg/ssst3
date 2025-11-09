@@ -964,3 +964,12 @@ Route::get('/destinations/{slug}', function ($slug) {
 
     return response($html)->header('Content-Type', 'text/html');
 })->name('city.show');
+
+// ============================================
+// TEMPORARY: Blade Refactor Testing
+// ============================================
+
+// Phase 1: Test layout system
+Route::get('/test-layout', function () {
+    return view('test-layout');
+})->name('test.layout');
