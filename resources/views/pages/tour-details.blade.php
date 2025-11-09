@@ -61,7 +61,7 @@
 
 /* Fix nav positioning for tour details page - no hero image */
 .nav {
-  position: static !important;
+  position: relative;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
