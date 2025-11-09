@@ -2139,7 +2139,7 @@ button:focus-visible {
 .footer-main {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.2fr;
-  gap: 60px;
+  gap: 70px;
   max-width: 1400px;
   margin: 0 auto;
   padding: 84px 24px;
@@ -2166,6 +2166,7 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
+  color: #B8D4F0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2271,7 +2272,9 @@ button:focus-visible {
 
 .footer-newsletter__form button:hover {
   background: #FFC929;
+  background: #E6A500;
   transform: translateX(2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .footer-newsletter__form button i {
@@ -2349,6 +2352,7 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
+  color: #B8D4F0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2520,12 +2524,16 @@ button:focus-visible {
 
 /* 8.7 Bottom Section */
 .footer-bottom {
+  text-align: center;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px 32px 24px;
 }
 
 .footer-bottom__wrap {
+  justify-content: center;
+  font-size: 13px;
+  color: var(--footer-muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2613,6 +2621,9 @@ button:focus-visible {
   }
 
   .footer-bottom__wrap {
+  justify-content: center;
+  font-size: 13px;
+  color: var(--footer-muted);
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -2827,10 +2838,14 @@ button:focus-visible {
 
   /* Mobile Bottom Section */
   .footer-bottom {
+  text-align: center;
     padding: 0 16px 24px 16px;
   }
 
   .footer-bottom__wrap {
+  justify-content: center;
+  font-size: 13px;
+  color: var(--footer-muted);
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -4290,6 +4305,7 @@ html {
 }
 
 .footer-brand__contact a {
+  color: #B8D4F0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -4372,10 +4388,14 @@ html {
 }
 
 .footer-bottom {
+  text-align: center;
     padding-top: 1.5rem;
 }
 
 .footer-bottom__wrap {
+  justify-content: center;
+  font-size: 13px;
+  color: var(--footer-muted);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -4420,6 +4440,9 @@ html {
     }
 
     .footer-bottom__wrap {
+  justify-content: center;
+  font-size: 13px;
+  color: var(--footer-muted);
         flex-direction: column;
         gap: 1rem;
         text-align: center;
@@ -4514,3 +4537,21 @@ html {
     display: none;
   }
 }
+
+/* Mobile Newsletter Form */
+@media (max-width: 640px) {
+  .footer-newsletter__form {
+    flex-direction: column;
+  }
+  
+  .footer-newsletter__form input {
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+  }
+  
+  .footer-newsletter__form button {
+    border-radius: 0 0 8px 8px;
+    padding: 12px 16px;
+  }
+}
+
