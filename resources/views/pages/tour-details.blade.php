@@ -58,6 +58,21 @@
 .action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
 .action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
 @media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
+
+/* Fix nav positioning for tour details page - no hero image */
+.nav {
+  position: static !important;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.nav .nav__logo-text {
+  color: var(--color-primary) !important;
+  text-shadow: none;
+}
+.nav .nav__menu a {
+  color: var(--color-text) !important;
+  text-shadow: none;
+}
 </style>
 @endpush
 
