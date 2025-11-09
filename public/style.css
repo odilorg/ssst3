@@ -1397,7 +1397,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   z-index: 100;
   padding: var(--space-3) 0;
   transition: all 0.3s ease;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
 }
 
 .nav.nav--sticky {
