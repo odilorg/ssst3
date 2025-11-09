@@ -339,13 +339,18 @@
           if (data.success) {
             const inquiry = data.inquiry;
 
-            // Populate inquiry confirmation modal
-            document.getElementById('inquiry-modal-reference').textContent = inquiry.reference || 'N/A';
-            document.getElementById('inquiry-modal-tour').textContent = inquiry.tour?.title || 'Your Selected Tour';
-            document.getElementById('inquiry-modal-email').textContent = inquiry.customer_email || 'your email';
+            // Populate inquiry confirmation modal (with null checks)
+            const inquiryModalRef = document.getElementById('inquiry-modal-reference');
+            const inquiryModalTour = document.getElementById('inquiry-modal-tour');
+            const inquiryModalEmail = document.getElementById('inquiry-modal-email');
+            
+            if (inquiryModalRef) inquiryModalRef.textContent = inquiry.reference || 'N/A';
+            if (inquiryModalTour) inquiryModalTour.textContent = inquiry.tour?.title || 'Your Selected Tour';
+            if (inquiryModalEmail) inquiryModalEmail.textContent = inquiry.customer_email || 'your email';
 
             // Show inquiry confirmation modal
-            document.getElementById('inquiry-confirmation-modal').style.display = 'flex';
+            const inquiryModal = document.getElementById('inquiry-confirmation-modal');
+            if (inquiryModal) inquiryModal.style.display = 'flex';
 
             // Hide inquiry form
             document.getElementById('simple-inquiry-form').style.display = 'none';
