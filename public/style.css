@@ -1481,16 +1481,30 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 .nav__cta {
   flex-shrink: 0;
+  background: transparent !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.nav__cta.btn--accent {
-  background: var(--color-accent);
-  color: var(--color-text);
+.nav__cta:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
 }
 
-.nav--sticky .nav__cta.btn--accent {
-  background: var(--color-accent);
-  color: var(--color-text);
+.nav--sticky .nav__cta {
+  color: var(--color-text) !important;
+  border-color: rgba(0, 0, 0, 0.2);
+  text-shadow: none;
+}
+
+.nav--sticky .nav__cta:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .nav__toggle {
@@ -4027,12 +4041,7 @@ html {
     }
 
     .nav__cta {
-        font-size: 0.875rem;
-        padding: 0.5rem 1rem;
-    }
-
-    .nav__cta svg {
-        display: none;
+        display: none; /* Hidden on mobile - WhatsApp button is sufficient */
     }
 }
 
