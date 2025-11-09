@@ -440,6 +440,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const modal = document.getElementById('booking-confirmation-modal');
       const closeBtn = document.querySelector('.modal-close');
+      const closeXBtn = document.getElementById('booking-modal-close-x');
       const continueBrowsingBtn = document.getElementById('continue-browsing');
 
       // Close modal function
@@ -450,9 +451,14 @@
         }
       }
 
-      // Close on X button click
+      // Close on X button click (old)
       if (closeBtn) {
         closeBtn.addEventListener('click', closeModal);
+      }
+
+      // Close on X button click (new top-right X)
+      if (closeXBtn) {
+        closeXBtn.addEventListener('click', closeModal);
       }
 
       // Close on "Got It, Thanks!" button
@@ -485,6 +491,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const inquiryModal = document.getElementById('inquiry-confirmation-modal');
       const inquiryCloseBtn = inquiryModal ? inquiryModal.querySelector('.modal-close') : null;
+      const inquiryCloseXBtn = document.getElementById('inquiry-modal-close-x');
       const closeInquiryModalBtn = document.getElementById('close-inquiry-modal');
 
       // Close modal function
@@ -495,9 +502,14 @@
         }
       }
 
-      // Close on X button
+      // Close on X button (old)
       if (inquiryCloseBtn) {
         inquiryCloseBtn.addEventListener('click', closeInquiryModal);
+      }
+
+      // Close on X button (new top-right X)
+      if (inquiryCloseXBtn) {
+        inquiryCloseXBtn.addEventListener('click', closeInquiryModal);
       }
 
       // Close on "Got It, Thanks!" button

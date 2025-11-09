@@ -13,6 +13,328 @@
     opacity: 1 !important;
     transform: none !important;
 }
+
+/* ======================================================
+   MODAL STYLES
+   ====================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.modal-container {
+    background: white;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(1);
+    animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+    to { transform: scale(1); }
+}
+
+
+.modal-close-x {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: #666;
+    z-index: 10;
+}
+
+.modal-close-x:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+    transform: rotate(90deg);
+}
+
+.modal-close-x:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.modal-header {
+    position: relative;
+    text-align: center;
+    padding: 2.5rem 2rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.success-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.error-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.modal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.modal-subtitle {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.confirmation-reference {
+    background: #f8f9fa;
+    border-left: 4px solid #1a5490;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-reference .label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.reference-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a5490;
+    font-family: monospace;
+}
+
+.confirmation-details {
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-details h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.detail-row {
+    display: flex;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #666;
+    min-width: 120px;
+}
+
+.detail-value {
+    color: #1a1a1a;
+}
+
+.modal-message {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.modal-message i {
+    color: #2196f3;
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.modal-message p {
+    margin: 0;
+    color: #0d47a1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.modal-next-steps {
+    margin-top: 1.5rem;
+}
+
+.modal-next-steps h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.modal-next-steps ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-next-steps li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+    color: #666;
+    line-height: 1.6;
+}
+
+.modal-next-steps li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 20px;
+    height: 20px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.alternative-contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.alt-method {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.alt-method:hover {
+    background: #e9ecef;
+    transform: translateX(4px);
+}
+
+.alt-method i {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    color: #1a5490;
+}
+
+.modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-header--error .error-icon {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+@media (max-width: 768px) {
+    .modal-container {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-header {
+        padding: 2rem 1.5rem 1rem;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+    }
+
+    .reference-number {
+        font-size: 1.25rem;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .detail-label {
+        min-width: auto;
+        font-size: 0.85rem;
+    }
+}
 </style>
 <link rel="stylesheet" href="{{ asset('contact.css') }}">
 @endpush
@@ -471,8 +793,125 @@
     <!-- ========================================
          FOOTER
          ======================================== -->
+
+    <!-- ========================================
+         SUCCESS MODAL
+         ======================================== -->
+    <div id="contact-success-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <button type="button" class="modal-close-x" id="contact-success-close-x" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="success-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <h2 class="modal-title">Message Sent Successfully!</h2>
+                <p class="modal-subtitle">Thank you for contacting us. We will get back to you within 24 hours.</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="confirmation-reference">
+                    <span class="label">Your Reference Number</span>
+                    <span class="reference-number" id="contact-modal-reference">N/A</span>
+                </div>
+
+                <div class="confirmation-details">
+                    <h3>Your Contact Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value" id="contact-modal-name">N/A</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="contact-modal-email">N/A</span>
+                    </div>
+                </div>
+
+                <div class="modal-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>We have sent a confirmation email to your address. Please check your inbox (and spam folder).</p>
+                </div>
+
+                <div class="modal-next-steps">
+                    <h3>What happens next?</h3>
+                    <ul>
+                        <li>Our team will review your message</li>
+                        <li>We'll respond within 24 hours</li>
+                        <li>Keep your reference number for future correspondence</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn--primary" id="contact-success-close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         ERROR MODAL
+         ======================================== -->
+    <div id="contact-error-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header modal-header--error">
+                <button type="button" class="modal-close-x" id="contact-error-close-x" aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="error-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h2 class="modal-title">Submission Failed</h2>
+                <p class="modal-subtitle" id="contact-error-message">An error occurred. Please try again.</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-message">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>You can also reach us through these alternative methods:</p>
+                </div>
+
+                <div class="alternative-contact-methods">
+                    <a href="https://wa.me/998915550808" class="alt-method" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp: +998 91 555 0808</span>
+                    </a>
+                    <a href="mailto:info@jahongirtravel.com" class="alt-method">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email: info@jahongirtravel.com</span>
+                    </a>
+                    <a href="tel:+998991234567" class="alt-method">
+                        <i class="fas fa-phone"></i>
+                        <span>Call: +998 99 123 4567</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn--outline" id="contact-error-close">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
 <script src="{{ asset('contact.js') }}"></script>
+<script src="{{ asset('contact_form_handler.js') }}"></script>
 @endpush
