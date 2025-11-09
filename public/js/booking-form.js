@@ -239,6 +239,17 @@
                 if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
                 if (totalItem) totalItem.style.display = 'none';
               }
+
+              // Show modal
+              const bookingModal = document.getElementById('booking-confirmation-modal');
+              console.log('[Booking] Modal element:', bookingModal);
+              if (bookingModal) {
+                bookingModal.style.display = 'flex';
+                console.log('[Booking] Modal display set to flex');
+              } else {
+                console.error('[Booking] Modal not found in DOM!');
+              }
+
               bookingForm.reset();
               step2Form.style.display = 'none';
               bookingBtn.classList.remove('active');
