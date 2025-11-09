@@ -71,6 +71,9 @@
         <span class="whatsapp-float__tooltip">Chat with us!</span>
     </a>
     
+    {{-- Main JavaScript --}}
+    <script src="{{ asset('js/main.js') }}"></script>
+
     {{-- Page-specific Scripts --}}
     @stack('scripts')
 </body>
