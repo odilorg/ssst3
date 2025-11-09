@@ -22,7 +22,7 @@ Route::get('/', function () {
 
 // Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
 Route::get('/tours', function () {
-    return response()->file(public_path('tours-listing.html'));
+    return view('pages.tours-listing');
 })->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
@@ -244,7 +244,7 @@ Route::get('/about', function () {
 
 // Contact page
 Route::get('/contact', function () {
-    return response()->file(public_path('contact.html'));
+    return view('pages.contact');
 })->name('contact');
 
 // Blog listing page
@@ -690,7 +690,7 @@ Route::get('/booking/confirmation/{reference}', [\App\Http\Controllers\Partials\
 // City/Destination landing page - SEO-friendly URL with server-side meta tag injection
 // Destinations index page
 Route::get('/destinations/', function () {
-    return response()->file(public_path('destinations.html'));
+    return view('pages.destinations');
 })->name('destinations.index');
 
 Route::get('/destinations/{slug}', function ($slug) {

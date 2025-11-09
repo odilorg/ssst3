@@ -1,0 +1,465 @@
+@extends('layouts.main')
+
+@section('title', 'Contact Us - Jahongir Travel | Get in Touch with Our Silk Road Experts')
+@section('meta_description', 'Contact Jahongir Travel for personalized Uzbekistan tour planning. Our local experts in Samarkand are ready to help you plan your perfect Silk Road adventure.')
+@section('meta_keywords', 'Contact Jahongir Travel, Uzbekistan tour inquiry, Silk Road tours contact, Samarkand travel agency')
+@section('canonical', 'https://jahongirtravel.com/contact')
+
+@section('content')
+    <!-- ========================================
+         HERO SECTION
+         ======================================== -->
+    <section class="contact-hero">
+        <div class="contact-hero__overlay"></div>
+        <div class="container">
+            <div class="contact-hero__content">
+                <h1 class="contact-hero__title">Contact the Team</h1>
+                <p class="contact-hero__subtitle">
+                    Planning your next trip to Uzbekistan? Let's talk!<br>
+                    Our team of Silk Road experts is here to help you every step of the way.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         CONTACT SECTION
+         ======================================== -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- ========================================
+                     LEFT COLUMN: CONTACT FORM
+                     ======================================== -->
+                <div class="contact-form-wrapper animate-on-scroll" id="contact-form">
+                    <h2 class="contact-form__title">Send us a message</h2>
+                    <p class="contact-form__intro">We typically respond within 24 hours. Let's start planning your perfect Uzbekistan adventure!</p>
+
+                    <!-- Benefits Section -->
+                    <div class="form-benefits">
+                        <div class="form-benefit">
+                            <i class="fas fa-headset"></i>
+                            <span>Expert local guidance</span>
+                        </div>
+                        <div class="form-benefit">
+                            <i class="fas fa-clock"></i>
+                            <span>24-hour response</span>
+                        </div>
+                        <div class="form-benefit">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure & confidential</span>
+                        </div>
+                    </div>
+
+                                        <form class="contact-form" id="contactForm">
+                                            @csrf
+                        <!-- Hidden CSRF Token -->
+                        <input type="hidden" id="csrf-token" name="_token" value="">
+
+                        <!-- Name Field -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                Your Name <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="form-input"
+                                placeholder="e.g., John Smith"
+                                required
+                                aria-required="true"
+                                aria-describedby="name-error"
+                            >
+                            <span class="form-error" id="name-error" role="alert"></span>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                Email Address <span class="required">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-input"
+                                placeholder="you@example.com"
+                                required
+                                inputmode="email"
+                                aria-required="true"
+                                aria-describedby="email-error"
+                            >
+                            <span class="form-error" id="email-error" role="alert"></span>
+                        </div>
+
+                        <!-- Phone Field (Optional) -->
+                        <div class="form-group">
+                            <label for="phone" class="form-label">
+                                Phone <span class="optional">(optional)</span>
+                            </label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                class="form-input"
+                                placeholder="+998 90 123 4567"
+                                inputmode="tel"
+                                aria-describedby="phone-error"
+                            >
+                            <span class="form-error" id="phone-error" role="alert"></span>
+                        </div>
+
+                        <!-- Message Field -->
+                        <div class="form-group">
+                            <label for="message" class="form-label">
+                                Your Message <span class="required">*</span>
+                            </label>
+                            <textarea
+                                id="message"
+                                name="message"
+                                class="form-input form-textarea"
+                                rows="4"
+                                placeholder="Tell us about your travel plans..."
+                                required
+                                aria-required="true"
+                                aria-describedby="message-error"
+                            ></textarea>
+                            <span class="form-error" id="message-error" role="alert"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn--primary btn--large form-submit">
+                            <span class="button-text">Send Message</span>
+                            <i class="fas fa-arrow-right button-icon"></i>
+                        </button>
+
+                        <!-- Trust Signal -->
+                        <p class="form-trust-signal">
+                            <i class="fas fa-lock"></i> Your information is secure & private
+                        </p>
+                    </form>
+
+                    <!-- Alternative Contact Methods -->
+                    <div class="alternative-contact">
+                        <p class="alt-contact-title">Need immediate help?</p>
+                        <div class="alt-contact-methods">
+                            <a href="https://wa.me/998915550808" class="alt-contact-link" target="_blank" rel="noopener">
+                                <i class="fab fa-whatsapp"></i> WhatsApp: +998 91 555 0808
+                            </a>
+                            <a href="mailto:info@jahongirtravel.com" class="alt-contact-link">
+                                <i class="fas fa-envelope"></i> info@jahongirtravel.com
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Card -->
+                    <div class="contact-card contact-card--testimonial animate-on-scroll">
+                        <div class="testimonial-header">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div class="testimonial-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">
+                            "Exceptional service from start to finish! The team helped us plan the perfect Silk Road journey.
+                            Their local knowledge and attention to detail made our trip unforgettable."
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="testimonial-author__avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="testimonial-author__info">
+                                <p class="testimonial-author__name">Sarah Mitchell</p>
+                                <p class="testimonial-author__location">London, UK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================
+                     RIGHT COLUMN: CONTACT INFO
+                     ======================================== -->
+                <div class="contact-info">
+                    <!-- Get in Touch Card -->
+                    <div class="contact-card animate-on-scroll">
+                        <h3 class="contact-card__title">Get in touch</h3>
+                        <p class="contact-card__description">
+                            We love to chat about your travel plans and
+                            are ready to help in any way we can.
+                        </p>
+
+                        <!-- Trust Badge -->
+                        <div class="trust-badge">
+                            <div class="trust-badge__rating">
+                                <i class="fab fa-google"></i>
+                                <span class="trust-badge__score">4.9</span>
+                                <div class="trust-badge__stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="trust-badge__text">Based on 127+ reviews</p>
+                        </div>
+
+                        <div class="contact-card__item">
+                            <i class="fas fa-phone contact-card__icon"></i>
+                            <div class="contact-card__content">
+                                <span class="contact-card__label">Call us</span>
+                                <a href="tel:+998991234567" class="contact-card__link">
+                                    +998 99 123 4567
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-card__item">
+                            <i class="fas fa-envelope contact-card__icon"></i>
+                            <div class="contact-card__content">
+                                <span class="contact-card__label">Email us</span>
+                                <a href="mailto:info@jahongirtravel.com" class="contact-card__link">
+                                    info@jahongirtravel.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opening Hours Card -->
+                    <div class="contact-card animate-on-scroll">
+                        <h3 class="contact-card__title">
+                            <i class="fas fa-clock contact-card__title-icon"></i>
+                            Opening Hours
+                        </h3>
+
+                        <div class="hours-block">
+                            <p class="hours-block__season">Monday through Friday</p>
+                            <p class="hours-block__time">9:00 – 18:00</p>
+                            <p class="hours-block__time">Sat – Sun: Closed</p>
+                        </div>
+
+                        <div class="hours-block">
+                            <p class="hours-block__season">Peak Season (Apr – Sep)</p>
+                            <p class="hours-block__time">Mon – Fri: 8:00 – 20:00</p>
+                            <p class="hours-block__time">Sat: 9:00 – 15:00</p>
+                        </div>
+
+                        <p class="contact-card__timezone">
+                            <i class="fas fa-info-circle"></i>
+                            All times are in Uzbekistan Standard Time (UTC+5)
+                        </p>
+                    </div>
+
+                    <!-- Head Office Card -->
+                    <div class="contact-card animate-on-scroll">
+                        <h3 class="contact-card__title">
+                            <i class="fas fa-building contact-card__title-icon"></i>
+                            Head Office
+                        </h3>
+                        <p class="contact-card__description">
+                            Visit our cozy office in the heart of Samarkand, right near the historic Registan Square.
+                            We'd love to meet you in person!
+                        </p>
+
+                        <address class="contact-address">
+                            <i class="fas fa-map-marker-alt contact-card__icon"></i>
+                            <div class="contact-card__content">
+                                Registan Street, 15<br>
+                                Samarkand, Uzbekistan
+                            </div>
+                        </address>
+
+                        <a href="https://maps.google.com/?q=Registan+Street+15+Samarkand+Uzbekistan"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn--outline btn--small contact-card__map-btn">
+                            <i class="fas fa-map"></i> Open in Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         PERSONALITY SECTION
+         ======================================== -->
+    <section id="contact-personality" class="contact-personality" aria-labelledby="contact-personality-title">
+        <div class="container cp-grid">
+            <figure class="cp-media">
+                <img
+                    src="images/team-photo.jpg"
+                    width="405"
+                    height="340"
+                    alt="Jahongir Travel team in Samarkand office"
+                    loading="lazy"
+                    decoding="async"
+                    class="cp-media__img" />
+                <figcaption class="visually-hidden">The local team that crafts and supports your trip</figcaption>
+            </figure>
+            <div class="cp-copy">
+                <h2 id="contact-personality-title" class="cp-title">Faces behind every journey</h2>
+                <p class="cp-sub">We're a small local team based in Samarkand — the same people who greet travelers, plan routes, and make every trip feel like family.</p>
+                <p class="cp-body">Whether it's crafting your first Silk Road itinerary or helping you choose the best guest house, you'll always talk to someone who knows Uzbekistan by heart.</p>
+                <a href="/about-us" class="btn btn--outline cp-cta">Meet the Team</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         FAQ SECTION
+         ======================================== -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="faq-section__title">Frequently asked questions</h2>
+            <p class="faq-section__subtitle">Quick answers to common questions about touring Uzbekistan</p>
+
+            <div class="faq-grid">
+                <!-- FAQ Item 1 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>How can I book a tour?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            You can book a tour by browsing our tours page, selecting your preferred tour,
+                            and clicking the "Book Now" button. Alternatively, you can contact us directly
+                            via phone or email, and our team will assist you with the booking process.
+                        </p>
+                    </div>
+                </details>
+
+                <!-- FAQ Item 2 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>Are there any age restrictions for the tour?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            Most of our tours are suitable for all ages. However, some adventure tours
+                            may have minimum age requirements for safety reasons. Please check the specific
+                            tour details or contact us for more information about age restrictions.
+                        </p>
+                    </div>
+                </details>
+
+                <!-- FAQ Item 3 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>What should I pack for the tour?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            We recommend packing comfortable walking shoes, weather-appropriate clothing,
+                            sunscreen, a hat, and a reusable water bottle. For specific tours, we'll send
+                            you a detailed packing list after booking. Don't forget your camera to capture
+                            the beautiful sights of Uzbekistan!
+                        </p>
+                    </div>
+                </details>
+
+                <!-- FAQ Item 4 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>How can I contact customer support after the tour?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            You can reach our customer support team anytime via email at
+                            info@jahongirtravel.com or by calling +998 99 123 4567. We're here to help
+                            with any questions or feedback you may have about your tour experience.
+                        </p>
+                    </div>
+                </details>
+
+                <!-- FAQ Item 5 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>Can I cancel or reschedule my booking?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            Yes, you can cancel or reschedule your booking according to our cancellation
+                            policy. Cancellations made 30+ days before the tour start date receive a full
+                            refund. For cancellations within 30 days, please contact us to discuss available
+                            options and any applicable fees.
+                        </p>
+                    </div>
+                </details>
+
+                <!-- FAQ Item 6 -->
+                <details class="faq-item animate-on-scroll">
+                    <summary class="faq-item__question">
+                        <span>Do you offer group discounts?</span>
+                        <i class="fas fa-chevron-down faq-item__icon"></i>
+                    </summary>
+                    <div class="faq-item__answer">
+                        <p>
+                            Yes, we offer special discounts for group bookings of 6 or more people.
+                            The discount varies depending on the tour and group size. Contact us with
+                            your travel details, and we'll provide you with a customized group rate.
+                        </p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- FAQ Help Link -->
+            <div class="faq-help">
+                <p class="faq-help__text">Didn't find your answer?</p>
+                <a href="#contact-form" class="faq-help__link">
+                    Contact us
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         WHATSAPP FLOATING BUTTON (Desktop)
+         ======================================== -->
+    <a href="https://wa.me/998991234567?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+       class="whatsapp-float"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-float__tooltip">Chat with us!</span>
+    </a>
+
+    <!-- ========================================
+         MOBILE STICKY CTA BAR (Mobile Only)
+         ======================================== -->
+    <div class="mobile-cta-bar">
+        <a href="tel:+998991234567" class="mobile-cta-bar__button mobile-cta-bar__button--call">
+            <i class="fas fa-phone"></i>
+            <span>Call</span>
+        </a>
+        <a href="https://wa.me/998991234567?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+           target="_blank"
+           rel="noopener noreferrer"
+           class="mobile-cta-bar__button mobile-cta-bar__button--whatsapp">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+        </a>
+        <a href="mailto:info@jahongirtravel.com" class="mobile-cta-bar__button mobile-cta-bar__button--email">
+            <i class="fas fa-envelope"></i>
+            <span>Email</span>
+        </a>
+    </div>
+
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+@endsection
