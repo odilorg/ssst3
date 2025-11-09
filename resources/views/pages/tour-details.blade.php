@@ -115,7 +115,7 @@
       <!-- Actual Gallery -->
       <!-- Actual Gallery - Loaded via HTMX -->
       <div class="tour-hero__gallery is-hidden"
-           hx-get=""
+           hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/gallery"
            hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
