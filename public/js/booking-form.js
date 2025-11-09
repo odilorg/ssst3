@@ -236,7 +236,7 @@
                 const totalItem = document.querySelector('.summary-item--total');
                 
                 if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
-                if (modalSubtitle) modalSubtitle.textContent = 'We've received your question and will respond soon';
+                if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
                 if (totalItem) totalItem.style.display = 'none';
               }
               bookingForm.reset();
