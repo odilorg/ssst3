@@ -483,7 +483,7 @@ Route::get('/tours/{slug}', function ($slug) {
 
 // About page
 Route::get('/about', function () {
-    return response()->file(public_path('about.html'));
+    return view('pages.about');
 })->name('about');
 
 // Contact page
