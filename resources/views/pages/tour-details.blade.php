@@ -38,196 +38,6 @@
   }
 }
 
-  <!-- BOOKING CONFIRMATION MODALS -->
-  <div id="booking-confirmation-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-container">
-      <div class="modal-header">
-        <div class="success-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <h2 class="modal-title">Booking Request Submitted!</h2>
-        <p class="modal-subtitle">We've received your request and will get back to you soon</p>
-        <button class="modal-close" aria-label="Close">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Booking Reference -->
-        <div class="confirmation-reference">
-          <span class="label">Your Reference Number</span>
-          <span class="reference-number" id="modal-reference">BK-2025-XXX</span>
-          <p class="reference-note">Save this number for your records</p>
-        </div>
-
-        <!-- Booking Summary -->
-        <div class="booking-summary">
-          <h3 class="section-title">Booking Summary</h3>
-          <div class="summary-grid">
-            <div class="summary-item">
-              <span class="label">Tour</span>
-              <span class="value" id="modal-tour-name">...</span>
-            </div>
-            <div class="summary-item">
-              <span class="label">Date</span>
-              <span class="value" id="modal-date">...</span>
-            </div>
-            <div class="summary-item">
-              <span class="label">Guests</span>
-              <span class="value" id="modal-guests">...</span>
-            </div>
-            <div class="summary-item summary-item--total">
-              <span class="label">Estimated Total</span>
-              <span class="value highlight" id="modal-total">$200.00</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Customer Info -->
-        <div class="customer-info">
-          <h3 class="section-title">Confirmation Email Sent To</h3>
-          <p class="email-address" id="modal-customer-email">customer@example.com</p>
-        </div>
-
-        <!-- Next Steps -->
-        <div class="next-steps">
-          <h3 class="section-title">What Happens Next?</h3>
-          <ol class="steps-list">
-            <li>We'll check availability for your requested dates</li>
-            <li>You'll receive confirmation within <strong>24 hours</strong></li>
-            <li>Check your email (<strong id="modal-customer-email-inline">...</strong>) for details</li>
-            <li>No payment required until we confirm availability</li>
-          </ol>
-        </div>
-
-        <!-- Important Note -->
-        <div class="important-note">
-          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-          </svg>
-          <p><strong>Please check your spam folder</strong> if you don't receive our email within an hour.</p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn--primary btn--large" id="continue-browsing">
-          Got It, Thanks!
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================ -->
-  <!-- SIMPLE INQUIRY CONFIRMATION MODAL                               -->
-  <!-- ================================================================ -->
-  <div id="inquiry-confirmation-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-container">
-      <div class="modal-header">
-        <div class="success-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-        </div>
-        <h2 class="modal-title">Question Received!</h2>
-        <p class="modal-subtitle">We'll respond to your email within 24 hours</p>
-        <button class="modal-close" aria-label="Close">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Reference Number -->
-        <div class="confirmation-reference">
-          <span class="label">Reference Number</span>
-          <span class="reference-number" id="inquiry-modal-reference">INQ-2025-XXX</span>
-          <p class="reference-note">Save this for your records</p>
-        </div>
-
-        <!-- Tour Info -->
-        <div class="booking-summary">
-          <h3 class="section-title">Your Question About</h3>
-          <div class="summary-grid">
-            <div class="summary-item" style="grid-column: 1 / -1;">
-              <span class="label">Tour</span>
-              <span class="value" id="inquiry-modal-tour" style="font-size: 1.125rem;">Tour Name</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Email Confirmation -->
-        <div class="customer-info">
-          <h3 class="section-title">We'll Reply To</h3>
-          <p class="email-address" id="inquiry-modal-email">customer@example.com</p>
-        </div>
-
-        <!-- Next Steps -->
-        <div class="next-steps">
-          <h3 class="section-title">What Happens Next?</h3>
-          <ol class="steps-list">
-            <li>Our travel experts will review your question</li>
-            <li>You'll receive a detailed response within <strong>24 hours</strong></li>
-            <li>Check your email for our personalized reply</li>
-            <li>We're here to help you plan the perfect trip!</li>
-          </ol>
-        </div>
-
-        <!-- Important Note -->
-        <div class="important-note">
-          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-          </svg>
-          <p><strong>Check your spam folder</strong> if you don't receive our email within an hour.</p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn--primary btn--large" id="close-inquiry-modal">
-          Got It, Thanks!
-        </button>
-      </div>
-    </div>
-  </div>
-
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
-
-@endsection
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('tour-details.css') }}">
-<link rel="stylesheet" href="{{ asset('css/gallery-lightbox.css') }}">
-<link rel="stylesheet" href="{{ asset('tour-details-gallery-addon.css') }}">
-<link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
-<style>
-/* Booking Actions - Two-Button Choice */
-.booking-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
-.action-btn{display:flex;align-items:center;gap:0.75rem;padding:1rem;border:2px solid #E3E3E3;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;min-height:80px;text-align:left;width:100%}
-.action-btn:hover{border-color:#0D4C92;transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,76,146,0.15)}
-.action-btn:active{transform:translateY(0)}
-.action-btn.active{border-color:#0D4C92;background:#F0F7FF;box-shadow:0 0 0 3px rgba(13,76,146,0.1)}
-.action-btn i{font-size:1.5rem;color:#0D4C92;flex-shrink:0}
-.action-btn--booking i{color:#4CAF50}
-.action-btn--inquiry i{color:#FF9800}
-.action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
-.action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
-.action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
-@media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
-
-/* Fix nav positioning for tour details page - no hero image */
-.nav {
-  position: relative;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-.nav .nav__logo-text {
-  color: var(--color-primary) !important;
-  text-shadow: none;
-}
-.nav .nav__menu a {
-  color: var(--color-text) !important;
-  text-shadow: none;
-}
-</style>
-@endpush
-
 @section('content')
   <!-- =====================================================
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
@@ -860,6 +670,196 @@
       </button>
     </div>
   </div>
+  <!-- BOOKING CONFIRMATION MODALS -->
+  <div id="booking-confirmation-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 class="modal-title">Booking Request Submitted!</h2>
+        <p class="modal-subtitle">We've received your request and will get back to you soon</p>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Booking Reference -->
+        <div class="confirmation-reference">
+          <span class="label">Your Reference Number</span>
+          <span class="reference-number" id="modal-reference">BK-2025-XXX</span>
+          <p class="reference-note">Save this number for your records</p>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+          <h3 class="section-title">Booking Summary</h3>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="label">Tour</span>
+              <span class="value" id="modal-tour-name">...</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Date</span>
+              <span class="value" id="modal-date">...</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Guests</span>
+              <span class="value" id="modal-guests">...</span>
+            </div>
+            <div class="summary-item summary-item--total">
+              <span class="label">Estimated Total</span>
+              <span class="value highlight" id="modal-total">$200.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+          <h3 class="section-title">Confirmation Email Sent To</h3>
+          <p class="email-address" id="modal-customer-email">customer@example.com</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3 class="section-title">What Happens Next?</h3>
+          <ol class="steps-list">
+            <li>We'll check availability for your requested dates</li>
+            <li>You'll receive confirmation within <strong>24 hours</strong></li>
+            <li>Check your email (<strong id="modal-customer-email-inline">...</strong>) for details</li>
+            <li>No payment required until we confirm availability</li>
+          </ol>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important-note">
+          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <p><strong>Please check your spam folder</strong> if you don't receive our email within an hour.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--large" id="continue-browsing">
+          Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SIMPLE INQUIRY CONFIRMATION MODAL                               -->
+  <!-- ================================================================ -->
+  <div id="inquiry-confirmation-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h2 class="modal-title">Question Received!</h2>
+        <p class="modal-subtitle">We'll respond to your email within 24 hours</p>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Reference Number -->
+        <div class="confirmation-reference">
+          <span class="label">Reference Number</span>
+          <span class="reference-number" id="inquiry-modal-reference">INQ-2025-XXX</span>
+          <p class="reference-note">Save this for your records</p>
+        </div>
+
+        <!-- Tour Info -->
+        <div class="booking-summary">
+          <h3 class="section-title">Your Question About</h3>
+          <div class="summary-grid">
+            <div class="summary-item" style="grid-column: 1 / -1;">
+              <span class="label">Tour</span>
+              <span class="value" id="inquiry-modal-tour" style="font-size: 1.125rem;">Tour Name</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Confirmation -->
+        <div class="customer-info">
+          <h3 class="section-title">We'll Reply To</h3>
+          <p class="email-address" id="inquiry-modal-email">customer@example.com</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3 class="section-title">What Happens Next?</h3>
+          <ol class="steps-list">
+            <li>Our travel experts will review your question</li>
+            <li>You'll receive a detailed response within <strong>24 hours</strong></li>
+            <li>Check your email for our personalized reply</li>
+            <li>We're here to help you plan the perfect trip!</li>
+          </ol>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important-note">
+          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <p><strong>Check your spam folder</strong> if you don't receive our email within an hour.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--large" id="close-inquiry-modal">
+          Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+
+@endsection
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('tour-details.css') }}">
+<link rel="stylesheet" href="{{ asset('css/gallery-lightbox.css') }}">
+<link rel="stylesheet" href="{{ asset('tour-details-gallery-addon.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
+<style>
+/* Booking Actions - Two-Button Choice */
+.booking-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.action-btn{display:flex;align-items:center;gap:0.75rem;padding:1rem;border:2px solid #E3E3E3;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;min-height:80px;text-align:left;width:100%}
+.action-btn:hover{border-color:#0D4C92;transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,76,146,0.15)}
+.action-btn:active{transform:translateY(0)}
+.action-btn.active{border-color:#0D4C92;background:#F0F7FF;box-shadow:0 0 0 3px rgba(13,76,146,0.1)}
+.action-btn i{font-size:1.5rem;color:#0D4C92;flex-shrink:0}
+.action-btn--booking i{color:#4CAF50}
+.action-btn--inquiry i{color:#FF9800}
+.action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
+.action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
+.action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
+@media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
+
+/* Fix nav positioning for tour details page - no hero image */
+.nav {
+  position: relative;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.nav .nav__logo-text {
+  color: var(--color-primary) !important;
+  text-shadow: none;
+}
+.nav .nav__menu a {
+  color: var(--color-text) !important;
+  text-shadow: none;
+}
+</style>
+@endpush
+
 @endsection
 
 @push('scripts')
