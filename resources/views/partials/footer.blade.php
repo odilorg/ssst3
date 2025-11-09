@@ -6,64 +6,64 @@
                 <span class="footer-brand__text">Jahongir Travel</span>
             </a>
             <p class="footer-brand__tagline">Tailor-made Uzbekistan tours since 2012.</p>
-            <address class="footer-brand__contact">
-                <a href="mailto:info@jahongirtravel.com">info@jahongirtravel.com</a><br>
-                <a href="tel:+998991234567">+998 99 123 4567</a>
-            </address>
-            <p class="footer-brand__location">Samarkand, Uzbekistan</p>
+
+            <div class="footer-brand__contact-section">
+                <div class="footer-brand__contact-title">Get in Touch</div>
+                <address class="footer-brand__contact">
+                    <a href="mailto:info@jahongirtravel.com"><i class="far fa-envelope"></i> info@jahongirtravel.com</a>
+                    <a href="tel:+998991234567"><i class="fas fa-phone"></i> +998 99 123 4567</a>
+                    <a href="https://wa.me/998915550808" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                </address>
+                <p class="footer-brand__location"><i class="fas fa-map-marker-alt"></i> Samarkand, Uzbekistan</p>
+            </div>
         </div>
 
-        <nav class="footer-col footer-nav" aria-label="Company">
-            <div class="footer-nav__title">Company</div>
+        <nav class="footer-col footer-nav" aria-label="Quick Links">
+            <div class="footer-nav__title">Quick Links</div>
             <ul class="footer-nav__list">
-                <li><a href="{{ url('/about') }}">About us</a></li>
-                <li><a href="{{ url('/careers') }}">Careers</a></li>
-                <li><a href="{{ route('blog.index') }}">Blog</a></li>
-                <li><a href="{{ url('/partners') }}">Partner</a></li>
+                <li><a href="{{ url('/about') }}">About Us</a></li>
                 <li><a href="{{ url('/contact') }}">Contact</a></li>
-            </ul>
-        </nav>
-
-        <nav class="footer-col footer-nav" aria-label="Services">
-            <div class="footer-nav__title">Services</div>
-            <ul class="footer-nav__list">
-                <li><a href="{{ url('/tours') }}">Tour booking</a></li>
-                <li><a href="{{ url('/visa') }}">Visa online</a></li>
-                <li><a href="{{ url('/guides') }}">Travel guide</a></li>
-                <li><a href="{{ url('/car-service') }}">Car service</a></li>
-                <li><a href="{{ url('/sim') }}">SIM & eSIM</a></li>
-            </ul>
-        </nav>
-
-        <nav class="footer-col footer-nav" aria-label="Help">
-            <div class="footer-nav__title">Need help?</div>
-            <ul class="footer-nav__list">
+                <li><a href="{{ route('blog.index') }}">Blog</a></li>
                 <li><a href="{{ url('/faqs') }}">FAQs</a></li>
-                <li><a href="{{ url('/support') }}">Customer care</a></li>
-                <li><a href="{{ url('/safety') }}">Safety tips</a></li>
-                <li><a href="{{ url('/privacy') }}">Privacy policy</a></li>
-                <li><a href="{{ url('/terms') }}">Terms of use</a></li>
             </ul>
         </nav>
 
-        <div class="footer-col footer-social">
-            <div class="footer-social__title">Connect</div>
-            <ul class="footer-social__list">
-                <li><a href="https://facebook.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a></li>
-                <li><a href="https://instagram.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
-                <li><a href="https://twitter.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
-                <li><a href="https://youtube.com/@jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a></li>
+        <nav class="footer-col footer-nav" aria-label="Popular Destinations">
+            <div class="footer-nav__title">Destinations</div>
+            <ul class="footer-nav__list">
+                <li><a href="{{ url('/destinations/samarkand') }}">Samarkand</a></li>
+                <li><a href="{{ url('/destinations/bukhara') }}">Bukhara</a></li>
+                <li><a href="{{ url('/destinations/khiva') }}">Khiva</a></li>
+                <li><a href="{{ url('/destinations/tashkent') }}">Tashkent</a></li>
             </ul>
+        </nav>
+
+        <div class="footer-col footer-newsletter">
+            <div class="footer-newsletter__title">Stay Updated</div>
+            <p class="footer-newsletter__text">Join 1,000+ travelers discovering Uzbekistan's hidden gems!</p>
+            <form class="footer-newsletter__form" action="#" method="post">
+                <input type="email" placeholder="Your email" required aria-label="Email address">
+                <button type="submit" aria-label="Subscribe">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <div class="footer-newsletter__social">
+                <a href="https://facebook.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="container footer-bottom">
         <div class="footer-bottom__wrap">
-            <div class="footer-bottom__copyright">© {{ date('Y') }} Jahongir Travel. All rights reserved.</div>
+            <div>© {{ date('Y') }} Jahongir Travel. All rights reserved.</div>
             <div class="footer-bottom__legal">
                 <a href="{{ url('/privacy') }}">Privacy</a>
                 <span> • </span>
                 <a href="{{ url('/terms') }}">Terms</a>
+                <span> • </span>
+                <a href="{{ url('/cookies') }}">Cookies</a>
             </div>
         </div>
     </div>
