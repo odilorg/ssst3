@@ -7,20 +7,20 @@
 
 @section('structured_data')
 {
-  "@context": "https://schema.org",
-  "@type": "TravelAgency",
+  "@@context": "https://schema.org",
+  "@@type": "TravelAgency",
   "name": "Jahongir Travel",
   "description": "Expert guided tours in Uzbekistan and the Silk Road",
   "url": "https://jahongirtravel.com",
   "telephone": "+998 99 123 4567",
   "email": "info@@jahongirtravel.com",
   "address": {
-    "@type": "PostalAddress",
+    "@@type": "PostalAddress",
     "addressLocality": "Samarkand",
     "addressCountry": "UZ"
   },
   "aggregateRating": {
-    "@type": "AggregateRating",
+    "@@type": "AggregateRating",
     "ratingValue": "4.9",
     "reviewCount": "2400"
   }
@@ -210,16 +210,16 @@
     <!-- JSON-LD Schema -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+      "@@context": "https://schema.org",
+      "@@type": "ItemList",
       "name": "Trending Activities in Uzbekistan",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Cultural & Historical", "url": "https://jahongirtravel.com/tours/category/cultural-tours/"},
-        {"@type": "ListItem", "position": 2, "name": "Mountain & Adventure", "url": "https://jahongirtravel.com/tours/category/adventure-tours/"},
-        {"@type": "ListItem", "position": 3, "name": "Family & Educational", "url": "https://jahongirtravel.com/tours/category/family-tours/"},
-        {"@type": "ListItem", "position": 4, "name": "Desert & Nomadic", "url": "https://jahongirtravel.com/tours/category/desert-tours/"},
-        {"@type": "ListItem", "position": 5, "name": "City Walks & Local Life", "url": "https://jahongirtravel.com/tours/category/city-walks/"},
-        {"@type": "ListItem", "position": 6, "name": "Food & Craft", "url": "https://jahongirtravel.com/tours/category/food-craft-tours/"}
+        {"@@type": "ListItem", "position": 1, "name": "Cultural & Historical", "url": "https://jahongirtravel.com/tours/category/cultural-tours/"},
+        {"@@type": "ListItem", "position": 2, "name": "Mountain & Adventure", "url": "https://jahongirtravel.com/tours/category/adventure-tours/"},
+        {"@@type": "ListItem", "position": 3, "name": "Family & Educational", "url": "https://jahongirtravel.com/tours/category/family-tours/"},
+        {"@@type": "ListItem", "position": 4, "name": "Desert & Nomadic", "url": "https://jahongirtravel.com/tours/category/desert-tours/"},
+        {"@@type": "ListItem", "position": 5, "name": "City Walks & Local Life", "url": "https://jahongirtravel.com/tours/category/city-walks/"},
+        {"@@type": "ListItem", "position": 6, "name": "Food & Craft", "url": "https://jahongirtravel.com/tours/category/food-craft-tours/"}
       ]
     }
     </script>
@@ -300,187 +300,187 @@
     <!-- JSON-LD Schema: TouristTrip for Featured Tours -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+      "@@context": "https://schema.org",
+      "@@type": "ItemList",
       "name": "Popular Uzbekistan Tours",
       "itemListElement": [
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 1,
           "name": "5-Day Silk Road Classic: Samarkand, Bukhara & Khiva",
           "description": "Experience the iconic cities of the Silk Road with expert local guides. Visit UNESCO World Heritage sites in Samarkand, Bukhara, and Khiva.",
           "touristType": "Cultural & Historical",
           "itinerary": {
-            "@type": "ItemList",
+            "@@type": "ItemList",
             "itemListElement": [
-              {"@type": "City", "name": "Samarkand"},
-              {"@type": "City", "name": "Bukhara"},
-              {"@type": "City", "name": "Khiva"}
+              {"@@type": "City", "name": "Samarkand"},
+              {"@@type": "City", "name": "Bukhara"},
+              {"@@type": "City", "name": "Khiva"}
             ]
           },
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/silk-road-classic/",
             "price": "890",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock",
             "priceSpecification": {
-              "@type": "UnitPriceSpecification",
+              "@@type": "UnitPriceSpecification",
               "price": "890",
               "priceCurrency": "USD",
-              "referenceQuantity": {"@type": "QuantitativeValue", "value": "1", "unitText": "person"}
+              "referenceQuantity": {"@@type": "QuantitativeValue", "value": "1", "unitText": "person"}
             }
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "5",
             "reviewCount": "148"
           }
         },
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 2,
           "name": "3-Day Chimgan Mountain Adventure & Charvak Lake",
           "description": "Escape to the mountains for trekking, nature, and outdoor adventures in Uzbekistan's stunning Chimgan region.",
           "touristType": "Mountain & Adventure",
           "itinerary": {
-            "@type": "ItemList",
+            "@@type": "ItemList",
             "itemListElement": [
-              {"@type": "City", "name": "Chimgan"},
-              {"@type": "City", "name": "Charvak"}
+              {"@@type": "City", "name": "Chimgan"},
+              {"@@type": "City", "name": "Charvak"}
             ]
           },
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/mountain-adventure/",
             "price": "450",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock"
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "4.5",
             "reviewCount": "92"
           }
         },
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 3,
           "name": "7-Day Cultural Immersion: Crafts, Cuisine & Traditions",
           "description": "Deep dive into Uzbek culture through hands-on craft workshops, traditional cooking classes, and immersive local experiences.",
           "touristType": "Cultural Immersion",
           "itinerary": {
-            "@type": "ItemList",
+            "@@type": "ItemList",
             "itemListElement": [
-              {"@type": "City", "name": "Samarkand"},
-              {"@type": "City", "name": "Bukhara"}
+              {"@@type": "City", "name": "Samarkand"},
+              {"@@type": "City", "name": "Bukhara"}
             ]
           },
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/cultural-immersion/",
             "price": "1290",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock"
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "5",
             "reviewCount": "215"
           }
         },
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 4,
           "name": "4-Day Fergana Valley: Pottery, Silk & Ancient Cities",
           "description": "Discover the lesser-known Fergana Valley, famous for traditional pottery, silk weaving, and authentic Uzbek hospitality.",
           "touristType": "Cultural & Crafts",
           "itinerary": {
-            "@type": "ItemList",
+            "@@type": "ItemList",
             "itemListElement": [
-              {"@type": "City", "name": "Tashkent"},
-              {"@type": "City", "name": "Fergana"},
-              {"@type": "City", "name": "Kokand"}
+              {"@@type": "City", "name": "Tashkent"},
+              {"@@type": "City", "name": "Fergana"},
+              {"@@type": "City", "name": "Kokand"}
             ]
           },
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/fergana-valley/",
             "price": "680",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock"
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "4.5",
             "reviewCount": "78"
           }
         },
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 5,
           "name": "10-Day Grand Silk Road: Complete Uzbekistan Experience",
           "description": "The ultimate Uzbekistan journey covering all major cities and UNESCO sites along the ancient Silk Road.",
           "touristType": "Grand Tour",
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/grand-silk-road/",
             "price": "1850",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock"
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "5",
             "reviewCount": "320"
           }
         },
         {
-          "@type": "TouristTrip",
+          "@@type": "TouristTrip",
           "position": 6,
           "name": "3-Day Express: Samarkand & Bukhara Highlights",
           "description": "Perfect for travelers with limited time. See the highlights of Samarkand and Bukhara in just 3 days.",
           "touristType": "Express Tour",
           "itinerary": {
-            "@type": "ItemList",
+            "@@type": "ItemList",
             "itemListElement": [
-              {"@type": "City", "name": "Samarkand"},
-              {"@type": "City", "name": "Bukhara"}
+              {"@@type": "City", "name": "Samarkand"},
+              {"@@type": "City", "name": "Bukhara"}
             ]
           },
           "offers": {
-            "@type": "Offer",
+            "@@type": "Offer",
             "url": "https://jahongirtravel.com/tours/express-highlights/",
             "price": "540",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock"
           },
           "provider": {
-            "@type": "TravelAgency",
+            "@@type": "TravelAgency",
             "name": "Jahongir Travel"
           },
           "aggregateRating": {
-            "@type": "AggregateRating",
+            "@@type": "AggregateRating",
             "ratingValue": "4.5",
             "reviewCount": "164"
           }
@@ -537,22 +537,22 @@
     <!-- JSON-LD Schema: Place for Top Destinations -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+      "@@context": "https://schema.org",
+      "@@type": "ItemList",
       "name": "Top Places to Travel in Uzbekistan",
       "itemListElement": [
         {
-          "@type": "Place",
+          "@@type": "Place",
           "position": 1,
           "name": "Samarkand",
           "description": "The Jewel of the Silk Road. Historic city famous for Registan Square, Shah-i-Zinda necropolis, and Gur-e-Amir mausoleum.",
           "geo": {
-            "@type": "GeoCoordinates",
+            "@@type": "GeoCoordinates",
             "latitude": "39.6542",
             "longitude": "66.9597"
           },
           "address": {
-            "@type": "PostalAddress",
+            "@@type": "PostalAddress",
             "addressLocality": "Samarkand",
             "addressCountry": "UZ"
           },
@@ -560,17 +560,17 @@
           "touristType": "Cultural & Historical"
         },
         {
-          "@type": "Place",
+          "@@type": "Place",
           "position": 2,
           "name": "Bukhara",
           "description": "Living Museum of Central Asia. Ancient city with over 140 architectural monuments and a UNESCO World Heritage old town.",
           "geo": {
-            "@type": "GeoCoordinates",
+            "@@type": "GeoCoordinates",
             "latitude": "39.7747",
             "longitude": "64.4286"
           },
           "address": {
-            "@type": "PostalAddress",
+            "@@type": "PostalAddress",
             "addressLocality": "Bukhara",
             "addressCountry": "UZ"
           },
@@ -578,17 +578,17 @@
           "touristType": "Cultural & Historical"
         },
         {
-          "@type": "Place",
+          "@@type": "Place",
           "position": 3,
           "name": "Khiva",
           "description": "Ancient Desert Fortress. UNESCO-protected Itchan Kala fortress city with perfectly preserved Silk Road architecture.",
           "geo": {
-            "@type": "GeoCoordinates",
+            "@@type": "GeoCoordinates",
             "latitude": "41.3775",
             "longitude": "60.3642"
           },
           "address": {
-            "@type": "PostalAddress",
+            "@@type": "PostalAddress",
             "addressLocality": "Khiva",
             "addressCountry": "UZ"
           },
@@ -596,17 +596,17 @@
           "touristType": "Cultural & Historical"
         },
         {
-          "@type": "Place",
+          "@@type": "Place",
           "position": 4,
           "name": "Tashkent",
           "description": "Modern Heart of Uzbekistan. Capital city blending Soviet architecture, vibrant bazaars, and contemporary culture.",
           "geo": {
-            "@type": "GeoCoordinates",
+            "@@type": "GeoCoordinates",
             "latitude": "41.2995",
             "longitude": "69.2401"
           },
           "address": {
-            "@type": "PostalAddress",
+            "@@type": "PostalAddress",
             "addressLocality": "Tashkent",
             "addressCountry": "UZ"
           },
@@ -794,32 +794,32 @@
     <!-- JSON-LD Structured Data for SEO -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+      "@@context": "https://schema.org",
+      "@@type": "ItemList",
       "name": "Jahongir Travel Blog Articles",
       "description": "Travel insights, tips, and guides for visiting Uzbekistan",
       "itemListElement": [
         {
-          "@type": "BlogPosting",
+          "@@type": "BlogPosting",
           "position": 1,
           "headline": "Best Time to Visit Uzbekistan: A Season-by-Season Guide",
           "image": "https://jahongirtravel.com/images/blog-best-time-visit.svg",
           "datePublished": "2024-11-15",
           "dateModified": "2024-11-15",
           "author": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel"
           },
           "publisher": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel",
             "logo": {
-              "@type": "ImageObject",
+              "@@type": "ImageObject",
               "url": "https://jahongirtravel.com/images/logo.png"
             }
           },
           "mainEntityOfPage": {
-            "@type": "WebPage",
+            "@@type": "WebPage",
             "@id": "https://jahongirtravel.com/blog/best-time-visit-uzbekistan"
           },
           "description": "Discover the ideal months for your Uzbekistan adventure, from spring blooms in Samarkand to golden autumn in Bukhara",
@@ -829,26 +829,26 @@
           "url": "https://jahongirtravel.com/blog/best-time-visit-uzbekistan"
         },
         {
-          "@type": "BlogPosting",
+          "@@type": "BlogPosting",
           "position": 2,
           "headline": "Hidden Gems Along the Silk Road: Off-the-Beaten-Path Destinations",
           "image": "https://jahongirtravel.com/images/blog-hidden-gems.svg",
           "datePublished": "2024-11-08",
           "dateModified": "2024-11-08",
           "author": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel"
           },
           "publisher": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel",
             "logo": {
-              "@type": "ImageObject",
+              "@@type": "ImageObject",
               "url": "https://jahongirtravel.com/images/logo.png"
             }
           },
           "mainEntityOfPage": {
-            "@type": "WebPage",
+            "@@type": "WebPage",
             "@id": "https://jahongirtravel.com/blog/hidden-gems-silk-road"
           },
           "description": "Venture beyond Samarkand and Bukhara to discover lesser-known treasures like Nurata, Shakhrisabz, and the Aral Sea region",
@@ -858,26 +858,26 @@
           "url": "https://jahongirtravel.com/blog/hidden-gems-silk-road"
         },
         {
-          "@type": "BlogPosting",
+          "@@type": "BlogPosting",
           "position": 3,
           "headline": "A Foodie's Guide to Uzbek Cuisine: Must-Try Dishes and Where to Find Them",
           "image": "https://jahongirtravel.com/images/blog-uzbek-cuisine.svg",
           "datePublished": "2024-10-28",
           "dateModified": "2024-10-28",
           "author": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel"
           },
           "publisher": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Jahongir Travel",
             "logo": {
-              "@type": "ImageObject",
+              "@@type": "ImageObject",
               "url": "https://jahongirtravel.com/images/logo.png"
             }
           },
           "mainEntityOfPage": {
-            "@type": "WebPage",
+            "@@type": "WebPage",
             "@id": "https://jahongirtravel.com/blog/uzbek-cuisine-guide"
           },
           "description": "From sizzling plov to hand-pulled lagman noodles, explore the rich flavors of Central Asian cuisine at authentic local spots",
