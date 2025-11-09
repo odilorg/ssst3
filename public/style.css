@@ -2142,7 +2142,7 @@ button:focus-visible {
   gap: 60px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 64px 24px;
+  padding: 84px 24px;
 }
 
 /* 8.3 Brand Column */
@@ -2169,7 +2169,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   transition: color 0.3s ease;
 }
 
@@ -2243,7 +2243,7 @@ button:focus-visible {
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 4px 0 0 4px;
+  border-radius: 8px 0 0 8px;
   color: var(--footer-text);
   font-size: 14px;
   font-family: var(--font-body);
@@ -2263,7 +2263,7 @@ button:focus-visible {
   padding: 10px 16px;
   background: var(--footer-link-hover);
   border: none;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 8px 8px 0;
   color: var(--footer-bg);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -2273,6 +2273,15 @@ button:focus-visible {
   background: #FFC929;
   transform: translateX(2px);
 }
+
+.footer-newsletter__form button i {
+  transition: transform 0.3s ease;
+}
+
+.footer-newsletter__form button:hover i {
+  transform: translateX(3px);
+}
+
 
 .footer-newsletter__social {
   padding-top: 16px;
@@ -2340,9 +2349,11 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
-  color: #60a5fa;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
 }
 
 .footer-brand__contact a:hover {
@@ -2375,6 +2386,14 @@ button:focus-visible {
   margin: 0 0 12px 0;
 }
 
+.footer-nav__subtitle {
+  font-size: 12px;
+  color: var(--footer-muted);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+
 .footer-nav__list {
   list-style: none;
   margin: 0;
@@ -2387,6 +2406,14 @@ button:focus-visible {
 .footer-nav__list li {
   margin: 0;
 }
+
+/* Footer Link Hover Effects */
+.footer-nav__list a:hover {
+  color: var(--footer-link-hover);
+  padding-left: 4px;
+  transition: all 0.2s ease;
+}
+
 
 .footer-nav__list a {
   font-size: 14px;
@@ -4263,9 +4290,11 @@ html {
 }
 
 .footer-brand__contact a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
 }
 
 .footer-brand__contact a:hover {
