@@ -2138,8 +2138,8 @@ button:focus-visible {
 /* 8.2 Main Layout Grid */
 .footer-main {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 64px 24px;
@@ -2151,6 +2151,72 @@ button:focus-visible {
   flex-direction: column;
   gap: 12px;
 }
+/* Enhanced Brand Column with Contact Info */
+.footer-brand__contact-section {
+  margin-top: 20px;
+}
+
+.footer-brand__contact-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--footer-heading);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-brand__contact a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.footer-brand__contact a i {
+  width: 16px;
+  color: var(--footer-link-hover);
+}
+
+.footer-brand__location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--footer-muted);
+}
+
+.footer-brand__location i {
+  width: 16px;
+  color: var(--footer-link-hover);
+}
+
+.footer-brand__social {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--footer-divider);
+}
+
+.footer-brand__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 183, 3, 0.1);
+  border-radius: 50%;
+  color: var(--footer-link-hover);
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.footer-brand__social-link:hover {
+  background: var(--footer-link-hover);
+  color: var(--footer-bg);
+  transform: translateY(-2px);
+}
+
+
 
 .footer-brand__link {
   display: inline-flex;
