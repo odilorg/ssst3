@@ -211,26 +211,34 @@
               console.log('[Booking] Success response:', data);
               console.log('[Booking] Record data:', record);
 
-              // Populate modal with data
-              document.getElementById('modal-reference').textContent = record.reference || 'N/A';
-              document.getElementById('modal-tour-name').textContent = record.tour?.title || 'Your Selected Tour';
-              document.getElementById('modal-date').textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
-              document.getElementById('modal-guests').textContent = (record.pax_total || formData.get('number_of_guests') || '1') + ' guest(s)';
-              document.getElementById('modal-total').textContent = record.total_price ? '$' + parseFloat(record.total_price).toFixed(2) : 'TBD';
-              document.getElementById('modal-customer-email').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
-              document.getElementById('modal-customer-email-inline').textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+              // Populate modal with data (with null checks)
+              const modalRef = document.getElementById('modal-reference');
+              const modalTourName = document.getElementById('modal-tour-name');
+              const modalDate = document.getElementById('modal-date');
+              const modalGuests = document.getElementById('modal-guests');
+              const modalTotal = document.getElementById('modal-total');
+              const modalEmail = document.getElementById('modal-customer-email');
+              const modalEmailInline = document.getElementById('modal-customer-email-inline');
+
+              if (modalRef) modalRef.textContent = record.reference || 'N/A';
+              if (modalTourName) modalTourName.textContent = record.tour?.title || 'Your Selected Tour';
+              if (modalDate) modalDate.textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
+              if (modalGuests) modalGuests.textContent = (record.pax_total || formData.get('number_of_guests') || '1') + ' guest(s)';
+              if (modalTotal) modalTotal.textContent = record.total_price ? '$' + parseFloat(record.total_price).toFixed(2) : 'TBD';
+              if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+              if (modalEmailInline) modalEmailInline.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
 
               // Update modal title for inquiry
+              // Update modal title for inquiry
               if (!isBooking) {
-                document.querySelector('.modal-title').textContent = 'Inquiry Submitted!';
-                document.querySelector('.modal-subtitle').textContent = 'We\'ve received your question and will respond soon';
-                document.querySelector('.summary-item--total').style.display = 'none';
+                const modalTitle = document.querySelector('.modal-title');
+                const modalSubtitle = document.querySelector('.modal-subtitle');
+                const totalItem = document.querySelector('.summary-item--total');
+                
+                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
+                if (modalSubtitle) modalSubtitle.textContent = 'We've received your question and will respond soon';
+                if (totalItem) totalItem.style.display = 'none';
               }
-
-              // Show modal
-              document.getElementById('booking-confirmation-modal').style.display = 'flex';
-
-              // Reset form
               bookingForm.reset();
               step2Form.style.display = 'none';
               bookingBtn.classList.remove('active');
