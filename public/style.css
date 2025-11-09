@@ -2391,12 +2391,6 @@ button:focus-visible {
   margin: 0 0 12px 0;
 }
 
-.footer-nav__subtitle {
-  font-size: 12px;
-  color: var(--footer-muted);
-  margin-bottom: 12px;
-  font-style: italic;
-}
 
 
 .footer-nav__list {
