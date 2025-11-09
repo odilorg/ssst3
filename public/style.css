@@ -2118,7 +2118,7 @@ button:focus-visible {
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.6;
-  margin-top: 80px;
+  margin-top: 110px;
   border-top: 1px solid var(--footer-border);
 }
 
@@ -2142,7 +2142,7 @@ button:focus-visible {
   gap: 70px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 84px 24px;
+  padding: 114px 24px;
 }
 
 /* 8.3 Brand Column */
@@ -2166,7 +2166,7 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
-  color: #B8D4F0;
+  color: #E0E6ED;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2243,8 +2243,9 @@ button:focus-visible {
   flex: 1;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px 0 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px 0 0 6px;
   color: var(--footer-text);
   font-size: 14px;
   font-family: var(--font-body);
@@ -2264,7 +2265,7 @@ button:focus-visible {
   padding: 10px 16px;
   background: var(--footer-link-hover);
   border: none;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
   color: var(--footer-bg);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -2352,7 +2353,7 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
-  color: #B8D4F0;
+  color: #E0E6ED;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2524,6 +2525,9 @@ button:focus-visible {
 
 /* 8.7 Bottom Section */
 .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 24px;
+  margin-top: 24px;
   text-align: center;
   max-width: 1200px;
   margin: 0 auto;
@@ -2838,6 +2842,9 @@ button:focus-visible {
 
   /* Mobile Bottom Section */
   .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 24px;
+  margin-top: 24px;
   text-align: center;
     padding: 0 16px 24px 16px;
   }
@@ -4305,7 +4312,7 @@ html {
 }
 
 .footer-brand__contact a {
-  color: #B8D4F0;
+  color: #E0E6ED;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -4388,6 +4395,9 @@ html {
 }
 
 .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 24px;
+  margin-top: 24px;
   text-align: center;
     padding-top: 1.5rem;
 }
@@ -4545,7 +4555,8 @@ html {
   }
   
   .footer-newsletter__form input {
-    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
     border-bottom: none;
   }
   
