@@ -52,7 +52,7 @@
        ===================================================== -->
   <section class="tour-header"
            hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/hero"
-           hx-trigger="none"
+           hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
 
@@ -86,7 +86,7 @@
       <!-- Actual Gallery - Loaded via HTMX -->
       <div class="tour-hero__gallery is-hidden"
            hx-get=""
-           hx-trigger="none"
+           hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
       </div>
@@ -106,7 +106,7 @@
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/overview"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -122,7 +122,7 @@
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/highlights"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -137,7 +137,7 @@
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/included-excluded"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -162,7 +162,7 @@
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="{{ $tour->slug }}"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/cancellation"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
           </section>
@@ -170,7 +170,7 @@
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/itinerary"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
                    data-tour-slug="{{ $tour->slug }}">
@@ -189,7 +189,7 @@
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/meeting-point"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -203,7 +203,7 @@
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
                    hx-get="http://127.0.0.1:8000/partials/tours/5-day-silk-road-classic/requirements"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -219,7 +219,7 @@
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/faqs"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
@@ -235,7 +235,7 @@
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
                    hx-get="http://127.0.0.1:8000/partials/tours/{{ $tour->slug }}/extras"
-                   hx-trigger="none"
+                   hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
