@@ -221,6 +221,7 @@
                 showErrorState();
             });
 
+        @verbatim
         function renderDestinations(cities) {
             const container = document.getElementById('destinations-container');
 
@@ -236,21 +237,21 @@
             }
 
             const html = cities.map(city => `
-                <a href="/destinations/$${city.slug}/" class="destination-card">
-                    <img src="$${city.featured_image || city.hero_image || '/images/default-city.jpg'}"
-                         alt="$${city.name}"
+                <a href="/destinations/${city.slug}/" class="destination-card">
+                    <img src="${city.featured_image || city.hero_image || '/images/default-city.jpg'}"
+                         alt="${city.name}"
                          class="destination-card__image"
                          loading="lazy">
                     <div class="destination-card__content">
-                        <h3 class="destination-card__name">$${city.name}</h3>
-                        $${city.tagline ? `<p class="destination-card__tagline">$${city.tagline}</p>` : ''}
+                        <h3 class="destination-card__name">${city.name}</h3>
+                        ${city.tagline ? `<p class="destination-card__tagline">${city.tagline}</p>` : ''}
                         <p class="destination-card__description">
-                            $${city.short_description || city.description || 'Explore this beautiful destination'}
+                            ${city.short_description || city.description || 'Explore this beautiful destination'}
                         </p>
                         <div class="destination-card__meta">
                             <div class="destination-card__tours">
                                 <i class="fas fa-map-marked-alt"></i>
-                                <span>$${city.tour_count || 0} ${(city.tour_count || 0) === 1 ? 'tour' : 'tours'}</span>
+                                <span>${city.tour_count || 0} ${(city.tour_count || 0) === 1 ? 'tour' : 'tours'}</span>
                             </div>
                             <div class="destination-card__cta">
                                 Explore <i class="fas fa-arrow-right"></i>
@@ -262,6 +263,7 @@
 
             container.innerHTML = html;
         }
+        @endverbatim
 
         function showErrorState() {
             const container = document.getElementById('destinations-container');

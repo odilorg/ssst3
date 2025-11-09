@@ -336,6 +336,7 @@
             renderTours(filteredTours);
         }
 
+        @verbatim
         function renderTours(tours) {
             const container = document.getElementById('tours-container');
             const countElement = document.getElementById('tour-count');
@@ -390,6 +391,7 @@
 
             container.innerHTML = html;
         }
+        @endverbatim
 
         function showErrorState() {
             const container = document.getElementById('tours-container');
