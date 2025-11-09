@@ -2090,7 +2090,7 @@ button:focus-visible {
 /* 8.1 Custom Properties & Base Styles */
 .site-footer {
   /* Dark theme (default - original design) */
-  --footer-bg: #0b1321;
+  --footer-bg: #1a2332;
   --footer-text: #e5eaf3;        /* 85% white - body text */
   --footer-heading: #cdd6e6;     /* 75% white - headings */
   --footer-muted: #b9c2d3;       /* 65% white - meta/dim text */
@@ -2177,7 +2177,7 @@ button:focus-visible {
 }
 
 .footer-brand__contact a {
-  color: var(--footer-text);
+  color: #60a5fa;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -2284,6 +2284,7 @@ button:focus-visible {
   width: 20px;
   font-size: 16px;
   text-align: center;
+  color: var(--footer-link-hover);
 }
 
 /* 8.6 Locale Switcher Button */
