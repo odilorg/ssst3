@@ -3,35 +3,6 @@
    ====================================================== */
 
 /* ======================================================
-   0. HEADER FIX - STICKY NAVIGATION OVERRIDE
-   ====================================================== */
-
-/* Override the default absolute positioning from style.css
-   On contact page, the header should be sticky and always visible */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* Force the nav to appear as if it's in sticky state from the start */
-.nav {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: var(--space-2) 0;
-}
-
-/* Ensure nav links are visible (should inherit from .nav--sticky styles) */
-.nav .nav__menu a {
-  color: var(--color-text);
-}
-
-/* ======================================================
    1. HERO SECTION
    ====================================================== */
 
