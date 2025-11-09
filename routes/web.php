@@ -534,9 +534,6 @@ Route::get('/destinations/{slug}', function ($slug) {
         ->where('is_active', true)
         ->firstOrFail();
 
-    // Read the static HTML template
-    $html = file_get_contents(public_path('destination-landing.html'));
-
     // Prepare SEO-friendly data
     $pageTitle = $city->meta_title ?? ($city->name . ' Tours & Travel Guide | Jahongir Travel');
     $metaDescription = $city->meta_description ?? ($city->short_description ?? '');
@@ -545,15 +542,7 @@ Route::get('/destinations/{slug}', function ($slug) {
     $ogImage = $city->hero_image_url ?? $city->featured_image_url ?? asset('images/default-city.jpg');
     $canonicalUrl = url('/destinations/' . $city->slug);
 
-    // Replace DEFAULT_CITY_ID with actual city ID
-    $html = str_replace('DEFAULT_CITY_ID', $city->id, $html);
-
-    // Replace hardcoded meta tags
-    $html = preg_replace('/<title>.*?<\/title>/', '<title>' . htmlspecialchars($pageTitle) . '</title>', $html);
-    $html = preg_replace('/<meta name="description" content=".*?">/', '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">', $html);
-    $html = preg_replace('/<link rel="canonical" href=".*?">/', '<link rel="canonical" href="' . $canonicalUrl . '">', $html);
-
-    return response($html)->header('Content-Type', 'text/html');
+    return view('pages.destination-landing', compact('city', 'pageTitle', 'metaDescription', 'ogImage', 'canonicalUrl'));
 })->name('city.show');
 
 // ============================================
