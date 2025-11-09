@@ -1421,10 +1421,12 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   color: #fff;
   text-decoration: none;
   transition: color 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .nav--sticky .nav__logo-text {
   color: var(--color-primary);
+  text-shadow: none;
 }
 
 .nav__logo-text strong {
@@ -1447,12 +1449,14 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   font-weight: 500;
   font-size: 1rem;
   transition: color 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
   padding-bottom: 4px;
 }
 
 .nav--sticky .nav__menu a {
   color: var(--color-text);
+  text-shadow: none;
 }
 
 .nav__menu a:hover,
