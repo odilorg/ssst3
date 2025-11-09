@@ -5,6 +5,238 @@
 @section('meta_keywords', 'Uzbekistan tours, all tours, tour packages, Silk Road tours, Central Asia travel')
 @section('canonical', 'https://jahongirtravel.com/tours')
 
+@push('styles')
+<style>
+    .tours-hero {
+        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        padding: 120px 0 80px;
+        color: white;
+        text-align: center;
+    }
+
+    .tours-hero__title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .tours-hero__subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .tours-grid {
+        padding: 80px 0;
+    }
+
+    .tours-grid__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+    }
+
+    .tours-grid__title {
+        font-size: 2.5rem;
+        color: #1a1a1a;
+    }
+
+    .tours-grid__count {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .tours-grid__container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .tour-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tour-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .tour-card__image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .tour-card__content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tour-card__category {
+        display: inline-block;
+        background: #e3f2fd;
+        color: #1a5490;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+        width: fit-content;
+    }
+
+    .tour-card__title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #1a1a1a;
+        line-height: 1.4;
+    }
+
+    .tour-card__description {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        flex: 1;
+    }
+
+    .tour-card__meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .tour-card__meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .tour-card__price {
+        margin-left: auto;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a5490;
+    }
+
+    .loading-skeleton {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .skeleton-card {
+        height: 420px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 12px;
+    }
+
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .filter-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-tab {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #ddd;
+        border-radius: 25px;
+        background: white;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .filter-tab:hover {
+        border-color: #1a5490;
+        color: #1a5490;
+    }
+
+    .filter-tab.active {
+        background: #1a5490;
+        color: white;
+        border-color: #1a5490;
+    }
+
+    @media (max-width: 768px) {
+        .tours-hero {
+            padding: 80px 0 60px;
+        }
+
+        .tours-hero__title {
+            font-size: 2rem;
+        }
+
+        .tours-hero__subtitle {
+            font-size: 1rem;
+        }
+
+        .tours-grid {
+            padding: 60px 0;
+        }
+
+        .tours-grid .container {
+            padding-inline: 0 !important;
+        }
+
+        .tours-grid__header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding-inline: 1rem;
+        }
+
+        .tours-grid__title {
+            font-size: 2rem;
+        }
+
+        .tours-grid__container {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            padding-inline: 0.25rem;
+        }
+
+        .filter-tabs {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-tab {
+            white-space: nowrap;
+        }
+
+        .tour-card {
+            border-radius: 8px;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 
     <!-- =====================================================
