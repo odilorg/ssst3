@@ -64,8 +64,6 @@
 
                                         <form class="contact-form" id="contactForm">
                                             @csrf
-                        <!-- Hidden CSRF Token -->
-                        <input type="hidden" id="csrf-token" name="_token" value="">
 
                         <!-- Name Field -->
                         <div class="form-group">

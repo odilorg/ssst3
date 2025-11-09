@@ -328,8 +328,8 @@
 
             <!-- Booking Form -->
             <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
+              @csrf
               <!-- Hidden fields -->
-              <input type="hidden" name="_token" id="csrf-token" value="">
               <input type="hidden" name="tour_id" id="tour-id" value="">
 
               <!-- Date Picker -->
