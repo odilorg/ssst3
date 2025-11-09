@@ -89,7 +89,7 @@
                     </div>
 
                     <form id="tour-filters"
-                          hx-get="http://127.0.0.1:8000/partials/tours/search"
+                          hx-get="{{ url('/partials/tours/search') }}"
                           hx-trigger="change, submit"
                           hx-target="#tour-results"
                           hx-swap="innerHTML"
@@ -182,7 +182,7 @@
 
                     <!-- Tour Grid (HTMX loads here) -->
                     <div id="tour-results"
-                         hx-get="http://127.0.0.1:8000/partials/tours?per_page=12"
+                         hx-get="{{ url('/partials/tours?per_page=12') }}"
                          hx-trigger="load"
                          hx-swap="innerHTML">
                         <!-- Loading Skeleton -->
@@ -314,7 +314,7 @@
                 form.reset();
 
                 // Trigger HTMX reload with no filters
-                htmx.ajax('GET', 'http://127.0.0.1:8000/partials/tours?per_page=12', {
+                htmx.ajax('GET', '{{ url('/partials/tours?per_page=12') }}', {
                     target: '#tour-results',
                     swap: 'innerHTML'
                 });

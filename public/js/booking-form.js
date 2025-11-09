@@ -14,7 +14,7 @@
       const csrfTokenField = document.getElementById('csrf-token');
 
       // Fetch CSRF token and populate field
-      fetch('http://127.0.0.1:8000/csrf-token')
+      fetch('/csrf-token')
         .then(response => response.json())
         .then(data => {
           if (data.token && csrfTokenField) {
@@ -31,7 +31,7 @@
         console.log('[Booking] Tour slug:', tourSlug);
 
         // Fetch tour ID from backend
-        fetch('http://127.0.0.1:8000/api/tours/' + tourSlug)
+        fetch('/api/tours/' + tourSlug)
           .then(response => response.json())
           .then(data => {
             if (data.id && tourIdField) {
@@ -407,7 +407,7 @@
         if (!csrfToken || !csrfToken.value) {
           console.warn('[Inquiry] CSRF token not loaded, fetching now...');
 
-          fetch('http://127.0.0.1:8000/csrf-token')
+          fetch('/csrf-token')
             .then(response => response.json())
             .then(data => {
               if (data.token) {

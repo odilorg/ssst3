@@ -385,7 +385,7 @@
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
   <section class="tour-header"
-           hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/hero"
+           hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/hero') }}"
            hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -464,7 +464,7 @@
 
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/overview"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/overview') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -480,7 +480,7 @@
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/highlights') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -495,7 +495,7 @@
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/included-excluded') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -520,7 +520,7 @@
           <!-- Cancellation Policy Section -->
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/cancellation') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
@@ -528,7 +528,7 @@
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/itinerary') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
@@ -587,7 +587,7 @@
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
-                   hx-get="http://127.0.0.1:8000/partials/tours/5-day-silk-road-classic/requirements"
+                   hx-get="{{ url('/partials/tours/5-day-silk-road-classic/requirements') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -603,7 +603,7 @@
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/faqs') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -619,7 +619,7 @@
 
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/extras"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/extras') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -637,7 +637,7 @@
 
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
-                   hx-get="http://127.0.0.1:8000/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/reviews') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="samarkand-city-toursregistan-square-and-historical">
@@ -987,7 +987,7 @@
   <!-- HTMX Debug Script -->
   <script>
     console.log('[HTMX] Page loaded - tour-details.html');
-    console.log('[HTMX] Backend URL: http://127.0.0.1:8000');
+    console.log('[HTMX] Backend URL: {{ url(\"/\") }}');
 
     // HTMX event listeners for debugging and error handling
     document.body.addEventListener('htmx:beforeRequest', function(evt) {

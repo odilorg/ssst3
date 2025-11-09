@@ -40,7 +40,7 @@
     // Fetch Category Data from Partials Endpoint
     // ========================================
 
-    fetch(`http://127.0.0.1:8000/partials/categories/${categorySlug}/data`)
+    fetch(`/partials/categories/${categorySlug}/data`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -136,7 +136,7 @@
         // Update tour results endpoint
         const tourResults = document.getElementById('tour-results');
         if (tourResults) {
-            const newEndpoint = `http://127.0.0.1:8000/partials/tours/search?category=${slug}&per_page=12`;
+            const newEndpoint = `/partials/tours/search?category=${slug}&per_page=12`;
             tourResults.setAttribute('hx-get', newEndpoint);
 
             // Re-process HTMX to trigger the load
@@ -158,7 +158,7 @@
     function updateRelatedCategoriesEndpoint(slug) {
         const relatedSection = document.getElementById('related-categories');
         if (relatedSection) {
-            const newEndpoint = `http://127.0.0.1:8000/partials/categories/related?current=${slug}&limit=5`;
+            const newEndpoint = `/partials/categories/related?current=${slug}&limit=5`;
             relatedSection.setAttribute('hx-get', newEndpoint);
             htmx.process(relatedSection);
             htmx.trigger(relatedSection, 'load');
@@ -228,7 +228,7 @@
             document.getElementById('category-slug').value = categorySlug;
 
             // Trigger HTMX reload with category but no other filters
-            htmx.ajax('GET', `http://127.0.0.1:8000/partials/tours/search?category=${categorySlug}&per_page=12`, {
+            htmx.ajax('GET', `/partials/tours/search?category=${categorySlug}&per_page=12`, {
                 target: '#tour-results',
                 swap: 'innerHTML'
             });

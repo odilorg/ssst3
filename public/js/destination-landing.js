@@ -40,7 +40,7 @@
     // Fetch City Data from Partials Endpoint
     // ========================================
 
-    fetch(`http://127.0.0.1:8000/partials/cities/${destinationSlug}/data`)
+    fetch(`/partials/cities/${destinationSlug}/data`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -144,7 +144,7 @@
         // Update tour results endpoint
         const tourResults = document.getElementById('tour-results');
         if (tourResults) {
-            const newEndpoint = `http://127.0.0.1:8000/partials/tours/search?city=${cityId}&per_page=12`;
+            const newEndpoint = `/partials/tours/search?city=${cityId}&per_page=12`;
             tourResults.setAttribute('hx-get', newEndpoint);
 
             // Re-process HTMX to trigger the load
@@ -165,7 +165,7 @@
     function updateRelatedCitiesEndpoint(cityId) {
         const relatedSection = document.getElementById('related-categories');
         if (relatedSection) {
-            const newEndpoint = `http://127.0.0.1:8000/partials/cities/related?current=${cityId}&limit=5`;
+            const newEndpoint = `/partials/cities/related?current=${cityId}&limit=5`;
             relatedSection.setAttribute('hx-get', newEndpoint);
             htmx.process(relatedSection);
             htmx.trigger(relatedSection, 'load');
@@ -247,7 +247,7 @@
 
             if (cityId) {
                 // Trigger HTMX reload with city but no other filters
-                htmx.ajax('GET', `http://127.0.0.1:8000/partials/tours/search?city=${cityId}&per_page=12`, {
+                htmx.ajax('GET', `/partials/tours/search?city=${cityId}&per_page=12`, {
                     target: '#tour-results',
                     swap: 'innerHTML'
                 });
