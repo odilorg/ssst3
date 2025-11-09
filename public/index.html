@@ -1309,11 +1309,16 @@
   <footer class="site-footer">
     <div class="container footer-main footer-main--desktop">
       <div class="footer-brand">
-        <div class="footer-brand__text">Jahongir Travel</div>
-        <p>Tailor-made Uzbekistan tours since 2012.</p>
-        <p><a href="mailto:info@jahongirtravel.com">info@jahongirtravel.com</a></p>
-        <p><a href="tel:+998991234567">+998 99 123 4567</a></p>
-        <p>Samarkand, Uzbekistan</p>
+        <a href="/" class="footer-brand__link">
+          <i class="fas fa-compass footer-brand__logo"></i>
+          <span class="footer-brand__text">Jahongir Travel</span>
+        </a>
+        <p class="footer-brand__tagline">Tailor-made Uzbekistan tours since 2012.</p>
+        <address class="footer-brand__contact">
+          <a href="mailto:info@jahongirtravel.com">info@jahongirtravel.com</a><br>
+          <a href="tel:+998991234567">+998 99 123 4567</a>
+        </address>
+        <p class="footer-brand__location">Samarkand, Uzbekistan</p>
       </div>
 
       <nav class="footer-col footer-nav" aria-label="Company">
@@ -1349,15 +1354,22 @@
         </ul>
       </nav>
 
-      <div class="footer-col">
-        <div class="footer-nav__title">Connect</div>
+      <div class="footer-col footer-social">
+        <div class="footer-social__title">Connect</div>
         <ul class="footer-social__list">
-          <li><a href="https://facebook.com/jahongirtravel" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-          <li><a href="https://instagram.com/jahongirtravel" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-          <li><a href="https://twitter.com/jahongirtravel" target="_blank" rel="noopener noreferrer">Twitter</a></li>
-          <li><a href="https://youtube.com/@jahongirtravel" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-          <li><a href="https://pinterest.com/jahongirtravel" target="_blank" rel="noopener noreferrer">Pinterest</a></li>
+          <li><a href="https://facebook.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a></li>
+          <li><a href="https://instagram.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+          <li><a href="https://twitter.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
+          <li><a href="https://youtube.com/@jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a></li>
+          <li><a href="https://pinterest.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a></li>
         </ul>
+
+        <!-- Locale Switcher -->
+        <button class="footer-locale" aria-expanded="false" aria-label="Change language and currency">
+          <i class="fas fa-globe"></i>
+          <span>EN / USD</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
       </div>
     </div>
 
