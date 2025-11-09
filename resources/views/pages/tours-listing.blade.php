@@ -356,30 +356,30 @@
             }
 
             const html = tours.map(tour => {
-                const price = tour.price_per_person ? `$$${tour.price_per_person}` : 'Contact us';
-                const duration = tour.duration ? `$${tour.duration} $${tour.duration === 1 ? 'day' : 'days'}` : 'Flexible';
+                const price = tour.price_per_person ? `$${tour.price_per_person}` : 'Contact us';
+                const duration = tour.duration ? `${tour.duration} ${tour.duration === 1 ? 'day' : 'days'}` : 'Flexible';
 
                 return `
-                    <a href="/tours/$${tour.slug}" class="tour-card">
-                        <img src="$${tour.featured_image || '/images/default-tour.jpg'}"
-                             alt="$${tour.title}"
+                    <a href="/tours/${tour.slug}" class="tour-card">
+                        <img src="${tour.featured_image || '/images/default-tour.jpg'}"
+                             alt="${tour.title}"
                              class="tour-card__image"
                              loading="lazy">
                         <div class="tour-card__content">
 
-                            <h3 class="tour-card__title">$${tour.title}</h3>
+                            <h3 class="tour-card__title">${tour.title}</h3>
                             <p class="tour-card__description">
-                                $${tour.short_description || tour.description || 'Explore this amazing tour in Uzbekistan'}
+                                ${tour.short_description || tour.description || 'Explore this amazing tour in Uzbekistan'}
                             </p>
                             <div class="tour-card__meta">
                                 <div class="tour-card__meta-item">
                                     <i class="far fa-clock"></i>
                                     <span>${duration}</span>
                                 </div>
-                                $${tour.city_name ? `
+                                ${tour.city_name ? `
                                 <div class="tour-card__meta-item">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <span>$${tour.city_name}</span>
+                                    <span>${tour.city_name}</span>
                                 </div>
                                 ` : ''}
                                 <div class="tour-card__price">${price}</div>
