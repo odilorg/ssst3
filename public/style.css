@@ -2138,8 +2138,8 @@ button:focus-visible {
 /* 8.2 Main Layout Grid */
 .footer-main {
   display: grid;
-  grid-template-columns: 2.5fr 1.5fr 1.5fr;
-  gap: 80px;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  gap: 60px;
   max-width: 1400px;
   margin: 0 auto;
   padding: 64px 24px;
@@ -2215,6 +2215,89 @@ button:focus-visible {
   color: var(--footer-bg);
   transform: translateY(-2px);
 }
+
+/* Footer Newsletter Column */
+.footer-newsletter__title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--footer-heading);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-newsletter__text {
+  font-size: 13px;
+  color: var(--footer-muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.footer-newsletter__form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.footer-newsletter__form input {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px 0 0 4px;
+  color: var(--footer-text);
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+
+.footer-newsletter__form input::placeholder {
+  color: var(--footer-muted);
+}
+
+.footer-newsletter__form input:focus {
+  outline: none;
+  border-color: var(--footer-link-hover);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.footer-newsletter__form button {
+  padding: 10px 16px;
+  background: var(--footer-link-hover);
+  border: none;
+  border-radius: 0 4px 4px 0;
+  color: var(--footer-bg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.footer-newsletter__form button:hover {
+  background: #FFC929;
+  transform: translateX(2px);
+}
+
+.footer-newsletter__social {
+  padding-top: 16px;
+  border-top: 1px solid var(--footer-divider);
+}
+
+.footer-newsletter__social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 183, 3, 0.1);
+  border-radius: 50%;
+  color: var(--footer-link-hover);
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.footer-newsletter__social a:hover {
+  background: var(--footer-link-hover);
+  color: var(--footer-bg);
+  transform: translateY(-2px);
+}
+
 
 
 
