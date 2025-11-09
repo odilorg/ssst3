@@ -1426,7 +1426,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 .nav--sticky .nav__logo-text {
-  color: var(--color-primary);
+  color: var(--color-primary) !important;
   text-shadow: none;
 }
 
@@ -1456,7 +1456,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 .nav--sticky .nav__menu a {
-  color: var(--color-text);
+  color: var(--color-text) !important;
   text-shadow: none;
 }
 
