@@ -32,9 +32,6 @@ Route::get('/tours/category/{slug}', function ($slug) {
         ->where('is_active', true)
         ->firstOrFail();
 
-    // Read the static HTML template
-    $html = file_get_contents(public_path('category-landing.html'));
-
     // Prepare SEO-friendly data
     $locale = app()->getLocale();
 
@@ -53,71 +50,7 @@ Route::get('/tours/category/{slug}', function ($slug) {
 
     $canonicalUrl = url('/tours/category/' . $category->slug);
 
-    // Replace hardcoded meta tags with category-specific ones
-    $html = preg_replace(
-        '/<title>.*?<\/title>/',
-        '<title>' . htmlspecialchars($pageTitle) . '</title>',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="description" content=".*?">/',
-        '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    // Update canonical URL
-    $html = preg_replace(
-        '/<link rel="canonical" href=".*?">/',
-        '<link rel="canonical" href="' . $canonicalUrl . '">',
-        $html
-    );
-
-    // Update Open Graph tags
-    $html = preg_replace(
-        '/<meta property="og:title" content=".*?">/',
-        '<meta property="og:title" content="' . htmlspecialchars($pageTitle) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:description" content=".*?">/',
-        '<meta property="og:description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:image" content=".*?">/',
-        '<meta property="og:image" content="' . $ogImage . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:url" content=".*?">/',
-        '<meta property="og:url" content="' . $canonicalUrl . '">',
-        $html
-    );
-
-    // Update Twitter Card tags
-    $html = preg_replace(
-        '/<meta name="twitter:title" content=".*?">/',
-        '<meta name="twitter:title" content="' . htmlspecialchars($pageTitle) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="twitter:description" content=".*?">/',
-        '<meta name="twitter:description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="twitter:image" content=".*?">/',
-        '<meta name="twitter:image" content="' . $ogImage . '">',
-        $html
-    );
-
-    return response($html)->header('Content-Type', 'text/html');
+    return view('pages.category-landing', compact('category', 'pageTitle', 'metaDescription', 'ogImage', 'canonicalUrl', 'locale'));
 })->name('tours.category');
 
 // Tour details page - SEO-friendly URL with server-side meta tag injection
