@@ -4029,6 +4029,12 @@ html {
     .nav__cta {
         order: -1;
     }
+    /* Remove text-shadow from mobile menu for better readability */
+    .nav__menu a {
+        text-shadow: none !important;
+        color: var(--color-text) !important;
+    }
+
 }
 
 @media (max-width: 767px) {
@@ -4043,6 +4049,12 @@ html {
     .nav__cta {
         display: none; /* Hidden on mobile - WhatsApp button is sufficient */
     }
+    /* Remove text-shadow from mobile menu for better readability */
+    .nav__menu a {
+        text-shadow: none !important;
+        color: var(--color-text) !important;
+    }
+
 }
 
 /* ============================================
