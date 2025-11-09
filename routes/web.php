@@ -53,13 +53,10 @@ Route::get('/tours/category/{slug}', function ($slug) {
     return view('pages.category-landing', compact('category', 'pageTitle', 'metaDescription', 'ogImage', 'canonicalUrl', 'locale'));
 })->name('tours.category');
 
-// Tour details page - SEO-friendly URL with server-side meta tag injection
+// Tour details page - SEO-friendly URL with Blade template
 Route::get('/tours/{slug}', function ($slug) {
     // Find tour or 404
     $tour = \App\Models\Tour::where('slug', $slug)->firstOrFail();
-
-    // Read the static HTML template
-    $html = file_get_contents(public_path('tour-details.html'));
 
     // Prepare SEO-friendly data
     $pageTitle = $tour->seo_title ?? ($tour->title . ' | Jahongir Travel');
@@ -72,102 +69,7 @@ Route::get('/tours/{slug}', function ($slug) {
 
     $canonicalUrl = url('/tours/' . $tour->slug);
 
-    // Replace hardcoded meta tags with tour-specific ones
-    $html = preg_replace(
-        '/<title>.*?<\/title>/',
-        '<title>' . htmlspecialchars($pageTitle) . '</title>',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="description" content=".*?">/',
-        '<meta name="description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    // Update canonical URL
-    $html = preg_replace(
-        '/<link rel="canonical" href=".*?">/',
-        '<link rel="canonical" href="' . $canonicalUrl . '">',
-        $html
-    );
-
-    // Update Open Graph tags
-    $html = preg_replace(
-        '/<meta property="og:title" content=".*?">/',
-        '<meta property="og:title" content="' . htmlspecialchars($pageTitle) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:description" content=".*?">/',
-        '<meta property="og:description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:image" content=".*?">/',
-        '<meta property="og:image" content="' . $ogImage . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta property="og:url" content=".*?">/',
-        '<meta property="og:url" content="' . $canonicalUrl . '">',
-        $html
-    );
-
-    // Update Twitter Card tags
-    $html = preg_replace(
-        '/<meta name="twitter:title" content=".*?">/',
-        '<meta name="twitter:title" content="' . htmlspecialchars($pageTitle) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="twitter:description" content=".*?">/',
-        '<meta name="twitter:description" content="' . htmlspecialchars($metaDescription) . '">',
-        $html
-    );
-
-    $html = preg_replace(
-        '/<meta name="twitter:image" content=".*?">/',
-        '<meta name="twitter:image" content="' . $ogImage . '">',
-        $html
-    );
-
-    // Update JSON-LD structured data
-    $jsonLd = [
-        '@context' => 'https://schema.org',
-        '@type' => 'Tour',
-        'name' => $tour->title,
-        'description' => strip_tags($tour->description ?? ''),
-        'image' => $ogImage,
-        'provider' => [
-            '@type' => 'Organization',
-            'name' => 'Jahongir Travel',
-            'url' => url('/'),
-        ],
-        'url' => $canonicalUrl,
-    ];
-
-    if ($tour->price_per_person) {
-        $jsonLd['offers'] = [
-            '@type' => 'Offer',
-            'price' => $tour->price_per_person,
-            'priceCurrency' => 'USD',
-        ];
-    }
-
-    // Replace JSON-LD script (find the script tag and replace its content)
-    $html = preg_replace(
-        '/<script type="application\/ld\+json">.*?<\/script>/s',
-        '<script type="application/ld+json">' . json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . '</script>',
-        $html,
-        1 // Only replace the first occurrence
-    );
-
-    return response($html)->header('Content-Type', 'text/html');
+    return view('pages.tour-details', compact('tour', 'pageTitle', 'metaDescription', 'ogImage', 'canonicalUrl'));
 })->name('tours.show');
 
 // About page
