@@ -44,6 +44,21 @@
 <link rel="stylesheet" href="{{ asset('css/gallery-lightbox.css') }}">
 <link rel="stylesheet" href="{{ asset('tour-details-gallery-addon.css') }}">
 <link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
+<style>
+/* Booking Actions - Two-Button Choice */
+.booking-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.action-btn{display:flex;align-items:center;gap:0.75rem;padding:1rem;border:2px solid #E3E3E3;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;min-height:80px;text-align:left;width:100%}
+.action-btn:hover{border-color:#0D4C92;transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,76,146,0.15)}
+.action-btn:active{transform:translateY(0)}
+.action-btn.active{border-color:#0D4C92;background:#F0F7FF;box-shadow:0 0 0 3px rgba(13,76,146,0.1)}
+.action-btn i{font-size:1.5rem;color:#0D4C92;flex-shrink:0}
+.action-btn--booking i{color:#4CAF50}
+.action-btn--inquiry i{color:#FF9800}
+.action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
+.action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
+.action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
+@media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
+</style>
 @endpush
 
 @section('content')
