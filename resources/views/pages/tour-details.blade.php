@@ -843,6 +843,287 @@
 .action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
 @media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
 
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-container {
+      background: #ffffff;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      text-align: center;
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      font-size: 1rem;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      border: none;
+      background: rgba(243, 244, 246, 0.95);
+      color: #6b7280;
+      font-size: 24px;
+      line-height: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-close:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .confirmation-reference {
+      text-align: center;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      border: 2px solid #3b82f6;
+    }
+
+    .confirmation-reference .label {
+      display: block;
+      font-size: 0.875rem;
+      color: #1e40af;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .reference-number {
+      display: block;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+      margin-bottom: 0.25rem;
+    }
+
+    .reference-note {
+      font-size: 0.875rem;
+      color: #3b82f6;
+      margin: 0;
+    }
+
+    .booking-summary,
+    .customer-info,
+    .next-steps {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .summary-grid {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item--total {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    .summary-item .label {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .summary-item .value {
+      color: #111827;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .summary-item .value.highlight {
+      color: #059669;
+      font-size: 1.25rem;
+    }
+
+    .email-address {
+      font-size: 1rem;
+      color: #2563eb;
+      font-weight: 600;
+      background: #eff6ff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding-left: 1.5rem;
+      color: #374151;
+      line-height: 1.8;
+    }
+
+    .steps-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .steps-list strong {
+      color: #111827;
+    }
+
+    .important-note {
+      display: flex;
+      gap: 0.75rem;
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 1rem;
+      border-radius: 8px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      flex-shrink: 0;
+      color: #d97706;
+    }
+
+    .important-note p {
+      margin: 0;
+      color: #78350f;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      padding: 1.5rem 2rem 2rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn--large {
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn--primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn--secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn--secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+
 /* Fix nav positioning for tour details page - no hero image */
 .nav {
   position: relative;
