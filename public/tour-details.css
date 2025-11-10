@@ -2971,7 +2971,8 @@
 }
 
 /* Footer Grid Layout Fix */
-.footer-main {
+.footer-main,
+.footer-main--desktop {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.2fr;
   gap: 70px;
@@ -2981,7 +2982,8 @@
 }
 
 @media (max-width: 768px) {
-  .footer-main {
+  .footer-main,
+  .footer-main--desktop {
     grid-template-columns: 1fr;
     gap: 40px;
     padding: 60px 24px;
