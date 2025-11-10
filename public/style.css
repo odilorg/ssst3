@@ -2138,7 +2138,7 @@ button:focus-visible {
 /* 8.2 Main Layout Grid */
 .footer-main {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 70px;
   max-width: 1400px;
   margin: 0 auto;
@@ -2588,7 +2588,7 @@ button:focus-visible {
 /* 8.9 Responsive - Large Tablet (1024px - 1279px) */
 @media (max-width: 1279px) and (min-width: 1024px) {
   .footer-main {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 40px;
     padding: 40px 24px;
   }
@@ -4085,7 +4085,7 @@ html {
 
 .footer-main {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 2rem;
     margin-bottom: 2rem;
     padding-bottom: 2rem;

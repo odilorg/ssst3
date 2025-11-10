@@ -39,21 +39,6 @@
             </ul>
         </nav>
 
-        <div class="footer-col footer-newsletter">
-            <div class="footer-newsletter__title">Stay Updated</div>
-            <p class="footer-newsletter__text">Join 1,000+ travelers discovering Uzbekistan's hidden gems!</p>
-            <form class="footer-newsletter__form" action="#" method="post">
-                <input type="email" placeholder="Your email" required aria-label="Email address">
-                <button type="submit" aria-label="Subscribe">
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
-            <div class="footer-newsletter__social">
-                <a href="https://facebook.com/jahongirtravel" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                    <i class="fab fa-facebook"></i>
-                </a>
-            </div>
-        </div>
     </div>
     </div>
 
