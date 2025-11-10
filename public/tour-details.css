@@ -135,7 +135,7 @@
    ====================================================== */
 
 .breadcrumbs {
-  margin-top: 8rem; /* Space below sticky header - increased for proper clearance */
+  margin-top: 0; /* No top margin needed - parent .tour-header has padding-top */
   padding: 1rem 0;
   font-size: 0.875rem;
   background: var(--color-bg, #FAF8F4);
@@ -294,7 +294,8 @@
    ====================================================== */
 
 .tour-header {
-  margin: 2rem 0;
+  margin: 0 0 2rem 0;
+  padding-top: 6rem; /* Space for sticky header to prevent overlap */
 }
 
 .tour-header__top {
