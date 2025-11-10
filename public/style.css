@@ -1421,7 +1421,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   color: #fff !important;
   text-decoration: none;
   transition: color 0.3s ease;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: none;
 }
 
 .nav--sticky .nav__logo-text {
@@ -1449,7 +1449,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   font-weight: 500;
   font-size: 1rem;
   transition: color 0.3s ease;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: none;
   position: relative;
   padding-bottom: 4px;
 }
