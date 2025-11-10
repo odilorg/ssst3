@@ -82,6 +82,19 @@ Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
 
+// Legal pages
+Route::get('/privacy', function () {
+    return view('pages.privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return view('pages.terms');
+})->name('terms');
+
+Route::get('/cookies', function () {
+    return view('pages.cookies');
+})->name('cookies');
+
 // Blog listing page
 Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 
