@@ -2953,6 +2953,9 @@ button:focus-visible {
   color: rgba(255, 255, 255, 0.88);
   text-shadow: 0 1px 3px rgba(0,0,0,0.25);
 }
+.about-hero__content p:last-of-type {
+  margin-bottom: 1.5rem;
+}
 n/* Large viewport center alignment */
 @media (min-width: 1200px) {
   .about-hero__content {
