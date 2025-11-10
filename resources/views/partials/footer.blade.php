@@ -1,5 +1,5 @@
 <footer class="site-footer">
-    <div class="container footer-main footer-main--desktop">
+    <div class="footer-main footer-main--desktop">
         <div class="footer-brand">
             <a href="{{ url('/') }}" class="footer-brand__link">
                 <i class="fas fa-compass footer-brand__logo"></i>
