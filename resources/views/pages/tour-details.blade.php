@@ -194,7 +194,7 @@
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
-                   hx-get="{{ url('/partials/tours/5-day-silk-road-classic/requirements') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/requirements') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
