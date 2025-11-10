@@ -1414,6 +1414,14 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   gap: var(--space-4);
 }
 
+.nav__logo {
+  text-decoration: none !important;
+}
+
+.nav__logo:hover,
+.nav__logo:focus {
+  text-decoration: none !important;
+}
 .nav__logo-text {
   font-family: var(--font-heading);
   font-size: 1.5rem;
