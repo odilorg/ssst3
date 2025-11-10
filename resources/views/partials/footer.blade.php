@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <div class="container footer-bottom">
+    <div class="footer-bottom">
         <div class="footer-bottom__wrap">
             <div>© {{ date('Y') }} Jahongir Travel. All rights reserved.</div>
             <div class="footer-bottom__legal">
