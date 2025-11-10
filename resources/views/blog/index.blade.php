@@ -26,7 +26,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
-    <link rel="stylesheet" href="{{ asset('blog-listing.css') }}">
+    <link rel="stylesheet" href="{{ asset('blog-listing.css') }}?v={{ time() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
