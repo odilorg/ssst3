@@ -2969,3 +2969,21 @@
     font-size: 0.75rem;
   }
 }
+
+/* Footer Grid Layout Fix */
+.footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  gap: 70px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 114px 24px;
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 60px 24px;
+  }
+}
