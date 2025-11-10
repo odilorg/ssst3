@@ -43,7 +43,7 @@
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
   <section class="tour-header"
-           hx-get="{{ url('/partials/tours/{{ $tour->slug }}/hero') }}"
+           hx-get="{{ url('/partials/tours/' . $tour->slug . '/hero') }}"
            hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
@@ -77,7 +77,7 @@
       <!-- Actual Gallery -->
       <!-- Actual Gallery - Loaded via HTMX -->
       <div class="tour-hero__gallery is-hidden"
-           hx-get="{{ url('/partials/tours/{{ $tour->slug }}/gallery') }}"
+           hx-get="{{ url('/partials/tours/' . $tour->slug . '/gallery') }}"
            hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
@@ -97,7 +97,7 @@
 
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/overview') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/overview') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -113,7 +113,7 @@
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/highlights') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/highlights') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -128,7 +128,7 @@
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/included-excluded') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/included-excluded') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -153,7 +153,7 @@
           <!-- Cancellation Policy Section -->
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="{{ $tour->slug }}"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/cancellation') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/cancellation') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
@@ -161,7 +161,7 @@
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/itinerary') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/itinerary') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
@@ -180,7 +180,7 @@
 
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/meeting-point') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/meeting-point') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -210,7 +210,7 @@
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/faqs') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/faqs') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -226,7 +226,7 @@
 
           <!-- Extra Services Section -->
           <section class="tour-extras" id="extras"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/extras') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/extras') }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -244,7 +244,7 @@
 
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
-                   hx-get="{{ url('/partials/tours/{{ $tour->slug }}/reviews') }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/reviews') }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
