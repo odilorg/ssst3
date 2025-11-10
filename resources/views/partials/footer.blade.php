@@ -1,4 +1,5 @@
 <footer class="site-footer">
+    <div class="container">
     <div class="footer-main footer-main--desktop">
         <div class="footer-brand">
             <a href="{{ url('/') }}" class="footer-brand__link">
@@ -53,6 +54,7 @@
                 </a>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="footer-bottom">
