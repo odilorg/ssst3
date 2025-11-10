@@ -23,13 +23,13 @@ body{background:var(--bg-app);color:var(--text-1);font-family:Inter,sans-serif}
 .blog-hero__eyebrow{font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:var(--space-16)}
 .blog-hero__title{font-size:40px;font-weight:600;line-height:52px;margin:0 0 var(--space-16) 0}
 .blog-hero__subtitle{font-size:18px;line-height:28px;max-width:600px;margin:0 auto}
-.blog-filters{background:var(--bg-surface);border:1px solid var(--stroke-1);border-radius:var(--radius-card);padding:var(--space-16);margin-bottom:var(--space-48);position:sticky;top:80px;z-index:100;box-shadow:var(--shadow-base);display:flex;flex-wrap:wrap;gap:var(--space-16);align-items:center}
+.blog-filters{background:var(--bg-surface);border:1px solid var(--stroke-1);border-radius:var(--radius-card);padding:var(--space-24);margin-bottom:var(--space-48);position:sticky;top:80px;z-index:100;box-shadow:var(--shadow-base);display:flex;flex-wrap:wrap;gap:var(--space-24);align-items:center}
 .blog-search{flex:1;min-width:240px;display:flex;gap:var(--space-8)}
 .blog-search input[type="search"]{flex:1;padding:var(--space-12) var(--space-16);border:1px solid var(--stroke-1);border-radius:var(--radius-input);background:var(--bg-app);color:var(--text-1);font-size:14px;min-height:44px}
 .blog-search input[type="search"]:focus{outline:none;border-color:var(--brand-1);box-shadow:0 0 0 3px rgba(28,84,178,0.1)}
 .blog-search button{padding:var(--space-12) var(--space-20);background:var(--brand-1);color:white;border:none;border-radius:var(--radius-input);cursor:pointer;min-height:44px}
 .blog-search button:hover{background:var(--brand-1-600)}
-.blog-categories{display:flex;flex-wrap:wrap;gap:var(--space-8);flex:1;min-width:300px}
+.blog-categories{display:flex;flex-wrap:wrap;gap:var(--space-12);flex:1;min-width:300px}
 .blog-category-btn{padding:var(--space-8) var(--space-16);background:transparent;border:1px solid var(--stroke-1);border-radius:var(--radius-pill);color:var(--text-2);font-size:14px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
 .blog-category-btn:hover{background:#F1F3F5}
 .blog-category-btn.active{background:rgba(25,211,218,0.14);border-color:rgba(25,211,218,0.36);color:var(--brand-2)}
