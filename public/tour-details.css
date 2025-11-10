@@ -135,7 +135,7 @@
    ====================================================== */
 
 .breadcrumbs {
-  margin-top: 5rem; /* Space below sticky header */
+  margin-top: 8rem; /* Space below sticky header - increased for proper clearance */
   padding: 1rem 0;
   font-size: 0.875rem;
   background: var(--color-bg, #FAF8F4);
