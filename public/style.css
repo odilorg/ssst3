@@ -3637,6 +3637,19 @@ n/* Large viewport center alignment */
   }
 
   .about-hero__subtitle {
+@media (max-width: 768px) {
+  .about-hero::before {
+    background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.68));
+  }
+
+  .about-hero__content h1 {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  }
+
+  .about-hero__content p {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
     color: rgba(255, 255, 255, 0.9);
   }
 
