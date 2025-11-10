@@ -7,25 +7,63 @@
 
 @push('styles')
 <style>
+
     .destinations-hero {
-        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        background: url("/images/hero-registan.webp") center/cover no-repeat;
         padding: 120px 0 80px;
         color: white;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .destinations-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
+                    linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .destinations-hero .container {
+        position: relative;
+        z-index: 2;
     }
 
     .destinations-hero__title {
         font-size: 3rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.30);
     }
 
     .destinations-hero__subtitle {
         font-size: 1.25rem;
-        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.85);
         max-width: 600px;
         margin: 0 auto;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.25);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     .destinations-grid {
         padding: 80px 0;
@@ -97,18 +135,36 @@
         gap: 1rem;
         padding-top: 1rem;
         border-top: 1px solid #eee;
-    }
 
-    .destination-card__tours {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #666;
-        font-size: 0.9rem;
-    }
+        .destinations-hero {
+            padding: 80px 0 60px;
+        }
 
-    .destination-card__cta {
-        margin-left: auto;
+        .destinations-hero::before {
+            background: linear-gradient(135deg, rgba(26,84,144,0.7) 0%, rgba(44,122,191,0.6) 100%),
+                        linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.80) 100%);
+        }
+
+        .destinations-hero__title {
+            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+            line-height: 1.3;
+        }
+
+        .destinations-hero__subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+
+
+
+
+
+
+
+
+
+
         color: #1a5490;
         font-weight: 600;
         display: flex;
