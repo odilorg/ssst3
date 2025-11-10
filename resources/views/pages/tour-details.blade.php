@@ -836,9 +836,6 @@
     </div>
   </div>
 
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
-
 @endsection
 
 @push('styles')
