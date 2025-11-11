@@ -2920,6 +2920,7 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  text-align: center;
 }
 
 .about-hero__overlay {
