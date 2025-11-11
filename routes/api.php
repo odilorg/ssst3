@@ -31,7 +31,7 @@ Route::get('/csrf-token', function () {
     ]);
 });
 
-// Cities API - Get all active cities
+// Cities API - Get all active cities with tours
 Route::get('/cities', function () {
     $cities = \App\Models\City::active()
         ->orderBy('display_order')
@@ -50,7 +50,12 @@ Route::get('/cities', function () {
                 'latitude' => $city->latitude,
                 'longitude' => $city->longitude,
             ];
-        });
+        })
+        ->filter(function ($city) {
+            // Only show cities that have at least one tour
+            return $city['tour_count'] > 0;
+        })
+        ->values(); // Re-index array after filtering
 
     return response()->json($cities);
 })->name('api.cities.index');
