@@ -478,8 +478,8 @@
                             <a href="https://wa.me/998915550808" class="alt-contact-link" target="_blank" rel="noopener">
                                 <i class="fab fa-whatsapp"></i> WhatsApp: +998 91 555 0808
                             </a>
-                            <a href="mailto:info@jahongirtravel.com" class="alt-contact-link">
-                                <i class="fas fa-envelope"></i> info@jahongirtravel.com
+                            <a href="mailto:info@jahongir-travel.uz" class="alt-contact-link">
+                                <i class="fas fa-envelope"></i> info@jahongir-travel.uz
                             </a>
                         </div>
                     </div>
@@ -546,8 +546,8 @@
                             <i class="fas fa-phone contact-card__icon"></i>
                             <div class="contact-card__content">
                                 <span class="contact-card__label">Call us</span>
-                                <a href="tel:+998991234567" class="contact-card__link">
-                                    +998 99 123 4567
+                                <a href="tel:+998915550808" class="contact-card__link">
+                                    +998 91 555 08 08
                                 </a>
                             </div>
                         </div>
@@ -556,8 +556,8 @@
                             <i class="fas fa-envelope contact-card__icon"></i>
                             <div class="contact-card__content">
                                 <span class="contact-card__label">Email us</span>
-                                <a href="mailto:info@jahongirtravel.com" class="contact-card__link">
-                                    info@jahongirtravel.com
+                                <a href="mailto:info@jahongir-travel.uz" class="contact-card__link">
+                                    info@jahongir-travel.uz
                                 </a>
                             </div>
                         </div>
@@ -603,7 +603,7 @@
                             <i class="fas fa-map-marker-alt contact-card__icon"></i>
                             <div class="contact-card__content">
                                 Registan Street, 15<br>
-                                Samarkand, Uzbekistan
+                                Samarkand, Chirokchi 4
                             </div>
                         </address>
 
@@ -708,7 +708,7 @@
                     <div class="faq-item__answer">
                         <p>
                             You can reach our customer support team anytime via email at
-                            info@jahongirtravel.com or by calling +998 99 123 4567. We're here to help
+                            info@jahongir-travel.uz or by calling +998 91 555 08 08. We're here to help
                             with any questions or feedback you may have about your tour experience.
                         </p>
                     </div>
@@ -760,7 +760,7 @@
     <!-- ========================================
          WHATSAPP FLOATING BUTTON (Desktop)
          ======================================== -->
-    <a href="https://wa.me/998991234567?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+    <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
        class="whatsapp-float"
        target="_blank"
        rel="noopener noreferrer"
@@ -773,18 +773,18 @@
          MOBILE STICKY CTA BAR (Mobile Only)
          ======================================== -->
     <div class="mobile-cta-bar">
-        <a href="tel:+998991234567" class="mobile-cta-bar__button mobile-cta-bar__button--call">
+        <a href="tel:+998915550808" class="mobile-cta-bar__button mobile-cta-bar__button--call">
             <i class="fas fa-phone"></i>
             <span>Call</span>
         </a>
-        <a href="https://wa.me/998991234567?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
+        <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
            target="_blank"
            rel="noopener noreferrer"
            class="mobile-cta-bar__button mobile-cta-bar__button--whatsapp">
             <i class="fab fa-whatsapp"></i>
             <span>WhatsApp</span>
         </a>
-        <a href="mailto:info@jahongirtravel.com" class="mobile-cta-bar__button mobile-cta-bar__button--email">
+        <a href="mailto:info@jahongir-travel.uz" class="mobile-cta-bar__button mobile-cta-bar__button--email">
             <i class="fas fa-envelope"></i>
             <span>Email</span>
         </a>
@@ -890,13 +890,13 @@
                         <i class="fab fa-whatsapp"></i>
                         <span>WhatsApp: +998 91 555 0808</span>
                     </a>
-                    <a href="mailto:info@jahongirtravel.com" class="alt-method">
+                    <a href="mailto:info@jahongir-travel.uz" class="alt-method">
                         <i class="fas fa-envelope"></i>
-                        <span>Email: info@jahongirtravel.com</span>
+                        <span>Email: info@jahongir-travel.uz</span>
                     </a>
-                    <a href="tel:+998991234567" class="alt-method">
+                    <a href="tel:+998915550808" class="alt-method">
                         <i class="fas fa-phone"></i>
-                        <span>Call: +998 99 123 4567</span>
+                        <span>Call: +998 91 555 08 08</span>
                     </a>
                 </div>
             </div>

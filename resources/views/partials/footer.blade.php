@@ -11,11 +11,11 @@
             <div class="footer-brand__contact-section">
                 <div class="footer-brand__contact-title">Get in Touch</div>
                 <address class="footer-brand__contact">
-                    <a href="mailto:info@jahongirtravel.com"><i class="far fa-envelope"></i> info@jahongirtravel.com</a>
-                    <a href="tel:+998991234567"><i class="fas fa-phone"></i> +998 99 123 4567</a>
+                    <a href="mailto:info@jahongir-travel.uz"><i class="far fa-envelope"></i> info@jahongir-travel.uz</a>
+                    <a href="tel:+998915550808"><i class="fas fa-phone"></i> +998 91 555 08 08</a>
                     <a href="https://wa.me/998915550808" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 </address>
-                <p class="footer-brand__location"><i class="fas fa-map-marker-alt"></i> Samarkand, Uzbekistan</p>
+                <p class="footer-brand__location"><i class="fas fa-map-marker-alt"></i> Samarkand, Chirokchi 4</p>
             </div>
         </div>
 

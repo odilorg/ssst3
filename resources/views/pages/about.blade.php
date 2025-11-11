@@ -283,7 +283,7 @@
             </div>
             <h3 class="help-option__title">Call now</h3>
             <p class="help-option__text">Speak with a local expert about your perfect Silk Road journey.</p>
-            <a href="tel:+998991234567" class="help-option__link">+998 99 123 4567 <i class="fas fa-arrow-right"></i></a>
+            <a href="tel:+998915550808" class="help-option__link">+998 91 555 08 08 <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       </div>

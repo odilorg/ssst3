@@ -128,7 +128,7 @@
     <div class="letterhead">
         <div class="company-name">Jahongir Travel OOO</div>
         <div class="company-info">
-            48, Usto Umar Jurakulov str., Samarkand, Uzbekistan 140100<br>
+            48, Usto Umar Jurakulov str., Samarkand, Chirokchi 4 140100<br>
             Tel: +998 55 7045000; E-mail: info@jahongir-travel.com; Web: www.jahongir-travel.com
         </div>
     </div>

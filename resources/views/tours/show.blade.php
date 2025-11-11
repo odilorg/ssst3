@@ -367,11 +367,11 @@
           <li><a href="/contact/">Contact</a></li>
         </ul>
 
-        <a href="tel:+998991234567" class="btn btn--accent nav__cta">
+        <a href="tel:+998915550808" class="btn btn--accent nav__cta">
           <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6.62 10.79a15.09 15.09 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.24 11.72 11.72 0 003.67.59 1 1 0 011 1v3.54a1 1 0 01-1 1A18.5 18.5 0 013 5a1 1 0 011-1h3.55a1 1 0 011 1 11.72 11.72 0 00.59 3.67 1 1 0 01-.25 1.11z"/>
           </svg>
-          +998 99 123 4567
+          +998 91 555 08 08
         </a>
 
         <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
@@ -868,9 +868,9 @@
       <div class="footer-brand">
         <div class="footer-brand__text">Jahongir Travel</div>
         <p>Tailor-made Uzbekistan tours since 2012.</p>
-        <p><a href="mailto:info@jahongirtravel.com">info@jahongirtravel.com</a></p>
-        <p><a href="tel:+998991234567">+998 99 123 4567</a></p>
-        <p>Samarkand, Uzbekistan</p>
+        <p><a href="mailto:info@jahongir-travel.uz">info@jahongir-travel.uz</a></p>
+        <p><a href="tel:+998915550808">+998 91 555 08 08</a></p>
+        <p>Samarkand, Chirokchi 4</p>
       </div>
 
       <nav class="footer-col footer-nav" aria-label="Company">

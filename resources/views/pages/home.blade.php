@@ -12,7 +12,7 @@
   "name": "Jahongir Travel",
   "description": "Expert guided tours in Uzbekistan and the Silk Road",
   "url": "https://jahongirtravel.com",
-  "telephone": "+998 99 123 4567",
+  "telephone": "+998 91 555 08 08",
   "email": "info@@jahongirtravel.com",
   "address": {
     "@@type": "PostalAddress",
@@ -45,7 +45,7 @@
       <picture>
         <source srcset="{{ asset('images/hero-registan.webp') }}" type="image/webp">
         <img src="{{ asset('images/hero-registan.webp') }}"
-             alt="Registan Square in Samarkand, Uzbekistan at sunset"
+             alt="Registan Square in Samarkand, Chirokchi 4 at sunset"
              width="1920"
              height="1080"
              sizes="100vw"
@@ -120,13 +120,13 @@
           <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Trusted by 2,400+ travelers since 2012</p>
 
           <div class="why-us__contacts">
-            <a href="tel:+998991234567" class="contact-link" aria-label="Call Jahongir Travel">
-              <i class="fas fa-phone" aria-hidden="true"></i> +998 99 123 4567
+            <a href="tel:+998915550808" class="contact-link" aria-label="Call Jahongir Travel">
+              <i class="fas fa-phone" aria-hidden="true"></i> +998 91 555 08 08
             </a>
             <a href="mailto:info@@jahongirtravel.com" class="contact-link" aria-label="Email Jahongir Travel">
               <i class="fas fa-envelope" aria-hidden="true"></i> Email Us
             </a>
-            <a href="https://wa.me/998991234567" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Chat with Jahongir Travel on WhatsApp">
+            <a href="https://wa.me/998915550808" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Chat with Jahongir Travel on WhatsApp">
               <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
             </a>
           </div>

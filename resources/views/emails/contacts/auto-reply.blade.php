@@ -30,7 +30,7 @@ Please keep this reference number for your records.
 If your inquiry is urgent, you can also reach us:
 
 - **WhatsApp:** [+998 91 555 0808](https://wa.me/998915550808)
-- **Email:** info@jahongirtravel.com
+- **Email:** info@jahongir-travel.uz
 - **Phone:** +998 71 XXX XXXX
 
 @component('mail::button', ['url' => config('app.url')])

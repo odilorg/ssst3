@@ -117,9 +117,9 @@
                 <h2>Contact Us</h2>
                 <p>If you have questions about these terms and conditions, please contact us:</p>
                 <ul>
-                    <li><strong>Email:</strong> <a href="mailto:info@jahongirtravel.com">info@jahongirtravel.com</a></li>
-                    <li><strong>Phone:</strong> <a href="tel:+998991234567">+998 99 123 4567</a></li>
-                    <li><strong>Address:</strong> Samarkand, Uzbekistan</li>
+                    <li><strong>Email:</strong> <a href="mailto:info@jahongir-travel.uz">info@jahongir-travel.uz</a></li>
+                    <li><strong>Phone:</strong> <a href="tel:+998915550808">+998 91 555 08 08</a></li>
+                    <li><strong>Address:</strong> Samarkand, Chirokchi 4</li>
                 </ul>
             </section>
         </div>
