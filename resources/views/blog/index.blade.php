@@ -138,17 +138,6 @@
         </div>
     </section>
 
-    <!-- Newsletter CTA -->
-    <section class="blog-newsletter">
-        <div class="container">
-            <h2>Get Travel Tips in Your Inbox</h2>
-            <p>Subscribe to our newsletter for exclusive travel guides and insider tips.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Your email address" required>
-                <button type="submit" class="btn btn--accent">Subscribe</button>
-            </form>
-        </div>
-    </section>
 
     <!-- Site Footer -->
     @include('partials.footer')
