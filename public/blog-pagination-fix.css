@@ -1,0 +1,124 @@
+/* Blog Pagination Improvements */
+
+/* Hide default Laravel pagination previous/next text */
+.blog-pagination nav > div > a,
+.blog-pagination nav > div > span {
+    display: none;
+}
+
+/* Hide showing text */
+.blog-pagination nav p {
+    display: none;
+}
+
+.blog-pagination {
+    margin-top: var(--space-48);
+    display: flex;
+    justify-content: center;
+    padding: var(--space-24) 0;
+}
+
+.blog-pagination .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: var(--space-8);
+    align-items: center;
+}
+
+.blog-pagination .page-item {
+    display: flex;
+}
+
+.blog-pagination .page-link {
+    padding: var(--space-12) var(--space-16);
+    border: 1px solid var(--stroke-1);
+    border-radius: var(--radius-input);
+    background: #FFFFFF;
+    color: var(--text-2);
+    text-decoration: none;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Hover effect - only for enabled links */
+.blog-pagination .page-item:not(.disabled) .page-link:hover {
+    background: var(--bg-surface);
+    border-color: var(--brand-1);
+    color: var(--brand-1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Active/current page */
+.blog-pagination .page-item.active .page-link {
+    background: var(--brand-1);
+    border-color: var(--brand-1);
+    color: white;
+    font-weight: 600;
+    cursor: default;
+}
+
+/* Disabled state (first/last page arrows) */
+.blog-pagination .page-item.disabled .page-link {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #F5F5F5;
+    color: var(--text-3);
+    border-color: var(--stroke-1);
+}
+
+/* Arrow icons - very specific to override any global styles */
+.blog-pagination .page-link i,
+.blog-pagination .page-link i.fas,
+.blog-pagination .page-link i.fa-chevron-left,
+.blog-pagination .page-link i.fa-chevron-right {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure arrow buttons have proper sizing */
+.blog-pagination .page-item:first-child .page-link,
+.blog-pagination .page-item:last-child .page-link {
+    min-width: 44px;
+    padding: var(--space-12);
+}
+
+/* Three dots separator */
+.blog-pagination .page-item.disabled:not(:first-child):not(:last-child) .page-link {
+    background: transparent;
+    border: none;
+    opacity: 1;
+    cursor: default;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .blog-pagination .page-link {
+        min-width: 40px;
+        min-height: 40px;
+        padding: var(--space-8) var(--space-12);
+        font-size: 14px;
+    }
+
+    .blog-pagination .pagination {
+        gap: var(--space-4);
+    }
+
+    .blog-pagination .page-item:first-child .page-link,
+    .blog-pagination .page-item:last-child .page-link {
+        min-width: 40px;
+        padding: var(--space-8);
+    }
+}

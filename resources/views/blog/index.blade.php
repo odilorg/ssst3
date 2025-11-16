@@ -27,6 +27,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
     <link rel="stylesheet" href="{{ asset('blog-listing.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('blog-pagination-fix.css') }}?v={{ time() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
@@ -85,13 +86,14 @@
             <div class="blog-categories">
                 <a href="{{ route('blog.index') }}"
                    class="blog-category-btn {{ !request('category') ? 'active' : '' }}">
-                    All Articles
+                    <span class="category-label">All Articles</span>
                 </a>
                 @foreach($categories as $category)
                     <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
                        class="blog-category-btn {{ request('category') === $category->slug ? 'active' : '' }}"
                        data-category="{{ $category->slug }}">
-                        {{ $category->name }} ({{ $category->posts_count }})
+                        <span class="category-label">{{ $category->name }}</span>
+                        <span class="category-count">{{ $category->posts_count }}</span>
                     </a>
                 @endforeach
             </div>
@@ -131,7 +133,7 @@
 
                 <!-- Pagination -->
                 <div class="blog-pagination">
-                    {{ $posts->links() }}
+                    {{ $posts->links('pagination::default') }}
                 </div>
             @endif
 
