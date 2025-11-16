@@ -3,12 +3,12 @@
 <!-- Search Widget -->
 <div class="sidebar-widget sidebar-search">
     <h3 class="widget-title">Search</h3>
-    <form class="search-form" role="search" action="/blog/search/" method="get">
+    <form class="search-form" role="search" action="{{ route('blog.index') }}" method="get">
         <input type="search"
-               name="q"
+               name="search"
                placeholder="Search articles..."
-               aria-label="Search articles"
-               required>
+               value="{{ request('search') }}"
+>
         <button type="submit" aria-label="Submit search">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -25,7 +25,7 @@
     <ul class="recent-posts-list">
         @foreach($recentPosts as $recent)
         <li class="recent-post-item">
-            <a href="/blog/{{ $recent->slug }}">
+            <a href="{{ route('blog.show', $recent->slug) }}">
                 <h4>{{ $recent->title }}</h4>
                 <time datetime="{{ $recent->published_at->format('Y-m-d') }}">{{ $recent->published_at->format('M d, Y') }}</time>
             </a>

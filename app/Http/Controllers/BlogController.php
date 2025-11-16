@@ -111,14 +111,11 @@ class BlogController extends Controller
             });
         }
 
-        // Apply search filter
+        // Apply search filter using full-text index for better performance
         if (!empty($validated['search'])) {
             $searchTerm = $validated['search'];
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('excerpt', 'like', "%{$searchTerm}%")
-                  ->orWhere('content', 'like', "%{$searchTerm}%");
-            });
+            // Use full-text search for better performance
+            $query->whereFullText(['title', 'excerpt', 'content'], $searchTerm);
         }
 
         // Apply sorting

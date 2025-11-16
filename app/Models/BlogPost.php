@@ -36,6 +36,39 @@ class BlogPost extends Model
     ];
 
     /**
+     * Bootstrap the model and set up cache invalidation
+     */
+    protected static function booted()
+    {
+        // Clear blog caches when a post is saved or deleted
+        static::saved(function () {
+            self::clearBlogCaches();
+        });
+
+        static::deleted(function () {
+            self::clearBlogCaches();
+        });
+    }
+
+    /**
+     * Clear all blog-related caches
+     * Simple approach for cache drivers that don't support tagging
+     */
+    protected static function clearBlogCaches(): void
+    {
+        $cache = \Illuminate\Support\Facades\Cache::store();
+
+        // Clear specific blog cache keys
+        $cache->forget('blog.categories.all');
+        $cache->forget('blog.tags.all');
+        $cache->forget('blog.featured');
+
+        // For blog listing caches, we flush all since we can't use patterns
+        // This is acceptable for admin operations which are infrequent
+        $cache->flush();
+    }
+
+    /**
      * Get the category for this post
      */
     public function category(): BelongsTo
@@ -86,6 +119,30 @@ class BlogPost extends Model
     public function incrementViews(): void
     {
         $this->increment('view_count');
+    }
+
+    /**
+     * Get the full URL for the featured image
+     * Handles both public folder images (images/) and storage folder images
+     */
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        if (empty($this->featured_image)) {
+            return null;
+        }
+
+        // If it's already a full URL, return as-is
+        if (str_starts_with($this->featured_image, 'http')) {
+            return $this->featured_image;
+        }
+
+        // If path starts with 'images/', it's in public folder
+        if (str_starts_with($this->featured_image, 'images/')) {
+            return asset($this->featured_image);
+        }
+
+        // Otherwise it's in storage folder (uploaded via admin)
+        return asset('storage/' . $this->featured_image);
     }
 
     /**

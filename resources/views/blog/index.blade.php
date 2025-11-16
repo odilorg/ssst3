@@ -56,14 +56,14 @@
     <!-- Site Header -->
     @include('partials.header')
 
-    <!-- Blog Hero Section -->
-    <section class="blog-hero">
+    <!-- Page Header -->
+    <section class="blog-page-header">
         <div class="container">
-            <p class="blog-hero__eyebrow">FROM OUR EXPERTS</p>
-            <h1 class="blog-hero__title">Travel Insights & Tips</h1>
-            <p class="blog-hero__subtitle">Insider knowledge to make your Silk Road journey unforgettable</p>
+            <h1 class="page-title">Travel Insights & Tips</h1>
+            <p class="page-subtitle">Expert travel advice and destination guides</p>
         </div>
     </section>
+
 
     <!-- Filters & Search -->
     <section class="blog-filters">
@@ -99,14 +99,20 @@
             </div>
 
             <!-- Sort Dropdown -->
-            <div class="blog-sort">
+            <form method="GET" action="{{ route('blog.index') }}" class="blog-sort">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
                 <label for="sortBy">Sort by:</label>
                 <select id="sortBy" name="sort" onchange="this.form.submit()">
                     <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
                     <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Most Popular</option>
                     <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest</option>
                 </select>
-            </div>
+            </form>
 
         </div>
     </section>

@@ -3,9 +3,9 @@
 
         <!-- Card Media -->
         <div class="blog-card__media">
-            @if($post->featured_image)
+            @if($post->featured_image_url)
                 <img
-                    src="{{ asset('storage/' . $post->featured_image) }}"
+                    src="{{ $post->featured_image_url }}"
                     alt="{{ $post->title }}"
                     width="800"
                     height="450"
