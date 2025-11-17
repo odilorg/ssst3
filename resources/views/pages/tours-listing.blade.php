@@ -223,7 +223,7 @@
     @media (max-width: 768px) {
 
         .tours-hero {
-            padding: 80px 0 60px;
+            padding: 120px 0 60px;
         }
 
         .tours-hero::before {

@@ -35,6 +35,7 @@
         @endif
     </div>
 
+    {{-- Map removed as per user request
     @if($tour->meeting_lat && $tour->meeting_lng)
         <!-- Google Map Embed (no API key required) -->
         <div class="meeting-map" aria-label="Map to meeting point">
@@ -50,4 +51,5 @@
             </iframe>
         </div>
     @endif
+    --}}
 </div>

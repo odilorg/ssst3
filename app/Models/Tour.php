@@ -328,6 +328,11 @@ class Tour extends Model
         }
 
         // If hero_image is a storage path
+        // If path starts with 'images/', it's in public folder (not storage)
+        if (str_starts_with($this->hero_image, 'images/')) {
+            return asset($this->hero_image);
+        }
+
         return asset('storage/' . $this->hero_image);
     }
 }

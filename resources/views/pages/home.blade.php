@@ -963,8 +963,6 @@
   <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Main JavaScript -->
-  <script src="{{ asset('js/main.js') }}" defer></script>
 
   <!-- Reviews Carousel -->
   <script src="{{ asset('js/reviews-carousel.js') }}"></script>

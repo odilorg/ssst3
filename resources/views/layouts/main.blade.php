@@ -72,7 +72,7 @@
     </a>
     
     {{-- Main JavaScript --}}
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}" defer></script>
 
     {{-- Page-specific Scripts --}}
     @stack('scripts')

@@ -243,4 +243,26 @@ class BlogController extends Controller
 
         return view('partials.blog.listing', compact('posts'));
     }
+
+    /**
+     * Get related tours section for a blog post
+     * Cached for 1 hour (3600 seconds)
+     */
+    public function relatedTours(string $slug): View
+    {
+        // Get the blog post
+        $post = Cache::remember("blog.{$slug}.related-tours.post", 3600, function () use ($slug) {
+            return BlogPost::where('slug', $slug)
+                ->where('is_published', true)
+                ->with('city')
+                ->firstOrFail();
+        });
+
+        // Get related tours using the model method (cached separately)
+        $tours = Cache::remember("blog.{$slug}.related-tours.data", 3600, function () use ($post) {
+            return $post->getRelatedTours(3);
+        });
+
+        return view('partials.blog.related-tours', compact('tours'));
+    }
 }

@@ -16,7 +16,8 @@
             </ul>
 
             <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
-                <span class="nav__toggle-icon"></span>
+                <i class="fas fa-bars nav__toggle-icon-bars"></i>
+                <i class="fas fa-times nav__toggle-icon-close"></i>
             </button>
         </div>
     </nav>

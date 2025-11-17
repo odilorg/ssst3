@@ -19,7 +19,7 @@
                             <span class="stop-title">{{ $stop->title }}</span>
                         </summary>
                         <div class="stop-body">
-                            {!! nl2br(e($stop->description)) !!}
+                            {!! $stop->description !!}
                             @if($stop->duration)
                                 <p class="stop-duration">Duration: ~{{ $stop->duration }}</p>
                             @endif

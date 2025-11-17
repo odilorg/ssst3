@@ -200,7 +200,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 .hero__content {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   width: 100%;
   padding: var(--space-5) 0;
 }
@@ -590,7 +590,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   left: 0;
   right: 0;
   padding: var(--space-3);
-  z-index: 2;
+  z-index: 10;
   color: #fff;
 }
 
@@ -961,7 +961,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 .places .container {
   position: relative;
-  z-index: 2;
+  z-index: 10;
 }
 
 .places__header {
@@ -1046,7 +1046,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(8px);
   border-radius: 12px;
-  z-index: 2;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1867,7 +1867,7 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.95);
   color: #1e293b;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 2;
+  z-index: 10;
 }
 
 .blog-card__category[data-category="travel-tips"] {
@@ -2920,8 +2920,9 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  text-align: center;
 }
+
+/* Dark overlay for better text readability */
 .about-hero__overlay {
   position: absolute;
   top: 0;
@@ -2930,237 +2931,6 @@ button:focus-visible {
   height: 100%;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.60) 100%);
   z-index: 1;
-}
-  position: absolute;
-  top: 0;
-  left: 0;
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__content p:last-of-type {
-  margin-bottom: 1.5rem;
-}
-n/* Large viewport center alignment */
-@media (min-width: 1200px) {
-  .about-hero__content {
-    text-align: center;
-  }
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-.about-hero__subtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-.about-hero__title {
-  font-family: 'Playfair Display', serif;
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.5px;
-  color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.30);
-}
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.about-hero__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-              linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
 }
 
 .about-hero__content {
@@ -3191,6 +2961,20 @@ n/* Large viewport center alignment */
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .about-hero {
+    height: 300px;
+  }
+
+  .about-hero__title {
+    font-size: 36px;
+  }
+
+  .about-hero__subtitle {
+    font-size: 15px;
+  }
+}
 /* 9.2 WHY WE ARE BEST - ICON GRID */
 .why-best {
   padding: var(--space-5) 0;
@@ -3626,36 +3410,8 @@ n/* Large viewport center alignment */
 }
 
 /* 9.9 RESPONSIVE STYLES */
-@media (max-width: 900px) {
-  .about-hero {
-    min-height: 400px;
-  }
-  .about-hero__overlay {
-    background: linear-gradient(135deg, rgba(26,84,144,0.7) 0%, rgba(44,122,191,0.6) 100%),
-                linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.80) 100%);
-  }
 
-  .about-hero__title {
-    font-size: clamp(2rem, 5vw, 3rem);
-  }
-
-  .about-hero__subtitle {
 @media (max-width: 768px) {
-  .about-hero::before {
-    background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.68));
-  }
-
-  .about-hero__content h1 {
-    font-size: clamp(1.8rem, 5vw, 2.2rem);
-  }
-
-  .about-hero__content p {
-    color: rgba(255, 255, 255, 0.9);
-  }
-}
-    color: rgba(255, 255, 255, 0.9);
-  }
-
   .two-col-section {
     grid-template-columns: 1fr;
     gap: var(--space-4);
@@ -3680,7 +3436,7 @@ n/* Large viewport center alignment */
   }
 
   .icon-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .stat-cards {
@@ -4650,3 +4406,126 @@ html {
   }
 }
 
+
+/* ========================================
+
+/* ========================================
+   MOBILE MENU TEXT COLOR FIX
+   Fix white text on white background
+   Added: 2025
+   ======================================== */
+
+@media (max-width: 1023px) {
+  /* Fix hamburger/X button to be dark when menu is open */
+  body:has(.nav__menu--open) .nav__toggle-icon,
+  body:has(.nav__menu--open) .nav__toggle-icon::before,
+  body:has(.nav__menu--open) .nav__toggle-icon::after {
+    background: var(--color-text, #1E1E1E) !important;
+  }
+  
+  /* When mobile menu is open, ensure logo and menu text are visible */
+  body:has(.nav__menu--open) .nav__logo-text {
+    color: var(--color-primary, #0D4C92) !important;
+    text-shadow: none !important;
+  }
+  
+  /* Ensure all menu links are dark when mobile menu is open */
+  .nav__menu--open a {
+    color: var(--color-text, #1E1E1E) !important;
+    text-shadow: none !important;
+  }
+  
+  /* Logo strong element */
+  body:has(.nav__menu--open) .nav__logo-text strong {
+    color: var(--color-accent, #F97316) !important;
+  }
+}
+
+/* Fix mobile menu toggle button display issue */
+@media (max-width: 1023px) {
+  .nav__toggle {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .nav__toggle-icon,
+  .nav__toggle-icon::before,
+  .nav__toggle-icon::after {
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* Ensure no text content leaks through */
+  .nav__toggle::before,
+  .nav__toggle::after {
+    content: none !important;
+  }
+
+  /* Clear any inherited text */
+  .nav__toggle {
+    font-size: 0;
+    overflow: hidden;
+  }
+}
+
+/* Font Awesome Toggle Icons */
+@media (max-width: 1023px) {
+  .nav__toggle {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 24px;
+  }
+
+  .nav__toggle-icon-bars,
+  .nav__toggle-icon-close {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    position: absolute;
+  }
+
+  /* Show bars, hide close by default */
+  .nav__toggle-icon-bars {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  .nav__toggle-icon-close {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+
+  /* When menu is open, hide bars and show close */
+  .nav__toggle[aria-expanded="true"] .nav__toggle-icon-bars {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+
+  .nav__toggle[aria-expanded="true"] .nav__toggle-icon-close {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  /* Ensure icons are visible on white background when menu is open */
+  body:has(.nav__menu--open) .nav__toggle-icon-bars,
+  body:has(.nav__menu--open) .nav__toggle-icon-close {
+    color: var(--color-text, #1E1E1E) !important;
+  }
+}
+
+/* Font Awesome Toggle Icons - White by default for dark backgrounds */
+@media (max-width: 1023px) {
+  .nav__toggle {
+    color: #FFFFFF;
+  }
+
+  /* Dark color when nav is sticky */
+  .nav--sticky .nav__toggle {
+    color: var(--color-text, #1E1E1E);
+  }
+}

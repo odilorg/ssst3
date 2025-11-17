@@ -523,6 +523,8 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/blog/{slug}/comments', [BlogController::class, 'comments'])
         ->name('blog.comments');
+    Route::get('/blog/{slug}/related-tours', [BlogController::class, 'relatedTours'])
+        ->name('blog.related-tours');
 
     // -------- BLOG LISTING (HTMX) --------
     Route::get('/blog/listing', [BlogController::class, 'listing'])

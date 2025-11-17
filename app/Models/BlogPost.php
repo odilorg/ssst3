@@ -11,6 +11,7 @@ class BlogPost extends Model
 {
     protected $fillable = [
         'category_id',
+        'city_id',
         'title',
         'slug',
         'excerpt',
@@ -175,5 +176,73 @@ class BlogPost extends Model
     public function scopeRecent($query, $limit = 5)
     {
         return $query->published()->orderBy('published_at', 'desc')->limit($limit);
+    }
+
+    /**
+     * Get the city/destination for this post
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    /**
+     * Get related tours for this blog post
+     * Matching logic:
+     * 1. If city_id is set, get tours from that city
+     * 2. Otherwise, try to extract city name from title/content and match
+     * 3. Fallback to most popular tours
+     *
+     * @param int $limit Number of tours to return (default: 3)
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getRelatedTours(int $limit = 3)
+    {
+        // Strategy 1: Direct city relationship
+        if ($this->city_id) {
+            $tours = Tour::where('city_id', $this->city_id)
+                ->where('is_active', true)
+                ->orderBy('rating', 'desc')
+                ->orderBy('review_count', 'desc')
+                ->limit($limit)
+                ->get();
+
+            if ($tours->isNotEmpty()) {
+                return $tours;
+            }
+        }
+
+        // Strategy 2: Extract city names from title/content
+        $cities = City::active()->get();
+        $foundCity = null;
+
+        foreach ($cities as $city) {
+            // Check if city name appears in title or content (case insensitive)
+            $searchText = $this->title . ' ' . $this->excerpt . ' ' . strip_tags($this->content);
+            if (stripos($searchText, $city->name) !== false || stripos($searchText, $city->slug) !== false) {
+                $foundCity = $city;
+                break;
+            }
+        }
+
+        if ($foundCity) {
+            $tours = Tour::where('city_id', $foundCity->id)
+                ->where('is_active', true)
+                ->orderBy('rating', 'desc')
+                ->orderBy('review_count', 'desc')
+                ->limit($limit)
+                ->get();
+
+            if ($tours->isNotEmpty()) {
+                return $tours;
+            }
+        }
+
+        // Strategy 3: Fallback to most popular tours globally
+        return Tour::where('is_active', true)
+            ->orderBy('rating', 'desc')
+            ->orderBy('review_count', 'desc')
+            ->limit($limit)
+            ->get();
     }
 }

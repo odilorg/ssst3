@@ -189,7 +189,7 @@
             <h2 class="section-title">Meeting Point & Pickup</h2>
             <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--rect" style="width: 100%; height: 360px; margin-top: 2rem;"></div>
+            {{-- Map skeleton removed --}}
           </section>
 
           <!-- Know Before You Go Section -->

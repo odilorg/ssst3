@@ -7,6 +7,14 @@
 (function() {
 'use strict';
 
+// Guard against double initialization
+if (window.JAHONGIR_MAIN_JS_LOADED) {
+  console.warn('main.js already loaded, skipping re-initialization');
+  return;
+}
+window.JAHONGIR_MAIN_JS_LOADED = true;
+
+
 // ==========================================
 // 1. STICKY NAVIGATION ON SCROLL
 // ==========================================
@@ -22,13 +30,16 @@ window.addEventListener('scroll', () => {
 });
 
 // ==========================================
-// 2. MOBILE MENU TOGGLE
+// 2. MOBILE MENU TOGGLE (WITH ERROR HANDLING)
 // ==========================================
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
 
 if (navToggle && navMenu) {
-  navToggle.addEventListener('click', () => {
+  // Main toggle handler with event bubbling prevention
+  navToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent browser extension conflicts
+
     const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
 
     // Toggle aria-expanded
@@ -50,9 +61,23 @@ if (navToggle && navMenu) {
     });
   });
 
-  // Close menu when clicking outside
+  // Close menu when clicking outside (with error handling)
   document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target) && navMenu.classList.contains('nav__menu--open')) {
+    try {
+      if (!nav.contains(e.target) && navMenu.classList.contains('nav__menu--open')) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navMenu.classList.remove('nav__menu--open');
+        document.body.style.overflow = '';
+      }
+    } catch (err) {
+      // Silently catch browser extension errors (runtime.lastError, etc.)
+      // This prevents console spam from browser extensions
+    }
+  });
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('nav__menu--open')) {
       navToggle.setAttribute('aria-expanded', 'false');
       navMenu.classList.remove('nav__menu--open');
       document.body.style.overflow = '';

@@ -234,3 +234,63 @@
     }
 
 })();
+
+/**
+ * Horizontal Scroll Drag for Category Pills
+ * Enables mouse-drag scrolling on desktop
+ */
+(function() {
+    'use strict';
+
+    const scrollContainer = document.querySelector('.blog-categories');
+    if (!scrollContainer) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        scrollContainer.style.cursor = 'grabbing';
+        scrollContainer.style.userSelect = 'none';
+        startX = e.pageX - scrollContainer.offsetLeft;
+        scrollLeft = scrollContainer.scrollLeft;
+    });
+
+    scrollContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        scrollContainer.style.cursor = 'grab';
+    });
+
+    scrollContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        scrollContainer.style.cursor = 'grab';
+    });
+
+    scrollContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - scrollContainer.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll speed multiplier
+        scrollContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // Set initial cursor
+    scrollContainer.style.cursor = 'grab';
+
+    // Auto-scroll to active category on load
+    const activeBtn = scrollContainer.querySelector('.blog-category-btn.active');
+    if (activeBtn) {
+        setTimeout(() => {
+            const containerWidth = scrollContainer.offsetWidth;
+            const btnLeft = activeBtn.offsetLeft;
+            const btnWidth = activeBtn.offsetWidth;
+            const scrollPosition = btnLeft - (containerWidth / 2) + (btnWidth / 2);
+            
+            scrollContainer.scrollTo({
+                left: scrollPosition,
+                behavior: 'smooth'
+            });
+        }, 300);
+    }
+})();

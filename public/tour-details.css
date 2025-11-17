@@ -1922,10 +1922,10 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  /* Meeting grid */
-  .meeting-grid {
+  /* Meeting grid - commented out to keep full width since map was removed */
+  /* .meeting-grid {
     grid-template-columns: 1fr 1fr;
-  }
+  } */
 
   /* Navigation visible */
   .site-nav__list {

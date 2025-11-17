@@ -193,7 +193,7 @@
 
     @media (max-width: 768px) {
         .destinations-hero {
-            padding: 80px 0 60px;
+            padding: 120px 0 60px;
         }
 
         .destinations-hero__title {

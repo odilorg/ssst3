@@ -199,4 +199,35 @@ class BlogController extends Controller
         // Create cache key
         return 'blog.listing.' . md5(json_encode($params));
     }
+
+    /**
+     * Get related tours partial for a blog post
+     *
+     * @param string $slug
+     * @return View
+     */
+    public function relatedTours(string $slug): View
+    {
+        // Validate slug format
+        if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
+            abort(404, 'Invalid blog post URL');
+        }
+
+        // Get the blog post
+        $post = Cache::remember("blog.post.{$slug}", 3600, function () use ($slug) {
+            return BlogPost::where('slug', $slug)
+                ->where('is_published', true)
+                ->with('city')
+                ->first();
+        });
+
+        if (!$post) {
+            abort(404, 'Blog post not found');
+        }
+
+        // Get related tours using the model method
+        $tours = $post->getRelatedTours(3);
+
+        return view('partials.blog.related-tours', compact('tours'));
+    }
 }

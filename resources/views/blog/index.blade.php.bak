@@ -56,14 +56,14 @@
     <!-- Site Header -->
     @include('partials.header')
 
-    <!-- Page Header -->
-    <section class="blog-page-header">
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
         <div class="container">
-            <h1 class="page-title">Travel Insights & Tips</h1>
-            <p class="page-subtitle">Expert travel advice and destination guides</p>
+            <p class="blog-hero__eyebrow">FROM OUR EXPERTS</p>
+            <h1 class="blog-hero__title">Travel Insights & Tips</h1>
+            <p class="blog-hero__subtitle">Insider knowledge to make your Silk Road journey unforgettable</p>
         </div>
     </section>
-
 
     <!-- Filters & Search -->
     <section class="blog-filters">
@@ -82,23 +82,30 @@
                 </button>
             </form>
 
-            <!-- Category Filter Pills - Scrollable with Icons -->            <div class="blog-categories-wrapper">                <div class="blog-categories">                    <a href="{{ route('blog.index') }}"                       class="blog-category-btn {{ !request('category') ? 'active' : '' }}">                        <span class="category-icon">📚</span>                        <span class="category-label">All Articles</span>                        <span class="category-count">{{ $posts->total() }}</span>                    </a>                    @foreach($categories as $category)                        @php                            $icons = [                                'culture-heritage' => '🎭',                                'religion-spirituality' => '🕌',                                'travel-tips' => '✈️',                                'destinations' => '🗺️',                                'food-cuisine' => '🍽️',                                'history' => '📜',                                'adventure' => '🏔️',                                'photography' => '📸',                            ];                            $icon = $icons[$category->slug] ?? '📝';                        @endphp                        <a href="{{ route('blog.index', ['category' => $category->slug]) }}"                           class="blog-category-btn {{ request('category') === $category->slug ? 'active' : '' }}"                           data-category="{{ $category->slug }}">                            <span class="category-icon">{{ $icon }}</span>                            <span class="category-label">{{ $category->name }}</span>                            <span class="category-count">{{ $category->posts_count }}</span>                        </a>                    @endforeach                </div>            </div>
+            <!-- Category Filter Pills -->
+            <div class="blog-categories">
+                <a href="{{ route('blog.index') }}"
+                   class="blog-category-btn {{ !request('category') ? 'active' : '' }}">
+                    All Articles
+                </a>
+                @foreach($categories as $category)
+                    <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                       class="blog-category-btn {{ request('category') === $category->slug ? 'active' : '' }}"
+                       data-category="{{ $category->slug }}">
+                        {{ $category->name }} ({{ $category->posts_count }})
+                    </a>
+                @endforeach
+            </div>
 
             <!-- Sort Dropdown -->
-            <form method="GET" action="{{ route('blog.index') }}" class="blog-sort">
-                @if(request('category'))
-                    <input type="hidden" name="category" value="{{ request('category') }}">
-                @endif
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
+            <div class="blog-sort">
                 <label for="sortBy">Sort by:</label>
                 <select id="sortBy" name="sort" onchange="this.form.submit()">
                     <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
                     <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Most Popular</option>
                     <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest</option>
                 </select>
-            </form>
+            </div>
 
         </div>
     </section>
@@ -125,7 +132,7 @@
 
                 <!-- Pagination -->
                 <div class="blog-pagination">
-                    {{ $posts->links('pagination::default') }}
+                    {{ $posts->links() }}
                 </div>
             @endif
 
