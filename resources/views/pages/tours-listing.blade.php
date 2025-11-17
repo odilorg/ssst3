@@ -9,42 +9,69 @@
 <style>
 
     .tours-hero {
-        background: url("/images/hero-registan.webp") center/cover no-repeat;
-        padding: 120px 0 80px;
-        color: white;
-        text-align: center;
         position: relative;
+        height: 400px;
+        background-image: url('images/hero-registan.webp');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
     }
 
-    .tours-hero::before {
-        content: "";
+    .tours-hero__overlay {
         position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(26,84,144,0.65) 0%, rgba(44,122,191,0.55) 100%),
-                    linear-gradient(rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55) 100%);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.60) 100%);
         z-index: 1;
-        pointer-events: none;
     }
 
-    .tours-hero .container {
+    .tours-hero__content {
         position: relative;
         z-index: 2;
+        text-align: center;
+        color: #FFFFFF;
     }
 
     .tours-hero__title {
-        font-size: 3rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 56px;
         font-weight: 700;
-        margin-bottom: 1rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.30);
+        line-height: 1.2;
+        margin: 0 0 16px 0;
+        letter-spacing: -0.5px;
+        color: #FFFFFF;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
     .tours-hero__subtitle {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.85);
-        max-width: 700px;
-        margin: 0 auto;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1.6;
+        margin: 0;
+        color: #FFFFFF;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (max-width: 768px) {
+        .tours-hero {
+            height: 300px;
+            margin-top: 100px;
+        }
+
+        .tours-hero__title {
+            font-size: 36px;
+        }
+
+        .tours-hero__subtitle {
+            font-size: 16px;
+        }
     }
 
 
@@ -299,9 +326,12 @@
          HERO SECTION
          ===================================================== -->
     <section class="tours-hero">
+        <div class="tours-hero__overlay"></div>
         <div class="container">
-            <h1 class="tours-hero__title">Discover Amazing Tours</h1>
-            <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
+            <div class="tours-hero__content">
+                <h1 class="tours-hero__title">Discover Amazing Tours</h1>
+                <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
+            </div>
         </div>
     </section>
 

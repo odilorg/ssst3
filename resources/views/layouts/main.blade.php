@@ -38,7 +38,35 @@
     
     {{-- Main Stylesheet --}}
     <link rel="stylesheet" href="{{ asset('style.css') }}">
-    
+
+    {{-- Global Reset Styles --}}
+    <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden;
+        }
+
+        .site-header {
+            margin-top: 0 !important;
+        }
+
+        #main-content {
+            margin-top: 0 !important;
+        }
+
+        /* Ensure hero sections start at top on desktop */
+        @media (min-width: 769px) {
+            .blog-hero,
+            .tours-hero,
+            .destinations-hero,
+            .about-hero,
+            .contact-hero {
+                margin-top: 0 !important;
+            }
+        }
+    </style>
+
     {{-- Page-specific CSS --}}
     @stack('styles')
     

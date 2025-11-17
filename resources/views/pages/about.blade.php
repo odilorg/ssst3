@@ -5,6 +5,786 @@
 @section('meta_keywords', 'About Jahongir Travel, Uzbekistan tour company, family-run tours, Samarkand tours, local tour operator')
 @section('canonical', 'https://jahongirtravel.com/about')
 
+@push('styles')
+<style>
+    /* Why We Are Best Section */
+    .why-best {
+        padding: 80px 0;
+        background: #f9fafb;
+    }
+
+    .section-heading {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .section-tagline {
+        font-size: 1.125rem;
+        color: #666;
+        margin-bottom: 3rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .icon-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .icon-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .icon-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .icon-card__icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.75rem;
+    }
+
+    .icon-card__title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.75rem;
+    }
+
+    .icon-card__text {
+        font-size: 0.9375rem;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    /* Our Story Section */
+    .our-story {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .two-col-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .eyebrow {
+        display: inline-block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #2c7abf;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+    }
+
+    .two-col-section__content p {
+        font-size: 1.0625rem;
+        line-height: 1.8;
+        color: #444;
+        margin-bottom: 1.5rem;
+    }
+
+    .two-col-section__images {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+        position: relative;
+    }
+
+    .story-image {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .story-image--large {
+        grid-column: 1 / 2;
+        grid-row: 1 / 3;
+    }
+
+    .story-image--small {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .btn--outline-coral {
+        color: #2c7abf;
+        border-color: #2c7abf;
+        background: transparent;
+    }
+
+    .btn--outline-coral:hover {
+        background: #2c7abf;
+        color: white;
+    }
+
+    .btn--primary {
+        background: #2c7abf;
+        color: white;
+        border-color: #2c7abf;
+    }
+
+    .btn--primary:hover {
+        background: #1a5490;
+        border-color: #1a5490;
+    }
+
+    .btn--large {
+        padding: 1.125rem 2.5rem;
+        font-size: 1.125rem;
+    }
+
+    /* Stats Showcase */
+    .stats-showcase {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        color: white;
+    }
+
+    .stats-showcase__intro {
+        margin-bottom: 3rem;
+    }
+
+    .stats-showcase .section-heading {
+        color: white;
+    }
+
+    .stats-showcase__subtitle {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .stat-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-card__number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .stat-card__label {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Team Section */
+    .team-section {
+        padding: 80px 0;
+        background: #f9fafb;
+    }
+
+    .team-section__header {
+        margin-bottom: 3rem;
+    }
+
+    .team-section__subtitle {
+        font-size: 1.125rem;
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .team-member {
+        text-align: center;
+    }
+
+    .team-member__photo {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1.5rem;
+        border: 4px solid white;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .team-member__name {
+        font-size: 1.375rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-member__position {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .team-section__cta {
+        text-align: center;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .tripadvisor-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0 3rem;
+        padding: 1.5rem;
+        background: #f9fafb;
+        border-radius: 12px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .tripadvisor-badge__logo {
+        height: 40px;
+    }
+
+    .stars {
+        color: #00aa6c;
+        font-size: 1.25rem;
+    }
+
+    .stars--green {
+        color: #00aa6c;
+    }
+
+    .tripadvisor-badge__count {
+        font-size: 0.9375rem;
+        color: #666;
+        margin-left: 0.5rem;
+    }
+
+    .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .testimonial-card {
+        background: #f9fafb;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .testimonial-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-card__date {
+        font-size: 0.875rem;
+        color: #999;
+    }
+
+    .testimonial-card__title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-card__text {
+        font-size: 0.9375rem;
+        line-height: 1.7;
+        color: #555;
+        margin-bottom: 1.5rem;
+    }
+
+    .testimonial-card__author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .testimonial-card__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .testimonial-card__author-name {
+        display: block;
+        font-size: 0.9375rem;
+        color: #1a1a1a;
+    }
+
+    .testimonial-card__author-location {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    /* Help Section */
+    .help-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
+    }
+
+    .help-section__subtitle {
+        font-size: 1.125rem;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto 2.5rem;
+    }
+
+    .help-primary-cta {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .help-primary-cta__note {
+        margin-top: 1rem;
+        font-size: 0.9375rem;
+        color: #666;
+    }
+
+    .help-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .help-option {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .help-option__icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .help-option__title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.75rem;
+    }
+
+    .help-option__text {
+        font-size: 0.9375rem;
+        color: #666;
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+    }
+
+    .help-option__link {
+        color: #2c7abf;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .help-option__link:hover {
+        color: #1a5490;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        /* Add container padding */
+        .container {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        /* Reduce section padding */
+        .why-best,
+        .our-story,
+        .stats-showcase,
+        .team-section,
+        .testimonials-section,
+        .help-section {
+            padding: 60px 0;
+        }
+
+        .section-heading {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-tagline {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .two-col-section {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .two-col-section__content p {
+            font-size: 1rem;
+        }
+
+        .icon-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .icon-card {
+            padding: 1.5rem;
+        }
+
+        .icon-card__icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .icon-card__title {
+            font-size: 1.125rem;
+        }
+
+        .icon-card__text {
+            font-size: 0.9rem;
+        }
+
+        .stat-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .stat-card__number {
+            font-size: 2.5rem;
+        }
+
+        .stats-showcase__subtitle {
+            font-size: 1rem;
+        }
+
+        .team-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .team-member__photo {
+            width: 160px;
+            height: 160px;
+        }
+
+        .team-member__name {
+            font-size: 1.25rem;
+        }
+
+        .testimonial-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .testimonial-card {
+            padding: 1.5rem;
+        }
+
+        .testimonial-card__title {
+            font-size: 1rem;
+        }
+
+        .testimonial-card__text {
+            font-size: 0.9rem;
+        }
+
+        .tripadvisor-badge {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1.25rem;
+        }
+
+        .help-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .help-option {
+            padding: 1.5rem;
+        }
+
+        .help-section__subtitle {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .two-col-section__images {
+            grid-template-columns: 1fr;
+        }
+
+        .story-image--large,
+        .story-image--small {
+            grid-column: 1;
+            grid-row: auto;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9375rem;
+        }
+
+        .btn--large {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+    }
+
+    /* Very Small Mobile (480px and below) */
+    @media (max-width: 480px) {
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .why-best,
+        .our-story,
+        .stats-showcase,
+        .team-section,
+        .testimonials-section,
+        .help-section {
+            padding: 48px 0;
+        }
+
+        .section-heading {
+            font-size: 1.75rem;
+            line-height: 1.2;
+        }
+
+        .section-tagline {
+            font-size: 0.9375rem;
+        }
+
+        .icon-card {
+            padding: 1.25rem;
+        }
+
+        .icon-card__icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .icon-card__title {
+            font-size: 1.0625rem;
+        }
+
+        .icon-card__text {
+            font-size: 0.875rem;
+        }
+
+        .two-col-section__content p {
+            font-size: 0.9375rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .eyebrow {
+            font-size: 0.8125rem;
+        }
+
+        .stat-cards {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .stat-card {
+            padding: 1.25rem;
+        }
+
+        .stat-card__number {
+            font-size: 2.25rem;
+        }
+
+        .stat-card__label {
+            font-size: 0.9375rem;
+        }
+
+        .stats-showcase__intro {
+            margin-bottom: 2rem;
+        }
+
+        .stats-showcase__subtitle {
+            font-size: 0.9375rem;
+        }
+
+        .team-member__photo {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 1.25rem;
+        }
+
+        .team-member__name {
+            font-size: 1.125rem;
+        }
+
+        .team-member__position {
+            font-size: 0.9375rem;
+        }
+
+        .testimonial-card {
+            padding: 1.25rem;
+        }
+
+        .testimonial-card__title {
+            font-size: 0.9375rem;
+        }
+
+        .testimonial-card__text {
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .testimonial-card__author {
+            gap: 0.75rem;
+        }
+
+        .testimonial-card__avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .testimonial-card__author-name {
+            font-size: 0.875rem;
+        }
+
+        .testimonial-card__author-location {
+            font-size: 0.8125rem;
+        }
+
+        .tripadvisor-badge {
+            padding: 1rem;
+        }
+
+        .tripadvisor-badge__logo {
+            height: 32px;
+        }
+
+        .stars {
+            font-size: 1rem;
+        }
+
+        .tripadvisor-badge__count {
+            font-size: 0.875rem;
+        }
+
+        .help-option {
+            padding: 1.25rem;
+        }
+
+        .help-option__icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .help-option__title {
+            font-size: 1.125rem;
+        }
+
+        .help-option__text {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .help-section__subtitle {
+            font-size: 0.9375rem;
+        }
+
+        .help-primary-cta__note {
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+        }
+
+        .btn--large {
+            padding: 0.875rem 1.75rem;
+            font-size: 0.9375rem;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 
     <!-- =====================================================
