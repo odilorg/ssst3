@@ -1,9 +1,32 @@
 @extends('layouts.main')
 
+@php
+    $initialTours = $tours ?? collect();
+    $toursJson = $initialTours->map(function ($tour) {
+        return [
+            'id' => $tour->id,
+            'slug' => $tour->slug,
+            'title' => $tour->title,
+            'description' => $tour->long_description,
+            'short_description' => $tour->short_description,
+            'featured_image' => $tour->featured_image_url ?? asset('images/default-tour.jpg'),
+            'price_per_person' => $tour->price_per_person,
+            'duration' => $tour->duration_days,
+            'city_name' => optional($tour->city)->name,
+            'city_slug' => optional($tour->city)->slug,
+        ];
+    })->values();
+@endphp
+
 @section('title', 'Uzbekistan Tours - Browse All Tours | Jahongir Travel')
 @section('meta_description', 'Explore all available tours in Uzbekistan. From cultural heritage tours to mountain adventures, find your perfect Silk Road journey with Jahongir Travel.')
 @section('meta_keywords', 'Uzbekistan tours, all tours, tour packages, Silk Road tours, Central Asia travel')
-@section('canonical', 'https://jahongirtravel.com/tours')
+@section('canonical', url('/tours'))
+
+@section('structured_data')
+{!! $structuredData !!}
+@endsection
+
 
 @push('styles')
 <style>
@@ -11,7 +34,7 @@
     .tours-hero {
         position: relative;
         height: 400px;
-        background-image: url('images/hero-registan.webp');
+        background-image: url('{{ asset('images/hero-registan.webp') }}');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -335,6 +358,19 @@
         </div>
     </section>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
+        <div class="container">
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
+                <li style="display: flex; align-items: center;">
+                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                    <span style="margin: 0 0.5rem; color: #666;">/</span>
+                </li>
+                <li style="color: #666; font-weight: 500;" aria-current="page">Tours</li>
+            </ol>
+        </div>
+    </nav>
+
     <!-- =====================================================
          TOURS GRID
          ===================================================== -->
@@ -350,16 +386,61 @@
                 <button class="filter-tab active" data-category="">All Tours</button>
             </div>
 
-            <div id="tours-container" class="tours-grid__container">
-                <!-- Loading Skeleton -->
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
+            <div id="tours-container" class="tours-grid__container" data-server-rendered="true">
+                @forelse($initialTours as $tour)
+                    <a href="/tours/{{ $tour->slug }}" class="tour-card">
+                        <img src="{{ $tour->featured_image_url ?? asset('images/default-tour.jpg') }}"
+                             alt="{{ $tour->title }}"
+                             class="tour-card__image"
+                             width="400"
+                             height="300"
+                             loading="lazy">
+                        <div class="tour-card__content">
+                            <h3 class="tour-card__title">{{ $tour->title }}</h3>
+                            <p class="tour-card__description">
+                                {{ $tour->short_description ?? \Illuminate\Support\Str::limit(strip_tags($tour->long_description), 140) }}
+                            </p>
+                            <div class="tour-card__meta">
+                                <div class="tour-card__meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>
+                                        @if($tour->duration_days === 1)
+                                            1 day
+                                        @elseif($tour->duration_days)
+                                            {{ $tour->duration_days }} days
+                                        @else
+                                            Flexible
+                                        @endif
+                                    </span>
+                                </div>
+                                @if($tour->city)
+                                    <div class="tour-card__meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>{{ $tour->city->name }}</span>
+                                    </div>
+                                @endif
+                                <div class="tour-card__price">
+                                    @if($tour->price_per_person)
+                                        ${{ number_format($tour->price_per_person, 0) }}
+                                    @else
+                                        Contact us
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <i class="fas fa-map fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3>No tours found</h3>
+                        <p style="color: #666;">We couldn&apos;t find any tours at the moment. Please check back soon!</p>
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Pagination Links -->
+            <div class="pagination-wrapper" style="margin-top: 3rem;">
+                {{ $tours->links() }}
             </div>
         </div>
     </section>
@@ -368,26 +449,31 @@
 
 @push('scripts')
 <script>
+    window.__INITIAL_TOURS__ = @json($toursJson);
+</script>
+<script>
     (function() {
         'use strict';
 
-        console.log('[Tours Listing] Initializing...');
 
-        let allTours = [];
+        let allTours = window.__INITIAL_TOURS__ || [];
         let currentCategory = '';
+        const shouldFetch = allTours.length === 0;
 
-        // Fetch all tours
-        fetch('{{ url('/api/tours') }}')
-            .then(r => r.json())
-            .then(tours => {
-                console.log('[Tours Listing] Loaded:', tours.length, 'tours');
-                allTours = tours;
-                renderTours(tours);
-            })
-        .catch(error => {
-            console.error('[Tours Listing] Error loading data:', error);
-            showErrorState();
-        });
+        if (shouldFetch) {
+            fetch('{{ url('/api/tours') }}')
+                .then(r => r.json())
+                .then(tours => {
+                    allTours = tours;
+                    renderTours(tours);
+                })
+                .catch(error => {
+                    console.error('[Tours Listing] Error loading data:', error);
+                    showErrorState();
+                });
+        } else {
+            renderTours(allTours);
+        }
 
         function renderCategoryFilters(categories) {
             const container = document.getElementById('category-filters');
@@ -450,6 +536,8 @@
                         <img src="${tour.featured_image || '/images/default-tour.jpg'}"
                              alt="${tour.title}"
                              class="tour-card__image"
+                             width="400"
+                             height="300"
                              loading="lazy">
                         <div class="tour-card__content">
 

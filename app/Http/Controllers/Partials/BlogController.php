@@ -4,12 +4,20 @@ namespace App\Http\Controllers\Partials;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
+use App\Services\BlogListingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class BlogController extends Controller
 {
+    protected BlogListingService $blogListingService;
+
+    public function __construct(BlogListingService $blogListingService)
+    {
+        $this->blogListingService = $blogListingService;
+    }
+
     /**
      * Get the hero section for a blog post
      * Cached for 1 hour (3600 seconds)
@@ -192,54 +200,14 @@ class BlogController extends Controller
             'search' => 'nullable|string|max:200',
             'sort' => 'nullable|in:latest,popular,oldest',
             'page' => 'nullable|integer|min:1',
+            'per_page' => 'nullable|integer|min:1|max:24',
         ]);
 
-        // Start query
-        $query = BlogPost::published()
-            ->with(['category', 'tags'])
-            ->select(['id', 'slug', 'title', 'excerpt', 'featured_image',
-                     'category_id', 'reading_time', 'view_count', 'published_at']);
+        $perPage = $validated['per_page'] ?? 12;
+        $filters = $validated;
+        unset($filters['per_page']);
 
-        // Apply category filter
-        if (!empty($validated['category'])) {
-            $query->whereHas('category', function ($q) use ($validated) {
-                $q->where('slug', $validated['category']);
-            });
-        }
-
-        // Apply tag filter
-        if (!empty($validated['tag'])) {
-            $query->whereHas('tags', function ($q) use ($validated) {
-                $q->where('slug', $validated['tag']);
-            });
-        }
-
-        // Apply search filter
-        if (!empty($validated['search'])) {
-            $searchTerm = $validated['search'];
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('excerpt', 'like', "%{$searchTerm}%");
-            });
-        }
-
-        // Apply sorting
-        $sort = $validated['sort'] ?? 'latest';
-        switch ($sort) {
-            case 'popular':
-                $query->orderBy('view_count', 'desc');
-                break;
-            case 'oldest':
-                $query->orderBy('published_at', 'asc');
-                break;
-            case 'latest':
-            default:
-                $query->orderBy('published_at', 'desc');
-                break;
-        }
-
-        // Paginate (9 per page for load more)
-        $posts = $query->paginate(9)->withQueryString();
+        $posts = $this->blogListingService->getPosts($filters, $perPage);
 
         return view('partials.blog.listing', compact('posts'));
     }

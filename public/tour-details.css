@@ -80,56 +80,6 @@
    1. HEADER & NAVIGATION
    ====================================================== */
 
-.site-header {
-  background: var(--color-surface, #fff);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.site-header__container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.site-header__logo img {
-  height: 40px;
-  width: auto;
-}
-
-.site-nav__list {
-  display: none; /* Hidden on mobile, shown on desktop */
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2rem;
-}
-
-.site-nav__link {
-  color: var(--color-text, #1E1E1E);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.site-nav__link:hover,
-.site-nav__link:focus {
-  color: var(--color-primary, #0D4C92);
-}
-
-.site-header__contact {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-primary, #0D4C92);
-  font-weight: 600;
-  text-decoration: none;
-}
-
 /* ======================================================
    2. BREADCRUMBS
    ====================================================== */

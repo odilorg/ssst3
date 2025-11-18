@@ -159,14 +159,14 @@ window.addEventListener('load', () => {
     const paint = performance.getEntriesByType('paint');
     const navigation = performance.getEntriesByType('navigation')[0];
 
-    console.log('Performance Metrics:');
+    // console.log('Performance Metrics:');
     paint.forEach(entry => {
-      console.log(`${entry.name}: ${entry.startTime.toFixed(2)}ms`);
+      // console.log(`${entry.name}: ${entry.startTime.toFixed(2)}ms`);
     });
 
     if (navigation) {
-      console.log(`DOM Content Loaded: ${navigation.domContentLoadedEventEnd.toFixed(2)}ms`);
-      console.log(`Page Load Complete: ${navigation.loadEventEnd.toFixed(2)}ms`);
+      // console.log(`DOM Content Loaded: ${navigation.domContentLoadedEventEnd.toFixed(2)}ms`);
+      // console.log(`Page Load Complete: ${navigation.loadEventEnd.toFixed(2)}ms`);
     }
   }
 });
@@ -183,7 +183,7 @@ if (localeBtn) {
 
     // TODO: Show dropdown menu with language/currency options
     // This will be connected to Laravel backend in Phase 2
-    console.log('Locale switcher clicked - awaiting backend integration');
+    // console.log('Locale switcher clicked - awaiting backend integration');
   });
 
   // Close on escape key
@@ -220,11 +220,11 @@ document.querySelectorAll('.footer-accordion__item').forEach((accordionItem) => 
       }
 
       // Console log for development
-      console.log(`Footer accordion opened: ${sectionName}`);
+      // console.log(`Footer accordion opened: ${sectionName}`);
     }
   });
 });
 
-console.log('Jahongir Travel - JavaScript Loaded Successfully ✓');
+// console.log('Jahongir Travel - JavaScript Loaded Successfully ✓');
 
 })(); // End of IIFE

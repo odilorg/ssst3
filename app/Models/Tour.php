@@ -123,6 +123,9 @@ class Tour extends Model
 
         // Clear category caches when tour active status changes
         static::updated(function ($tour) {
+            // Use TourCacheService for comprehensive cache clearing
+            app(\App\Services\TourCacheService::class)->clearTourCache($tour);
+
             if ($tour->isDirty('is_active')) {
                 $tour->clearCategoryCaches();
             }
