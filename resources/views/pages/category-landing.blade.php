@@ -164,7 +164,7 @@
     </section>
 
     <!-- =====================================================
-         RELATED CATEGORIES
+         EXPLORE ALL CATEGORIES
          ===================================================== -->
     <section class="related-categories">
         <div class="container">
@@ -174,11 +174,12 @@
             </div>
 
             <div id="related-categories"
-                 hx-get="{{ url('/partials/categories/related?current=' . $category->slug . '&limit=5') }}"
+                 hx-get="{{ url('/partials/categories/related?current=' . $category->slug) }}"
                  hx-trigger="load"
                  hx-swap="innerHTML">
                 <!-- Loading skeleton -->
                 <div class="related-categories-grid">
+                    <div class="skeleton-card skeleton-card--small"></div>
                     <div class="skeleton-card skeleton-card--small"></div>
                     <div class="skeleton-card skeleton-card--small"></div>
                     <div class="skeleton-card skeleton-card--small"></div>

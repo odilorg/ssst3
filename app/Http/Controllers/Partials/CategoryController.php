@@ -25,31 +25,25 @@ class CategoryController extends Controller
 
     /**
      * Related categories partial
-     * Returns: Grid of related category cards (excludes current category)
+     * Returns: Grid of all other category cards (excludes current category)
      *
      * Query params:
      * - current: Current category slug to exclude
-     * - limit: Number of categories to show (default: 5)
      *
      * Usage:
-     * - GET /partials/categories/related?current=cultural-historical&limit=5
+     * - GET /partials/categories/related?current=cultural-historical
      */
     public function related(Request $request)
     {
         $currentSlug = $request->get('current');
-        $limit = $request->get('limit', 5);
 
-        // Validate limit
-        $limit = min(max($limit, 1), 10);
+        // Cache key (removed limit from cache key)
+        $cacheKey = "all_categories_except.{$currentSlug}";
 
-        // Cache key
-        $cacheKey = "related_categories.{$currentSlug}.{$limit}";
-
-        $categories = Cache::remember($cacheKey, now()->addHours(6), function () use ($currentSlug, $limit) {
+        $categories = Cache::remember($cacheKey, now()->addHours(6), function () use ($currentSlug) {
             return TourCategory::active()
                 ->where('slug', '!=', $currentSlug)
                 ->orderBy('display_order')
-                ->take($limit)
                 ->get();
         });
 
