@@ -18,330 +18,20 @@
     })->values();
 @endphp
 
-@section('title', 'Uzbekistan Tours - Browse All Tours | Jahongir Travel')
+@section('title', 'Uzbekistan Tours | Jahongir Travel')
 @section('meta_description', 'Explore all available tours in Uzbekistan. From cultural heritage tours to mountain adventures, find your perfect Silk Road journey with Jahongir Travel.')
-@section('meta_keywords', 'Uzbekistan tours, all tours, tour packages, Silk Road tours, Central Asia travel')
 @section('canonical', url('/tours'))
 
 @section('structured_data')
 {!! $structuredData !!}
 @endsection
 
-
-@push('styles')
-<style>
-
-    .tours-hero {
-        position: relative;
-        height: 400px;
-        background-image: url('{{ asset('images/hero-registan.webp') }}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .tours-hero__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.60) 100%);
-        z-index: 1;
-    }
-
-    .tours-hero__content {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        color: #FFFFFF;
-    }
-
-    .tours-hero__title {
-        font-family: 'Playfair Display', serif;
-        font-size: 56px;
-        font-weight: 700;
-        line-height: 1.2;
-        margin: 0 0 16px 0;
-        letter-spacing: -0.5px;
-        color: #FFFFFF;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    .tours-hero__subtitle {
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 1.6;
-        margin: 0;
-        color: #FFFFFF;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    @media (max-width: 768px) {
-        .tours-hero {
-            height: 300px;
-            margin-top: 100px;
-        }
-
-        .tours-hero__title {
-            font-size: 36px;
-        }
-
-        .tours-hero__subtitle {
-            font-size: 16px;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    .tours-grid {
-        padding: 80px 0;
-    }
-
-    .tours-grid__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 3rem;
-    }
-
-    .tours-grid__title {
-        font-size: 2.5rem;
-        color: #1a1a1a;
-    }
-
-    .tours-grid__count {
-        font-size: 1.1rem;
-        color: #666;
-    }
-
-    .tours-grid__container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .tour-card {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background: white;
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tour-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    .tour-card__image {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-    }
-
-    .tour-card__content {
-        padding: 1.5rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tour-card__category {
-        display: inline-block;
-        background: #e3f2fd;
-        color: #1a5490;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        margin-bottom: 0.75rem;
-        width: fit-content;
-    }
-
-    .tour-card__title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.75rem;
-        color: #1a1a1a;
-        line-height: 1.4;
-    }
-
-    .tour-card__description {
-        font-size: 0.9rem;
-        color: #666;
-        margin-bottom: 1rem;
-        line-height: 1.6;
-        flex: 1;
-    }
-
-    .tour-card__meta {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .tour-card__meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .tour-card__price {
-        margin-left: auto;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1a5490;
-    }
-
-    .loading-skeleton {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .skeleton-card {
-        height: 420px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s infinite;
-        border-radius: 12px;
-    }
-
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    .filter-tabs {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .filter-tab {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #ddd;
-        border-radius: 25px;
-        background: white;
-        color: #666;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .filter-tab:hover {
-        border-color: #1a5490;
-        color: #1a5490;
-    }
-
-    .filter-tab.active {
-        background: #1a5490;
-        color: white;
-        border-color: #1a5490;
-    }
-
-    @media (max-width: 768px) {
-
-        .tours-hero {
-            padding: 120px 0 60px;
-        }
-
-        .tours-hero::before {
-            background: linear-gradient(135deg, rgba(26,84,144,0.7) 0%, rgba(44,122,191,0.6) 100%),
-                        linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.80) 100%);
-        }
-
-        .tours-hero__title {
-            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
-            line-height: 1.3;
-        }
-
-        .tours-hero__subtitle {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-
-
-
-
-
-
-
-
-
-
-        .tours-grid {
-            padding: 60px 0;
-        }
-
-        .tours-grid .container {
-            padding-inline: 0 !important;
-        }
-
-        .tours-grid__header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-            padding-inline: 1rem;
-        }
-
-        .tours-grid__title {
-            font-size: 2rem;
-        }
-
-        .tours-grid__container {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            padding-inline: 0.25rem;
-        }
-
-        .filter-tabs {
-            overflow-x: auto;
-            flex-wrap: nowrap;
-            padding-bottom: 0.5rem;
-        }
-
-        .filter-tab {
-            white-space: nowrap;
-        }
-
-        .tour-card {
-            border-radius: 8px;
-        }
-    }
-</style>
+@push('head')
+<!-- Preload hero image for faster LCP -->
+<link rel="preload" as="image" href="{{ asset('images/hero-registan.webp') }}" type="image/webp">
 @endpush
+
+@push('styles')<link rel="stylesheet" href="{{ asset('css/tours-listing.css') }}">@endpush
 
 @section('content')
 
@@ -444,6 +134,14 @@
             </div>
         </div>
     </section>
+
+    <!-- =====================================================
+         FLOATING WhatsApp CTA
+         ===================================================== -->
+    <a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-whatsapp__text">WhatsApp</span>
+    </a>
 
 @endsection
 
