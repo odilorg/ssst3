@@ -3,7 +3,7 @@
 @section('title', 'Jahongir Travel - Discover the Magic of Uzbekistan | Silk Road Tours')
 @section('meta_description', 'Discover Uzbekistan with Jahongir Travel - Expert guided tours of the ancient Silk Road, featuring Samarkand, Bukhara, Khiva, and more.')
 @section('meta_keywords', 'Uzbekistan tours, Silk Road travel, Samarkand tours, Bukhara, Khiva, Central Asia travel')
-@section('canonical', 'https://jahongirtravel.com/')
+@section('canonical', url('/'))
 
 @section('structured_data')
 {
@@ -11,7 +11,7 @@
   "@@type": "TravelAgency",
   "name": "Jahongir Travel",
   "description": "Expert guided tours in Uzbekistan and the Silk Road",
-  "url": "https://jahongirtravel.com",
+  "url": "{{ url('/') }}",
   "telephone": "+998 91 555 08 08",
   "email": "info@@jahongirtravel.com",
   "address": {
@@ -184,7 +184,7 @@
                  decoding="async">
           </div>
           <div class="why-us__photo">
-            <img src="{{ asset('images/uzbek-cuizine.webp') }}"
+            <img src="{{ asset('images/uzbek-cuisine.webp') }}"
                  alt="Travelers enjoying authentic Uzbek cuisine"
                  width="400"
                  height="300"
@@ -207,22 +207,26 @@
 
   <!-- Section 3: Trending Activities -->
   <section class="activities" id="activities">
-    <!-- JSON-LD Schema -->
+    <!-- JSON-LD Schema (Dynamic) -->
+    @if(!empty($categories) && count($categories) > 0)
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "ItemList",
       "name": "Trending Activities in Uzbekistan",
       "itemListElement": [
-        {"@@type": "ListItem", "position": 1, "name": "Cultural & Historical", "url": "https://jahongirtravel.com/tours/category/cultural-tours/"},
-        {"@@type": "ListItem", "position": 2, "name": "Mountain & Adventure", "url": "https://jahongirtravel.com/tours/category/adventure-tours/"},
-        {"@@type": "ListItem", "position": 3, "name": "Family & Educational", "url": "https://jahongirtravel.com/tours/category/family-tours/"},
-        {"@@type": "ListItem", "position": 4, "name": "Desert & Nomadic", "url": "https://jahongirtravel.com/tours/category/desert-tours/"},
-        {"@@type": "ListItem", "position": 5, "name": "City Walks & Local Life", "url": "https://jahongirtravel.com/tours/category/city-walks/"},
-        {"@@type": "ListItem", "position": 6, "name": "Food & Craft", "url": "https://jahongirtravel.com/tours/category/food-craft-tours/"}
+        @foreach($categories as $index => $category)
+        {
+          "@@type": "ListItem",
+          "position": {{ $index + 1 }},
+          "name": "{{ $category->translated_name }}",
+          "url": "{{ url('/tours/category/' . $category->slug) }}"
+        }{{ $loop->last ? '' : ',' }}
+        @endforeach
       ]
     }
     </script>
+    @endif
 
     <div class="container">
 
@@ -235,6 +239,7 @@
 
       <!-- Activity Cards Grid (DYNAMIC) -->
       <div class="activities__grid">
+        @if(!empty($categories) && count($categories) > 0)
         @foreach($categories as $category)
           @php
             $tourCount = $category->cached_tour_count;
@@ -278,6 +283,11 @@
             </div>
           </a>
         @endforeach
+        @else
+          <div class="empty-state">
+            <p class="empty-state__message">No activities available at the moment. Please check back later.</p>
+          </div>
+        @endif
       </div>
 
       <!-- View All Tours Link -->
@@ -296,197 +306,53 @@
   ========================================= -->
   <section class="tours" id="tours">
 
-    <!-- JSON-LD Schema: TouristTrip for Featured Tours -->
+    <!-- JSON-LD Schema: TouristTrip for Featured Tours (Dynamic) -->
+    @if(!empty($featuredTours) && count($featuredTours) > 0)
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "ItemList",
       "name": "Popular Uzbekistan Tours",
       "itemListElement": [
+        @foreach($featuredTours as $index => $tour)
         {
           "@@type": "TouristTrip",
-          "position": 1,
-          "name": "5-Day Silk Road Classic: Samarkand, Bukhara & Khiva",
-          "description": "Experience the iconic cities of the Silk Road with expert local guides. Visit UNESCO World Heritage sites in Samarkand, Bukhara, and Khiva.",
-          "touristType": "Cultural & Historical",
+          "position": {{ $index + 1 }},
+          "name": "{{ $tour->title }}",
+          "description": "{{ strip_tags($tour->short_description ?? $tour->long_description ?? '') }}",
+          "touristType": "{{ $tour->categories->first()?->translated_name ?? 'Tour' }}"{{ $tour->city ? ',' : '' }}
+          @if($tour->city)
           "itinerary": {
             "@@type": "ItemList",
             "itemListElement": [
-              {"@@type": "City", "name": "Samarkand"},
-              {"@@type": "City", "name": "Bukhara"},
-              {"@@type": "City", "name": "Khiva"}
+              {"@@type": "City", "name": "{{ $tour->city->name }}"}
             ]
           },
+          @endif
           "offers": {
             "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/silk-road-classic/",
-            "price": "890",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock",
-            "priceSpecification": {
-              "@@type": "UnitPriceSpecification",
-              "price": "890",
-              "priceCurrency": "USD",
-              "referenceQuantity": {"@@type": "QuantitativeValue", "value": "1", "unitText": "person"}
-            }
+            "url": "{{ url('/tours/' . $tour->slug) }}",
+            "price": "{{ $tour->price_per_person }}",
+            "priceCurrency": "{{ $tour->currency ?? 'USD' }}",
+            "availability": "{{ $tour->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
           },
           "provider": {
             "@@type": "TravelAgency",
             "name": "Jahongir Travel"
-          },
+          }{{ ($tour->rating && $tour->review_count) ? ',' : '' }}
+          @if($tour->rating && $tour->review_count)
           "aggregateRating": {
             "@@type": "AggregateRating",
-            "ratingValue": "5",
-            "reviewCount": "148"
+            "ratingValue": "{{ $tour->rating }}",
+            "reviewCount": "{{ $tour->review_count }}"
           }
-        },
-        {
-          "@@type": "TouristTrip",
-          "position": 2,
-          "name": "3-Day Chimgan Mountain Adventure & Charvak Lake",
-          "description": "Escape to the mountains for trekking, nature, and outdoor adventures in Uzbekistan's stunning Chimgan region.",
-          "touristType": "Mountain & Adventure",
-          "itinerary": {
-            "@@type": "ItemList",
-            "itemListElement": [
-              {"@@type": "City", "name": "Chimgan"},
-              {"@@type": "City", "name": "Charvak"}
-            ]
-          },
-          "offers": {
-            "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/mountain-adventure/",
-            "price": "450",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-          },
-          "provider": {
-            "@@type": "TravelAgency",
-            "name": "Jahongir Travel"
-          },
-          "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "4.5",
-            "reviewCount": "92"
-          }
-        },
-        {
-          "@@type": "TouristTrip",
-          "position": 3,
-          "name": "7-Day Cultural Immersion: Crafts, Cuisine & Traditions",
-          "description": "Deep dive into Uzbek culture through hands-on craft workshops, traditional cooking classes, and immersive local experiences.",
-          "touristType": "Cultural Immersion",
-          "itinerary": {
-            "@@type": "ItemList",
-            "itemListElement": [
-              {"@@type": "City", "name": "Samarkand"},
-              {"@@type": "City", "name": "Bukhara"}
-            ]
-          },
-          "offers": {
-            "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/cultural-immersion/",
-            "price": "1290",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-          },
-          "provider": {
-            "@@type": "TravelAgency",
-            "name": "Jahongir Travel"
-          },
-          "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "5",
-            "reviewCount": "215"
-          }
-        },
-        {
-          "@@type": "TouristTrip",
-          "position": 4,
-          "name": "4-Day Fergana Valley: Pottery, Silk & Ancient Cities",
-          "description": "Discover the lesser-known Fergana Valley, famous for traditional pottery, silk weaving, and authentic Uzbek hospitality.",
-          "touristType": "Cultural & Crafts",
-          "itinerary": {
-            "@@type": "ItemList",
-            "itemListElement": [
-              {"@@type": "City", "name": "Tashkent"},
-              {"@@type": "City", "name": "Fergana"},
-              {"@@type": "City", "name": "Kokand"}
-            ]
-          },
-          "offers": {
-            "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/fergana-valley/",
-            "price": "680",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-          },
-          "provider": {
-            "@@type": "TravelAgency",
-            "name": "Jahongir Travel"
-          },
-          "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "4.5",
-            "reviewCount": "78"
-          }
-        },
-        {
-          "@@type": "TouristTrip",
-          "position": 5,
-          "name": "10-Day Grand Silk Road: Complete Uzbekistan Experience",
-          "description": "The ultimate Uzbekistan journey covering all major cities and UNESCO sites along the ancient Silk Road.",
-          "touristType": "Grand Tour",
-          "offers": {
-            "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/grand-silk-road/",
-            "price": "1850",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-          },
-          "provider": {
-            "@@type": "TravelAgency",
-            "name": "Jahongir Travel"
-          },
-          "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "5",
-            "reviewCount": "320"
-          }
-        },
-        {
-          "@@type": "TouristTrip",
-          "position": 6,
-          "name": "3-Day Express: Samarkand & Bukhara Highlights",
-          "description": "Perfect for travelers with limited time. See the highlights of Samarkand and Bukhara in just 3 days.",
-          "touristType": "Express Tour",
-          "itinerary": {
-            "@@type": "ItemList",
-            "itemListElement": [
-              {"@@type": "City", "name": "Samarkand"},
-              {"@@type": "City", "name": "Bukhara"}
-            ]
-          },
-          "offers": {
-            "@@type": "Offer",
-            "url": "https://jahongirtravel.com/tours/express-highlights/",
-            "price": "540",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock"
-          },
-          "provider": {
-            "@@type": "TravelAgency",
-            "name": "Jahongir Travel"
-          },
-          "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "4.5",
-            "reviewCount": "164"
-          }
-        }
+          @endif
+        }{{ $loop->last ? '' : ',' }}
+        @endforeach
       ]
     }
     </script>
+    @endif
 
     <div class="container--wide">
 
@@ -555,7 +421,7 @@
             "addressLocality": "Samarkand",
             "addressCountry": "UZ"
           },
-          "url": "https://jahongirtravel.com/destinations/samarkand/",
+          "url": "{{ url('/destinations/samarkand') }}",
           "touristType": "Cultural & Historical"
         },
         {
@@ -573,7 +439,7 @@
             "addressLocality": "Bukhara",
             "addressCountry": "UZ"
           },
-          "url": "https://jahongirtravel.com/destinations/bukhara/",
+          "url": "{{ url('/destinations/bukhara') }}",
           "touristType": "Cultural & Historical"
         },
         {
@@ -591,7 +457,7 @@
             "addressLocality": "Khiva",
             "addressCountry": "UZ"
           },
-          "url": "https://jahongirtravel.com/destinations/khiva/",
+          "url": "{{ url('/destinations/khiva') }}",
           "touristType": "Cultural & Historical"
         },
         {
@@ -609,7 +475,7 @@
             "addressLocality": "Tashkent",
             "addressCountry": "UZ"
           },
-          "url": "https://jahongirtravel.com/destinations/tashkent/",
+          "url": "{{ url('/destinations/tashkent') }}",
           "touristType": "Urban & Modern"
         }
       ]
@@ -629,6 +495,7 @@
 
       <!-- Places Grid (DYNAMIC) -->
       <div class="places__grid">
+        @if(!empty($cities) && count($cities) > 0)
         @foreach($cities as $city)
           @php
             $tourCount = $city->tour_count;
@@ -678,6 +545,11 @@
             </a>
           </article>
         @endforeach
+        @else
+          <div class="empty-state">
+            <p class="empty-state__message">No destinations available at the moment. Please check back later.</p>
+          </div>
+        @endif
       </div>
 
       <!-- View All Destinations CTA -->
@@ -709,6 +581,7 @@
       <!-- Reviews Carousel (DYNAMIC) -->
       <div class="swiper reviews-swiper">
         <div class="swiper-wrapper">
+          @if(!empty($reviews) && count($reviews) > 0)
           @foreach($reviews as $review)
             @php
               $avatarUrl = $review->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->reviewer_name) . '&size=60&background=0D4C92&color=fff';
@@ -750,6 +623,13 @@
               </article>
             </div>
           @endforeach
+          @else
+            <div class="swiper-slide">
+              <div class="empty-state">
+                <p class="empty-state__message">No reviews available at the moment. Please check back later.</p>
+              </div>
+            </div>
+          @endif
         </div>
 
         <!-- Swiper Navigation -->
@@ -790,7 +670,8 @@
        ===================================================== -->
   <section class="blog-preview" id="blog" aria-labelledby="blog-title">
 
-    <!-- JSON-LD Structured Data for SEO -->
+    <!-- JSON-LD Structured Data for SEO (Dynamic) -->
+    @if(!empty($blogPosts) && count($blogPosts) > 0)
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
@@ -798,13 +679,14 @@
       "name": "Jahongir Travel Blog Articles",
       "description": "Travel insights, tips, and guides for visiting Uzbekistan",
       "itemListElement": [
+        @foreach($blogPosts as $index => $post)
         {
           "@@type": "BlogPosting",
-          "position": 1,
-          "headline": "Best Time to Visit Uzbekistan: A Season-by-Season Guide",
-          "image": "https://jahongirtravel.com/images/blog-best-time-visit.svg",
-          "datePublished": "2024-11-15",
-          "dateModified": "2024-11-15",
+          "position": {{ $index + 1 }},
+          "headline": "{{ $post->title }}",
+          "image": "{{ $post->featured_image ? asset('storage/' . $post->featured_image) : asset('images/default-blog.svg') }}",
+          "datePublished": "{{ $post->published_at ? $post->published_at->toIso8601String() : '' }}",
+          "dateModified": "{{ $post->updated_at ? $post->updated_at->toIso8601String() : '' }}",
           "author": {
             "@@type": "Organization",
             "name": "Jahongir Travel"
@@ -814,80 +696,26 @@
             "name": "Jahongir Travel",
             "logo": {
               "@@type": "ImageObject",
-              "url": "https://jahongirtravel.com/images/logo.png"
+              "url": "{{ asset('images/logo.png') }}"
             }
           },
           "mainEntityOfPage": {
             "@@type": "WebPage",
-            "@id": "https://jahongirtravel.com/blog/best-time-visit-uzbekistan"
+            "@id": "{{ url('/blog/' . $post->slug) }}"
           },
-          "description": "Discover the ideal months for your Uzbekistan adventure, from spring blooms in Samarkand to golden autumn in Bukhara",
-          "articleSection": "Travel Tips",
-          "wordCount": 1200,
+          "description": "{{ strip_tags($post->excerpt ?? Str::limit($post->content, 200)) }}",
+          "articleSection": "{{ $post->category->name ?? 'Travel Tips' }}"{{ $post->reading_time ? ',' : '' }}
+          @if($post->reading_time)
+          "wordCount": {{ $post->reading_time * 200 }},
+          @endif
           "inLanguage": "en-US",
-          "url": "https://jahongirtravel.com/blog/best-time-visit-uzbekistan"
-        },
-        {
-          "@@type": "BlogPosting",
-          "position": 2,
-          "headline": "Hidden Gems Along the Silk Road: Off-the-Beaten-Path Destinations",
-          "image": "https://jahongirtravel.com/images/blog-hidden-gems.svg",
-          "datePublished": "2024-11-08",
-          "dateModified": "2024-11-08",
-          "author": {
-            "@@type": "Organization",
-            "name": "Jahongir Travel"
-          },
-          "publisher": {
-            "@@type": "Organization",
-            "name": "Jahongir Travel",
-            "logo": {
-              "@@type": "ImageObject",
-              "url": "https://jahongirtravel.com/images/logo.png"
-            }
-          },
-          "mainEntityOfPage": {
-            "@@type": "WebPage",
-            "@id": "https://jahongirtravel.com/blog/hidden-gems-silk-road"
-          },
-          "description": "Venture beyond Samarkand and Bukhara to discover lesser-known treasures like Nurata, Shakhrisabz, and the Aral Sea region",
-          "articleSection": "Destinations",
-          "wordCount": 1500,
-          "inLanguage": "en-US",
-          "url": "https://jahongirtravel.com/blog/hidden-gems-silk-road"
-        },
-        {
-          "@@type": "BlogPosting",
-          "position": 3,
-          "headline": "A Foodie's Guide to Uzbek Cuisine: Must-Try Dishes and Where to Find Them",
-          "image": "https://jahongirtravel.com/images/blog-uzbek-cuisine.svg",
-          "datePublished": "2024-10-28",
-          "dateModified": "2024-10-28",
-          "author": {
-            "@@type": "Organization",
-            "name": "Jahongir Travel"
-          },
-          "publisher": {
-            "@@type": "Organization",
-            "name": "Jahongir Travel",
-            "logo": {
-              "@@type": "ImageObject",
-              "url": "https://jahongirtravel.com/images/logo.png"
-            }
-          },
-          "mainEntityOfPage": {
-            "@@type": "WebPage",
-            "@id": "https://jahongirtravel.com/blog/uzbek-cuisine-guide"
-          },
-          "description": "From sizzling plov to hand-pulled lagman noodles, explore the rich flavors of Central Asian cuisine at authentic local spots",
-          "articleSection": "Culture",
-          "wordCount": 1350,
-          "inLanguage": "en-US",
-          "url": "https://jahongirtravel.com/blog/uzbek-cuisine-guide"
-        }
+          "url": "{{ url('/blog/' . $post->slug) }}"
+        }{{ $loop->last ? '' : ',' }}
+        @endforeach
       ]
     }
     </script>
+    @endif
 
     <div class="container">
 
@@ -899,6 +727,7 @@
       </header>
 
       <!-- Blog Grid (DYNAMIC) -->
+        @if(!empty($blogPosts) && count($blogPosts) > 0)
       <div class="blog-grid">
         @foreach($blogPosts as $post)
           @php
@@ -942,6 +771,11 @@
           </article>
         @endforeach
       </div>
+        @else
+          <div class="empty-state">
+            <p class="empty-state__message">No blog posts available at the moment. Please check back later.</p>
+          </div>
+        @endif
 
       <!-- Section Footer CTA -->
       <div class="blog-preview__footer">

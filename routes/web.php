@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Booking;
 use App\Services\PricingService;
 use App\Services\SupplierRequestService;
+use App\Models\Tour;
 
 // CSRF Token endpoint for frontend
 Route::get('/csrf-token', function () {
@@ -15,14 +16,31 @@ Route::get('/', function () {
     $blogPosts = \App\Models\BlogPost::published()->take(3)->get();
     $cities = \App\Models\City::getHomepageCities();
     $reviews = \App\Models\Review::approved()->where('rating', 5)->take(7)->get();
+    // Get top 6 tours for structured data (ordered by rating and review count)
+    $featuredTours = \App\Models\Tour::where('is_active', true)
+        ->with(['city', 'categories'])
+        ->whereNotNull('rating')
+        ->where('review_count', '>', 0)
+        ->orderBy('rating', 'desc')
+        ->orderBy('review_count', 'desc')
+        ->take(6)
+        ->get();
 
-    return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews'));
+
+    return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews', 'featuredTours'));
 });
 
 
 // Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
 Route::get('/tours', function () {
-    return view('pages.tours-listing');
+    $tours = Tour::where('is_active', true)
+        ->with('city')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('pages.tours-listing', [
+        'tours' => $tours,
+    ]);
 })->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
@@ -576,5 +594,5 @@ Route::get('/test-home', function () {
     $cities = \App\Models\City::getHomepageCities();
     $reviews = \App\Models\Review::approved()->where('rating', 5)->take(7)->get();
 
-    return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews'));
+    return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews', 'featuredTours'));
 })->name('test.home');
