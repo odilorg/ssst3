@@ -44,6 +44,10 @@
             <div class="tours-hero__content">
                 <h1 class="tours-hero__title">Discover Amazing Tours</h1>
                 <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
+                <a href="#main-content" class="hero-cta-btn">
+                    Browse All Tours
+                    <i class="fas fa-arrow-down"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -62,6 +66,62 @@
     </nav>
 
     <!-- =====================================================
+         TRUST BADGES
+         ===================================================== -->
+    <section class="trust-badges">
+        <div class="container">
+            <div class="trust-badges__grid">
+                <div class="trust-badge">
+                    <i class="fas fa-users"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">5000+</div>
+                        <div class="trust-badge__label">Happy Travelers</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-star"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">4.9/5</div>
+                        <div class="trust-badge__label">Average Rating</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-certificate"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">Licensed</div>
+                        <div class="trust-badge__label">Tour Operator</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-headset"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">24/7</div>
+                        <div class="trust-badge__label">Customer Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         INTRO CONTENT SECTION
+         ===================================================== -->
+    <section class="tours-intro">
+        <div class="container">
+            <div class="tours-intro__content">
+                <h2 class="tours-intro__title">Explore Uzbekistan with Expertly Crafted Tours</h2>
+                <div class="tours-intro__text">
+                    <p>Welcome to Uzbekistan, the heart of the ancient Silk Road! Our carefully curated collection of tours offers you the perfect way to discover this magnificent Central Asian treasure. From the stunning architecture of Samarkand's Registan Square to the ancient streets of Bukhara, from the modern capital Tashkent to the remote fortresses of Khiva, each tour is designed to immerse you in the rich history, vibrant culture, and warm hospitality of Uzbekistan.</p>
+
+                    <p>Whether you're seeking a cultural heritage tour through UNESCO World Heritage sites, an adventure in the mountains and deserts, or an authentic experience of local traditions and crafts, we have the perfect journey for you. Our expert guides bring history to life, our carefully selected accommodations ensure your comfort, and our flexible itineraries cater to both group travelers and those seeking private, personalized experiences.</p>
+
+                    <p>Browse through our diverse range of tours below – from single-day city explorations to comprehensive multi-day adventures covering the legendary cities of the Silk Road. Each tour includes detailed itineraries, transparent pricing, and clear information about what's included to help you make the best choice for your Uzbekistan adventure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
          TOURS GRID
          ===================================================== -->
     <section class="tours-grid" id="main-content">
@@ -72,7 +132,7 @@
             </div>
 
             <!-- Filter Tabs -->
-            <div class="filter-tabs" id="category-filters" style="display: none;">
+            <div class="filter-tabs" id="category-filters">
                 <button class="filter-tab active" data-category="">All Tours</button>
             </div>
 
@@ -131,6 +191,66 @@
             <!-- Pagination Links -->
             <div class="pagination-wrapper" style="margin-top: 3rem;">
                 {{ $tours->links() }}
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         FAQ SECTION
+         ===================================================== -->
+    <section class="tours-faq">
+        <div class="container">
+            <h2 class="tours-faq__title">Frequently Asked Questions</h2>
+            <p class="tours-faq__subtitle">Everything you need to know about booking tours in Uzbekistan</p>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        How do I book a tour?
+                    </h3>
+                    <p class="faq-item__answer">Click on any tour to view details, then use the "Book Now" button or contact us via WhatsApp. We'll confirm availability and guide you through the booking process.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        What's included in the tour price?
+                    </h3>
+                    <p class="faq-item__answer">Each tour page clearly lists what's included and excluded. Typically includes guide services, transportation, and entrance fees. Meals and accommodation vary by tour.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Can tours be customized?
+                    </h3>
+                    <p class="faq-item__answer">Yes! We offer private tours that can be fully customized to your interests, schedule, and budget. Contact us to discuss your preferences.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        What's your cancellation policy?
+                    </h3>
+                    <p class="faq-item__answer">Cancellation policies vary by tour. Check the specific tour page for details. Generally, we offer full refunds for cancellations made 7+ days before departure.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Do I need a visa for Uzbekistan?
+                    </h3>
+                    <p class="faq-item__answer">Many nationalities can enter Uzbekistan visa-free for up to 30 days. We'll provide visa guidance during the booking process based on your nationality.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Are your guides English-speaking?
+                    </h3>
+                    <p class="faq-item__answer">Yes, all our tours include professional English-speaking guides. We also offer tours in Russian, Japanese, and other languages upon request.</p>
+                </div>
             </div>
         </div>
     </section>
