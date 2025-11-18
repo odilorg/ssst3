@@ -272,7 +272,6 @@
               <span class="activity-card__badge">{{ $tourCount }} {{ $tourText }}</span>
             </div>
             <div class="activity-card__content">
-              <i class="activity-card__icon {{ $category->icon }}" aria-hidden="true"></i>
               <h3 class="activity-card__title">{{ $category->translated_name }}</h3>
               <p class="activity-card__description">{{ $category->translated_description }}</p>
               <span class="activity-card__link">Explore Tours <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
