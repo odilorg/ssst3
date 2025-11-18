@@ -65,76 +65,57 @@
     </section>
 
     <!-- =====================================================
-         TOURS CATALOG (Sidebar + Grid)
+         TOURS CATALOG (Horizontal Filters + Grid)
          ===================================================== -->
     <section class="tours-catalog" id="main-content">
         <div class="container">
-            <div class="tours-catalog__layout">
 
-                <!-- SIDEBAR FILTERS (Desktop) -->
-                <aside class="tours-catalog__filters" id="filters-sidebar">
-                    <div class="filters-header">
-                        <h2 class="filters-header__title">Filter Tours</h2>
-                        <button class="filters-header__reset" id="reset-filters" type="button">
-                            <i class="fas fa-redo" aria-hidden="true"></i>
-                            Reset All
-                        </button>
-                    </div>
+            <!-- HORIZONTAL FILTERS BAR -->
+            <div class="tours-catalog__filters-top">
+                <form id="tour-filters"
+                      hx-get="{{ url('/partials/tours/search') }}"
+                      hx-trigger="change, submit"
+                      hx-target="#tour-results"
+                      hx-swap="innerHTML"
+                      hx-indicator="#filter-loading">
 
-                    <form id="tour-filters"
-                          hx-get="{{ url('/partials/tours/search') }}"
-                          hx-trigger="change, submit"
-                          hx-target="#tour-results"
-                          hx-swap="innerHTML"
-                          hx-indicator="#filter-loading">
+                    <!-- Hidden category field -->
+                    <input type="hidden" name="category" id="category-slug" value="{{ $category->slug }}">
+                    <input type="hidden" name="per_page" value="12">
 
-                        <!-- Hidden category field -->
-                        <input type="hidden" name="category" id="category-slug" value="{{ $category->slug }}">
-
+                    <div class="filters-horizontal">
                         <!-- Search -->
-                        <div class="filter-group">
-                            <label for="search" class="filter-group__label">
+                        <div class="filter-item filter-item--search">
+                            <label for="search" class="sr-only">Search Tours</label>
+                            <div class="filter-input-wrapper">
                                 <i class="fas fa-search" aria-hidden="true"></i>
-                                Search Tours
-                            </label>
-                            <input
-                                type="text"
-                                id="search"
-                                name="q"
-                                placeholder="Search by keyword..."
-                                class="filter-input"
-                            >
-                        </div>
-
-                        <!-- Duration Filter -->
-                        <div class="filter-group">
-                            <label class="filter-group__label">
-                                <i class="far fa-clock" aria-hidden="true"></i>
-                                Duration
-                            </label>
-                            <div class="filter-options">
-                                <label class="filter-radio">
-                                    <input type="radio" name="duration" value="" checked>
-                                    <span>All Durations</span>
-                                </label>
-                                <label class="filter-radio">
-                                    <input type="radio" name="duration" value="1">
-                                    <span>1 Day</span>
-                                </label>
-                                <label class="filter-radio">
-                                    <input type="radio" name="duration" value="2-5">
-                                    <span>2-5 Days</span>
-                                </label>
-                                <label class="filter-radio">
-                                    <input type="radio" name="duration" value="6+">
-                                    <span>6+ Days</span>
-                                </label>
+                                <input
+                                    type="text"
+                                    id="search"
+                                    name="q"
+                                    placeholder="Search tours..."
+                                    class="filter-input"
+                                >
                             </div>
                         </div>
 
+                        <!-- Duration Filter -->
+                        <div class="filter-item">
+                            <label for="duration" class="filter-label">
+                                <i class="far fa-clock" aria-hidden="true"></i>
+                                Duration
+                            </label>
+                            <select id="duration" name="duration" class="filter-select">
+                                <option value="">All Durations</option>
+                                <option value="1">1 Day</option>
+                                <option value="2-5">2-5 Days</option>
+                                <option value="6+">6+ Days</option>
+                            </select>
+                        </div>
+
                         <!-- Sort By -->
-                        <div class="filter-group">
-                            <label for="sort" class="filter-group__label">
+                        <div class="filter-item">
+                            <label for="sort" class="filter-label">
                                 <i class="fas fa-sort" aria-hidden="true"></i>
                                 Sort By
                             </label>
@@ -147,53 +128,38 @@
                             </select>
                         </div>
 
-                        <!-- Hidden field for per_page -->
-                        <input type="hidden" name="per_page" value="12">
-
-                        <!-- Apply Button -->
-                        <button type="submit" class="btn btn--primary btn--block">
-                            <span id="filter-loading" class="htmx-indicator">
-                                <i class="fas fa-spinner fa-spin"></i>
-                            </span>
-                            <span>Apply Filters</span>
-                        </button>
-                    </form>
-                </aside>
-
-                <!-- TOUR RESULTS -->
-                <div class="tours-catalog__results">
-
-                    <!-- Results Header -->
-                    <div class="results-header">
-                        <div class="results-header__count">
-                            <h2 id="results-count">Loading tours...</h2>
-                        </div>
-                        <!-- Mobile Filter Toggle -->
-                        <button class="btn btn--secondary mobile-filter-toggle" id="mobile-filter-toggle" type="button">
-                            <i class="fas fa-filter"></i>
-                            Filters
+                        <!-- Reset Button -->
+                        <button class="filter-reset-btn" id="reset-filters" type="button" title="Reset All Filters">
+                            <i class="fas fa-redo" aria-hidden="true"></i>
+                            <span>Reset</span>
                         </button>
                     </div>
-
-                    <!-- Tour Grid (HTMX loads here) -->
-                    <div id="tour-results"
-                         hx-get="{{ url('/partials/tours/search?category=' . $category->slug) }}"
-                         hx-trigger="load"
-                         hx-swap="innerHTML">
-                        <!-- Loading Skeleton -->
-                        <div class="loading-skeleton">
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                        </div>
-                    </div>
-
-                </div>
-
+                </form>
             </div>
+
+            <!-- RESULTS HEADER -->
+            <div class="results-header">
+                <div class="results-header__count">
+                    <h2 id="results-count">Loading tours...</h2>
+                </div>
+            </div>
+
+            <!-- TOUR GRID (HTMX loads here) -->
+            <div id="tour-results"
+                 hx-get="{{ url('/partials/tours/search?category=' . $category->slug) }}"
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <!-- Loading Skeleton -->
+                <div class="loading-skeleton">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+
         </div>
     </section>
 
