@@ -85,14 +85,6 @@
         <div class="category-hero__overlay"></div>
         <div class="container">
             <div class="category-hero__content">
-                <!-- Breadcrumb -->
-                <nav class="breadcrumb" aria-label="Breadcrumb">
-                    <a href="/">Home</a>
-                    <span class="breadcrumb__separator">/</span>
-                    <a href="/tours">Tours</a>
-                    <span class="breadcrumb__separator">/</span>
-                    <span id="category-breadcrumb">{{ $city->name }}</span>
-                </nav>
 
                 <!-- Category Icon -->
                 <div class="category-hero__icon" id="category-icon">
@@ -121,6 +113,7 @@
          ===================================================== -->
     <section class="tours-catalog" id="main-content">
         <div class="container">
+<!-- Breadcrumb -->            <nav class="breadcrumb breadcrumb--light" aria-label="Breadcrumb">                <a href="/">Home</a>                <span class="breadcrumb__separator">/</span>                <a href="/tours">Tours</a>                <span class="breadcrumb__separator">/</span>                <span>{{ $city->name }}</span>            </nav>
             <div class="tours-catalog__layout">
 
                 <!-- SIDEBAR FILTERS (Desktop) -->

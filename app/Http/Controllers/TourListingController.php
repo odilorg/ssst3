@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tour;
+use App\Models\TourCategory;
 use App\Services\StructuredDataService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -32,11 +33,20 @@ class TourListingController extends Controller
             ->recent() // Uses scopeRecent() - orderBy('created_at', 'desc')
             ->paginate(18);
 
+        // Get categories with tour counts
+        $categories = TourCategory::where('is_active', true)
+            ->withCount(['tours' => function($query) {
+                $query->where('is_active', true);
+            }])
+            ->orderBy('display_order')
+            ->get();
+
         // Generate structured data using service
         $structuredData = $this->structuredDataService->generateTourListingSchema($tours);
 
         return view('pages.tours-listing', [
             'tours' => $tours,
+            'categories' => $categories,
             'structuredData' => $this->structuredDataService->encode($structuredData)
         ]);
     }

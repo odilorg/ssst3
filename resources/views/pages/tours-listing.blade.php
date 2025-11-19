@@ -103,24 +103,46 @@
         </div>
     </section>
 
+
     <!-- =====================================================
-         INTRO CONTENT SECTION
+         FILTERS SECTION
          ===================================================== -->
-    <section class="tours-intro">
+    <section class="tours-filters">
         <div class="container">
-            <div class="tours-intro__content">
-                <h2 class="tours-intro__title">Explore Uzbekistan with Expertly Crafted Tours</h2>
-                <div class="tours-intro__text">
-                    <p>Welcome to Uzbekistan, the heart of the ancient Silk Road! Our carefully curated collection of tours offers you the perfect way to discover this magnificent Central Asian treasure. From the stunning architecture of Samarkand's Registan Square to the ancient streets of Bukhara, from the modern capital Tashkent to the remote fortresses of Khiva, each tour is designed to immerse you in the rich history, vibrant culture, and warm hospitality of Uzbekistan.</p>
-
-                    <p>Whether you're seeking a cultural heritage tour through UNESCO World Heritage sites, an adventure in the mountains and deserts, or an authentic experience of local traditions and crafts, we have the perfect journey for you. Our expert guides bring history to life, our carefully selected accommodations ensure your comfort, and our flexible itineraries cater to both group travelers and those seeking private, personalized experiences.</p>
-
-                    <p>Browse through our diverse range of tours below – from single-day city explorations to comprehensive multi-day adventures covering the legendary cities of the Silk Road. Each tour includes detailed itineraries, transparent pricing, and clear information about what's included to help you make the best choice for your Uzbekistan adventure.</p>
+            <!-- Category Filter Pills -->
+            <div class="tours-categories-wrapper">
+                <div class="tours-categories">
+                    <a href="{{ route('tours.index') }}"
+                       class="tours-category-btn {{ !request('category') ? 'active' : '' }}">
+                        <span class="category-icon"><i class="fas fa-globe-asia"></i></span>
+                        <span class="category-label">All Tours</span>
+                        <span class="category-count">{{ $tours->total() }}</span>
+                    </a>
+                    @foreach($categories as $category)
+                        @php
+                            $icons = [
+                                'city-tours' => 'fa-city',
+                                'cultural-tours' => 'fa-landmark',
+                                'day-trips' => 'fa-sun',
+                                'multi-day-tours' => 'fa-route',
+                                'adventure' => 'fa-mountain',
+                                'food-tours' => 'fa-utensils',
+                                'photography' => 'fa-camera',
+                                'private-tours' => 'fa-user-shield',
+                            ];
+                            $icon = $icons[$category->slug] ?? 'fa-map-marked-alt';
+                        @endphp
+                        <a href="{{ route('tours.index', ['category' => $category->slug]) }}"
+                           class="tours-category-btn {{ request('category') === $category->slug ? 'active' : '' }}">
+                            <span class="category-icon"><i class="fas {{ $icon }}"></i></span>
+                            <span class="category-label">{{ $category->translated_name }}</span>
+                            <span class="category-count">{{ $category->tours_count }}</span>
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
     </section>
-
     <!-- =====================================================
          TOURS GRID
          ===================================================== -->
@@ -128,13 +150,9 @@
         <div class="container">
             <div class="tours-grid__header">
                 <h2 class="tours-grid__title">All Tours</h2>
-                <div class="tours-grid__count" id="tour-count">Loading...</div>
+                <div class="tours-grid__count" id="tour-count">{{ $tours->total() }} tours available</div>
             </div>
 
-            <!-- Filter Tabs -->
-            <div class="filter-tabs" id="category-filters">
-                <button class="filter-tab active" data-category="">All Tours</button>
-            </div>
 
             <div id="tours-container" class="tours-grid__container" data-server-rendered="true">
                 @forelse($initialTours as $tour)
