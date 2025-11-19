@@ -115,14 +115,11 @@
         <!-- Left Column: Content -->
         <div class="why-us__intro">
           <span class="eyebrow">WHY CHOOSE US</span>
-          <h2>Why We're Your Perfect Travel Partner</h2>
+          <h2>Trusted Local Experts in Uzbekistan</h2>
           <p>For over a decade, Jahongir Travel has been guiding guests beyond postcards — into the living heart of Uzbekistan's culture, cuisine, and craftsmanship.</p>
           <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Trusted by 2,400+ travelers since 2012</p>
 
           <div class="why-us__contacts">
-            <a href="tel:+998915550808" class="contact-link" aria-label="Call Jahongir Travel">
-              <i class="fas fa-phone" aria-hidden="true"></i> +998 91 555 08 08
-            </a>
             <a href="mailto:info@@jahongirtravel.com" class="contact-link" aria-label="Email Jahongir Travel">
               <i class="fas fa-envelope" aria-hidden="true"></i> Email Us
             </a>
@@ -131,8 +128,14 @@
             </a>
           </div>
 
-          <hr class="section-divider">
+          <div class="why-us__cta-wrapper">
+            <a href="{{ url('/tours') }}" class="btn btn--primary btn--large">
+              <i class="fas fa-route" aria-hidden="true"></i>
+              Plan My Trip
+            </a>
+          </div>
 
+          <div class="why-us__divider"></div>
           <ul class="benefits">
             <li>
               <i class="benefits__icon fas fa-map-marked-alt" aria-hidden="true"></i>
@@ -156,13 +159,6 @@
               </div>
             </li>
           </ul>
-
-          <div class="why-us__cta-wrapper">
-            <a href="{{ url('/tours') }}" class="btn btn--primary btn--large">
-              <i class="fas fa-route" aria-hidden="true"></i>
-              Plan My Trip
-            </a>
-          </div>
         </div>
 
         <!-- Right Column: Photos -->
@@ -193,9 +189,9 @@
           </div>
           <div class="why-us__badge">
             <div class="trust-badge">
+              <span class="mini-label">Traveler Rating</span>
               <i class="fas fa-star" aria-hidden="true"></i>
               <strong>4.9</strong>
-              <span class="divider">|</span>
               <span>2,400+ Happy Travelers</span>
             </div>
           </div>

@@ -2,9 +2,135 @@
 
 @section('title', 'Contact Us - Jahongir Travel | Get in Touch with Our Silk Road Experts')
 @section('meta_description', 'Contact Jahongir Travel for personalized Uzbekistan tour planning. Our local experts in Samarkand are ready to help you plan your perfect Silk Road adventure.')
-@section('meta_keywords', 'Contact Jahongir Travel, Uzbekistan tour inquiry, Silk Road tours contact, Samarkand travel agency')
-@section('canonical', 'https://jahongirtravel.com/contact')
+@section('canonical', url('/contact'))
 
+{{-- Open Graph --}}
+@section('og_type', 'website')
+@section('og_url', url('/contact'))
+@section('og_title', 'Contact Us - Jahongir Travel')
+@section('og_description', 'Contact our local experts in Samarkand to plan your perfect Silk Road adventure.')
+@section('og_image', asset('images/og-contact.jpg'))
+
+{{-- Structured Data - ContactPage + LocalBusiness --}}
+@section('structured_data')
+{
+  "@@context": "https://schema.org",
+  "@@type": "ContactPage",
+  "name": "Contact Jahongir Travel",
+  "description": "Contact Jahongir Travel for personalized Uzbekistan tour planning.",
+  "url": "{{ url('/contact') }}",
+  "mainEntity": {
+    "@@type": "TravelAgency",
+    "name": "Jahongir Travel",
+    "telephone": "+998915550808",
+    "email": "info@jahongir-travel.uz",
+    "url": "{{ url('/') }}",
+    "address": {
+      "@@type": "PostalAddress",
+      "streetAddress": "Registan Street, 15",
+      "addressLocality": "Samarkand",
+      "addressRegion": "Samarkand",
+      "postalCode": "140100",
+      "addressCountry": "UZ"
+    },
+    "geo": {
+      "@@type": "GeoCoordinates",
+      "latitude": "39.6542",
+      "longitude": "66.9597"
+    },
+    "openingHoursSpecification": [
+      {
+        "@@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      }
+    ],
+    "contactPoint": {
+      "@@type": "ContactPoint",
+      "telephone": "+998915550808",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "Russian", "Uzbek"]
+    }
+  }
+}
+@endsection
+
+{{-- Breadcrumb Structured Data --}}
+@push('structured_data_breadcrumb')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@@type": "ListItem",
+      "position": 2,
+      "name": "Contact",
+      "item": "{{ url('/contact') }}"
+    }
+  ]
+}
+</script>
+@endpush
+
+{{-- FAQ Structured Data --}}
+@push('structured_data_faq')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@@type": "Question",
+      "name": "How can I book a tour?",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "You can book a tour by browsing our tours page, selecting your preferred tour, and clicking the Book Now button. Alternatively, you can contact us directly via phone or email."
+      }
+    },
+    {
+      "@@type": "Question",
+      "name": "Are there any age restrictions for the tour?",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "Most of our tours are suitable for all ages. However, some adventure tours may have minimum age requirements for safety reasons."
+      }
+    },
+    {
+      "@@type": "Question",
+      "name": "What should I pack for the tour?",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "We recommend packing comfortable walking shoes, weather-appropriate clothing, sunscreen, a hat, and a reusable water bottle."
+      }
+    },
+    {
+      "@@type": "Question",
+      "name": "Can I cancel or reschedule my booking?",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "Yes, cancellations made 30+ days before the tour start date receive a full refund. For cancellations within 30 days, please contact us."
+      }
+    },
+    {
+      "@@type": "Question",
+      "name": "Do you offer group discounts?",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "Yes, we offer special discounts for group bookings of 6 or more people. Contact us for customized group rates."
+      }
+    }
+  ]
+}
+</script>
+@endpush
 
 @push('styles')
 <style>
@@ -355,6 +481,19 @@
         </div>
     </section>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
+        <div class="container">
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
+                <li style="display: flex; align-items: center;">
+                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                    <span style="margin: 0 0.5rem; color: #666;">/</span>
+                </li>
+                <li style="color: #666; font-weight: 500;" aria-current="page">Contact</li>
+            </ol>
+        </div>
+    </nav>
+
     <!-- ========================================
          CONTACT SECTION
          ======================================== -->
@@ -626,7 +765,7 @@
         <div class="container cp-grid">
             <figure class="cp-media">
                 <img
-                    src="images/team-photo.jpg"
+                    src="/images/team-photo.jpg"
                     width="405"
                     height="340"
                     alt="Jahongir Travel team in Samarkand office"

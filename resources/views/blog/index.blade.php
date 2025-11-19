@@ -2,7 +2,62 @@
 
 @section('title', 'Travel Blog & Guides | Jahongir Travel')
 @section('meta_description', 'Explore expert travel tips, destination guides, and cultural insights for your Uzbekistan adventure. Latest articles from our travel experts.')
-@section('meta_keywords', 'Uzbekistan travel blog, travel tips, destination guides, Silk Road culture')
+@section('canonical', url('/blog'))
+
+{{-- Open Graph --}}
+@section('og_type', 'website')
+@section('og_url', url('/blog'))
+@section('og_title', 'Travel Blog & Guides | Jahongir Travel')
+@section('og_description', 'Explore expert travel tips, destination guides, and cultural insights for your Uzbekistan adventure.')
+@section('og_image', asset('images/og-blog.jpg'))
+
+{{-- Structured Data for Blog Listing --}}
+@section('structured_data')
+{
+  "@@context": "https://schema.org",
+  "@@type": "CollectionPage",
+  "name": "Travel Blog & Guides",
+  "description": "Explore expert travel tips, destination guides, and cultural insights for your Uzbekistan adventure.",
+  "url": "{{ url('/blog') }}",
+  "isPartOf": {
+    "@@type": "WebSite",
+    "name": "Jahongir Travel",
+    "url": "{{ url('/') }}"
+  },
+  "publisher": {
+    "@@type": "Organization",
+    "name": "Jahongir Travel",
+    "logo": {
+      "@@type": "ImageObject",
+      "url": "{{ asset('images/logo.png') }}"
+    }
+  }
+}
+@endsection
+
+{{-- Breadcrumb Structured Data --}}
+@push('structured_data_breadcrumb')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "{{ url('/blog') }}"
+    }
+  ]
+}
+</script>
+@endpush
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('blog-listing.css') }}?v={{ time() }}">
@@ -12,7 +67,7 @@
     .blog-hero {
         position: relative;
         height: 400px;
-        background-image: url('images/hero-registan.webp');
+        background-image: url('/images/hero-registan.webp');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -92,6 +147,19 @@
     </div>
 </section>
 
+<!-- Breadcrumb Navigation -->
+<nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
+    <div class="container">
+        <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
+            <li style="display: flex; align-items: center;">
+                <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                <span style="margin: 0 0.5rem; color: #666;">/</span>
+            </li>
+            <li style="color: #666; font-weight: 500;" aria-current="page">Blog</li>
+        </ol>
+    </div>
+</nav>
+
 <!-- =====================================================
      FILTERS & SEARCH
      ===================================================== -->
@@ -116,28 +184,28 @@
             <div class="blog-categories">
                 <a href="{{ route('blog.index') }}"
                    class="blog-category-btn {{ !request('category') ? 'active' : '' }}">
-                    <span class="category-icon">📚</span>
+                    <span class="category-icon"><i class="fas fa-book-open"></i></span>
                     <span class="category-label">All Articles</span>
                     <span class="category-count">{{ $posts->total() }}</span>
                 </a>
                 @foreach($categories as $category)
                     @php
                         $icons = [
-                            'culture-heritage' => '🎭',
-                            'religion-spirituality' => '🕌',
-                            'travel-tips' => '✈️',
-                            'destinations' => '🗺️',
-                            'food-cuisine' => '🍽️',
-                            'history' => '📜',
-                            'adventure' => '🏔️',
-                            'photography' => '📸',
+                            'culture-heritage' => 'fa-landmark',
+                            'religion-spirituality' => 'fa-mosque',
+                            'travel-tips' => 'fa-plane',
+                            'destinations' => 'fa-map-marked-alt',
+                            'food-cuisine' => 'fa-utensils',
+                            'history' => 'fa-scroll',
+                            'adventure' => 'fa-mountain',
+                            'photography' => 'fa-camera',
                         ];
-                        $icon = $icons[$category->slug] ?? '📝';
+                        $icon = $icons[$category->slug] ?? 'fa-file-alt';
                     @endphp
                     <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
                        class="blog-category-btn {{ request('category') === $category->slug ? 'active' : '' }}"
                        data-category="{{ $category->slug }}">
-                        <span class="category-icon">{{ $icon }}</span>
+                        <span class="category-icon"><i class="fas {{ $icon }}"></i></span>
                         <span class="category-label">{{ $category->name }}</span>
                         <span class="category-count">{{ $category->posts_count }}</span>
                     </a>
@@ -194,6 +262,50 @@
 
     </div>
 </section>
+
+<!-- =====================================================
+     FLOATING WhatsApp CTA
+     ===================================================== -->
+<a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span class="floating-whatsapp__text">WhatsApp</span>
+</a>
+
+<style>
+    .floating-whatsapp {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #25D366;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 50px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        z-index: 1000;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .floating-whatsapp:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+    }
+    .floating-whatsapp i {
+        font-size: 1.25rem;
+    }
+    @media (max-width: 768px) {
+        .floating-whatsapp__text {
+            display: none;
+        }
+        .floating-whatsapp {
+            padding: 14px;
+            border-radius: 50%;
+        }
+    }
+</style>
 
 @endsection
 

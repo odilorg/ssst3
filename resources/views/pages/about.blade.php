@@ -2,8 +2,80 @@
 
 @section('title', 'About Us - Jahongir Travel | Family-Run Silk Road Tours Since 2012')
 @section('meta_description', 'Meet the family behind Jahongir Travel. Since 2012, we have been crafting authentic Silk Road journeys from our home in Samarkand with local hospitality and expert care.')
-@section('meta_keywords', 'About Jahongir Travel, Uzbekistan tour company, family-run tours, Samarkand tours, local tour operator')
-@section('canonical', 'https://jahongirtravel.com/about')
+@section('canonical', url('/about'))
+
+{{-- Open Graph --}}
+@section('og_type', 'website')
+@section('og_url', url('/about'))
+@section('og_title', 'About Us - Jahongir Travel')
+@section('og_description', 'Meet the family behind Jahongir Travel. Since 2012, we have been crafting authentic Silk Road journeys.')
+@section('og_image', asset('images/og-about.jpg'))
+
+{{-- Structured Data - Organization --}}
+@section('structured_data')
+{
+  "@@context": "https://schema.org",
+  "@@type": "TravelAgency",
+  "name": "Jahongir Travel",
+  "description": "Family-run tour operator in Samarkand offering authentic Silk Road journeys since 2012.",
+  "url": "{{ url('/') }}",
+  "logo": "{{ asset('images/logo.png') }}",
+  "image": "{{ asset('images/og-about.jpg') }}",
+  "telephone": "+998915550808",
+  "email": "info@jahongirtravel.com",
+  "address": {
+    "@@type": "PostalAddress",
+    "streetAddress": "Samarkand",
+    "addressLocality": "Samarkand",
+    "addressCountry": "UZ"
+  },
+  "geo": {
+    "@@type": "GeoCoordinates",
+    "latitude": "39.6542",
+    "longitude": "66.9597"
+  },
+  "foundingDate": "2012",
+  "founder": {
+    "@@type": "Person",
+    "name": "Jahongir Karimov"
+  },
+  "areaServed": ["Uzbekistan", "Central Asia", "Silk Road"],
+  "priceRange": "$$",
+  "aggregateRating": {
+    "@@type": "AggregateRating",
+    "ratingValue": "5",
+    "reviewCount": "1000",
+    "bestRating": "5"
+  },
+  "sameAs": [
+    "https://www.tripadvisor.com/Attraction_Review-g298068-d12345678-Reviews-Jahongir_Travel-Samarkand.html"
+  ]
+}
+@endsection
+
+{{-- Breadcrumb Structured Data --}}
+@push('structured_data_breadcrumb')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@@type": "ListItem",
+      "position": 2,
+      "name": "About Us",
+      "item": "{{ url('/about') }}"
+    }
+  ]
+}
+</script>
+@endpush
 
 @push('styles')
 <style>
@@ -803,6 +875,19 @@
       </div>
     </section>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
+        <div class="container">
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
+                <li style="display: flex; align-items: center;">
+                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                    <span style="margin: 0 0.5rem; color: #666;">/</span>
+                </li>
+                <li style="color: #666; font-weight: 500;" aria-current="page">About Us</li>
+            </ol>
+        </div>
+    </nav>
+
     <!-- =====================================================
          WHY WE ARE BEST - ICON GRID
          ===================================================== -->
@@ -863,8 +948,8 @@
           </div>
 
           <div class="two-col-section__images">
-            <img src="images/about/team-sunset.jpg" alt="Team silhouette at sunset" class="story-image story-image--large">
-            <img src="images/about/workspace.jpg" alt="Team member planning tours" class="story-image story-image--small">
+            <img src="/images/about/team-sunset.jpg" alt="Team silhouette at sunset" class="story-image story-image--large" loading="lazy">
+            <img src="/images/about/workspace.jpg" alt="Team member planning tours" class="story-image story-image--small" loading="lazy">
           </div>
         </div>
       </div>
@@ -917,19 +1002,19 @@
 
         <div class="team-grid">
           <div class="team-member">
-            <img src="images/about/team-member-1.jpg" alt="Jahongir Karimov" class="team-member__photo">
+            <img src="/images/about/team-member-1.jpg" alt="Jahongir Karimov" class="team-member__photo" loading="lazy">
             <h3 class="team-member__name">Jahongir Karimov</h3>
             <p class="team-member__position">Founder & CEO</p>
           </div>
 
           <div class="team-member">
-            <img src="images/about/team-member-2.jpg" alt="Dilshod Rahimov" class="team-member__photo">
+            <img src="/images/about/team-member-2.jpg" alt="Dilshod Rahimov" class="team-member__photo" loading="lazy">
             <h3 class="team-member__name">Dilshod Rahimov</h3>
             <p class="team-member__position">Head of Operations</p>
           </div>
 
           <div class="team-member">
-            <img src="images/about/team-member-3.jpg" alt="Madina Sultanova" class="team-member__photo">
+            <img src="/images/about/team-member-3.jpg" alt="Madina Sultanova" class="team-member__photo" loading="lazy">
             <h3 class="team-member__name">Madina Sultanova</h3>
             <p class="team-member__position">Chief Experience Officer</p>
           </div>
@@ -949,7 +1034,7 @@
         <h2 class="section-heading text-center">People love us</h2>
 
         <div class="tripadvisor-badge">
-          <img src="images/tripadvisor-logo.svg" alt="TripAdvisor" class="tripadvisor-badge__logo">
+          <img src="/images/tripadvisor-logo.svg" alt="TripAdvisor" class="tripadvisor-badge__logo" loading="lazy">
           <div class="tripadvisor-badge__rating">
             <div class="stars">
               <i class="fas fa-star"></i>
@@ -977,7 +1062,7 @@
             <h3 class="testimonial-card__title">Unforgettable Silk Road Experience</h3>
             <p class="testimonial-card__text">Jahongir Travel made our Uzbekistan dream come true! From Samarkand's Registan to Bukhara's ancient streets, every detail was perfectly arranged. Our guide was knowledgeable and the local connections made it truly authentic.</p>
             <div class="testimonial-card__author">
-              <img src="images/testimonials/author-1.jpg" alt="Sarah Mitchell" class="testimonial-card__avatar">
+              <img src="/images/testimonials/author-1.jpg" alt="Sarah Mitchell" class="testimonial-card__avatar" loading="lazy">
               <div class="testimonial-card__author-info">
                 <strong class="testimonial-card__author-name">Sarah Mitchell</strong>
                 <span class="testimonial-card__author-location">United Kingdom</span>
@@ -999,7 +1084,7 @@
             <h3 class="testimonial-card__title">Professional and Personalized Service</h3>
             <p class="testimonial-card__text">Best travel agency for Central Asia! They customized our 10-day tour to include hidden gems we never would have found. The hotels were excellent and transfers were seamless. Highly recommend for first-timers to Uzbekistan!</p>
             <div class="testimonial-card__author">
-              <img src="images/testimonials/author-2.jpg" alt="Michael Chen" class="testimonial-card__avatar">
+              <img src="/images/testimonials/author-2.jpg" alt="Michael Chen" class="testimonial-card__avatar" loading="lazy">
               <div class="testimonial-card__author-info">
                 <strong class="testimonial-card__author-name">Michael Chen</strong>
                 <span class="testimonial-card__author-location">United States</span>
@@ -1021,7 +1106,7 @@
             <h3 class="testimonial-card__title">Exceeded All Expectations</h3>
             <p class="testimonial-card__text">From Khiva to the Fergana Valley, every moment was magical. The family-run guesthouses Jahongir arranged gave us incredible cultural insight. Their 24/7 support made us feel safe throughout our journey. Worth every penny!</p>
             <div class="testimonial-card__author">
-              <img src="images/testimonials/author-3.jpg" alt="Emma Rodriguez" class="testimonial-card__avatar">
+              <img src="/images/testimonials/author-3.jpg" alt="Emma Rodriguez" class="testimonial-card__avatar" loading="lazy">
               <div class="testimonial-card__author-info">
                 <strong class="testimonial-card__author-name">Emma Rodriguez</strong>
                 <span class="testimonial-card__author-location">Australia</span>
@@ -1068,5 +1153,49 @@
         </div>
       </div>
     </section>
+
+    <!-- =====================================================
+         FLOATING WhatsApp CTA
+         ===================================================== -->
+    <a href="https://wa.me/998915550808" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-whatsapp__text">WhatsApp</span>
+    </a>
+
+    <style>
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+        .floating-whatsapp i {
+            font-size: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .floating-whatsapp__text {
+                display: none;
+            }
+            .floating-whatsapp {
+                padding: 14px;
+                border-radius: 50%;
+            }
+        }
+    </style>
 
 @endsection

@@ -11,7 +11,7 @@
     .destinations-hero {
         position: relative;
         height: 400px;
-        background-image: url('images/hero-registan.webp');
+        background-image: url('/images/hero-registan.webp');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -162,36 +162,17 @@
         gap: 1rem;
         padding-top: 1rem;
         border-top: 1px solid #eee;
+    }
 
-        .destinations-hero {
-            padding: 80px 0 60px;
-        }
+    .destination-card__tours {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #666;
+        font-size: 0.9rem;
+    }
 
-        .destinations-hero::before {
-            background: linear-gradient(135deg, rgba(26,84,144,0.7) 0%, rgba(44,122,191,0.6) 100%),
-                        linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.80) 100%);
-        }
-
-        .destinations-hero__title {
-            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
-            line-height: 1.3;
-        }
-
-        .destinations-hero__subtitle {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-
-
-
-
-
-
-
-
-
-
+    .destination-card__cta {
         color: #1a5490;
         font-weight: 600;
         display: flex;
@@ -280,6 +261,50 @@
             </div>
         </div>
     </section>
+
+    <!-- =====================================================
+         FLOATING WhatsApp CTA
+         ===================================================== -->
+    <a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-whatsapp__text">WhatsApp</span>
+    </a>
+
+    <style>
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+        .floating-whatsapp i {
+            font-size: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .floating-whatsapp__text {
+                display: none;
+            }
+            .floating-whatsapp {
+                padding: 14px;
+                border-radius: 50%;
+            }
+        }
+    </style>
 
 @endsection
 

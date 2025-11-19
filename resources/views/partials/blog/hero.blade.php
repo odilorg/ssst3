@@ -18,9 +18,9 @@
         @if($post->category)
             <span class="article-category">{{ $post->category->name }}</span>
         @endif
-        <span class="article-author">By {{ $post->author_name }}</span>
-        <time class="article-date" datetime="{{ $post->published_at->format('Y-m-d') }}">{{ $post->published_at->format('M d, Y') }}</time>
-        <span class="article-reading-time">{{ $post->reading_time }} min read</span>
+        <span class="article-author"><i class="fas fa-user"></i> By {{ $post->author_name }}</span>
+        <time class="article-date" datetime="{{ $post->published_at->format('Y-m-d') }}"><i class="fas fa-calendar-alt"></i> {{ $post->published_at->format('M d, Y') }}</time>
+        <span class="article-reading-time"><i class="fas fa-clock"></i> {{ $post->reading_time }} min read</span>
     </div>
 
     <!-- Article Title -->
