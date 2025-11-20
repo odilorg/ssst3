@@ -17,6 +17,62 @@
 @section('twitter_description', $metaDescription)
 @section('twitter_image', $ogImage)
 
+{{-- Structured Data for Destination --}}
+@section('structured_data')
+{
+  "@@context": "https://schema.org",
+  "@@type": "TouristDestination",
+  "name": "{{ $city->name }}",
+  "description": "{{ $city->short_description ?? $city->description ?? 'Explore ' . $city->name . ' with Jahongir Travel' }}",
+  "url": "{{ $canonicalUrl }}",
+  "image": "{{ $ogImage }}",
+  @if($city->latitude && $city->longitude)
+  "geo": {
+    "@@type": "GeoCoordinates",
+    "latitude": "{{ $city->latitude }}",
+    "longitude": "{{ $city->longitude }}"
+  },
+  @endif
+  "touristType": ["Cultural tourism", "Historical tourism", "Adventure tourism"],
+  "containedInPlace": {
+    "@@type": "Country",
+    "name": "Uzbekistan"
+  },
+  "isAccessibleForFree": false,
+  "publicAccess": true
+}
+@endsection
+
+{{-- Breadcrumb Structured Data --}}
+@push('structured_data_breadcrumb')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@@type": "ListItem",
+      "position": 2,
+      "name": "Destinations",
+      "item": "{{ url('/destinations') }}"
+    },
+    {
+      "@@type": "ListItem",
+      "position": 3,
+      "name": "{{ $city->name }}",
+      "item": "{{ $canonicalUrl }}"
+    }
+  ]
+}
+</script>
+@endpush
+
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/category-landing.css') }}">
 @endpush
@@ -29,14 +85,6 @@
         <div class="category-hero__overlay"></div>
         <div class="container">
             <div class="category-hero__content">
-                <!-- Breadcrumb -->
-                <nav class="breadcrumb" aria-label="Breadcrumb">
-                    <a href="/">Home</a>
-                    <span class="breadcrumb__separator">/</span>
-                    <a href="/tours">Tours</a>
-                    <span class="breadcrumb__separator">/</span>
-                    <span id="category-breadcrumb">{{ $city->name }}</span>
-                </nav>
 
                 <!-- Category Icon -->
                 <div class="category-hero__icon" id="category-icon">
@@ -65,6 +113,7 @@
          ===================================================== -->
     <section class="tours-catalog" id="main-content">
         <div class="container">
+<!-- Breadcrumb -->            <nav class="breadcrumb breadcrumb--light" aria-label="Breadcrumb">                <a href="/">Home</a>                <span class="breadcrumb__separator">/</span>                <a href="/tours">Tours</a>                <span class="breadcrumb__separator">/</span>                <span>{{ $city->name }}</span>            </nav>
             <div class="tours-catalog__layout">
 
                 <!-- SIDEBAR FILTERS (Desktop) -->
@@ -218,11 +267,55 @@
             </div>
         </div>
     </section>
+
+    <!-- =====================================================
+         FLOATING WhatsApp CTA
+         ===================================================== -->
+    <a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-whatsapp__text">WhatsApp</span>
+    </a>
+
+    <style>
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25D366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+        .floating-whatsapp i {
+            font-size: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            .floating-whatsapp__text {
+                display: none;
+            }
+            .floating-whatsapp {
+                padding: 14px;
+                border-radius: 50%;
+            }
+        }
+    </style>
 @endsection
 
 @push('scripts')
-<!-- HTMX Library -->
-<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<!-- HTMX Library (Local) -->
+<script src="{{ asset('js/htmx.min.js') }}"></script>
 <!-- Destination Landing Page Specific JS -->
 <script src="{{ asset('js/destination-landing.js') }}"></script>
 @endpush

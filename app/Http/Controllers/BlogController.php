@@ -7,11 +7,20 @@ use App\Models\BlogCategory;
 use App\Models\BlogTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\BlogListingService;
 
 class BlogController extends Controller
 {
+    protected BlogListingService $blogListingService;
+
+    public function __construct(BlogListingService $blogListingService)
+    {
+        $this->blogListingService = $blogListingService;
+    }
+
     /**
      * Display blog listing page with filters and pagination
      *
@@ -60,25 +69,33 @@ class BlogController extends Controller
             abort(404, 'Invalid blog post URL');
         }
 
-        // Check if blog post exists and is published
-        $exists = Cache::remember("blog.exists.{$slug}", 3600, function () use ($slug) {
+        $post = Cache::remember("blog.page.{$slug}", 3600, function () use ($slug) {
             return BlogPost::where('slug', $slug)
                 ->where('is_published', true)
-                ->exists();
+                ->first();
         });
 
-        if (!$exists) {
+        if (!$post) {
             abort(404, 'Blog post not found or not published');
         }
 
-        // Check if blog-article.html exists
-        $filePath = public_path('blog-article.html');
-        if (!file_exists($filePath)) {
-            abort(500, 'Blog template file not found');
-        }
+        $pageTitle = $post->meta_title ?? $post->title;
+        $metaDescription = $post->meta_description
+            ?? $post->excerpt
+            ?? Str::limit(strip_tags($post->content ?? ''), 160, '');
+        $ogImage = $post->featured_image_url ?? asset('images/og-default.jpg');
+        $canonical = url('/blog/' . $post->slug);
+        $schemaDescription = $post->meta_description
+            ?? strip_tags($post->excerpt ?? $post->content ?? '');
 
-        // Serve the static HTML file
-        return response()->file($filePath);
+        return response()->view('blog.article', compact(
+            'post',
+            'pageTitle',
+            'metaDescription',
+            'ogImage',
+            'canonical',
+            'schemaDescription'
+        ));
     }
 
     /**
@@ -90,51 +107,7 @@ class BlogController extends Controller
      */
     private function fetchBlogData(Request $request, array $validated): array
     {
-        // Start query
-        $query = BlogPost::published()
-            ->with(['category', 'tags'])
-            ->select(['id', 'slug', 'title', 'excerpt', 'featured_image',
-                     'category_id', 'author_name', 'author_image',
-                     'reading_time', 'view_count', 'published_at']);
-
-        // Apply category filter
-        if (!empty($validated['category'])) {
-            $query->whereHas('category', function ($q) use ($validated) {
-                $q->where('slug', $validated['category']);
-            });
-        }
-
-        // Apply tag filter
-        if (!empty($validated['tag'])) {
-            $query->whereHas('tags', function ($q) use ($validated) {
-                $q->where('slug', $validated['tag']);
-            });
-        }
-
-        // Apply search filter using full-text index for better performance
-        if (!empty($validated['search'])) {
-            $searchTerm = $validated['search'];
-            // Use full-text search for better performance
-            $query->whereFullText(['title', 'excerpt', 'content'], $searchTerm);
-        }
-
-        // Apply sorting
-        $sort = $validated['sort'] ?? 'latest';
-        switch ($sort) {
-            case 'popular':
-                $query->orderBy('view_count', 'desc');
-                break;
-            case 'oldest':
-                $query->orderBy('published_at', 'asc');
-                break;
-            case 'latest':
-            default:
-                $query->orderBy('published_at', 'desc');
-                break;
-        }
-
-        // Get paginated results (12 per page)
-        $posts = $query->paginate(12)->withQueryString();
+        $posts = $this->blogListingService->getPosts($validated, 12);
 
         // Get all categories for filter dropdown
         $categories = Cache::remember('blog.categories.all', 3600, function () {

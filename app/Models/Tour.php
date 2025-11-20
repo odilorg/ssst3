@@ -123,6 +123,9 @@ class Tour extends Model
 
         // Clear category caches when tour active status changes
         static::updated(function ($tour) {
+            // Use TourCacheService for comprehensive cache clearing
+            app(\App\Services\TourCacheService::class)->clearTourCache($tour);
+
             if ($tour->isDirty('is_active')) {
                 $tour->clearCategoryCaches();
             }
@@ -244,6 +247,186 @@ class Tour extends Model
                     });
                 }
             });
+    }
+
+    // ==========================================
+    // QUERY SCOPES
+    // ==========================================
+
+    /**
+     * Scope to filter only active tours
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope to eager load common frontend relationships
+     * Prevents N+1 queries when displaying tours
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithFrontendRelations($query)
+    {
+        return $query->with([
+            'city:id,name,slug,hero_image',
+            'categories:id,name,slug',
+        ]);
+    }
+
+    /**
+     * Scope to eager load detailed relationships for tour detail page
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithDetailRelations($query)
+    {
+        return $query->with([
+            'city:id,name,slug,description,hero_image',
+            'categories:id,name,slug,icon',
+            'itineraryItems' => function($q) {
+                $q->whereNull('parent_id')
+                  ->orderBy('sort_order')
+                  ->with('children');
+            },
+            'faqs' => function($q) {
+                $q->orderBy('sort_order');
+            },
+            'activeExtras' => function($q) {
+                $q->orderBy('sort_order');
+            },
+        ]);
+    }
+
+    /**
+     * Scope for tours with reviews and ratings
+     * Useful for featuring highly-rated tours
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithReviews($query)
+    {
+        return $query->whereNotNull('rating')
+                     ->where('review_count', '>', 0);
+    }
+
+    /**
+     * Scope to filter tours by city
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int|string $cityId City ID or slug
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByCity($query, $cityId)
+    {
+        if (is_numeric($cityId)) {
+            return $query->where('city_id', $cityId);
+        }
+
+        // If slug is provided, join with cities table
+        return $query->whereHas('city', function($q) use ($cityId) {
+            $q->where('slug', $cityId);
+        });
+    }
+
+    /**
+     * Scope to filter tours by category
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int|string $categoryId Category ID or slug
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByCategory($query, $categoryId)
+    {
+        return $query->whereHas('categories', function($q) use ($categoryId) {
+            if (is_numeric($categoryId)) {
+                $q->where('tour_categories.id', $categoryId);
+            } else {
+                $q->where('tour_categories.slug', $categoryId);
+            }
+        });
+    }
+
+    /**
+     * Scope to order tours by popularity (rating + review count)
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $direction 'desc' or 'asc'
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePopular($query, $direction = 'desc')
+    {
+        return $query->orderBy('rating', $direction)
+                     ->orderBy('review_count', $direction);
+    }
+
+    /**
+     * Scope to order tours by creation date
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $direction 'desc' or 'asc'
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRecent($query, $direction = 'desc')
+    {
+        return $query->orderBy('created_at', $direction);
+    }
+
+    /**
+     * Scope to filter tours by tour type
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type 'private', 'group', or 'day_trip'
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByType($query, $type)
+    {
+        return $query->where('tour_type', $type);
+    }
+
+    /**
+     * Scope to filter tours by duration
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param int $minDays Minimum number of days
+     * @param int|null $maxDays Maximum number of days (optional)
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByDuration($query, $minDays, $maxDays = null)
+    {
+        $query->where('duration_days', '>=', $minDays);
+
+        if ($maxDays !== null) {
+            $query->where('duration_days', '<=', $maxDays);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Scope to filter tours by price range
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param float $minPrice Minimum price
+     * @param float|null $maxPrice Maximum price (optional)
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByPriceRange($query, $minPrice, $maxPrice = null)
+    {
+        $query->where('price_per_person', '>=', $minPrice);
+
+        if ($maxPrice !== null) {
+            $query->where('price_per_person', '<=', $maxPrice);
+        }
+
+        return $query;
     }
 
     // ==========================================

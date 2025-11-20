@@ -67,16 +67,16 @@
 
         // Get form data
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+        const plainData = Object.fromEntries(formData.entries());
 
         try {
             const response = await fetch('/comments', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: formData,
             });
 
             const result = await response.json();
@@ -91,7 +91,7 @@
                 if (charCount) charCount.textContent = '0';
 
                 // If replying, cancel reply mode
-                if (data.parent_id) {
+                if (plainData.parent_id) {
                     cancelReply();
                 }
 

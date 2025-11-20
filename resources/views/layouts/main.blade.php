@@ -78,6 +78,13 @@
     @endif
 </head>
 <body>
+    {{-- No JavaScript Warning --}}
+    <noscript>
+        <div style="position:fixed;top:0;left:0;right:0;background:#fff3cd;color:#856404;padding:15px;text-align:center;z-index:9999;border-bottom:2px solid #ffc107;font-family:sans-serif;">
+            <strong>JavaScript Required:</strong> This website requires JavaScript to be enabled for full functionality. Please enable JavaScript in your browser settings.
+        </div>
+    </noscript>
+
     {{-- Header / Navigation --}}
     @include('partials.header')
     

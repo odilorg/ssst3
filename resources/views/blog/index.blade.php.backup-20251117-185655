@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Blog & Guides | Jahongir Travel</title>
+    <meta name="description" content="Explore expert travel tips, destination guides, and cultural insights for your Uzbekistan adventure. Latest articles from our travel experts.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Travel Blog & Guides | Jahongir Travel">
+    <meta property="og:description" content="Expert travel tips and destination guides for Uzbekistan">
+    <meta property="og:image" content="{{ asset('images/blog-og-image.jpg') }}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Travel Blog & Guides | Jahongir Travel">
+    <meta name="twitter:description" content="Expert travel tips and destination guides for Uzbekistan">
+    <meta name="twitter:image" content="{{ asset('images/blog-og-image.jpg') }}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+    <link rel="stylesheet" href="{{ asset('blog-listing.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('blog-pagination-fix.css') }}?v={{ time() }}">
+
+    <style>
+        /* Header - Reset to default transparent overlay style */
+        .site-header {
+            position: relative;
+        }
+
+        .nav {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25) !important;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav__logo-text {
+            color: #ffffff !important;
+        }
+
+        .nav__logo-text strong {
+            color: var(--color-accent);
+        }
+
+        .nav__menu a {
+            color: #ffffff !important;
+        }
+
+        .nav.nav--sticky {
+            position: fixed !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .nav--sticky .nav__logo-text {
+            color: var(--color-primary) !important;
+        }
+
+        .nav--sticky .nav__menu a {
+            color: var(--color-text) !important;
+        }
+
+        /* Blog Hero Section */
+        .blog-hero {
+            background-image: linear-gradient(135deg, rgba(26,84,144,0.75) 0%, rgba(44,122,191,0.65) 100%),
+                              url('{{ asset("images/hero-registan.webp") }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 140px 0 80px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.45) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .blog-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .blog-hero__title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.30);
+            font-family: var(--font-accent, 'Playfair Display', serif);
+        }
+
+        .blog-hero__subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.90);
+            max-width: 700px;
+            margin: 0 auto;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        }
+
+        /* Hide old page header */
+        .blog-page-header {
+            display: none;
+        }
+
+        /* Adjust filters section spacing */
+        .blog-filters {
+            margin-top: -40px;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+
+    <!-- Schema.org Markup -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Blog",
+        "name": "Jahongir Travel Blog",
+        "description": "Expert travel tips, guides, and insights for exploring Uzbekistan and the Silk Road",
+        "url": "{{ url('/blog') }}",
+        "publisher": {
+            "@@type": "Organization",
+            "name": "Jahongir Travel",
+            "logo": {
+                "@@type": "ImageObject",
+                "url": "{{ asset('images/logo.png') }}"
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- Site Header -->
+    @include('partials.header')
+
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1 class="blog-hero__title">Travel Insights & Tips</h1>
+            <p class="blog-hero__subtitle">Expert travel advice and destination guides</p>
+        </div>
+    </section>
+
+    <!-- Old Page Header (now hidden by CSS) -->
+    <section class="blog-page-header">
+        <div class="container">
+            <h1 class="page-title">Travel Insights & Tips</h1>
+            <p class="page-subtitle">Expert travel advice and destination guides</p>
+        </div>
+    </section>
+
+
+    <!-- Filters & Search -->
+    <section class="blog-filters">
+        <div class="container">
+
+            <!-- Search Form -->
+            <form method="GET" action="{{ route('blog.index') }}" class="blog-search">
+                <input
+                    type="search"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search articles..."
+                    aria-label="Search blog articles">
+                <button type="submit" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <!-- Category Filter Pills - Scrollable with Icons -->            <div class="blog-categories-wrapper">                <div class="blog-categories">                    <a href="{{ route('blog.index') }}"                       class="blog-category-btn {{ !request('category') ? 'active' : '' }}">                        <span class="category-icon">📚</span>                        <span class="category-label">All Articles</span>                        <span class="category-count">{{ $posts->total() }}</span>                    </a>                    @foreach($categories as $category)                        @php                            $icons = [                                'culture-heritage' => '🎭',                                'religion-spirituality' => '🕌',                                'travel-tips' => '✈️',                                'destinations' => '🗺️',                                'food-cuisine' => '🍽️',                                'history' => '📜',                                'adventure' => '🏔️',                                'photography' => '📸',                            ];                            $icon = $icons[$category->slug] ?? '📝';                        @endphp                        <a href="{{ route('blog.index', ['category' => $category->slug]) }}"                           class="blog-category-btn {{ request('category') === $category->slug ? 'active' : '' }}"                           data-category="{{ $category->slug }}">                            <span class="category-icon">{{ $icon }}</span>                            <span class="category-label">{{ $category->name }}</span>                            <span class="category-count">{{ $category->posts_count }}</span>                        </a>                    @endforeach                </div>            </div>
+
+            <!-- Sort Dropdown -->
+            <form method="GET" action="{{ route('blog.index') }}" class="blog-sort">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy" name="sort" onchange="this.form.submit()">
+                    <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
+                    <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Most Popular</option>
+                    <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest</option>
+                </select>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="blog-listing">
+        <div class="container">
+
+            @if($posts->isEmpty())
+                <!-- Empty State -->
+                <div class="blog-empty">
+                    <i class="fas fa-search"></i>
+                    <h2>No articles found</h2>
+                    <p>Try adjusting your filters or search query.</p>
+                    <a href="{{ route('blog.index') }}" class="btn btn--primary">View All Articles</a>
+                </div>
+            @else
+                <!-- Blog Grid -->
+                <div class="blog-grid" id="blogGrid">
+                    @foreach($posts as $post)
+                        @include('partials.blog.card', ['post' => $post])
+                    @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="blog-pagination">
+                    {{ $posts->links('pagination::default') }}
+                </div>
+            @endif
+
+        </div>
+    </section>
+
+
+    <!-- Site Footer -->
+    @include('partials.footer')
+
+    <!-- JavaScript -->
+    <script src="{{ asset('js/htmx.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}" defer></script>
+    <script src="{{ asset('js/blog-listing.js') }}" defer></script>
+
+</body>
+</html>

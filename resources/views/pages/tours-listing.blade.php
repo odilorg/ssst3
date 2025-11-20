@@ -1,324 +1,37 @@
 @extends('layouts.main')
 
-@section('title', 'Uzbekistan Tours - Browse All Tours | Jahongir Travel')
+@php
+    $initialTours = $tours ?? collect();
+    $toursJson = $initialTours->map(function ($tour) {
+        return [
+            'id' => $tour->id,
+            'slug' => $tour->slug,
+            'title' => $tour->title,
+            'description' => $tour->long_description,
+            'short_description' => $tour->short_description,
+            'featured_image' => $tour->featured_image_url ?? asset('images/default-tour.jpg'),
+            'price_per_person' => $tour->price_per_person,
+            'duration' => $tour->duration_days,
+            'city_name' => optional($tour->city)->name,
+            'city_slug' => optional($tour->city)->slug,
+        ];
+    })->values();
+@endphp
+
+@section('title', 'Uzbekistan Tours | Jahongir Travel')
 @section('meta_description', 'Explore all available tours in Uzbekistan. From cultural heritage tours to mountain adventures, find your perfect Silk Road journey with Jahongir Travel.')
-@section('meta_keywords', 'Uzbekistan tours, all tours, tour packages, Silk Road tours, Central Asia travel')
-@section('canonical', 'https://jahongirtravel.com/tours')
-
-@push('styles')
-<style>
-
-    .tours-hero {
-        position: relative;
-        height: 400px;
-        background-image: url('images/hero-registan.webp');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .tours-hero__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.60) 100%);
-        z-index: 1;
-    }
-
-    .tours-hero__content {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        color: #FFFFFF;
-    }
-
-    .tours-hero__title {
-        font-family: 'Playfair Display', serif;
-        font-size: 56px;
-        font-weight: 700;
-        line-height: 1.2;
-        margin: 0 0 16px 0;
-        letter-spacing: -0.5px;
-        color: #FFFFFF;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    .tours-hero__subtitle {
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 1.6;
-        margin: 0;
-        color: #FFFFFF;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    @media (max-width: 768px) {
-        .tours-hero {
-            height: 300px;
-            margin-top: 100px;
-        }
-
-        .tours-hero__title {
-            font-size: 36px;
-        }
-
-        .tours-hero__subtitle {
-            font-size: 16px;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    .tours-grid {
-        padding: 80px 0;
-    }
-
-    .tours-grid__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 3rem;
-    }
-
-    .tours-grid__title {
-        font-size: 2.5rem;
-        color: #1a1a1a;
-    }
-
-    .tours-grid__count {
-        font-size: 1.1rem;
-        color: #666;
-    }
-
-    .tours-grid__container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .tour-card {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background: white;
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tour-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    .tour-card__image {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-    }
-
-    .tour-card__content {
-        padding: 1.5rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .tour-card__category {
-        display: inline-block;
-        background: #e3f2fd;
-        color: #1a5490;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        margin-bottom: 0.75rem;
-        width: fit-content;
-    }
-
-    .tour-card__title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.75rem;
-        color: #1a1a1a;
-        line-height: 1.4;
-    }
-
-    .tour-card__description {
-        font-size: 0.9rem;
-        color: #666;
-        margin-bottom: 1rem;
-        line-height: 1.6;
-        flex: 1;
-    }
-
-    .tour-card__meta {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-    .tour-card__meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .tour-card__price {
-        margin-left: auto;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1a5490;
-    }
-
-    .loading-skeleton {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .skeleton-card {
-        height: 420px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s infinite;
-        border-radius: 12px;
-    }
-
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    .filter-tabs {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .filter-tab {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #ddd;
-        border-radius: 25px;
-        background: white;
-        color: #666;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .filter-tab:hover {
-        border-color: #1a5490;
-        color: #1a5490;
-    }
-
-    .filter-tab.active {
-        background: #1a5490;
-        color: white;
-        border-color: #1a5490;
-    }
-
-    @media (max-width: 768px) {
-
-        .tours-hero {
-            padding: 120px 0 60px;
-        }
-
-        .tours-hero::before {
-            background: linear-gradient(135deg, rgba(26,84,144,0.7) 0%, rgba(44,122,191,0.6) 100%),
-                        linear-gradient(rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.80) 100%);
-        }
-
-        .tours-hero__title {
-            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
-            line-height: 1.3;
-        }
-
-        .tours-hero__subtitle {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-
-
-
-
-
-
-
-
-
-
-        .tours-grid {
-            padding: 60px 0;
-        }
-
-        .tours-grid .container {
-            padding-inline: 0 !important;
-        }
-
-        .tours-grid__header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-            padding-inline: 1rem;
-        }
-
-        .tours-grid__title {
-            font-size: 2rem;
-        }
-
-        .tours-grid__container {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            padding-inline: 0.25rem;
-        }
-
-        .filter-tabs {
-            overflow-x: auto;
-            flex-wrap: nowrap;
-            padding-bottom: 0.5rem;
-        }
-
-        .filter-tab {
-            white-space: nowrap;
-        }
-
-        .tour-card {
-            border-radius: 8px;
-        }
-    }
-</style>
+@section('canonical', url('/tours'))
+
+@section('structured_data')
+{!! $structuredData !!}
+@endsection
+
+@push('head')
+<!-- Preload hero image for faster LCP -->
+<link rel="preload" as="image" href="{{ asset('images/hero-registan.webp') }}" type="image/webp">
 @endpush
+
+@push('styles')<link rel="stylesheet" href="{{ asset('css/tours-listing.css') }}">@endpush
 
 @section('content')
 
@@ -331,10 +44,105 @@
             <div class="tours-hero__content">
                 <h1 class="tours-hero__title">Discover Amazing Tours</h1>
                 <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
+                <a href="#main-content" class="hero-cta-btn">
+                    Browse All Tours
+                    <i class="fas fa-arrow-down"></i>
+                </a>
             </div>
         </div>
     </section>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
+        <div class="container">
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
+                <li style="display: flex; align-items: center;">
+                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                    <span style="margin: 0 0.5rem; color: #666;">/</span>
+                </li>
+                <li style="color: #666; font-weight: 500;" aria-current="page">Tours</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- =====================================================
+         TRUST BADGES
+         ===================================================== -->
+    <section class="trust-badges">
+        <div class="container">
+            <div class="trust-badges__grid">
+                <div class="trust-badge">
+                    <i class="fas fa-users"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">5000+</div>
+                        <div class="trust-badge__label">Happy Travelers</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-star"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">4.9/5</div>
+                        <div class="trust-badge__label">Average Rating</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-certificate"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">Licensed</div>
+                        <div class="trust-badge__label">Tour Operator</div>
+                    </div>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-headset"></i>
+                    <div class="trust-badge__content">
+                        <div class="trust-badge__number">24/7</div>
+                        <div class="trust-badge__label">Customer Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================
+         FILTERS SECTION
+         ===================================================== -->
+    <section class="tours-filters">
+        <div class="container">
+            <!-- Category Filter Pills -->
+            <div class="tours-categories-wrapper">
+                <div class="tours-categories">
+                    <a href="{{ route('tours.index') }}"
+                       class="tours-category-btn {{ !request('category') ? 'active' : '' }}">
+                        <span class="category-icon"><i class="fas fa-globe-asia"></i></span>
+                        <span class="category-label">All Tours</span>
+                        <span class="category-count">{{ $tours->total() }}</span>
+                    </a>
+                    @foreach($categories as $category)
+                        @php
+                            $icons = [
+                                'city-tours' => 'fa-city',
+                                'cultural-tours' => 'fa-landmark',
+                                'day-trips' => 'fa-sun',
+                                'multi-day-tours' => 'fa-route',
+                                'adventure' => 'fa-mountain',
+                                'food-tours' => 'fa-utensils',
+                                'photography' => 'fa-camera',
+                                'private-tours' => 'fa-user-shield',
+                            ];
+                            $icon = $icons[$category->slug] ?? 'fa-map-marked-alt';
+                        @endphp
+                        <a href="{{ route('tours.index', ['category' => $category->slug]) }}"
+                           class="tours-category-btn {{ request('category') === $category->slug ? 'active' : '' }}">
+                            <span class="category-icon"><i class="fas {{ $icon }}"></i></span>
+                            <span class="category-label">{{ $category->translated_name }}</span>
+                            <span class="category-count">{{ $category->tours_count }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- =====================================================
          TOURS GRID
          ===================================================== -->
@@ -342,52 +150,166 @@
         <div class="container">
             <div class="tours-grid__header">
                 <h2 class="tours-grid__title">All Tours</h2>
-                <div class="tours-grid__count" id="tour-count">Loading...</div>
+                <div class="tours-grid__count" id="tour-count">{{ $tours->total() }} tours available</div>
             </div>
 
-            <!-- Filter Tabs -->
-            <div class="filter-tabs" id="category-filters" style="display: none;">
-                <button class="filter-tab active" data-category="">All Tours</button>
+
+            <div id="tours-container" class="tours-grid__container" data-server-rendered="true">
+                @forelse($initialTours as $tour)
+                    <a href="/tours/{{ $tour->slug }}" class="tour-card">
+                        <img src="{{ $tour->featured_image_url ?? asset('images/default-tour.jpg') }}"
+                             alt="{{ $tour->title }}"
+                             class="tour-card__image"
+                             width="400"
+                             height="300"
+                             loading="lazy">
+                        <div class="tour-card__content">
+                            <h3 class="tour-card__title">{{ $tour->title }}</h3>
+                            <p class="tour-card__description">
+                                {{ $tour->short_description ?? \Illuminate\Support\Str::limit(strip_tags($tour->long_description), 140) }}
+                            </p>
+                            <div class="tour-card__meta">
+                                <div class="tour-card__meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>
+                                        @if($tour->duration_days === 1)
+                                            1 day
+                                        @elseif($tour->duration_days)
+                                            {{ $tour->duration_days }} days
+                                        @else
+                                            Flexible
+                                        @endif
+                                    </span>
+                                </div>
+                                @if($tour->city)
+                                    <div class="tour-card__meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>{{ $tour->city->name }}</span>
+                                    </div>
+                                @endif
+                                <div class="tour-card__price">
+                                    @if($tour->price_per_person)
+                                        ${{ number_format($tour->price_per_person, 0) }}
+                                    @else
+                                        Contact us
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                        <i class="fas fa-map fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3>No tours found</h3>
+                        <p style="color: #666;">We couldn&apos;t find any tours at the moment. Please check back soon!</p>
+                    </div>
+                @endforelse
             </div>
 
-            <div id="tours-container" class="tours-grid__container">
-                <!-- Loading Skeleton -->
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
+            <!-- Pagination Links -->
+            <div class="pagination-wrapper" style="margin-top: 3rem;">
+                {{ $tours->links() }}
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         FAQ SECTION
+         ===================================================== -->
+    <section class="tours-faq">
+        <div class="container">
+            <h2 class="tours-faq__title">Frequently Asked Questions</h2>
+            <p class="tours-faq__subtitle">Everything you need to know about booking tours in Uzbekistan</p>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        How do I book a tour?
+                    </h3>
+                    <p class="faq-item__answer">Click on any tour to view details, then use the "Book Now" button or contact us via WhatsApp. We'll confirm availability and guide you through the booking process.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        What's included in the tour price?
+                    </h3>
+                    <p class="faq-item__answer">Each tour page clearly lists what's included and excluded. Typically includes guide services, transportation, and entrance fees. Meals and accommodation vary by tour.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Can tours be customized?
+                    </h3>
+                    <p class="faq-item__answer">Yes! We offer private tours that can be fully customized to your interests, schedule, and budget. Contact us to discuss your preferences.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        What's your cancellation policy?
+                    </h3>
+                    <p class="faq-item__answer">Cancellation policies vary by tour. Check the specific tour page for details. Generally, we offer full refunds for cancellations made 7+ days before departure.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Do I need a visa for Uzbekistan?
+                    </h3>
+                    <p class="faq-item__answer">Many nationalities can enter Uzbekistan visa-free for up to 30 days. We'll provide visa guidance during the booking process based on your nationality.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-item__question">
+                        <i class="fas fa-question-circle"></i>
+                        Are your guides English-speaking?
+                    </h3>
+                    <p class="faq-item__answer">Yes, all our tours include professional English-speaking guides. We also offer tours in Russian, Japanese, and other languages upon request.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- =====================================================
+         FLOATING WhatsApp CTA
+         ===================================================== -->
+    <a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="floating-whatsapp__text">WhatsApp</span>
+    </a>
+
 @endsection
 
 @push('scripts')
 <script>
+    window.__INITIAL_TOURS__ = @json($toursJson);
+</script>
+<script>
     (function() {
         'use strict';
 
-        console.log('[Tours Listing] Initializing...');
 
-        let allTours = [];
+        let allTours = window.__INITIAL_TOURS__ || [];
         let currentCategory = '';
+        const shouldFetch = allTours.length === 0;
 
-        // Fetch all tours
-        fetch('{{ url('/api/tours') }}')
-            .then(r => r.json())
-            .then(tours => {
-                console.log('[Tours Listing] Loaded:', tours.length, 'tours');
-                allTours = tours;
-                renderTours(tours);
-            })
-        .catch(error => {
-            console.error('[Tours Listing] Error loading data:', error);
-            showErrorState();
-        });
+        if (shouldFetch) {
+            fetch('{{ url('/api/tours') }}')
+                .then(r => r.json())
+                .then(tours => {
+                    allTours = tours;
+                    renderTours(tours);
+                })
+                .catch(error => {
+                    console.error('[Tours Listing] Error loading data:', error);
+                    showErrorState();
+                });
+        } else {
+            renderTours(allTours);
+        }
 
         function renderCategoryFilters(categories) {
             const container = document.getElementById('category-filters');
@@ -450,6 +372,8 @@
                         <img src="${tour.featured_image || '/images/default-tour.jpg'}"
                              alt="${tour.title}"
                              class="tour-card__image"
+                             width="400"
+                             height="300"
                              loading="lazy">
                         <div class="tour-card__content">
 

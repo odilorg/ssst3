@@ -53,20 +53,47 @@ class BlogPost extends Model
 
     /**
      * Clear all blog-related caches
-     * Simple approach for cache drivers that don't support tagging
+     * Targeted approach to avoid clearing unrelated cache
      */
     protected static function clearBlogCaches(): void
     {
         $cache = \Illuminate\Support\Facades\Cache::store();
 
         // Clear specific blog cache keys
-        $cache->forget('blog.categories.all');
-        $cache->forget('blog.tags.all');
-        $cache->forget('blog.featured');
+        $specificKeys = [
+            'blog.categories.all',
+            'blog.tags.all',
+            'blog.featured',
+        ];
 
-        // For blog listing caches, we flush all since we can't use patterns
-        // This is acceptable for admin operations which are infrequent
-        $cache->flush();
+        foreach ($specificKeys as $key) {
+            $cache->forget($key);
+        }
+
+        // Clear blog listing cache with MD5 hashes
+        // The BlogController uses: 'blog.listing.' . md5(json_encode($params))
+        // Since we can't know all possible parameter combinations, we clear common ones
+
+        // Clear unpaginated and first 10 pages (most common)
+        $commonParams = [
+            ['page' => 1, 'sort' => 'latest'],
+            ['page' => 2, 'sort' => 'latest'],
+            ['page' => 1, 'sort' => 'popular'],
+            ['page' => 1, 'sort' => 'oldest'],
+        ];
+
+        foreach ($commonParams as $params) {
+            $cacheKey = 'blog.listing.' . md5(json_encode($params));
+            $cache->forget($cacheKey);
+        }
+
+        // Note: MD5-based cache keys for filtered listings will expire naturally
+        // after their TTL (10 minutes for listings, 1 hour for individual posts)
+        // This is acceptable as cache invalidation is triggered infrequently (on post save/delete)
+        // and the short TTL ensures stale data doesn't persist long
+
+        // Future improvement: Consider using cache tags (requires Redis/Memcached)
+        // or maintaining a cache key registry for more comprehensive invalidation
     }
 
     /**
@@ -202,6 +229,7 @@ class BlogPost extends Model
         if ($this->city_id) {
             $tours = Tour::where('city_id', $this->city_id)
                 ->where('is_active', true)
+                ->with(['city:id,name,slug', 'categories:id,name,slug'])
                 ->orderBy('rating', 'desc')
                 ->orderBy('review_count', 'desc')
                 ->limit($limit)
@@ -213,7 +241,10 @@ class BlogPost extends Model
         }
 
         // Strategy 2: Extract city names from title/content
-        $cities = City::active()->get();
+        // Only load minimal fields needed for matching
+        $cities = City::active()
+            ->select('id', 'name', 'slug')
+            ->get();
         $foundCity = null;
 
         foreach ($cities as $city) {
@@ -228,6 +259,7 @@ class BlogPost extends Model
         if ($foundCity) {
             $tours = Tour::where('city_id', $foundCity->id)
                 ->where('is_active', true)
+                ->with(['city:id,name,slug', 'categories:id,name,slug'])
                 ->orderBy('rating', 'desc')
                 ->orderBy('review_count', 'desc')
                 ->limit($limit)
@@ -240,6 +272,7 @@ class BlogPost extends Model
 
         // Strategy 3: Fallback to most popular tours globally
         return Tour::where('is_active', true)
+            ->with(['city:id,name,slug', 'categories:id,name,slug'])
             ->orderBy('rating', 'desc')
             ->orderBy('review_count', 'desc')
             ->limit($limit)

@@ -1,0 +1,202 @@
+TRAVEL AGENCY WEBSITE – PRE-LAUNCH CHECKLIST (MASTER LIST)
+==========================================================
+
+1) TECHNICAL SEO CHECKLIST
+--------------------------
+[ ] Remove all noindex tags on production  
+[ ] Robots.txt allows crawling  
+[ ] Add sitemap links in robots.txt  
+[ ] XML sitemap generated and accessible  
+[ ] Canonical URLs set for Tours, Insights, Cities  
+[ ] No duplicate URLs  
+[ ] Final URL scheme confirmed:
+    /tours/city/samarkand/
+    /insights/city/samarkand/
+    /cities/samarkand/
+[ ] Meta titles 50–60 chars  
+[ ] Meta descriptions 130–160 chars  
+[ ] Unique H1 for every page  
+[ ] Structured internal linking  
+[ ] Clean URL slugs (lowercase + hyphens)
+
+2) ON-PAGE CONTENT CHECKLIST
+----------------------------
+TOUR PAGES:
+[ ] 1000–1500 words  
+[ ] H2/H3 structured sections  
+[ ] Highlights  
+[ ] Itinerary by day  
+[ ] Pricing  
+[ ] Included/Excluded  
+[ ] Cancellation policy  
+[ ] FAQ (4–6 items)  
+[ ] Tour schema + FAQ schema  
+
+INSIGHT ARTICLES:
+[ ] 1200+ words  
+[ ] Strong H2/H3 structure  
+[ ] Internal links to related tours  
+[ ] City clusters  
+[ ] Keyword-optimized ALT tags
+
+IMAGES:
+[ ] WebP format  
+[ ] Under 200KB per image  
+[ ] Descriptive filenames  
+[ ] Lazy loading activated  
+
+3) PERFORMANCE & SPEED
+----------------------
+[ ] LCP < 2.5s  
+[ ] CLS < 0.1  
+[ ] INP/FID good  
+[ ] Preload hero images  
+[ ] Preload primary fonts  
+[ ] CSS minimized  
+[ ] JS deferred  
+[ ] Critical CSS generated  
+[ ] Cloudflare CDN enabled  
+[ ] Browser caching enabled  
+[ ] Redis/OPcache active  
+
+4) UX & DESIGN CHECKLIST
+------------------------
+[ ] Header identical across all pages  
+[ ] Footer container fixed on all pages  
+[ ] Navigation easy and consistent  
+[ ] Readable font sizes (16–18px body)  
+[ ] WCAG contrast compliant  
+[ ] Breadcrumbs present  
+[ ] Sticky “Book Now” CTA on mobile  
+[ ] Proper spacing: consistent paddings + margins  
+
+Homepage:
+[ ] Clear hero with CTA  
+[ ] Popular tours section  
+[ ] Review widgets  
+[ ] Clear value proposition  
+
+Tour Pages:
+[ ] Sticky booking box  
+[ ] Clear itinerary  
+[ ] Real guest photos  
+[ ] Social proof visible  
+
+Mobile:
+[ ] Tested on iPhone + Android  
+[ ] No overflow issues  
+[ ] Clean mobile header/menu  
+
+5) CONVERSION OPTIMIZATION
+--------------------------
+[ ] WhatsApp CTA  
+[ ] Telegram CTA  
+[ ] Contact form easy and short  
+[ ] Phone number visible  
+[ ] Trust badges visible  
+[ ] Testimonials displayed  
+[ ] Booking flow tested end-to-end  
+[ ] Thank-you page created  
+
+6) SCHEMA & STRUCTURED DATA
+----------------------------
+[ ] Tour schema  
+[ ] LocalBusiness schema  
+[ ] FAQ schema  
+[ ] Breadcrumb schema  
+[ ] Article schema  
+[ ] Review schema  
+[ ] Validate on validator.schema.org  
+
+7) ANALYTICS & TRACKING
+------------------------
+[ ] GA4 installed  
+[ ] Google Search Console verified  
+[ ] Bing Webmaster Tools added  
+[ ] Conversion events:
+    - Form submissions  
+    - WhatsApp clicks  
+    - Telegram clicks  
+    - Booking button clicks  
+[ ] Microsoft Clarity or Hotjar heatmaps  
+[ ] UTM parameters for social + ads  
+
+8) SECURITY CHECKLIST
+---------------------
+[ ] Cloudflare SSL active  
+[ ] HSTS enabled  
+[ ] Firewall enabled  
+[ ] Disable XML-RPC  
+[ ] Limit REST API  
+[ ] Remove admin user “admin”  
+[ ] Disable file editing in WP  
+[ ] Automated daily backups  
+[ ] Secure login with reCAPTCHA or 2FA  
+
+9) CONTENT CHECKLIST
+---------------------
+[ ] Homepage complete  
+[ ] Contact page working  
+[ ] About page complete  
+[ ] Terms & Conditions  
+[ ] Privacy Policy  
+[ ] Cancellation Policy  
+[ ] FAQ page  
+[ ] Cities pages complete  
+[ ] Internal linking done  
+[ ] No lorem ipsum  
+[ ] All links tested  
+[ ] All images displayed correctly  
+
+10) MULTILINGUAL (IF APPLICABLE)
+--------------------------------
+[ ] WPML/Polylang configured  
+[ ] Hreflang tags correct  
+[ ] EN/RU/JP translations done  
+[ ] City pages translated  
+[ ] Tour pages translated  
+[ ] Currency display correct  
+
+11) LEGAL & POLICY COMPLIANCE
+------------------------------
+[ ] Terms of service updated  
+[ ] Privacy policy (GDPR-friendly)  
+[ ] Cookie consent banner  
+[ ] Cancellation rules per tour  
+[ ] Clear refund policies  
+[ ] Physical address listed  
+[ ] Contact info accurate  
+
+12) BACKEND & SERVER CHECKLIST
+-------------------------------
+[ ] VPS optimized (Nginx + PHP-FPM)  
+[ ] php.ini optimized  
+[ ] PHP-FPM tuned  
+[ ] Gzip/Brotli enabled  
+[ ] Real cron jobs  
+[ ] HTTPS enforced  
+[ ] Cloudflare security rules  
+[ ] Automatic backups to Google Drive/SFTP  
+
+Laravel/Filament (if used):
+[ ] API endpoints tested  
+[ ] Booking integration working  
+[ ] Telegram/WhatsApp bots connected  
+[ ] Filament Shield roles configured  
+[ ] Logging and error monitoring active  
+
+13) FINAL LAUNCH DAY CHECKLIST
+-------------------------------
+[ ] Test homepage mobile + desktop  
+[ ] Test top 10 tours  
+[ ] Test all city pages  
+[ ] Test insights  
+[ ] Test contact form  
+[ ] Test payment workflow  
+[ ] Test 404 page  
+[ ] Test speed via PageSpeed + GTMetrix  
+[ ] Run full crawl with Screaming Frog  
+[ ] Submit sitemap in Search Console  
+
+LAUNCH READY ✔
+==========================================================
