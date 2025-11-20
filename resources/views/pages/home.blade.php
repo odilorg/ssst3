@@ -195,6 +195,18 @@
               <span>2,400+ Happy Travelers</span>
             </div>
           </div>
+
+          <!-- Statistics Cards -->
+          <div class="stat-card">
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+            <strong>10+</strong>
+            <span>Years of Experience</span>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-map-marked" aria-hidden="true"></i>
+            <strong>50+</strong>
+            <span>Unique Tours</span>
+          </div>
         </div>
 
       </div>

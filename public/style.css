@@ -185,7 +185,8 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 -----------------------------------------*/
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 580px;
+  max-height: 680px;
   display: grid;
   align-items: center;
   overflow: hidden;
@@ -203,11 +204,12 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: relative;
   z-index: 10;
   width: 100%;
-  padding: var(--space-5) 0;
+  padding: 4rem 0 2rem;
 }
 .hero__text {
-  max-width: 720px;
-  text-align: left;
+  max-width: 100%;
+  text-align: center;
+  margin: 0 auto;
 }
 .hero::after {
   content: "";
@@ -226,7 +228,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   display: flex;
   gap: var(--space-3);
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 /* Hero search bar */
@@ -466,6 +468,45 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 .trust-badge span:last-child {
   font-size: 0.875rem;
   color: var(--color-text-muted);
+}
+
+/* Stat cards */
+.stat-card {
+  background: #fff;
+  padding: 20px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-border);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card i {
+  color: var(--color-accent);
+  font-size: 24px;
+}
+
+.stat-card strong {
+  font-size: 1.75rem;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.stat-card span {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 1.3;
 }
 
 /* Contact links */
@@ -1658,7 +1699,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 .hero__title {
   font-family: var(--font-accent);
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(1.75rem, 5vw, 3rem);
   font-weight: 600;
   line-height: 1.2;
   margin-bottom: var(--space-3);
