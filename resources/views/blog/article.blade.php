@@ -167,6 +167,7 @@
 
   </section>
 
+<!-- =====================================================       RELATED TOURS SECTION (Dynamic with HTMX)       ===================================================== -->  <section class="related-tours-section"           hx-get="{{ url('/partials/blog/' . $post->slug . '/related-tours') }}"           hx-trigger="load once"           hx-swap="outerHTML"           data-blog-section="related-tours">    <!-- Loading Skeleton -->    <div class="container">      <h2 class="section-title">Experience These Tours</h2>      <div class="tour-grid">        <div class="skeleton skeleton--card"></div>        <div class="skeleton skeleton--card"></div>        <div class="skeleton skeleton--card"></div>      </div>    </div>  </section>
   <!-- =====================================================
        COMMENTS SECTION (Dynamic with HTMX)
        ===================================================== -->

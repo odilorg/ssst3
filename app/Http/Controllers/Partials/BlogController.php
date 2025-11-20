@@ -226,10 +226,8 @@ class BlogController extends Controller
                 ->firstOrFail();
         });
 
-        // Get related tours using the model method (cached separately)
-        $tours = Cache::remember("blog.{$slug}.related-tours.data", 3600, function () use ($post) {
-            return $post->getRelatedTours(3);
-        });
+        // Get related tours (not cached due to pivot serialization issues)
+        $tours = $post->getRelatedTours(3);
 
         return view('partials.blog.related-tours', compact('tours'));
     }
