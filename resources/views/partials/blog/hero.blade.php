@@ -19,7 +19,9 @@
             <span class="article-category">{{ $post->category->name }}</span>
         @endif
         <span class="article-author"><i class="fas fa-user"></i> By {{ $post->author_name }}</span>
-        <time class="article-date" datetime="{{ $post->published_at->format('Y-m-d') }}"><i class="fas fa-calendar-alt"></i> {{ $post->published_at->format('M d, Y') }}</time>
+        @if($post->published_at)
+            <time class="article-date" datetime="{{ $post->published_at->format('Y-m-d') }}"><i class="fas fa-calendar-alt"></i> {{ $post->published_at->format('M d, Y') }}</time>
+        @endif
         <span class="article-reading-time"><i class="fas fa-clock"></i> {{ $post->reading_time }} min read</span>
     </div>
 

@@ -4,11 +4,13 @@ namespace App\Filament\Resources\BlogPosts\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class BlogPostForm
 {
@@ -20,13 +22,34 @@ class BlogPostForm
                     ->relationship('category', 'name')
                     ->default(null),
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (string $operation, $state, callable $set) =>
+                        $operation === 'create' ? $set('slug', Str::slug($state)) : null
+                    ),
                 TextInput::make('slug')
-                    ->required(),
+                    ->disabled()
+                    ->dehydrated()
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 Textarea::make('excerpt')
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('content')
+                RichEditor::make('content')
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'strike',
+                        'link',
+                        'h2',
+                        'h3',
+                        'bulletList',
+                        'orderedList',
+                        'blockquote',
+                        'codeBlock',
+                        'redo',
+                        'undo',
+                    ])
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('featured_image')
