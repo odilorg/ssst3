@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\BlogPost;
 use App\Models\Booking;
+use App\Models\City;
 use App\Models\ItineraryItem;
 use App\Models\Tour;
 use App\Models\TourExtra;
@@ -10,6 +12,7 @@ use App\Models\TourFaq;
 use App\Models\Transport;
 use App\Models\TransportInstancePrice;
 use App\Observers\BookingObserver;
+use App\Observers\ImageConversionObserver;
 use App\Observers\ItineraryItemObserver;
 use App\Observers\TourExtraObserver;
 use App\Observers\TourFaqObserver;
@@ -46,5 +49,10 @@ class AppServiceProvider extends ServiceProvider
         TourFaq::observe(TourFaqObserver::class);
         ItineraryItem::observe(ItineraryItemObserver::class);
         TourExtra::observe(TourExtraObserver::class);
+
+        // Register image conversion observer for models with images
+        Tour::observe(ImageConversionObserver::class);
+        BlogPost::observe(ImageConversionObserver::class);
+        City::observe(ImageConversionObserver::class);
     }
 }

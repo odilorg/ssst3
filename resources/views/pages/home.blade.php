@@ -509,8 +509,8 @@
             $tourCount = $city->tour_count;
             $tourText = $tourCount === 1 ? 'tour' : 'tours';
 
-            // Get city image - use featured_image or placeholder
-            $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
+            // Get city image - use hero_image or placeholder
+            $imageUrl = $city->hero_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
 
             // Get tagline or use default
             $tagline = $city->tagline ?? '';
@@ -529,14 +529,31 @@
           <article class="city-card">
             <a href="{{ url('/destinations/' . $citySlug) }}" class="city-card__link" aria-label="Discover {{ $cityName }}">
               <div class="city-card__media">
-                <img
-                  src="{{ $imageUrl }}"
-                  alt="{{ $altText }}"
-                  width="400"
-                  height="533"
-                  loading="lazy"
-                  decoding="async"
-                >
+                @if($city->has_webp && $city->hero_image_webp_srcset)
+                  {{-- Serve WebP with responsive sizes --}}
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcset="{{ $city->hero_image_webp_srcset }}"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px">
+                    <img
+                      src="{{ $imageUrl }}"
+                      alt="{{ $altText }}"
+                      width="400"
+                      height="533"
+                      loading="lazy"
+                      decoding="async">
+                  </picture>
+                @else
+                  {{-- Fallback to original image --}}
+                  <img
+                    src="{{ $imageUrl }}"
+                    alt="{{ $altText }}"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                    decoding="async">
+                @endif
               </div>
               <div class="city-card__content">
                 <h3 class="city-card__title">{{ $cityName }}</h3>

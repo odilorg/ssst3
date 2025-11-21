@@ -174,6 +174,68 @@ class BlogPost extends Model
     }
 
     /**
+     * Get the full URL for the WebP featured image
+     */
+    public function getFeaturedImageWebpUrlAttribute(): ?string
+    {
+        if (empty($this->featured_image_webp)) {
+            return null;
+        }
+
+        // WebP images are always in storage
+        return asset('storage/' . $this->featured_image_webp);
+    }
+
+    /**
+     * Get the responsive image sizes as an array
+     */
+    public function getFeaturedImageSizesArrayAttribute(): array
+    {
+        if (empty($this->featured_image_sizes)) {
+            return [];
+        }
+
+        return json_decode($this->featured_image_sizes, true) ?? [];
+    }
+
+    /**
+     * Get WebP srcset string for responsive images
+     */
+    public function getFeaturedImageWebpSrcsetAttribute(): ?string
+    {
+        $sizes = $this->featured_image_sizes_array;
+
+        if (empty($sizes)) {
+            return null;
+        }
+
+        $srcset = [];
+        $widths = [
+            'thumb' => 300,
+            'medium' => 800,
+            'large' => 1920,
+            'xlarge' => 2560,
+        ];
+
+        foreach ($sizes as $sizeName => $path) {
+            if (isset($widths[$sizeName])) {
+                $srcset[] = asset('storage/' . $path) . ' ' . $widths[$sizeName] . 'w';
+            }
+        }
+
+        return !empty($srcset) ? implode(', ', $srcset) : null;
+    }
+
+    /**
+     * Check if WebP version is available
+     */
+    public function getHasWebpAttribute(): bool
+    {
+        return !empty($this->featured_image_webp) &&
+               $this->image_processing_status === 'completed';
+    }
+
+    /**
      * Scope for published posts
      */
     public function scopePublished($query)

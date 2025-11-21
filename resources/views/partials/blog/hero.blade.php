@@ -31,7 +31,27 @@
     <!-- Featured Image -->
     @if($post->featured_image)
         <div class="article-featured-image">
-            <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}" loading="eager">
+            @if($post->has_webp && $post->featured_image_webp_srcset)
+                {{-- Serve WebP with responsive sizes --}}
+                <picture>
+                    <source
+                        type="image/webp"
+                        srcset="{{ $post->featured_image_webp_srcset }}"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px">
+                    <img
+                        src="{{ asset('storage/' . $post->featured_image) }}"
+                        alt="{{ $post->title }}"
+                        loading="eager"
+                        fetchpriority="high">
+                </picture>
+            @else
+                {{-- Fallback to original image --}}
+                <img
+                    src="{{ asset('storage/' . $post->featured_image) }}"
+                    alt="{{ $post->title }}"
+                    loading="eager"
+                    fetchpriority="high">
+            @endif
         </div>
     @endif
 </div>

@@ -4,14 +4,33 @@
         <!-- Card Media -->
         <div class="blog-card__media">
             @if($post->featured_image_url)
-                <img
-                    src="{{ $post->featured_image_url }}"
-                    alt="{{ $post->title }}"
-                    width="800"
-                    height="450"
-                    loading="lazy"
-                    fetchpriority="low"
-                    decoding="async">
+                @if($post->has_webp && $post->featured_image_webp_srcset)
+                    {{-- Serve WebP with responsive sizes --}}
+                    <picture>
+                        <source
+                            type="image/webp"
+                            srcset="{{ $post->featured_image_webp_srcset }}"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px">
+                        <img
+                            src="{{ $post->featured_image_url }}"
+                            alt="{{ $post->title }}"
+                            width="800"
+                            height="450"
+                            loading="lazy"
+                            fetchpriority="low"
+                            decoding="async">
+                    </picture>
+                @else
+                    {{-- Fallback to original image --}}
+                    <img
+                        src="{{ $post->featured_image_url }}"
+                        alt="{{ $post->title }}"
+                        width="800"
+                        height="450"
+                        loading="lazy"
+                        fetchpriority="low"
+                        decoding="async">
+                @endif
             @else
                 <img
                     src="{{ asset('images/blog-default.svg') }}"

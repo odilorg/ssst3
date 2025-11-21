@@ -9,9 +9,25 @@
                     <article class="related-article-card">
                         @if($related->featured_image)
                             <a href="/blog/{{ $related->slug }}" class="card-image-link">
-                                <img src="{{ $related->featured_image }}"
-                                     alt="{{ $related->title }}"
-                                     loading="lazy">
+                                @if($related->has_webp && $related->featured_image_webp_srcset)
+                                    {{-- Serve WebP with responsive sizes --}}
+                                    <picture>
+                                        <source
+                                            type="image/webp"
+                                            srcset="{{ $related->featured_image_webp_srcset }}"
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px">
+                                        <img
+                                            src="{{ $related->featured_image_url }}"
+                                            alt="{{ $related->title }}"
+                                            loading="lazy">
+                                    </picture>
+                                @else
+                                    {{-- Fallback to original image --}}
+                                    <img
+                                        src="{{ $related->featured_image_url }}"
+                                        alt="{{ $related->title }}"
+                                        loading="lazy">
+                                @endif
                             </a>
                         @endif
 

@@ -179,6 +179,65 @@ class City extends Model
         return asset('storage/' . $this->hero_image);
     }
 
+    /**
+     * Get the full URL for the WebP hero image
+     */
+    public function getHeroImageWebpUrlAttribute(): ?string
+    {
+        if (empty($this->hero_image_webp)) {
+            return null;
+        }
+        return asset('storage/' . $this->hero_image_webp);
+    }
+
+    /**
+     * Get the responsive hero image sizes as an array
+     */
+    public function getHeroImageSizesArrayAttribute(): array
+    {
+        if (empty($this->hero_image_sizes)) {
+            return [];
+        }
+        return json_decode($this->hero_image_sizes, true) ?? [];
+    }
+
+    /**
+     * Get WebP srcset string for responsive hero images
+     */
+    public function getHeroImageWebpSrcsetAttribute(): ?string
+    {
+        $sizes = $this->hero_image_sizes_array;
+
+        if (empty($sizes)) {
+            return null;
+        }
+
+        $srcset = [];
+        $widths = [
+            'thumb' => 300,
+            'medium' => 800,
+            'large' => 1920,
+            'xlarge' => 2560,
+        ];
+
+        foreach ($sizes as $sizeName => $path) {
+            if (isset($widths[$sizeName])) {
+                $srcset[] = asset('storage/' . $path) . ' ' . $widths[$sizeName] . 'w';
+            }
+        }
+
+        return !empty($srcset) ? implode(', ', $srcset) : null;
+    }
+
+    /**
+     * Check if WebP version is available for hero image
+     */
+    public function getHasWebpAttribute(): bool
+    {
+        return !empty($this->hero_image_webp) &&
+               $this->image_processing_status === 'completed';
+    }
+
     // ========================================
     // STATIC METHODS
     // ========================================
