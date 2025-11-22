@@ -203,4 +203,69 @@ class BlogController extends Controller
 
         return view('partials.blog.related-tours', compact('tours'));
     }
+
+    /**
+     * Display tag landing page
+     *
+     * @param string $slug
+     * @return View
+     */
+    public function tagPage(string $slug): View
+    {
+        // Validate slug format
+        if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
+            abort(404, 'Invalid tag URL');
+        }
+
+        // Get the tag with post count
+        $tag = Cache::remember("blog.tag.{$slug}", 3600, function () use ($slug) {
+            return BlogTag::where('slug', $slug)
+                ->where('is_active', true)
+                ->withCount(['posts' => function ($q) {
+                    $q->where('is_published', true);
+                }])
+                ->first();
+        });
+
+        if (!$tag) {
+            abort(404, 'Tag not found');
+        }
+
+        // Build cache key for tag posts
+        $page = request()->input('page', 1);
+        $sort = request()->input('sort', 'latest');
+        $cacheKey = "blog.tag.{$slug}.posts.{$page}.{$sort}";
+
+        // Get posts with this tag
+        $posts = Cache::remember($cacheKey, 600, function () use ($slug, $sort) {
+            $filters = [
+                'tag' => $slug,
+                'sort' => $sort,
+            ];
+            return $this->blogListingService->getPosts($filters, 12);
+        });
+
+        // Get all tags for filter
+        $tags = Cache::remember('blog.tags.all', 3600, function () {
+            return BlogTag::withCount(['posts' => function ($q) {
+                    $q->where('is_published', true);
+                }])
+                ->having('posts_count', '>', 0)
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get();
+        });
+
+        // Get all categories for filter
+        $categories = Cache::remember('blog.categories.all', 3600, function () {
+            return BlogCategory::where('is_active', true)
+                ->withCount(['posts' => function ($q) {
+                    $q->where('is_published', true);
+                }])
+                ->orderBy('display_order')
+                ->get();
+        });
+
+        return view('blog.tag', compact('tag', 'posts', 'tags', 'categories'));
+    }
 }

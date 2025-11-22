@@ -213,6 +213,33 @@
             </div>
         </div>
 
+        <!-- Tag Filter Pills -->
+        @if($tags->isNotEmpty())
+        <div class="blog-tags-wrapper">
+            <h3 class="filter-section-title">
+                <i class="fas fa-tags"></i> Filter by Tags
+            </h3>
+            <div class="blog-tags-filter">
+                @foreach($tags as $tag)
+                    <a href="{{ route('blog.index', array_merge(request()->except('page'), ['tag' => $tag->slug])) }}"
+                       class="blog-tag-btn {{ request('tag') === $tag->slug ? 'active' : '' }}"
+                       data-tag="{{ $tag->slug }}">
+                        <span class="tag-icon"><i class="fas fa-tag"></i></span>
+                        <span class="tag-label">{{ $tag->name }}</span>
+                        <span class="tag-count">{{ $tag->posts_count }}</span>
+                    </a>
+                @endforeach
+                @if(request('tag'))
+                    <a href="{{ route('blog.index', request()->except(['tag', 'page'])) }}"
+                       class="blog-tag-btn clear-tag">
+                        <span class="tag-icon"><i class="fas fa-times"></i></span>
+                        <span class="tag-label">Clear Tag</span>
+                    </a>
+                @endif
+            </div>
+        </div>
+        @endif
+
         <!-- Sort Dropdown -->
         <form method="GET" action="{{ route('blog.index') }}" class="blog-sort">
             @if(request('category'))
@@ -220,6 +247,9 @@
             @endif
             @if(request('search'))
                 <input type="hidden" name="search" value="{{ request('search') }}">
+            @endif
+            @if(request('tag'))
+                <input type="hidden" name="tag" value="{{ request('tag') }}">
             @endif
             <label for="sortBy">Sort by:</label>
             <select id="sortBy" name="sort" onchange="this.form.submit()">

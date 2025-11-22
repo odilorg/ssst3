@@ -28,6 +28,17 @@
     <!-- Article Title -->
     <h1 class="article-title">{{ $post->title }}</h1>
 
+    <!-- Tags -->
+    @if($post->tags->isNotEmpty())
+        <div class="article-tags">
+            @foreach($post->tags as $tag)
+                <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}" class="tag-badge">
+                    <i class="fas fa-tag"></i> {{ $tag->name }}
+                </a>
+            @endforeach
+        </div>
+    @endif
+
     <!-- Featured Image -->
     @if($post->featured_image)
         <div class="article-featured-image">

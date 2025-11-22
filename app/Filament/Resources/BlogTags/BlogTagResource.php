@@ -46,6 +46,11 @@ class BlogTagResource extends Resource
         return 'Tags';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

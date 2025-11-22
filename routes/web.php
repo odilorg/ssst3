@@ -65,6 +65,11 @@ Route::get('/cookies', function () {
 // Blog listing page
 Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 
+
+// Blog tag landing pages
+Route::get('/blog/tag/{slug}', [\App\Http\Controllers\BlogController::class, 'tagPage'])
+    ->name('blog.tag')
+    ->where('slug', '[a-z0-9-]+');
 // Blog article page
 Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
     ->name('blog.show')

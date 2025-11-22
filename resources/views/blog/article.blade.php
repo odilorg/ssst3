@@ -3,7 +3,7 @@
 {{-- SEO Meta Tags --}}
 @section('title', ($post->meta_title ?? $post->title) . ' | Jahongir Travel Blog')
 @section('meta_description', $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160))
-@section('meta_keywords', 'Uzbekistan travel blog, travel tips, ' . ($post->category->name ?? ''))
+@section('meta_keywords', implode(', ', array_merge(['Uzbekistan travel blog', 'travel tips', $post->category->name ?? 'travel'], $post->tags->pluck('name')->toArray())))
 @section('canonical', url('/blog/' . $post->slug))
 
 {{-- Open Graph Tags --}}
@@ -39,7 +39,11 @@
   },
   "datePublished": "{{ $post->published_at ? $post->published_at->toIso8601String() : '' }}",
   "dateModified": "{{ $post->updated_at ? $post->updated_at->toIso8601String() : '' }}",
-  "description": "{{ $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160) }}"
+  "description": "{{ $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160) }}",
+  @if($post->tags->isNotEmpty())
+  "keywords": "{{ $post->tags->pluck('name')->implode(', ') }}",
+  @endif
+  "articleSection": "{{ $post->category->name ?? 'Travel' }}"
 }
 @endsection
 

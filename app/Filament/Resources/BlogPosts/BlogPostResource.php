@@ -44,6 +44,11 @@ class BlogPostResource extends Resource
         return 'Posts';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BlogPostForm::configure($schema);

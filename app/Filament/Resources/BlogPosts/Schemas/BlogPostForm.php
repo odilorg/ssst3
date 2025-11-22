@@ -21,6 +21,12 @@ class BlogPostForm
                 Select::make('category_id')
                     ->relationship('category', 'name')
                     ->default(null),
+                Select::make('tags')
+                    ->relationship('tags', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull(),
                 TextInput::make('title')
                     ->required()
                     ->live(onBlur: true)

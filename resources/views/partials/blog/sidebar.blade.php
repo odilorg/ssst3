@@ -18,6 +18,23 @@
     </form>
 </div>
 
+<!-- Tags Widget -->
+@if(isset($tags) && $tags->isNotEmpty())
+<div class="sidebar-widget sidebar-tags">
+    <h3 class="widget-title">Popular Tags</h3>
+    <div class="tags-cloud">
+        @foreach($tags as $tag)
+            <a href="{{ route('blog.index', ['tag' => $tag->slug]) }}" class="tag-cloud-item">
+                {{ $tag->name }}
+                @if($tag->posts_count > 0)
+                    <span class="tag-count">({{ $tag->posts_count }})</span>
+                @endif
+            </a>
+        @endforeach
+    </div>
+</div>
+@endif
+
 <!-- Recent Posts Widget -->
 @if($recentPosts->isNotEmpty())
 <div class="sidebar-widget sidebar-recent-posts">

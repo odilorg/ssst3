@@ -44,6 +44,11 @@ class BlogCategoryResource extends Resource
         return 'Categories';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BlogCategoryForm::configure($schema);

@@ -275,3 +275,120 @@ body{background:var(--bg-app);color:var(--text-1);font-family:Inter,sans-serif}
     background: #143d85;
     transform: translateY(-2px);
 }
+
+/* ======================================================
+   TAG FILTER SECTION
+   ====================================================== */
+
+.blog-tags-wrapper {
+  margin-top: 2rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #E8E8E8;
+}
+
+.filter-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-section-title i {
+  color: #0D4C92;
+  font-size: 0.875rem;
+}
+
+.blog-tags-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.blog-tag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  background: #F8F9FA;
+  border: 2px solid #E8E8E8;
+  border-radius: 50px;
+  color: #1E1E1E;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.blog-tag-btn:hover {
+  background: #0D4C92;
+  border-color: #0D4C92;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(13, 76, 146, 0.2);
+}
+
+.blog-tag-btn.active {
+  background: linear-gradient(135deg, #0D4C92 0%, #1565C0 100%);
+  border-color: #0D4C92;
+  color: white;
+  box-shadow: 0 4px 8px rgba(13, 76, 146, 0.3);
+}
+
+.blog-tag-btn.clear-tag {
+  background: #FEE;
+  border-color: #ECC;
+  color: #C33;
+}
+
+.blog-tag-btn.clear-tag:hover {
+  background: #C33;
+  border-color: #C33;
+  color: white;
+}
+
+.tag-icon {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.tag-label {
+  font-weight: 500;
+}
+
+.tag-count {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.blog-tag-btn.active .tag-count,
+.blog-tag-btn:hover .tag-count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-tags-wrapper {
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+  }
+  
+  .blog-tags-filter {
+    gap: 0.5rem;
+  }
+  
+  .blog-tag-btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.813rem;
+  }
+  
+  .filter-section-title {
+    font-size: 0.938rem;
+  }
+}
