@@ -158,7 +158,6 @@
   <!-- Tour details stylesheet - guaranteed load -->
   <link rel="preload" href="tour-details.css" as="style">
   <link rel="stylesheet" href="tour-details.css">
-<!-- Sidebar scrolling fix -->  <link rel="stylesheet" href="sidebar-fix.css">
 
   <!-- Tour reviews stylesheet -->
   <link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
