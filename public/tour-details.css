@@ -1852,15 +1852,15 @@
     align-items: start; /* Align both columns to top */
   }
 
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -   /* Sidebar becomes sticky - positioned below sticky tabs to avoid overlap */ */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -   .booking-sidebar { */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     position: sticky; */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     top: 100px; /* Reduced from 220px for better accessibility */ */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     align-self: flex-start; */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     z-index: 30; /* Above section navigation (z-index: 10) */ */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     max-height: calc(100vh - 120px); /* Leave 120px space (top offset + buffer) */ */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -     overflow-y: auto; /* Allow scrolling when content is tall */ */
-  /* REMOVED DUPLICATE - See line 2404 for proper definition -   } */
+  /* Sidebar becomes sticky - positioned below sticky tabs to avoid overlap */
+  .booking-sidebar {
+    position: sticky;
+    top: 100px; /* Reduced from 220px for better accessibility */
+    align-self: flex-start;
+    z-index: 30; /* Above section navigation (z-index: 10) */
+    max-height: calc(100vh - 120px); /* Leave 120px space (top offset + buffer) */
+    overflow-y: auto; /* Allow scrolling when content is tall */
+  }
 
   /* Hero gallery responsive */
   .tour-hero__gallery {
@@ -2401,47 +2401,19 @@
 }
 
 /* Booking Card - Reference Style */
-/* Booking Sidebar - Optimized Sticky Behavior */
-/* Desktop only - mobile uses default block layout */
+/* Booking Sidebar - Minimal Sticky (Desktop Only) */
 @media (min-width: 768px) {
   .booking-sidebar {
     position: sticky;
-    top: 80px; /* Reduced from 100px = 20px more visible content */
+    top: 90px; /* Reduced for more content visibility */
     align-self: flex-start;
-    z-index: 30; /* Above section navigation */
-    max-height: calc(100vh - 100px); /* Increased from 120px = 20px more space */
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    scroll-behavior: smooth;
-
-    /* Firefox: Thin scrollbar with good contrast */
-    scrollbar-width: thin;
-    scrollbar-color: #666 #E8E8E8; /* Dark thumb on light track */
-
-    /* Prevent content cutoff at bottom */
-    padding-bottom: 30px;
-  }
-
-  /* Chrome, Safari, Edge: Custom scrollbar styling */
-  .booking-sidebar::-webkit-scrollbar {
-    width: 12px; /* Wider for better visibility (was 8px) */
-  }
-
-  .booking-sidebar::-webkit-scrollbar-track {
-    background: #E8E8E8; /* Light gray track */
-    border-radius: 6px;
-  }
-
-  .booking-sidebar::-webkit-scrollbar-thumb {
-    background: #666; /* Much darker (was #D1D1D1) */
-    border-radius: 6px;
-    border: 2px solid #E8E8E8; /* Creates padding effect */
-  }
-
-  .booking-sidebar::-webkit-scrollbar-thumb:hover {
-    background: #444; /* Even darker on hover */
+    z-index: 30;
+    /* Removed max-height - let content flow naturally! */
+    /* Removed overflow-y - no forced scrolling! */
+    /* Removed scrollbar styling - not needed without overflow */
   }
 }
+
 .booking-card {
   background: #fff; /* Pure white */
   border: 1px solid #DEDEDE;
