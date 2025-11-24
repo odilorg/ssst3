@@ -770,14 +770,32 @@
           <article class="blog-card">
             <a href="{{ url('/blog/' . $post->slug) }}" class="blog-card__link">
               <div class="blog-card__media">
-                <img
-                  src="{{ $featuredImage }}"
-                  alt="{{ $post->title }}"
-                  width="800"
-                  height="450"
-                  loading="lazy"
-                  fetchpriority="low"
-                  decoding="async">
+                @if($post->featured_image_webp && $post->image_processing_status === 'completed')
+                  {{-- Serve WebP with fallback --}}
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcset="{{ asset('storage/' . $post->featured_image_webp) }}">
+                    <img
+                      src="{{ $featuredImage }}"
+                      alt="{{ $post->title }}"
+                      width="800"
+                      height="450"
+                      loading="lazy"
+                      fetchpriority="low"
+                      decoding="async">
+                  </picture>
+                @else
+                  {{-- Fallback to original image --}}
+                  <img
+                    src="{{ $featuredImage }}"
+                    alt="{{ $post->title }}"
+                    width="800"
+                    height="450"
+                    loading="lazy"
+                    fetchpriority="low"
+                    decoding="async">
+                @endif
                 <span class="blog-card__category" data-category="{{ $post->category?->slug }}">{{ $categoryName }}</span>
               </div>
               <div class="blog-card__content">
