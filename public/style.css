@@ -1988,24 +1988,17 @@ button:focus-visible {
   z-index: 10;
 }
 
-.blog-card__category[data-category="travel-tips"] {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-}
-
-.blog-card__category[data-category="destination"] {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: #ffffff;
-}
-
-.blog-card__category[data-category="culture"] {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: #ffffff;
-}
-
-.blog-card__category[data-category="food"] {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+/* All category badges now have consistent gold/yellow background */
+.blog-card__category[data-category="travel-tips"],
+.blog-card__category[data-category="destination"],
+.blog-card__category[data-category="culture"],
+.blog-card__category[data-category="food"],
+.blog-card__category[data-category="history"],
+.blog-card__category[data-category="adventure"],
+.blog-card__category {
+  background: linear-gradient(135deg, #F4B400 0%, #FFC929 100%);
   color: #1e293b;
+  font-weight: 700;
 }
 
 /* 7.6 Blog Card Content */
