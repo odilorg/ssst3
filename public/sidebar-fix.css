@@ -1,0 +1,45 @@
+/* ======================================================
+   SIDEBAR SCROLLING FIX
+   Optimized styles for tour detail page booking sidebar
+   ====================================================== */
+
+/* Override sidebar sticky behavior for better scrolling */
+@media (min-width: 768px) {
+  .booking-sidebar {
+    position: sticky;
+    top: 90px; /* Reduced offset for more visible content */
+    align-self: flex-start;
+    z-index: 30;
+    max-height: calc(100vh - 110px); /* Increased available height */
+    overflow-y: auto; /* Enable scrolling */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    scroll-behavior: smooth;
+    scrollbar-width: thin; /* Firefox: thin scrollbar */
+    scrollbar-color: #999 #F0F0F0; /* Darker, more visible scrollbar */
+    padding-bottom: 20px; /* Prevent content cutoff */
+  }
+
+  /* Darker scrollbar for webkit browsers (Chrome, Safari, Edge) */
+  .booking-sidebar::-webkit-scrollbar {
+    width: 10px; /* Slightly wider for better visibility */
+  }
+
+  .booking-sidebar::-webkit-scrollbar-track {
+    background: #F0F0F0;
+    border-radius: 5px;
+  }
+
+  .booking-sidebar::-webkit-scrollbar-thumb {
+    background: #999; /* Darker for visibility */
+    border-radius: 5px;
+  }
+
+  .booking-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #777; /* Even darker on hover */
+  }
+
+  /* Add bottom padding to booking card to ensure last elements are visible */
+  .booking-card {
+    padding-bottom: 30px;
+  }
+}
