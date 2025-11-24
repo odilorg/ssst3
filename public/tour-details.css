@@ -1852,15 +1852,6 @@
     align-items: start; /* Align both columns to top */
   }
 
-  /* Sidebar becomes sticky - positioned below sticky tabs to avoid overlap */
-  .booking-sidebar {
-    position: sticky;
-    top: 100px; /* Reduced from 220px for better accessibility */
-    align-self: flex-start;
-    z-index: 30; /* Above section navigation (z-index: 10) */
-    max-height: calc(100vh - 120px); /* Leave 120px space (top offset + buffer) */
-    overflow-y: auto; /* Allow scrolling when content is tall */
-  }
 
   /* Hero gallery responsive */
   .tour-hero__gallery {
