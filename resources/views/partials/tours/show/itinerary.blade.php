@@ -3,8 +3,8 @@
     <h2 class="section-title">Tour Itinerary</h2>
     @if($tour->topLevelItems && $tour->topLevelItems->isNotEmpty())
     <div class="itinerary-controls" aria-controls="itinerary-list">
-        <button type="button" class="btn-expand-all" id="expandAll">Expand all</button>
-        <button type="button" class="btn-collapse-all" id="collapseAll">Collapse all</button>
+        <button type="button" class="btn-expand-all" id="expandAll" onclick="expandAllDays()">Expand all</button>
+        <button type="button" class="btn-collapse-all" id="collapseAll" onclick="collapseAllDays()">Collapse all</button>
     </div>
     @endif
 </div>
@@ -51,25 +51,16 @@
 @endif
 
 <script>
-// Expand/Collapse all functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const expandBtn = document.getElementById('expandAll');
-    const collapseBtn = document.getElementById('collapseAll');
+// Expand/Collapse all functionality - works with HTMX dynamic content
+function expandAllDays() {
+    document.querySelectorAll('.day-card').forEach(function(detail) {
+        detail.setAttribute('open', '');
+    });
+}
 
-    if (expandBtn) {
-        expandBtn.addEventListener('click', function() {
-            document.querySelectorAll('.day-card').forEach(detail => {
-                detail.open = true;
-            });
-        });
-    }
-
-    if (collapseBtn) {
-        collapseBtn.addEventListener('click', function() {
-            document.querySelectorAll('.day-card').forEach(detail => {
-                detail.open = false;
-            });
-        });
-    }
-});
+function collapseAllDays() {
+    document.querySelectorAll('.day-card').forEach(function(detail) {
+        detail.removeAttribute('open');
+    });
+}
 </script>
