@@ -468,6 +468,8 @@ Route::prefix('partials')->name('partials.')->group(function () {
 
     Route::get('/tours/{slug}/reviews', [TourController::class, 'reviews'])
         ->name('tours.reviews');
+    Route::get('/tours/{slug}/related', [TourController::class, 'relatedTours'])
+        ->name('tours.related');
 
     // -------- BOOKING --------
     Route::get('/bookings/form/{tour_slug}', [BookingController::class, 'form'])
