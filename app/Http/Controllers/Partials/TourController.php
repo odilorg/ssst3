@@ -100,7 +100,21 @@ class TourController extends Controller
      */
     public function itinerary(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
+        // Get tour with eager-loaded itinerary items (hierarchical structure)
+        $tour = Cache::remember("tour.{$slug}.with_itinerary", 3600, function () use ($slug) {
+            return Tour::where('slug', $slug)
+                ->where('is_active', true)
+                ->with([
+                    'topLevelItems' => function($query) {
+                        $query->orderBy('sort_order');
+                    },
+                    'topLevelItems.children' => function($query) {
+                        $query->orderBy('sort_order');
+                    }
+                ])
+                ->firstOrFail();
+        });
+
         return view('partials.tours.show.itinerary', compact('tour'));
     }
 

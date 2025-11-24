@@ -539,7 +539,22 @@ class ItineraryItemsRelationManager extends RelationManager
                 ]),
             ])
             ->defaultSort('sort_order', 'asc')
-            ->reorderable('sort_order');
+            ->reorderable('sort_order')
+            ->emptyStateHeading(function () {
+                $tour = $this->ownerRecord;
+                if ($tour->isMultiDay()) {
+                    return '⚠️ Multi-day tour without itinerary';
+                }
+                return 'No itinerary items yet';
+            })
+            ->emptyStateDescription(function () {
+                $tour = $this->ownerRecord;
+                if ($tour->isMultiDay()) {
+                    return "This is a {$tour->duration_days}-day tour. Add daily itinerary to help customers understand the tour flow.";
+                }
+                return 'Click "Add Day" to create your first itinerary item.';
+            })
+            ->emptyStateIcon('heroicon-o-calendar-days');
     }
 
     private function duplicateItem(ItineraryItem $record, string $scope, string $titleSuffix): void

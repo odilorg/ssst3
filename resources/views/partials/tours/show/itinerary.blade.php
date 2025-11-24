@@ -1,31 +1,75 @@
-{{-- Tour Itinerary Partial --}}
-    <div class="itinerary-header">
-        <h2 class="section-title">Tour Itinerary</h2>
-        <div class="itinerary-controls" aria-controls="itinerary-list">
-            <button type="button" id="expandAll">Expand all</button>
-            <button type="button" id="collapseAll">Collapse all</button>
-        </div>
+{{-- Tour Itinerary Partial - Simplified Day Cards --}}
+<div class="itinerary-header">
+    <h2 class="section-title">Tour Itinerary</h2>
+    @if($tour->topLevelItems && $tour->topLevelItems->isNotEmpty())
+    <div class="itinerary-controls" aria-controls="itinerary-list">
+        <button type="button" class="btn-expand-all" id="expandAll">Expand all</button>
+        <button type="button" class="btn-collapse-all" id="collapseAll">Collapse all</button>
     </div>
+    @endif
+</div>
 
-    <ol id="itinerary-list" class="itinerary-list">
-        @if($tour->itineraryItems && $tour->itineraryItems->isNotEmpty())
-            @foreach($tour->itineraryItems as $index => $stop)
-                <li id="stop-{{ $stop->id }}">
-                    <details {{ $index < 2 ? 'open' : '' }}>
-                        <summary>
-                            @if($stop->time)
-                                <time datetime="{{ $stop->time }}">{{ \Carbon\Carbon::parse($stop->time)->format('h:i A') }}</time>
+@if($tour->topLevelItems && $tour->topLevelItems->isNotEmpty())
+    <div class="itinerary-days-simple">
+        @foreach($tour->topLevelItems as $dayIndex => $day)
+            <details class="day-card" {{ $dayIndex < 2 ? 'open' : '' }}>
+                <summary class="day-card-summary">
+                    <span class="day-badge">Day {{ $dayIndex + 1 }}</span>
+                    <span class="day-card-title">{{ $day->title }}</span>
+                    <i class="fas fa-chevron-down day-card-icon" aria-hidden="true"></i>
+                </summary>
+                <div class="day-card-content">
+                    @if($day->description)
+                        <p class="day-card-description">{!! nl2br(e($day->description)) !!}</p>
+                    @endif
+                    
+                    @if($day->duration_minutes)
+                        <p class="day-card-duration">
+                            <i class="far fa-clock" aria-hidden="true"></i>
+                            <strong>Duration:</strong>
+                            @if($day->duration_minutes >= 60)
+                                {{ floor($day->duration_minutes / 60) }} hour{{ floor($day->duration_minutes / 60) > 1 ? 's' : '' }}
+                                @if($day->duration_minutes % 60 > 0)
+                                    {{ $day->duration_minutes % 60 }} min
+                                @endif
+                            @else
+                                {{ $day->duration_minutes }} minutes
                             @endif
-                            <span class="stop-title">{{ $stop->title }}</span>
-                        </summary>
-                        <div class="stop-body">
-                            {!! $stop->description !!}
-                            @if($stop->duration)
-                                <p class="stop-duration">Duration: ~{{ $stop->duration }}</p>
-                            @endif
-                        </div>
-                    </details>
-                </li>
-            @endforeach
-        @endif
-    </ol>
+                        </p>
+                    @endif
+                </div>
+            </details>
+        @endforeach
+    </div>
+@else
+    <div class="itinerary-empty">
+        <p class="empty-message">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+            Day-by-day itinerary will be provided upon booking confirmation.
+        </p>
+    </div>
+@endif
+
+<script>
+// Expand/Collapse all functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const expandBtn = document.getElementById('expandAll');
+    const collapseBtn = document.getElementById('collapseAll');
+
+    if (expandBtn) {
+        expandBtn.addEventListener('click', function() {
+            document.querySelectorAll('.day-card').forEach(detail => {
+                detail.open = true;
+            });
+        });
+    }
+
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', function() {
+            document.querySelectorAll('.day-card').forEach(detail => {
+                detail.open = false;
+            });
+        });
+    }
+});
+</script>
