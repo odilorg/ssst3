@@ -179,7 +179,7 @@ class TourController extends Controller
         $reviews = Cache::remember("tour.{$slug}.reviews.page.{$page}", 300, function () use ($tour) {
             return $tour->approvedReviews()
                 ->orderBy('created_at', 'desc')
-                ->paginate(10);
+                ->paginate(4);
         });
 
         return view('partials.tours.show.reviews', compact('tour', 'reviews'));
