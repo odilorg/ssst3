@@ -510,7 +510,7 @@
             $tourText = $tourCount === 1 ? 'tour' : 'tours';
 
             // Get city image - use hero_image or placeholder
-            $imageUrl = $city->hero_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
+            $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
 
             // Get tagline or use default
             $tagline = $city->tagline ?? '';
