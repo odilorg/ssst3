@@ -213,22 +213,14 @@
             </div>
         </div>
 
-        <!-- Tag Filter Pills - Collapsible with Top Tags Only -->
+        <!-- Tag Filter Pills -->
         @if($tags->isNotEmpty())
         <div class="blog-tags-wrapper">
-            <div class="filter-section-header">
-                <h3 class="filter-section-title">
-                    <i class="fas fa-tags"></i> Popular Tags
-                </h3>
-                @if($tags->count() > 12)
-                <button type="button" class="tags-toggle-btn" onclick="toggleTags()" id="tagsToggleBtn">
-                    <span id="tagsToggleText">Show All ({{ $tags->count() }})</span>
-                    <i class="fas fa-chevron-down" id="tagsToggleIcon"></i>
-                </button>
-                @endif
-            </div>
-            <div class="blog-tags-filter" id="tagsFilter">
-                @foreach($tags->take(12) as $tag)
+            <h3 class="filter-section-title">
+                <i class="fas fa-tags"></i> Filter by Tags
+            </h3>
+            <div class="blog-tags-filter">
+                @foreach($tags as $tag)
                     <a href="{{ route('blog.index', array_merge(request()->except('page'), ['tag' => $tag->slug])) }}"
                        class="blog-tag-btn {{ request('tag') === $tag->slug ? 'active' : '' }}"
                        data-tag="{{ $tag->slug }}">
@@ -237,19 +229,6 @@
                         <span class="tag-count">{{ $tag->posts_count }}</span>
                     </a>
                 @endforeach
-                @if($tags->count() > 12)
-                    <div class="blog-tags-extra" id="tagsExtra" style="display: none;">
-                        @foreach($tags->slice(12) as $tag)
-                            <a href="{{ route('blog.index', array_merge(request()->except('page'), ['tag' => $tag->slug])) }}"
-                               class="blog-tag-btn {{ request('tag') === $tag->slug ? 'active' : '' }}"
-                               data-tag="{{ $tag->slug }}">
-                                <span class="tag-icon"><i class="fas fa-tag"></i></span>
-                                <span class="tag-label">{{ $tag->name }}</span>
-                                <span class="tag-count">{{ $tag->posts_count }}</span>
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
                 @if(request('tag'))
                     <a href="{{ route('blog.index', request()->except(['tag', 'page'])) }}"
                        class="blog-tag-btn clear-tag">
@@ -259,27 +238,6 @@
                 @endif
             </div>
         </div>
-
-        <script>
-        function toggleTags() {
-            const extra = document.getElementById('tagsExtra');
-            const icon = document.getElementById('tagsToggleIcon');
-            const text = document.getElementById('tagsToggleText');
-            const totalTags = {{ $tags->count() }};
-
-            if (extra.style.display === 'none') {
-                extra.style.display = 'contents';
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-                text.textContent = 'Show Less';
-            } else {
-                extra.style.display = 'none';
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-                text.textContent = 'Show All (' + totalTags + ')';
-            }
-        }
-        </script>
         @endif
 
         <!-- Sort Dropdown -->
