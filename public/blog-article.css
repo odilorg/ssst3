@@ -325,8 +325,7 @@
   position: sticky;
   top: calc(var(--sticky-offset, 88px) + 1rem);
   align-self: flex-start;
-  max-height: calc(100vh - var(--sticky-offset, 88px) - 2rem);
-  overflow-y: auto;
+  /* Removed max-height and overflow-y for full height display */
 }
 
 .sidebar-widget {
