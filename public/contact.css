@@ -1556,10 +1556,11 @@ section.contact-section + #contact-personality {
 
 .alt-contact-methods {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
   align-items: center;
-  max-width: 400px;
+  max-width: 600px;
+  justify-content: center;
   margin: 0 auto;
 }
 
@@ -2088,5 +2089,17 @@ section.contact-section + #contact-personality {
 
   .modal-footer .btn {
     min-width: 100%;
+  }
+}
+
+/* Responsive: Stack contact methods on mobile */
+@media (max-width: 640px) {
+  .alt-contact-methods {
+    flex-direction: column;
+    max-width: 100%;
+  }
+  
+  .alt-contact-link {
+    width: 100%;
   }
 }
