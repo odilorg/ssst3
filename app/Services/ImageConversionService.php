@@ -34,16 +34,45 @@ class ImageConversionService
 
         // Build full path to original image
         // Handle images in public folder vs storage folder
+
+        // Remove leading slash if present
+        $originalPath = ltrim($originalPath, '/');
+
+        // Try multiple locations to find the image
+        $fullPath = null;
+        $attemptedPaths = [];
+
+        // 1. Check if path starts with 'images/' - it's in public folder
         if (str_starts_with($originalPath, 'images/')) {
-            // Image is in public/images folder
-            $fullPath = public_path($originalPath);
-        } else {
-            // Image is in storage/app/public folder
-            $fullPath = Storage::disk($disk)->path($originalPath);
+            $testPath = public_path($originalPath);
+            $attemptedPaths[] = $testPath;
+            if (file_exists($testPath)) {
+                $fullPath = $testPath;
+            }
         }
 
-        if (!file_exists($fullPath)) {
-            throw new \Exception("Original image not found: {$fullPath}");
+        // 2. If not found, try storage folder
+        if (!$fullPath) {
+            $testPath = Storage::disk($disk)->path($originalPath);
+            $attemptedPaths[] = $testPath;
+            if (file_exists($testPath)) {
+                $fullPath = $testPath;
+            }
+        }
+
+        // 3. If still not found and path doesn't start with 'images/', try public folder anyway
+        if (!$fullPath && !str_starts_with($originalPath, 'images/')) {
+            $testPath = public_path($originalPath);
+            $attemptedPaths[] = $testPath;
+            if (file_exists($testPath)) {
+                $fullPath = $testPath;
+            }
+        }
+
+        // 4. Final check - if still not found, throw detailed error
+        if (!$fullPath) {
+            $pathsList = implode("\n - ", $attemptedPaths);
+            throw new \Exception("Original image not found. Attempted paths:\n - {$pathsList}");
         }
 
         // Load the image
