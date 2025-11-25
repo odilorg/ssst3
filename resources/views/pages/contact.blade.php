@@ -669,7 +669,7 @@
                         <div class="trust-badge">
                             <div class="trust-badge__rating">
                                 <i class="fab fa-google"></i>
-                                <span class="trust-badge__score">4.9</span>
+                                <span class="trust-badge__score">4.8</span>
                                 <div class="trust-badge__stars">
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
