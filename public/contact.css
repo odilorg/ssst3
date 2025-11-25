@@ -1558,6 +1558,9 @@ section.contact-section + #contact-personality {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .alt-contact-link {
