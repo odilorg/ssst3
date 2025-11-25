@@ -246,34 +246,34 @@ class TourController extends Controller
             ->with('categories:id')
             ->firstOrFail();
 
-        $relatedTours = Cache::remember("tour.{$slug}.related", 3600, function () use ($tour) {
-            $categoryIds = $tour->categories->pluck('id')->toArray();
+        // Get category IDs for matching
+        $categoryIds = $tour->categories()->pluck('tour_categories.id')->toArray();
 
-            // If tour has categories, find related tours
-            if (!empty($categoryIds)) {
-                return Tour::whereHas('categories', function($query) use ($categoryIds) {
-                        $query->whereIn('tour_categories.id', $categoryIds);
-                    })
-                    ->where('id', '!=', $tour->id)
-                    ->where('is_active', true)
-                    ->with(['city:id,name,slug', 'categories:id,slug'])
-                    ->withCount(['categories' => function($query) use ($categoryIds) {
-                        $query->whereIn('tour_categories.id', $categoryIds);
-                    }])
-                    ->orderByDesc('categories_count') // Most category matches first
-                    ->orderBy('created_at', 'desc')
-                    ->limit(4)
-                    ->get();
-            }
-
-            // Fallback: return newest tours if no categories
-            return Tour::where('id', '!=', $tour->id)
+        // If tour has categories, find related tours
+        if (!empty($categoryIds)) {
+            $relatedTours = Tour::whereHas('categories', function($query) use ($categoryIds) {
+                    $query->whereIn('tour_categories.id', $categoryIds);
+                })
+                ->where('id', '!=', $tour->id)
                 ->where('is_active', true)
-                ->with(['city:id,name,slug', 'categories:id,slug'])
+                ->with(['city:id,name,slug'])
+                ->withCount(['categories' => function($query) use ($categoryIds) {
+                    $query->whereIn('tour_categories.id', $categoryIds);
+                }])
+                ->orderByDesc('categories_count')
                 ->orderBy('created_at', 'desc')
                 ->limit(4)
                 ->get();
-        });
+        } else {
+            // Fallback: return newest tours if no categories
+            $relatedTours = Tour::where('id', '!=', $tour->id)
+                ->where('is_active', true)
+                ->with(['city:id,name,slug'])
+                ->orderBy('created_at', 'desc')
+                ->limit(4)
+                ->get();
+        }
+
 
         return view('partials.tours.show.related-tours', compact('tour', 'relatedTours'));
     }
