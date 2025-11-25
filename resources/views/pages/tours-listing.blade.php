@@ -74,14 +74,14 @@
                 <div class="trust-badge">
                     <i class="fas fa-users"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">5000+</div>
+                        <div class="trust-badge__number">500+</div>
                         <div class="trust-badge__label">Happy Travelers</div>
                     </div>
                 </div>
                 <div class="trust-badge">
                     <i class="fas fa-star"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">4.9/5</div>
+                        <div class="trust-badge__number">4.7/5</div>
                         <div class="trust-badge__label">Average Rating</div>
                     </div>
                 </div>

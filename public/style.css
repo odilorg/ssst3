@@ -503,8 +503,9 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 .stat-card span {
-  font-size: 0.75rem;
-  color: var(--color-text-light);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 600;
   text-align: center;
   line-height: 1.3;
 }

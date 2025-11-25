@@ -72,21 +72,21 @@
         <div class="hero__badges">
           <div class="badge">
             <div class="badge__icon">
-              <i class="fas fa-shield-alt" aria-hidden="true"></i>
+              <i class="fas fa-users" aria-hidden="true"></i>
             </div>
             <div class="badge__content">
-              <strong class="badge__title">Trusted</strong>
-              <p class="badge__text">10 years trusted, 100% money-protected.</p>
+              <strong class="badge__title">Family-Run</strong>
+              <p class="badge__text">Samarkand-based team with true local expertise.</p>
             </div>
           </div>
 
           <div class="badge">
             <div class="badge__icon">
-              <i class="fas fa-globe" aria-hidden="true"></i>
+              <i class="fas fa-gem" aria-hidden="true"></i>
             </div>
             <div class="badge__content">
-              <strong class="badge__title">Worldwide</strong>
-              <p class="badge__text">150+ tours across Uzbekistan & Central Asia.</p>
+              <strong class="badge__title">Authentic Experiences</strong>
+              <p class="badge__text">Artisans, workshops & hidden gems beyond the usual spots.</p>
             </div>
           </div>
 
@@ -95,8 +95,8 @@
               <i class="fas fa-leaf" aria-hidden="true"></i>
             </div>
             <div class="badge__content">
-              <strong class="badge__title">Sustainable</strong>
-              <p class="badge__text">100% carbon offset. We care for nature and communities.</p>
+              <strong class="badge__title">Eco-Friendly</strong>
+              <p class="badge__text">Travel that respects nature and supports local life.</p>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@
           <span class="eyebrow">WHY CHOOSE US</span>
           <h2>Trusted Local Experts in Uzbekistan</h2>
           <p>For over a decade, Jahongir Travel has been guiding guests beyond postcards — into the living heart of Uzbekistan's culture, cuisine, and craftsmanship.</p>
-          <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Trusted by 2,400+ travelers since 2012</p>
+          <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Loved by travelers from all over the world</p>
 
           <div class="why-us__contacts">
             <a href="mailto:info@@jahongirtravel.com" class="contact-link" aria-label="Email Jahongir Travel">
@@ -191,21 +191,19 @@
             <div class="trust-badge">
               <span class="mini-label">Traveler Rating</span>
               <i class="fas fa-star" aria-hidden="true"></i>
-              <strong>4.9</strong>
-              <span>2,400+ Happy Travelers</span>
+              <strong>4.8</strong>
+              <span>Hundreds of Happy Travelers</span>
             </div>
           </div>
 
           <!-- Statistics Cards -->
           <div class="stat-card">
             <i class="fas fa-calendar-check" aria-hidden="true"></i>
-            <strong>10+</strong>
-            <span>Years of Experience</span>
+            <span>Guiding Travelers Since 2012</span>
           </div>
           <div class="stat-card">
             <i class="fas fa-map-marked" aria-hidden="true"></i>
-            <strong>50+</strong>
-            <span>Unique Tours</span>
+            <span>Authentic Routes &amp; Workshops</span>
           </div>
         </div>
 
@@ -614,9 +612,9 @@
               $date = $review->created_at->format('F Y');
               $sourceIcon = $review->source === 'tripadvisor' ? 'fab fa-tripadvisor' : 'fas fa-star';
               $sourceName = ucfirst($review->source ?? 'Website');
-              $reviewerName = htmlspecialchars($review->reviewer_name);
-              $reviewTitle = htmlspecialchars($review->title);
-              $reviewContent = htmlspecialchars($review->content);
+              $reviewerName = $review->reviewer_name;
+              $reviewTitle = $review->title;
+              $reviewContent = $review->content;
             @endphp
 
             <!-- Review Slide: {{ $reviewerName }} -->
@@ -665,27 +663,6 @@
         <div class="swiper-pagination reviews-swiper-pagination"></div>
       </div>
 
-      <!-- TripAdvisor Badge and CTA -->
-      <div class="reviews__footer">
-        <div class="reviews__badge">
-          <i class="fab fa-tripadvisor" aria-hidden="true"></i>
-          <div class="reviews__badge-content">
-            <p class="reviews__badge-title">Rated Excellent on TripAdvisor</p>
-            <div class="stars" aria-label="Rated 4.9 out of 5 stars">
-              <i class="fas fa-star" aria-hidden="true"></i>
-              <i class="fas fa-star" aria-hidden="true"></i>
-              <i class="fas fa-star" aria-hidden="true"></i>
-              <i class="fas fa-star" aria-hidden="true"></i>
-              <i class="fas fa-star" aria-hidden="true"></i>
-            </div>
-            <p class="reviews__badge-stats">4.9 / 5 based on 2,400+ reviews</p>
-          </div>
-        </div>
-        <a href="https://www.tripadvisor.com/jahongir-travel" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--large">
-          <i class="fab fa-tripadvisor" aria-hidden="true"></i>
-          Read All Reviews
-        </a>
-      </div>
 
     </div>
   </section>

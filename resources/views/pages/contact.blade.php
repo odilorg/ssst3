@@ -27,7 +27,7 @@
     "url": "{{ url('/') }}",
     "address": {
       "@@type": "PostalAddress",
-      "streetAddress": "Registan Street, 15",
+      "streetAddress": "Chirokchi Street, 4",
       "addressLocality": "Samarkand",
       "addressRegion": "Samarkand",
       "postalCode": "140100",
@@ -678,7 +678,6 @@
                                     <i class="fas fa-star"></i>
                                 </div>
                             </div>
-                            <p class="trust-badge__text">Based on 127+ reviews</p>
                         </div>
 
                         <div class="contact-card__item">
@@ -741,12 +740,11 @@
                         <address class="contact-address">
                             <i class="fas fa-map-marker-alt contact-card__icon"></i>
                             <div class="contact-card__content">
-                                Registan Street, 15<br>
-                                Samarkand, Chirokchi 4
+                                Samarkand, Chirokchi street 4
                             </div>
                         </address>
 
-                        <a href="https://maps.google.com/?q=Registan+Street+15+Samarkand+Uzbekistan"
+                        <a href="https://maps.google.com/?q=Chirokchi+Street+4+Samarkand+Uzbekistan"
                            target="_blank"
                            rel="noopener noreferrer"
                            class="btn btn--outline btn--small contact-card__map-btn">
