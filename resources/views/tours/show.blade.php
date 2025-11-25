@@ -999,7 +999,7 @@
   <!-- HTMX Debug Script -->
   <script>
     console.log('[HTMX] Page loaded - tour-details.html');
-    console.log('[HTMX] Backend URL: {{ url(\"/\") }}');
+    console.log('[HTMX] Backend URL: {{ url('/') }}');
 
     // HTMX event listeners for debugging and error handling
     document.body.addEventListener('htmx:beforeRequest', function(evt) {
