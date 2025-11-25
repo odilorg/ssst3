@@ -651,7 +651,17 @@
             <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
 
           </section>
-          <!-- Related Tours Section -->          <section class="tour-related" id="related"                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/related') }}"                   hx-trigger="revealed"                   hx-swap="outerHTML"                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">            <!-- Loading Placeholder -->            <div class="loading-placeholder" style="padding: 3rem 0;">              <div class="skeleton skeleton--text" style="width: 100%; height: 300px;"></div>            </div>          </section>
+          <!-- Related Tours Section -->
+          <section class="tour-related" id="related"
+                   hx-get="{{ url('/partials/tours/samarkand-city-toursregistan-square-and-historical/related') }}"
+                   hx-trigger="revealed"
+                   hx-swap="outerHTML"
+                   data-tour-slug="samarkand-city-toursregistan-square-and-historical">
+            <!-- Loading Placeholder -->
+            <div class="loading-placeholder" style="padding: 3rem 0;">
+              <div class="skeleton skeleton--text" style="width: 100%; height: 300px;"></div>
+            </div>
+          </section>
 
         </main>
 
