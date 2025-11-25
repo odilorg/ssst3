@@ -618,7 +618,7 @@
                                 <i class="fab fa-whatsapp"></i> +998 91 555 0808
                             </a>
                             <a href="mailto:info@jahongir-travel.uz" class="alt-contact-link">
-                                <i class="fas fa-envelope"></i> info@jahongir-travel.uz
+                                <i class="far fa-envelope"></i> info@jahongir-travel.uz
                             </a>
                         </div>
                     </div>
