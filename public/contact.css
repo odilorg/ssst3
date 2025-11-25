@@ -1557,7 +1557,7 @@ section.contact-section + #contact-personality {
 .alt-contact-methods {
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
   max-width: 600px;
   justify-content: center;
@@ -1578,7 +1578,9 @@ section.contact-section + #contact-personality {
   font-size: 14px;
   font-weight: 500;
   transition: all 0.3s ease;
-}
+  flex: 1;
+  max-width: 250px;
+  justify-content: center;
 
 .alt-contact-link:hover {
   background: #f0f9ff;
