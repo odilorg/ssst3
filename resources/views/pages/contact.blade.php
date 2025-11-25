@@ -615,7 +615,7 @@
                         <p class="alt-contact-title">Need immediate help?</p>
                         <div class="alt-contact-methods">
                             <a href="https://wa.me/998915550808" class="alt-contact-link" target="_blank" rel="noopener">
-                                <i class="fab fa-whatsapp"></i> WhatsApp: +998 91 555 0808
+                                <i class="fab fa-whatsapp"></i> +998 91 555 0808
                             </a>
                             <a href="mailto:info@jahongir-travel.uz" class="alt-contact-link">
                                 <i class="fas fa-envelope"></i> info@jahongir-travel.uz
