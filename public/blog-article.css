@@ -1371,7 +1371,7 @@
   background: linear-gradient(135deg, #0D4C92 0%, #1565C0 100%);
   color: #FFFFFF !important;
   border-radius: 50px;
-  text-decoration: none;
+  text-decoration: none !important;
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -1383,11 +1383,19 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(13, 76, 146, 0.3);
   background: linear-gradient(135deg, #1565C0 0%, #0D4C92 100%);
+  text-decoration: none !important;
 }
 
 .tag-badge i {
   font-size: 0.75rem;
   opacity: 0.9;
+}
+
+/* Override article-content link styles for tag badges */
+.article-content .tag-badge,
+.article-content .tag-badge:hover {
+  color: #FFFFFF;
+  text-decoration: none;
 }
 
 /* Tags in article footer */
