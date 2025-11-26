@@ -24,23 +24,7 @@ Route::get('/tours', [\App\Http\Controllers\TourListingController::class, 'index
 Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])->name('tours.category');
 
 // Tour details page - SEO-friendly URL with Blade template
-Route::get('/tours/{slug}', function ($slug) {
-    // Find tour or 404
-    $tour = \App\Models\Tour::where('slug', $slug)->firstOrFail();
-
-    // Prepare SEO-friendly data
-    $pageTitle = $tour->seo_title ?? ($tour->title . ' | Jahongir Travel');
-    $metaDescription = $tour->seo_description ?? strip_tags($tour->short_description ?? $tour->description ?? '');
-    $metaDescription = substr($metaDescription, 0, 160); // Limit to 160 chars
-
-    $ogImage = $tour->hero_image
-        ? asset('storage/' . $tour->hero_image)
-        : 'https://jahongirtravel.com/images/tours/default-tour.webp';
-
-    $canonicalUrl = url('/tours/' . $tour->slug);
-
-    return view('pages.tour-details', compact('tour', 'pageTitle', 'metaDescription', 'ogImage', 'canonicalUrl'));
-})->name('tours.show');
+Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show');
 
 // About page
 Route::get('/about', function () {
