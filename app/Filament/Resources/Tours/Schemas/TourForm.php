@@ -109,6 +109,46 @@ class TourForm
                             ->columnSpanFull(),
                     ]),
 
+                Section::make('SEO и социальные сети')
+                    ->description('Настройки для поисковой оптимизации и социальных сетей')
+                    ->schema([
+                        TextInput::make('seo_title')
+                            ->label('SEO заголовок')
+                            ->maxLength(60)
+                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 60 символов.')
+                            ->columnSpanFull(),
+
+                        Textarea::make('seo_description')
+                            ->label('SEO описание')
+                            ->maxLength(160)
+                            ->rows(3)
+                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 160 символов.')
+                            ->columnSpanFull(),
+
+                        Textarea::make('seo_keywords')
+                            ->label('SEO ключевые слова')
+                            ->rows(2)
+                            ->helperText('Необязательно. Разделяйте запятыми. Например: uzbekistan tours, silk road, samarkand')
+                            ->columnSpanFull(),
+
+                        FileUpload::make('og_image')
+                            ->label('Изображение для социальных сетей (Open Graph)')
+                            ->image()
+                            ->directory('tours/og-images')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->helperText('Оставьте пустым, чтобы использовать главное изображение. Рекомендуемый размер: 1200×630px')
+                            ->columnSpanFull(),
+
+                        Toggle::make('schema_enabled')
+                            ->label('Включить Schema.org разметку')
+                            ->helperText('Структурированные данные для поисковых систем')
+                            ->default(true),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(),
+
                 Section::make('Цены и вместимость')
                     ->description('Информация о ценах и количестве гостей')
                     ->schema([
