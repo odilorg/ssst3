@@ -172,6 +172,12 @@
   {!! json_encode($schemaData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) !!}
   </script>
   @endif
+
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {!! json_encode($tour->generateBreadcrumbSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) !!}
+  </script>
+
   <link rel="stylesheet" href="css/gallery-lightbox.css">
   <link rel="stylesheet" href="tour-details-gallery-addon.css">
 </head>
