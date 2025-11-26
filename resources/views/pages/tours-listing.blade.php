@@ -206,10 +206,7 @@
                 @endforelse
             </div>
 
-            <!-- Pagination Links -->
-            <div class="pagination-wrapper" style="margin-top: 3rem;">
-                {{ $tours->links() }}
-            </div>
+<!-- Loading Indicator for Infinite Scroll -->            <div id="loading-indicator" style="visibility: hidden; text-align: center; padding: 2rem;">                <i class="fas fa-spinner fa-spin fa-2x" style="color: #1a5490;"></i>                <p style="margin-top: 1rem; color: #666;">Loading more tours...</p>            </div>            <div id="end-message" style="display: none; text-align: center; padding: 2rem; color: #666;">                <i class="fas fa-check-circle" style="color: #10b981; margin-right: 0.5rem;"></i>                All tours loaded            </div>
         </div>
     </section>
 
@@ -414,6 +411,105 @@
                 </div>
             `;
         }
+
+        // ============================================
+        // INFINITE SCROLL IMPLEMENTATION
+        // ============================================
+        let currentPage = 1;
+        let totalPages = {{ $tours->lastPage() }};
+        let isLoading = false;
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const endMessage = document.getElementById('end-message');
+        const toursContainer = document.getElementById('tours-container');
+        const tourCountElement = document.getElementById('tour-count');
+        const totalTours = {{ $tours->total() }};
+        let loadedTours = {{ $tours->count() }};
+
+        // Update initial count
+        tourCountElement.textContent = `Showing ${loadedTours} of ${totalTours} tours`;
+
+        // Intersection Observer for infinite scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '200px', // Start loading 200px before reaching the bottom
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !isLoading && currentPage < totalPages) {
+                    loadMoreTours();
+                }
+            });
+        }, observerOptions);
+
+        // Observe the loading indicator
+        observer.observe(loadingIndicator);
+
+        async function loadMoreTours() {
+            if (isLoading || currentPage >= totalPages) return;
+
+            isLoading = true;
+            loadingIndicator.style.visibility = 'visible';
+
+            try {
+                const nextPage = currentPage + 1;
+                const url = `{{ route('tours.index') }}?page=${nextPage}`;
+
+                const response = await fetch(url);
+                const html = await response.text();
+
+                // Parse the HTML response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract tour cards from the response
+                const newTours = doc.querySelectorAll('#tours-container .tour-card');
+
+                if (newTours.length > 0) {
+                    // Append new tour cards
+                    newTours.forEach(tour => {
+                        toursContainer.appendChild(tour);
+                    });
+
+                    currentPage = nextPage;
+                    loadedTours += newTours.length;
+
+                    // Update count
+                    if (loadedTours >= totalTours) {
+                        tourCountElement.textContent = `${totalTours} tours`;
+                    } else {
+                        tourCountElement.textContent = `Showing ${loadedTours} of ${totalTours} tours`;
+                    }
+
+                    // Check if we've loaded all pages
+                    if (currentPage >= totalPages) {
+                        observer.disconnect();
+                        loadingIndicator.style.visibility = 'hidden';
+                        endMessage.style.visibility = 'visible';
+                    }
+                } else {
+                    observer.disconnect();
+                    loadingIndicator.style.visibility = 'hidden';
+                    endMessage.style.visibility = 'visible';
+                }
+
+            } catch (error) {
+                console.error('[Infinite Scroll] Error loading more tours:', error);
+                loadingIndicator.innerHTML = `
+                    <p style="color: #e74c3c;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Error loading tours. <a href="#" onclick="location.reload(); return false;">Refresh page</a>
+                    </p>
+                `;
+            } finally {
+                isLoading = false;
+                if (currentPage < totalPages) {
+                    loadingIndicator.style.visibility = 'hidden';
+                }
+            }
+        }
+
     })();
 </script>
 @endpush

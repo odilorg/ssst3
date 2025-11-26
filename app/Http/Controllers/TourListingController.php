@@ -31,7 +31,7 @@ class TourListingController extends Controller
                 'city_id', 'rating', 'review_count', 'is_active'
             ])
             ->recent() // Uses scopeRecent() - orderBy('created_at', 'desc')
-            ->paginate(18);
+            ->paginate(9);
 
         // Get categories with tour counts
         $categories = TourCategory::where('is_active', true)

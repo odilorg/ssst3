@@ -749,3 +749,78 @@
         flex-shrink: 0;
     }
 }
+
+/* ========================================
+   PAGINATION STYLES
+   ======================================== */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.pagination-wrapper nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-wrapper nav a,
+.pagination-wrapper nav span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: white;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.pagination-wrapper nav a:hover {
+    background: #f9fafb;
+    border-color: #1a5490;
+    color: #1a5490;
+}
+
+.pagination-wrapper nav span[aria-current="page"] {
+    background: #1a5490;
+    color: white;
+    border-color: #1a5490;
+}
+
+.pagination-wrapper nav span[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Fix oversized SVG arrows */
+.pagination-wrapper nav svg {
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .pagination-wrapper nav a,
+    .pagination-wrapper nav span {
+        min-width: 36px;
+        height: 36px;
+        font-size: 13px;
+        padding: 0.375rem 0.5rem;
+    }
+    
+    .pagination-wrapper nav svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+}
