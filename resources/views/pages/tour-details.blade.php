@@ -19,26 +19,8 @@
 
 {{-- Structured Data for Tour --}}
 @section('structured_data')
-{
-  "@@context": "https://schema.org",
-  "@@type": "TouristTrip",
-  "name": "{{ $tour->name }}",
-  "description": "{{ $tour->description }}",
-  "image": "{{ $ogImage }}",
-  "offers": {
-    "@@type": "Offer",
-    "price": "{{ $tour->price }}",
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock"
-  },
-  "provider": {
-    "@@type": "TravelAgency",
-    "name": "Jahongir Travel",
-    "url": "{{ url('/') }}"
-  }
-}
-
-@section('content')
+{!! $structuredData ?? '{}' !!}
+@endsection
   <!-- =====================================================
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
