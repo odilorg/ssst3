@@ -13,7 +13,7 @@
   "description": "Expert guided tours in Uzbekistan and the Silk Road",
   "url": "{{ url('/') }}",
   "telephone": "+998 91 555 08 08",
-  "email": "info@@jahongirtravel.com",
+  "email": "info@jahongirtravel.com",
   "address": {
     "@@type": "PostalAddress",
     "addressLocality": "Samarkand",

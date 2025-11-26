@@ -11,6 +11,9 @@ Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);
 });
 
+// Sitemap XML for SEO
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
