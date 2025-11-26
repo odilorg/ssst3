@@ -729,4 +729,60 @@ class Tour extends Model
 
         return $schema;
     }
+
+    /**
+     * Generate BreadcrumbList schema for this tour
+     */
+    public function generateBreadcrumbSchema(): array
+    {
+        $breadcrumbs = [
+            "@context" => "https://schema.org",
+            "@type" => "BreadcrumbList",
+            "itemListElement" => []
+        ];
+
+        // 1. Home
+        $breadcrumbs['itemListElement'][] = [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => url('/')
+        ];
+
+        // 2. Tours
+        $breadcrumbs['itemListElement'][] = [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Tours",
+            "item" => url('/tours')
+        ];
+
+        // 3. City (if available)
+        if ($this->city) {
+            $breadcrumbs['itemListElement'][] = [
+                "@type" => "ListItem",
+                "position" => 3,
+                "name" => $this->city->name . " Tours",
+                "item" => url('/tours?city=' . $this->city->slug)
+            ];
+
+            // 4. Current Tour
+            $breadcrumbs['itemListElement'][] = [
+                "@type" => "ListItem",
+                "position" => 4,
+                "name" => $this->title,
+                "item" => url('/tours/' . $this->slug)
+            ];
+        } else {
+            // 3. Current Tour (no city)
+            $breadcrumbs['itemListElement'][] = [
+                "@type" => "ListItem",
+                "position" => 3,
+                "name" => $this->title,
+                "item" => url('/tours/' . $this->slug)
+            ];
+        }
+
+        return $breadcrumbs;
+    }
 }
