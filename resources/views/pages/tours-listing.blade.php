@@ -166,7 +166,7 @@
                         <div class="tour-card__content">
                             <h3 class="tour-card__title">{{ $tour->title }}</h3>
                             <p class="tour-card__description">
-                                {{ !empty($tour->short_description) ? $tour->short_description : \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120) }}
+                                {{ $tour->short_description ?? \Illuminate\Support\Str::limit(strip_tags($tour->long_description), 140) }}
                             </p>
                             <div class="tour-card__meta">
                                 <div class="tour-card__meta-item">
