@@ -7,7 +7,7 @@
             'id' => $tour->id,
             'slug' => $tour->slug,
             'title' => $tour->title,
-            'description' => $tour->long_description,
+            'description' => \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120),
             'short_description' => $tour->short_description,
             'featured_image' => $tour->featured_image_url ?? asset('images/default-tour.jpg'),
             'price_per_person' => $tour->price_per_person,
@@ -166,7 +166,7 @@
                         <div class="tour-card__content">
                             <h3 class="tour-card__title">{{ $tour->title }}</h3>
                             <p class="tour-card__description">
-                                {{ $tour->short_description ?? \Illuminate\Support\Str::limit(strip_tags($tour->long_description), 140) }}
+                                {{ !empty($tour->short_description) ? $tour->short_description : \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120) }}
                             </p>
                             <div class="tour-card__meta">
                                 <div class="tour-card__meta-item">
