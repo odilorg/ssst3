@@ -17,8 +17,8 @@ Allow: /js/*
 Allow: /images/*
 Allow: /storage/*
 
-# Sitemap location (update APP_URL in production)
-Sitemap: http://127.0.0.1:8000/sitemap.xml
+# Sitemap location
+Sitemap: https://jahongirtravel.com/sitemap.xml
 
 # Crawl-delay for specific bots (optional - uncomment if needed)
 # User-agent: Googlebot
