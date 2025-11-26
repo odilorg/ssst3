@@ -1,2 +1,25 @@
+# Jahongir Travel - Robots.txt
+# https://www.robotstxt.org/
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow admin and internal pages
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /livewire/*
+Disallow: /_debugbar
+Disallow: /api/*
+
+# Allow public assets
+Allow: /css/*
+Allow: /js/*
+Allow: /images/*
+Allow: /storage/*
+
+# Sitemap location (update APP_URL in production)
+Sitemap: http://127.0.0.1:8000/sitemap.xml
+
+# Crawl-delay for specific bots (optional - uncomment if needed)
+# User-agent: Googlebot
+# Crawl-delay: 0
