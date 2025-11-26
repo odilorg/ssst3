@@ -17,6 +17,14 @@ class Tour extends Model
         'short_description',
         'long_description',
 
+        // SEO Fields
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'og_image',
+        'schema_enabled',
+        'schema_override',
+
         // Duration
         'duration_days',
         'duration_text',
@@ -31,6 +39,9 @@ class Tour extends Model
 
         // Images
         'hero_image',
+        'hero_image_webp',
+        'hero_image_sizes',
+        'image_processing_status',
         'gallery_images',
 
         // Content (JSON)
@@ -579,5 +590,143 @@ class Tour extends Model
     {
         return !empty($this->hero_image_webp) &&
                $this->image_processing_status === 'completed';
+    }
+
+    // ==========================================
+    // SEO HELPER METHODS
+    // ==========================================
+
+    /**
+     * Get the SEO title with fallback to regular title
+     */
+    public function getSeoTitle(): string
+    {
+        return $this->attributes['seo_title'] ?? ($this->attributes['title'] . ' | Jahongir Travel');
+    }
+
+    /**
+     * Get the SEO description with fallback
+     */
+    public function getSeoDescription(): ?string
+    {
+        if (!empty($this->attributes['seo_description'])) {
+            return $this->attributes['seo_description'];
+        }
+
+        // Fallback to short_description or stripped long_description
+        if (!empty($this->attributes['short_description'])) {
+            return \Illuminate\Support\Str::limit(strip_tags($this->attributes['short_description']), 160);
+        }
+
+        if (!empty($this->attributes['long_description'])) {
+            return \Illuminate\Support\Str::limit(strip_tags($this->attributes['long_description']), 160);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the Open Graph image with fallback to hero_image
+     */
+    public function getOgImageUrl(): string
+    {
+        if (!empty($this->attributes['og_image'])) {
+            if (str_starts_with($this->attributes['og_image'], 'http')) {
+                return $this->attributes['og_image'];
+            }
+            return asset('storage/' . $this->attributes['og_image']);
+        }
+
+        // Fallback to hero image or default
+        return $this->featured_image_url ?? asset('images/default-tour.jpg');
+    }
+
+    /**
+     * Generate Schema.org JSON-LD structured data for this tour
+     */
+    public function generateSchemaData(): ?array
+    {
+        if (!$this->schema_enabled) {
+            return null;
+        }
+
+        // If custom schema override exists, use it
+        if (!empty($this->schema_override)) {
+            return is_array($this->schema_override) ? $this->schema_override : json_decode($this->schema_override, true);
+        }
+
+        // Auto-generate schema from tour data
+        $schema = [
+            "@context" => "https://schema.org",
+            "@type" => "Tour",
+            "name" => $this->title,
+            "description" => strip_tags($this->short_description ?? $this->long_description),
+            "provider" => [
+                "@type" => "Organization",
+                "name" => "Jahongir Travel",
+                "url" => url('/'),
+            ],
+        ];
+
+        // Add images if available
+        if ($this->hero_image || $this->gallery_images) {
+            $images = [];
+            if ($this->hero_image) {
+                $images[] = $this->featured_image_url;
+            }
+            if (!empty($this->gallery_images)) {
+                foreach ($this->gallery_images as $img) {
+                    $images[] = asset('storage/' . $img);
+                }
+            }
+            $schema['image'] = $images;
+        }
+
+        // Add pricing
+        if ($this->price_per_person) {
+            $schema['offers'] = [
+                "@type" => "Offer",
+                "price" => number_format($this->price_per_person, 2, '.', ''),
+                "priceCurrency" => $this->currency,
+                "availability" => "https://schema.org/InStock",
+                "url" => url('/tours/' . $this->slug),
+            ];
+        }
+
+        // Add duration
+        if ($this->duration_days) {
+            if ($this->duration_days === 1) {
+                $schema['duration'] = "P1D"; // ISO 8601 duration format
+            } else {
+                $schema['duration'] = "P{$this->duration_days}D";
+            }
+        }
+
+        // Add ratings if available
+        if ($this->rating && $this->review_count > 0) {
+            $schema['aggregateRating'] = [
+                "@type" => "AggregateRating",
+                "ratingValue" => number_format($this->rating, 1),
+                "reviewCount" => $this->review_count,
+                "bestRating" => "5",
+                "worstRating" => "1",
+            ];
+        }
+
+        // Add city/location if available
+        if ($this->city) {
+            $schema['touristType'] = $this->tour_type === 'private' ? 'Private Tour' : 'Group Tour';
+            $schema['location'] = [
+                "@type" => "Place",
+                "name" => $this->city->name,
+                "address" => [
+                    "@type" => "PostalAddress",
+                    "addressLocality" => $this->city->name,
+                    "addressCountry" => "UZ",
+                ],
+            ];
+        }
+
+        return $schema;
     }
 }
