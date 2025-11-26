@@ -394,7 +394,7 @@ class Tour extends Model
      * Scope to filter tours by tour type
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $type 'private', 'group', or 'day_trip'
+     * @param string $type 'private_only', 'group_only', or 'hybrid'
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByType($query, $type)
@@ -715,7 +715,7 @@ class Tour extends Model
 
         // Add city/location if available
         if ($this->city) {
-            $schema['touristType'] = $this->tour_type === 'private' ? 'Private Tour' : 'Group Tour';
+            $schema['touristType'] = $this->tour_type === 'private_only' ? 'Private Tour' : ($this->tour_type === 'group_only' ? 'Group Tour' : 'Private & Group Tour');
             $schema['location'] = [
                 "@type" => "Place",
                 "name" => $this->city->name,

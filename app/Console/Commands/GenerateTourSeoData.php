@@ -13,7 +13,7 @@ class GenerateTourSeoData extends Command
      *
      * @var string
      */
-    protected $signature = 'tours:generate-seo {--force : Overwrite existing SEO data}';
+    protected $signature = 'tours:generate-seo {--force : Overwrite existing SEO data} {--include-inactive : Include inactive tours}';
 
     /**
      * The console command description.
@@ -31,16 +31,21 @@ class GenerateTourSeoData extends Command
         $this->newLine();
 
         $force = $this->option('force');
+        $includeInactive = $this->option('include-inactive');
 
-        // Get all active tours
-        $tours = Tour::with('city')->where('is_active', true)->get();
+        // Get tours based on active status
+        $query = Tour::with('city');
+        if (!$includeInactive) {
+            $query->where('is_active', true);
+        }
+        $tours = $query->get();
 
         if ($tours->isEmpty()) {
-            $this->error('No active tours found.');
+            $this->error($includeInactive ? 'No tours found.' : 'No active tours found.');
             return Command::FAILURE;
         }
 
-        $this->info("Found {$tours->count()} active tours");
+        $this->info("Found {$tours->count()} " . ($includeInactive ? '' : 'active ') . "tours");
         $this->newLine();
 
         $progressBar = $this->output->createProgressBar($tours->count());

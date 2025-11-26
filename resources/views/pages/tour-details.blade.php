@@ -21,6 +21,7 @@
 @section('structured_data')
 {!! $structuredData ?? '{}' !!}
 @endsection
+@section('content')
   <!-- =====================================================
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
@@ -1138,7 +1139,6 @@
 </style>
 @endpush
 
-@endsection
 
 @push('scripts')
 <script src="{{ asset('js/htmx.min.js') }}"></script>
