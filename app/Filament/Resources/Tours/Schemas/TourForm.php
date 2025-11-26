@@ -52,12 +52,12 @@ class TourForm
                         Select::make('tour_type')
                             ->label('Тип тура')
                             ->options([
-                                'private' => 'Private',
-                                'group' => 'Group',
-                                'shared' => 'Shared',
+                                'private_only' => 'Private Only',
+                                'group_only' => 'Group Only',
+                                'hybrid' => 'Hybrid (Private & Group)',
                             ])
                             ->required()
-                            ->default('private'),
+                            ->default('private_only'),
 
                         Select::make('city_id')
                             ->label('Город')
