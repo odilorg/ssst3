@@ -785,4 +785,37 @@ class Tour extends Model
 
         return $breadcrumbs;
     }
+
+    /**
+     * Generate FAQPage schema for this tour's FAQs
+     */
+    public function generateFaqSchema(): ?array
+    {
+        // Get FAQs for this tour
+        $faqs = $this->faqs()->get();
+
+        // If no FAQs, return null
+        if ($faqs->isEmpty()) {
+            return null;
+        }
+
+        $faqSchema = [
+            "@context" => "https://schema.org",
+            "@type" => "FAQPage",
+            "mainEntity" => []
+        ];
+
+        foreach ($faqs as $faq) {
+            $faqSchema['mainEntity'][] = [
+                "@type" => "Question",
+                "name" => $faq->question,
+                "acceptedAnswer" => [
+                    "@type" => "Answer",
+                    "text" => strip_tags($faq->answer)
+                ]
+            ];
+        }
+
+        return $faqSchema;
+    }
 }

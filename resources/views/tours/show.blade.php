@@ -178,6 +178,13 @@
   {!! json_encode($tour->generateBreadcrumbSchema(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) !!}
   </script>
 
+  <!-- FAQ Schema (if tour has FAQs) -->
+  @if($faqSchema = $tour->generateFaqSchema())
+  <script type="application/ld+json">
+  {!! json_encode($faqSchema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) !!}
+  </script>
+  @endif
+
   <link rel="stylesheet" href="css/gallery-lightbox.css">
   <link rel="stylesheet" href="tour-details-gallery-addon.css">
 </head>
