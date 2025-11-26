@@ -13,8 +13,8 @@
   <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- SEO Meta Tags -->
-  <title>{{ $tour->title }} | Jahongir Travel</title>
-  <meta name="description" content="{{ $tour->short_description ?? Str::limit(strip_tags($tour->long_description), 160) }}">
+  <title>{{ $tour->getSeoTitle() }}</title>
+  <meta name="description" content="{{ $tour->getSeoDescription() }}">
   <link rel="canonical" href="{{ url('/tours/' . $tour->slug) }}">
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -29,15 +29,16 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Jahongir Travel">
   <meta property="og:locale" content="en_US">
-  <meta property="og:title" content="{{ $tour->title }} | Jahongir Travel">
-  <meta property="og:description" content="{{ $tour->short_description ?? Str::limit(strip_tags($tour->long_description), 160) }}">
-  <meta property="og:image" content="{{ $tour->hero_image ? asset('storage/' . $tour->hero_image) : asset('images/default-tour.jpg') }}">
+  <meta property="og:title" content="{{ $tour->getSeoTitle() }}">
+  <meta property="og:description" content="{{ $tour->getSeoDescription() }}">
+  <meta property="og:image" content="{{ $tour->getOgImageUrl() }}">
   <meta property="og:url" content="{{ url('/tours/' . $tour->slug) }}">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ $tour->title }} | Jahongir Travel">
-  <meta name="twitter:description" content="{{ $tour->short_description ?? Str::limit(strip_tags($tour->long_description), 160) }}">
+  <meta name="twitter:title" content="{{ $tour->getSeoTitle() }}">
+  <meta name="twitter:description" content="{{ $tour->getSeoDescription() }}">
+  <meta name="twitter:image" content="{{ $tour->getOgImageUrl() }}">
   <!-- Google Fonts: Poppins, Inter & Playfair Display -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
@@ -165,181 +166,12 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <!-- Tour JSON-LD Schema -->
+  <!-- Tour JSON-LD Schema - Dynamically Generated -->
+  @if($schemaData = $tour->generateSchemaData())
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Tour",
-    "name": "Samarkand City Tour: Registan Square and Historic Monuments",
-    "description": "Explore the magnificent Registan Square, Shah-i-Zinda necropolis, and Bibi-Khanym Mosque on this comprehensive 4-hour walking tour of Samarkand's UNESCO World Heritage sites.",
-    "image": [
-      "https://jahongirtravel.com/images/tours/samarkand/hero-main.webp",
-      "https://jahongirtravel.com/images/tours/samarkand/registan-1.webp",
-      "https://jahongirtravel.com/images/tours/samarkand/shah-i-zinda.webp"
-    ],
-    "provider": {
-      "@type": "Organization",
-      "name": "Jahongir Travel",
-      "url": "https://jahongirtravel.com",
-      "logo": "https://jahongirtravel.com/images/logo.png",
-      "telephone": "+998-90-123-45-67",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Samarkand",
-        "addressCountry": "UZ"
-      }
-    },
-    "touristType": "Private Activity",
-    "duration": "PT4H",
-    "inLanguage": ["en", "ru", "fr"],
-    "availableLanguage": [
-      {
-        "@type": "Language",
-        "name": "English"
-      },
-      {
-        "@type": "Language",
-        "name": "Russian"
-      },
-      {
-        "@type": "Language",
-        "name": "French"
-      }
-    ],
-    "itinerary": {
-      "@type": "ItemList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "TouristAttraction",
-            "name": "Registan Square"
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "TouristAttraction",
-            "name": "Shah-i-Zinda Necropolis"
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "item": {
-            "@type": "TouristAttraction",
-            "name": "Bibi-Khanym Mosque"
-          }
-        }
-      ]
-    },
-    "offers": {
-      "@type": "Offer",
-      "price": "50.00",
-      "priceCurrency": "USD",
-      "priceSpecification": {
-        "@type": "PriceSpecification",
-        "price": "50.00",
-        "priceCurrency": "USD",
-        "valueAddedTaxIncluded": true
-      },
-      "availability": "https://schema.org/InStock",
-      "validFrom": "2025-01-01",
-      "priceValidUntil": "2025-12-31",
-      "url": "https://jahongirtravel.com/tours/samarkand-city-tour",
-      "seller": {
-        "@type": "Organization",
-        "name": "Jahongir Travel"
-      }
-    },
-    "includesObject": [
-      {
-        "@type": "Thing",
-        "name": "Hotel pickup and drop-off"
-      },
-      {
-        "@type": "Thing",
-        "name": "Professional guide"
-      },
-      {
-        "@type": "Thing",
-        "name": "Entrance fees to monuments"
-      },
-      {
-        "@type": "Thing",
-        "name": "Bottled water"
-      }
-    ],
-    "additionalInfo": "Not included: Tips, personal expenses, lunch",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "reviewCount": "47",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Sarah Mitchell"
-        },
-        "datePublished": "2024-10-15",
-        "reviewBody": "Absolutely breathtaking! Our guide was incredibly knowledgeable about the history of Samarkand and made every monument come alive with stories. The Registan Square at sunset was magical. Highly recommend this tour to anyone visiting Uzbekistan."
-      },
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "James Chen"
-        },
-        "datePublished": "2024-09-28",
-        "reviewBody": "Perfect tour for photography enthusiasts! Our guide knew all the best spots and angles for photos. The Shah-i-Zinda necropolis was stunning with its blue tiles. Great pace, not rushed at all. Worth every penny!"
-      },
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Emma Dubois"
-        },
-        "datePublished": "2024-08-12",
-        "reviewBody": "An unforgettable experience! The guide spoke excellent French and English. The small group size meant we could ask lots of questions. Bibi-Khanym Mosque was incredible. Hotel pickup was punctual. Thank you, Jahongir Travel!"
-      },
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Michael O'Brien"
-        },
-        "datePublished": "2024-07-22",
-        "reviewBody": "Best tour we did in Central Asia! The architecture is mind-blowing and our guide's passion for Samarkand's history was contagious. Four hours flew by. Great value for money. Would definitely book with Jahongir Travel again."
-      }
-    ]
-  }
+  {!! json_encode($schemaData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) !!}
   </script>
+  @endif
   <link rel="stylesheet" href="css/gallery-lightbox.css">
   <link rel="stylesheet" href="tour-details-gallery-addon.css">
 </head>
