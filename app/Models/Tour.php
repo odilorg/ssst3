@@ -674,7 +674,7 @@ class Tour extends Model
             if ($this->hero_image) {
                 $images[] = $this->featured_image_url;
             }
-            if (!empty($this->gallery_images)) {
+            if (!empty($this->gallery_images) && is_array($this->gallery_images)) {
                 foreach ($this->gallery_images as $img) {
                     $images[] = asset('storage/' . $img);
                 }
