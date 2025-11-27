@@ -20,7 +20,7 @@
                 </summary>
                 <div class="day-card-content">
                     @if($day->description)
-                        <p class="day-card-description">{!! nl2br(e($day->description)) !!}</p>
+                        <div class="day-card-description">{!! $day->description !!}</div>
                     @endif
                     
                     @if($day->duration_minutes)
