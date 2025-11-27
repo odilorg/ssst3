@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Jobs\ConvertImageToWebP;
+use App\Jobs\ConvertGalleryImagesToWebP;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -81,15 +82,30 @@ class ImageConversionObserver
             }
 
             if ($shouldConvert) {
-                Log::info("Dispatching WebP conversion for {$modelClass}::{$fieldName}", [
-                    'model_id' => $model->id,
-                    'field' => $fieldName,
-                    'path' => $model->{$fieldName},
-                    'reason' => $reason,
-                ]);
+                $fieldValue = $model->{$fieldName};
+                
+                // Check if this is an array field (like gallery_images)
+                if (is_array($fieldValue)) {
+                    Log::info("Dispatching WebP conversion for gallery {}::{$fieldName}", [
+                        'model_id' => $model->id,
+                        'field' => $fieldName,
+                        'image_count' => count($fieldValue),
+                        'reason' => $reason,
+                    ]);
+                    
+                    // Dispatch the gallery conversion job
+                    ConvertGalleryImagesToWebP::dispatch($model, $fieldName);
+                } else {
+                    Log::info("Dispatching WebP conversion for {}::{$fieldName}", [
+                        'model_id' => $model->id,
+                        'field' => $fieldName,
+                        'path' => $fieldValue,
+                        'reason' => $reason,
+                    ]);
 
-                // Dispatch the conversion job
-                ConvertImageToWebP::dispatch($model, $fieldName);
+                    // Dispatch the single image conversion job
+                    ConvertImageToWebP::dispatch($model, $fieldName);
+                }
             }
         }
     }

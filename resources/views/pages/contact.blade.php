@@ -907,27 +907,6 @@
     </a>
 
     <!-- ========================================
-         MOBILE STICKY CTA BAR (Mobile Only)
-         ======================================== -->
-    <div class="mobile-cta-bar">
-        <a href="tel:+998915550808" class="mobile-cta-bar__button mobile-cta-bar__button--call">
-            <i class="fas fa-phone"></i>
-            <span>Call</span>
-        </a>
-        <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
-           target="_blank"
-           rel="noopener noreferrer"
-           class="mobile-cta-bar__button mobile-cta-bar__button--whatsapp">
-            <i class="fab fa-whatsapp"></i>
-            <span>WhatsApp</span>
-        </a>
-        <a href="mailto:info@jahongir-travel.uz" class="mobile-cta-bar__button mobile-cta-bar__button--email">
-            <i class="fas fa-envelope"></i>
-            <span>Email</span>
-        </a>
-    </div>
-
-    <!-- ========================================
          FOOTER
          ======================================== -->
 

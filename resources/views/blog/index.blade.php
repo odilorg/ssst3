@@ -265,53 +265,7 @@
         @endif
 
     </div>
-</section>
-
-<!-- =====================================================
-     FLOATING WhatsApp CTA
-     ===================================================== -->
-<a href="https://wa.me/998901234567" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-    <span class="floating-whatsapp__text">WhatsApp</span>
-</a>
-
-<style>
-    .floating-whatsapp {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        background: #25D366;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 50px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-        z-index: 1000;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .floating-whatsapp:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
-    }
-    .floating-whatsapp i {
-        font-size: 1.25rem;
-    }
-    @media (max-width: 768px) {
-        .floating-whatsapp__text {
-            display: none;
-        }
-        .floating-whatsapp {
-            padding: 14px;
-            border-radius: 50%;
-        }
-    }
-</style>
-
-@endsection
+</section>@endsection
 
 @push('scripts')
 <script src="{{ asset('js/htmx.min.js') }}"></script>

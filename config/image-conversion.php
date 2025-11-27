@@ -122,7 +122,7 @@ return [
     'models' => [
         \App\Models\Tour::class => [
             'hero_image',
-            'gallery_images', // If you have gallery
+            'gallery_images',
         ],
         \App\Models\BlogPost::class => [
             'featured_image',

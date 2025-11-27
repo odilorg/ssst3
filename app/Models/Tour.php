@@ -676,7 +676,7 @@ class Tour extends Model
             }
             if (!empty($this->gallery_images) && is_array($this->gallery_images)) {
                 foreach ($this->gallery_images as $img) {
-                    $images[] = asset('storage/' . $img);
+                    $images[] = asset('storage/' . (is_array($img) ? ($img['path'] ?? '') : $img));
                 }
             }
             $schema['image'] = $images;
