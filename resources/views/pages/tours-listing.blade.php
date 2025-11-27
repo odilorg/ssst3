@@ -2,20 +2,6 @@
 
 @php
     $initialTours = $tours ?? collect();
-    $toursJson = $initialTours->map(function ($tour) {
-        return [
-            'id' => $tour->id,
-            'slug' => $tour->slug,
-            'title' => $tour->title,
-            'description' => \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120),
-            'short_description' => $tour->short_description,
-            'featured_image' => $tour->featured_image_url ?? asset('images/default-tour.jpg'),
-            'price_per_person' => $tour->price_per_person,
-            'duration' => $tour->duration_days,
-            'city_name' => optional($tour->city)->name,
-            'city_slug' => optional($tour->city)->slug,
-        ];
-    })->values();
 @endphp
 
 @section('title', 'Uzbekistan Tours | Jahongir Travel')
@@ -154,7 +140,7 @@
             </div>
 
 
-            <div id="tours-container" class="tours-grid__container" data-server-rendered="true">
+            <div id="tours-container" class="tours-grid__container">
                 @forelse($initialTours as $tour)
                     <a href="/tours/{{ $tour->slug }}" class="tour-card">
                         <img src="{{ $tour->featured_image_url ?? asset('images/default-tour.jpg') }}"
@@ -198,15 +184,20 @@
                         </div>
                     </a>
                 @empty
-                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
-                        <i class="fas fa-map fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-map fa-3x"></i>
                         <h3>No tours found</h3>
-                        <p style="color: #666;">We couldn&apos;t find any tours at the moment. Please check back soon!</p>
+                        <p>We couldn't find any tours at the moment. Please check back soon!</p>
                     </div>
                 @endforelse
             </div>
 
-<!-- Loading Indicator for Infinite Scroll -->            <div id="loading-indicator" style="visibility: hidden; text-align: center; padding: 2rem;">                <i class="fas fa-spinner fa-spin fa-2x" style="color: #1a5490;"></i>                <p style="margin-top: 1rem; color: #666;">Loading more tours...</p>            </div>            <div id="end-message" style="display: none; text-align: center; padding: 2rem; color: #666;">                <i class="fas fa-check-circle" style="color: #10b981; margin-right: 0.5rem;"></i>                All tours loaded            </div>
+            <!-- Pagination Links -->
+            @if($tours->hasPages())
+                <div class="pagination-wrapper">
+                    {{ $tours->links('partials.pagination') }}
+                </div>
+            @endif
         </div>
     </section>
 
@@ -282,234 +273,21 @@
 
 @push('scripts')
 <script>
-    window.__INITIAL_TOURS__ = @json($toursJson);
-</script>
-<script>
-    (function() {
-        'use strict';
+    // Smooth scroll to top when clicking pagination links
+    document.addEventListener('DOMContentLoaded', function() {
+        const paginationLinks = document.querySelectorAll('.pagination-wrapper a');
 
-
-        let allTours = window.__INITIAL_TOURS__ || [];
-        let currentCategory = '';
-        const shouldFetch = allTours.length === 0;
-
-        if (shouldFetch) {
-            fetch('{{ url('/api/tours') }}')
-                .then(r => r.json())
-                .then(tours => {
-                    allTours = tours;
-                    renderTours(tours);
-                })
-                .catch(error => {
-                    console.error('[Tours Listing] Error loading data:', error);
-                    showErrorState();
-                });
-        } else {
-            renderTours(allTours);
-        }
-
-        function renderCategoryFilters(categories) {
-            const container = document.getElementById('category-filters');
-            const allButton = container.querySelector('[data-category=""]');
-
-            categories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = 'filter-tab';
-                button.setAttribute('data-category', category.slug);
-                button.textContent = category.name;
-                button.addEventListener('click', () => filterByCategory(category.slug));
-                container.appendChild(button);
-            });
-
-            // All button handler
-            allButton.addEventListener('click', () => filterByCategory(''));
-        }
-
-        function filterByCategory(categorySlug) {
-            currentCategory = categorySlug;
-
-            // Update active tab
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.getAttribute('data-category') === categorySlug);
-            });
-
-            // Filter tours
-            const filteredTours = categorySlug
-                ? allTours.filter(tour => tour.category_slug === categorySlug)
-                : allTours;
-
-            renderTours(filteredTours);
-        }
-
-        @verbatim
-        function renderTours(tours) {
-            const container = document.getElementById('tours-container');
-            const countElement = document.getElementById('tour-count');
-
-            // Update count
-            countElement.textContent = `${tours.length} ${tours.length === 1 ? 'tour' : 'tours'}`;
-
-            if (!tours || tours.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
-                        <i class="fas fa-map fa-3x" style="color: #ccc; margin-bottom: 1rem;"></i>
-                        <h3>No tours found</h3>
-                        <p style="color: #666;">Try selecting a different category or check back soon for new tours!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const html = tours.map(tour => {
-                const price = tour.price_per_person ? `$${tour.price_per_person}` : 'Contact us';
-                const duration = tour.duration ? `${tour.duration} ${tour.duration === 1 ? 'day' : 'days'}` : 'Flexible';
-
-                return `
-                    <a href="/tours/${tour.slug}" class="tour-card">
-                        <img src="${tour.featured_image || '/images/default-tour.jpg'}"
-                             alt="${tour.title}"
-                             class="tour-card__image"
-                             width="400"
-                             height="300"
-                             loading="lazy">
-                        <div class="tour-card__content">
-
-                            <h3 class="tour-card__title">${tour.title}</h3>
-                            <p class="tour-card__description">
-                                ${tour.short_description || tour.description || 'Explore this amazing tour in Uzbekistan'}
-                            </p>
-                            <div class="tour-card__meta">
-                                <div class="tour-card__meta-item">
-                                    <i class="far fa-clock"></i>
-                                    <span>${duration}</span>
-                                </div>
-                                ${tour.city_name ? `
-                                <div class="tour-card__meta-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>${tour.city_name}</span>
-                                </div>
-                                ` : ''}
-                                <div class="tour-card__price">${price}</div>
-                            </div>
-                        </div>
-                    </a>
-                `;
-            }).join('');
-
-            container.innerHTML = html;
-        }
-        @endverbatim
-
-        function showErrorState() {
-            const container = document.getElementById('tours-container');
-            container.innerHTML = `
-                <div style="text-align: center; padding: 3rem; grid-column: 1/-1;">
-                    <i class="fas fa-exclamation-triangle fa-3x" style="color: #e74c3c; margin-bottom: 1rem;"></i>
-                    <h3>Error Loading Tours</h3>
-                    <p style="color: #666;">We couldn't load the tours. Please try again later.</p>
-                    <a href="/" class="btn btn--primary" style="margin-top: 1rem;">Go to Homepage</a>
-                </div>
-            `;
-        }
-
-        // ============================================
-        // INFINITE SCROLL IMPLEMENTATION
-        // ============================================
-        let currentPage = 1;
-        let totalPages = {{ $tours->lastPage() }};
-        let isLoading = false;
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const endMessage = document.getElementById('end-message');
-        const toursContainer = document.getElementById('tours-container');
-        const tourCountElement = document.getElementById('tour-count');
-        const totalTours = {{ $tours->total() }};
-        let loadedTours = {{ $tours->count() }};
-
-        // Update initial count
-        tourCountElement.textContent = `Showing ${loadedTours} of ${totalTours} tours`;
-
-        // Intersection Observer for infinite scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '200px', // Start loading 200px before reaching the bottom
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !isLoading && currentPage < totalPages) {
-                    loadMoreTours();
-                }
-            });
-        }, observerOptions);
-
-        // Observe the loading indicator
-        observer.observe(loadingIndicator);
-
-        async function loadMoreTours() {
-            if (isLoading || currentPage >= totalPages) return;
-
-            isLoading = true;
-            loadingIndicator.style.visibility = 'visible';
-
-            try {
-                const nextPage = currentPage + 1;
-                const url = `{{ route('tours.index') }}?page=${nextPage}`;
-
-                const response = await fetch(url);
-                const html = await response.text();
-
-                // Parse the HTML response
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // Extract tour cards from the response
-                const newTours = doc.querySelectorAll('#tours-container .tour-card');
-
-                if (newTours.length > 0) {
-                    // Append new tour cards
-                    newTours.forEach(tour => {
-                        toursContainer.appendChild(tour);
-                    });
-
-                    currentPage = nextPage;
-                    loadedTours += newTours.length;
-
-                    // Update count
-                    if (loadedTours >= totalTours) {
-                        tourCountElement.textContent = `${totalTours} tours`;
-                    } else {
-                        tourCountElement.textContent = `Showing ${loadedTours} of ${totalTours} tours`;
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Let the default navigation happen, but scroll to tours section
+                setTimeout(() => {
+                    const toursSection = document.getElementById('main-content');
+                    if (toursSection) {
+                        toursSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
-
-                    // Check if we've loaded all pages
-                    if (currentPage >= totalPages) {
-                        observer.disconnect();
-                        loadingIndicator.style.visibility = 'hidden';
-                        endMessage.style.visibility = 'visible';
-                    }
-                } else {
-                    observer.disconnect();
-                    loadingIndicator.style.visibility = 'hidden';
-                    endMessage.style.visibility = 'visible';
-                }
-
-            } catch (error) {
-                console.error('[Infinite Scroll] Error loading more tours:', error);
-                loadingIndicator.innerHTML = `
-                    <p style="color: #e74c3c;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        Error loading tours. <a href="#" onclick="location.reload(); return false;">Refresh page</a>
-                    </p>
-                `;
-            } finally {
-                isLoading = false;
-                if (currentPage < totalPages) {
-                    loadingIndicator.style.visibility = 'hidden';
-                }
-            }
-        }
-
-    })();
+                }, 100);
+            });
+        });
+    });
 </script>
 @endpush
