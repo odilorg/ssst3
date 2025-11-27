@@ -1,7 +1,8 @@
 {{-- Tour Gallery Partial - Main hero image and thumbnail grid --}}
 @php
     $galleryImages = is_array($tour->gallery_images) ? $tour->gallery_images : [];
-    $heroImage = $tour->hero_image;
+    // Use WebP hero image if available, fallback to original
+    $heroImage = $tour->hero_image_webp ?: $tour->hero_image;
     $totalImages = count($galleryImages);
 @endphp
 
@@ -80,9 +81,12 @@
 @endif
 
 {{-- Store all gallery images data for JavaScript --}}
+@php
+    $heroImageUrl = $heroImage ? asset('storage/' . $heroImage) : '/images/placeholder-tour.jpg';
+@endphp
 <script id="gallery-data" type="application/json">
 {!! json_encode([
-    'heroImage' => $heroImage ? asset('storage/' . $heroImage) : '/images/placeholder-tour.jpg',
+    'heroImage' => $heroImageUrl,
     'images' => collect($galleryImages)->map(function($image) use ($tour) {
         return [
             'src' => asset('storage/' . $image['path']),

@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     {{-- Main Stylesheet --}}
-    <link rel="stylesheet" href="{{ asset('style.css') }}">
+    <link rel="stylesheet" href="{{ asset('style.css?v=' . filemtime(public_path('style.css'))) }}">
 
     {{-- Global Reset Styles --}}
     <style>
@@ -95,7 +95,7 @@
     
     {{-- Footer --}}
     @include('partials.footer')
-    
+
     {{-- WhatsApp Floating Button --}}
     <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20learning%20more%20about%20your%20tours%20in%20Uzbekistan."
        class="whatsapp-float"

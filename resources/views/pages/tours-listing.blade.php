@@ -259,17 +259,7 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- =====================================================
-         FLOATING WhatsApp CTA
-         ===================================================== -->
-    <a href="https://wa.me/{{ env('WHATSAPP_NUMBER', '998915550808') }}" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Contact us on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-        <span class="floating-whatsapp__text">WhatsApp</span>
-    </a>
-
-@endsection
+    </section>@endsection
 
 @push('scripts')
 <script>
