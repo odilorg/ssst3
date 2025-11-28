@@ -120,7 +120,7 @@
           <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Loved by travelers from all over the world</p>
 
           <div class="why-us__contacts">
-            <a href="mailto:info@@jahongirtravel.com" class="contact-link" aria-label="Email Jahongir Travel">
+            <a href="mailto:info@jahongir-travel.uz" class="contact-link" aria-label="Email Jahongir Travel">
               <i class="fas fa-envelope" aria-hidden="true"></i> Email Us
             </a>
             <a href="https://wa.me/998915550808" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Chat with Jahongir Travel on WhatsApp">

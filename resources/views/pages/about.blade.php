@@ -346,106 +346,162 @@
         text-align: center;
     }
 
-    /* Testimonials Section */
-    .testimonials-section {
+    /* Trust Section */
+    .trust-section {
         padding: 80px 0;
         background: white;
     }
 
-    .tripadvisor-badge {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        margin: 2rem 0 3rem;
-        padding: 1.5rem;
-        background: #f9fafb;
-        border-radius: 12px;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .tripadvisor-badge__logo {
-        height: 40px;
-    }
-
-    .stars {
-        color: #00aa6c;
-        font-size: 1.25rem;
-    }
-
-    .stars--green {
-        color: #00aa6c;
-    }
-
-    .tripadvisor-badge__count {
-        font-size: 0.9375rem;
-        color: #666;
-        margin-left: 0.5rem;
-    }
-
-    .testimonial-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-    }
-
-    .testimonial-card {
-        background: #f9fafb;
+    .trust-strip {
+        text-align: center;
+        margin-bottom: 3rem;
         padding: 2rem;
+        background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
         border-radius: 12px;
-        border: 1px solid #e5e7eb;
     }
 
-    .testimonial-card__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .testimonial-card__date {
-        font-size: 0.875rem;
-        color: #999;
-    }
-
-    .testimonial-card__title {
-        font-size: 1.125rem;
+    .trust-strip__title {
+        font-size: 1.5rem;
         font-weight: 600;
         color: #1a1a1a;
-        margin-bottom: 1rem;
-    }
-
-    .testimonial-card__text {
-        font-size: 0.9375rem;
-        line-height: 1.7;
-        color: #555;
         margin-bottom: 1.5rem;
     }
 
-    .testimonial-card__author {
+    .trust-strip__ratings {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .trust-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .trust-rating i {
+        color: #f59e0b;
+        font-size: 1.25rem;
+    }
+
+    .trust-rating strong {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    /* Featured Review */
+    .featured-review {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #f9fafb;
+        padding: 2.5rem;
+        border-radius: 12px;
+        border-left: 4px solid #1a5490;
+    }
+
+    .review-author {
         display: flex;
         align-items: center;
         gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
     }
 
-    .testimonial-card__avatar {
-        width: 48px;
-        height: 48px;
+    .review-author__photo {
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
-        object-fit: cover;
+        background: linear-gradient(135deg, #00aa6c 0%, #00b97e 100%);
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
-    .testimonial-card__author-name {
-        display: block;
-        font-size: 0.9375rem;
+    .review-author__photo span {
+        color: white;
+        font-weight: 700;
+        font-size: 1.125rem;
+        letter-spacing: 0.5px;
+    }
+
+    .review-author__info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .review-author__name {
+        font-weight: 600;
         color: #1a1a1a;
+        font-size: 1rem;
     }
 
-    .testimonial-card__author-location {
+    .review-author__badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         font-size: 0.875rem;
         color: #666;
+    }
+
+    .review-author__badge i {
+        color: #00aa6c;
+        font-size: 1rem;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .review-stars {
+        display: flex;
+        gap: 0.25rem;
+        color: #f59e0b;
+        font-size: 1.125rem;
+    }
+
+    .review-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+    }
+
+    .review-tour {
+        font-weight: 600;
+        color: #1a5490;
+        font-size: 0.9375rem;
+    }
+
+    .review-date {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .review-content p {
+        font-size: 0.9375rem;
+        line-height: 1.8;
+        color: #444;
+        margin-bottom: 1rem;
+    }
+
+    .review-content p:last-child {
+        margin-bottom: 0;
+        font-weight: 500;
+        color: #1a5490;
     }
 
     /* Help Section */
@@ -539,7 +595,7 @@
         .our-story,
         .stats-showcase,
         .team-section,
-        .testimonials-section,
+        .trust-section,
         .help-section {
             padding: 60px 0;
         }
@@ -620,27 +676,21 @@
             font-size: 1.25rem;
         }
 
-        .testimonial-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .testimonial-card {
+        .trust-strip {
             padding: 1.5rem;
         }
 
-        .testimonial-card__title {
-            font-size: 1rem;
-        }
-
-        .testimonial-card__text {
-            font-size: 0.9rem;
-        }
-
-        .tripadvisor-badge {
+        .trust-strip__ratings {
             flex-direction: column;
             gap: 1rem;
-            padding: 1.25rem;
+        }
+
+        .featured-review {
+            padding: 1.5rem;
+        }
+
+        .review-content p {
+            font-size: 0.9rem;
         }
 
         .help-grid {
@@ -689,7 +739,7 @@
         .our-story,
         .stats-showcase,
         .team-section,
-        .testimonials-section,
+        .trust-section,
         .help-section {
             padding: 48px 0;
         }
@@ -967,23 +1017,18 @@
 
         <div class="stat-cards">
           <div class="stat-card">
-            <div class="stat-card__number">10,000+</div>
-            <div class="stat-card__label">Happy customers</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card__number">5,000+</div>
-            <div class="stat-card__label">Tours completed</div>
+            <div class="stat-card__number">Thousands</div>
+            <div class="stat-card__label">of tours organized since 2012</div>
           </div>
 
           <div class="stat-card">
             <div class="stat-card__number">12+</div>
-            <div class="stat-card__label">Years of experience</div>
+            <div class="stat-card__label">years of experience</div>
           </div>
 
           <div class="stat-card">
-            <div class="stat-card__number">200+</div>
-            <div class="stat-card__label">Local partners</div>
+            <div class="stat-card__number">Strong</div>
+            <div class="stat-card__label">network of local partners</div>
           </div>
         </div>
       </div>
@@ -1027,91 +1072,60 @@
     </section>
 
     <!-- =====================================================
-         TESTIMONIALS
+         TRUST STRIP & FEATURED REVIEW
          ===================================================== -->
-    <section class="testimonials-section">
+    <section class="trust-section">
       <div class="container">
-        <h2 class="section-heading text-center">People love us</h2>
-
-        <div class="tripadvisor-badge">
-          <img src="/images/tripadvisor-logo.svg" alt="TripAdvisor" class="tripadvisor-badge__logo" loading="lazy">
-          <div class="tripadvisor-badge__rating">
-            <div class="stars">
+        <!-- Trust Strip -->
+        <div class="trust-strip">
+          <h3 class="trust-strip__title">Loved by travelers worldwide</h3>
+          <div class="trust-strip__ratings">
+            <div class="trust-rating">
               <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
+              <strong>4.9/5</strong> on Tripadvisor (1,200+ reviews)
             </div>
-            <span class="tripadvisor-badge__count">1,000+ reviews</span>
+            <div class="trust-rating">
+              <i class="fas fa-star"></i>
+              <strong>5.0</strong> on Google Reviews
+            </div>
           </div>
         </div>
 
-        <div class="testimonial-grid">
-          <div class="testimonial-card">
-            <div class="testimonial-card__header">
-              <div class="stars stars--green">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <span class="testimonial-card__date">15 Jul 2025</span>
+        <!-- Featured Real Review -->
+        <div class="featured-review">
+          <div class="review-author">
+            <div class="review-author__photo">
+              <span>VT</span>
             </div>
-            <h3 class="testimonial-card__title">Unforgettable Silk Road Experience</h3>
-            <p class="testimonial-card__text">Jahongir Travel made our Uzbekistan dream come true! From Samarkand's Registan to Bukhara's ancient streets, every detail was perfectly arranged. Our guide was knowledgeable and the local connections made it truly authentic.</p>
-            <div class="testimonial-card__author">
-              <img src="/images/testimonials/author-1.jpg" alt="Sarah Mitchell" class="testimonial-card__avatar" loading="lazy">
-              <div class="testimonial-card__author-info">
-                <strong class="testimonial-card__author-name">Sarah Mitchell</strong>
-                <span class="testimonial-card__author-location">United Kingdom</span>
+            <div class="review-author__info">
+              <div class="review-author__name">Verified TripAdvisor Traveler</div>
+              <div class="review-author__badge">
+                <i class="fab fa-tripadvisor"></i>
+                <span>TripAdvisor Review</span>
               </div>
             </div>
           </div>
 
-          <div class="testimonial-card">
-            <div class="testimonial-card__header">
-              <div class="stars stars--green">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <span class="testimonial-card__date">25 Jun 2025</span>
+          <div class="review-header">
+            <div class="review-stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
             </div>
-            <h3 class="testimonial-card__title">Professional and Personalized Service</h3>
-            <p class="testimonial-card__text">Best travel agency for Central Asia! They customized our 10-day tour to include hidden gems we never would have found. The hotels were excellent and transfers were seamless. Highly recommend for first-timers to Uzbekistan!</p>
-            <div class="testimonial-card__author">
-              <img src="/images/testimonials/author-2.jpg" alt="Michael Chen" class="testimonial-card__avatar" loading="lazy">
-              <div class="testimonial-card__author-info">
-                <strong class="testimonial-card__author-name">Michael Chen</strong>
-                <span class="testimonial-card__author-location">United States</span>
-              </div>
+            <div class="review-meta">
+              <span class="review-tour">Yurt camp tour</span>
+              <span class="review-date">Oct 2024 • Family</span>
             </div>
           </div>
 
-          <div class="testimonial-card">
-            <div class="testimonial-card__header">
-              <div class="stars stars--green">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <span class="testimonial-card__date">8 Apr 2025</span>
-            </div>
-            <h3 class="testimonial-card__title">Exceeded All Expectations</h3>
-            <p class="testimonial-card__text">From Khiva to the Fergana Valley, every moment was magical. The family-run guesthouses Jahongir arranged gave us incredible cultural insight. Their 24/7 support made us feel safe throughout our journey. Worth every penny!</p>
-            <div class="testimonial-card__author">
-              <img src="/images/testimonials/author-3.jpg" alt="Emma Rodriguez" class="testimonial-card__avatar" loading="lazy">
-              <div class="testimonial-card__author-info">
-                <strong class="testimonial-card__author-name">Emma Rodriguez</strong>
-                <span class="testimonial-card__author-location">Australia</span>
-              </div>
-            </div>
+          <div class="review-content">
+            <p>From the moment our tour began, everything was handled with care and professionalism. Our tour agent Bek personally met with us to walk through the itinerary and provided a dedicated contact number for emergencies. The journey in a comfortable SUV with our fantastic driver Farhod was smooth and relaxing.</p>
+
+            <p>Arriving at Aydarkul Lake was breathtaking — a beautiful oasis in the middle of the desert that suddenly appeared over the hills. The yurt camp offered surprisingly modern facilities while keeping the authentic nomadic vibe. The night in the desert was magical — clear skies filled with stars, sitting by the fire sharing stories.</p>
+
+            <p>The pottery masterclass at the Narzullaev family workshop in Gijduvan was interactive and creative. This tour was one of the most unique and enriching travel experiences we've had — well-organized, personal, and full of local charm. Highly recommended for anyone looking to experience the real heart of Uzbekistan!</p>
           </div>
         </div>
       </div>
@@ -1127,19 +1141,19 @@
 
         <!-- Primary CTA -->
         <div class="help-primary-cta">
-          <a href="/contact" class="btn btn--primary btn--large">Plan my trip</a>
-          <p class="help-primary-cta__note">We'll reply within 24 hours with a personalized itinerary</p>
+          <a href="/tours" class="btn btn--primary btn--large">Plan my trip</a>
+          <p class="help-primary-cta__note">Browse our tours and find your perfect Silk Road adventure</p>
         </div>
 
         <!-- Secondary Contact Options -->
         <div class="help-grid">
           <div class="help-option">
             <div class="help-option__icon">
-              <i class="fas fa-comments" aria-hidden="true"></i>
+              <i class="fab fa-whatsapp" aria-hidden="true"></i>
             </div>
-            <h3 class="help-option__title">Chat with us</h3>
-            <p class="help-option__text">Quick questions? Chat instantly with our team. We're online 24/7.</p>
-            <a href="#" class="help-option__link">Start chat <i class="fas fa-arrow-right"></i></a>
+            <h3 class="help-option__title">Chat on WhatsApp</h3>
+            <p class="help-option__text">Quick questions? Message us on WhatsApp and get instant replies from our team.</p>
+            <a href="https://wa.me/998915550808" target="_blank" rel="noopener" class="help-option__link">Start WhatsApp chat <i class="fas fa-arrow-right"></i></a>
           </div>
 
           <div class="help-option">
