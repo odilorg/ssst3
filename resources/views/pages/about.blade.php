@@ -571,17 +571,6 @@
         line-height: 1.6;
     }
 
-    .help-option__link {
-        color: #2c7abf;
-        font-weight: 600;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .help-option__link:hover {
-        color: #1a5490;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
         /* Add container padding */
@@ -1153,7 +1142,7 @@
             </div>
             <h3 class="help-option__title">Chat on WhatsApp</h3>
             <p class="help-option__text">Quick questions? Message us on WhatsApp and get instant replies from our team.</p>
-            <a href="https://wa.me/998915550808" target="_blank" rel="noopener" class="help-option__link">Start WhatsApp chat <i class="fas fa-arrow-right"></i></a>
+            <a href="https://wa.me/998915550808" target="_blank" rel="noopener" class="help-option__link"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
           </div>
 
           <div class="help-option">
@@ -1162,7 +1151,7 @@
             </div>
             <h3 class="help-option__title">Call now</h3>
             <p class="help-option__text">Speak with a local expert about your perfect Silk Road journey.</p>
-            <a href="tel:+998915550808" class="help-option__link">+998 91 555 08 08 <i class="fas fa-arrow-right"></i></a>
+            <a href="tel:+998915550808" class="help-option__link help-option__link--phone"><i class="fas fa-phone-alt"></i> +998 91 555 08 08</a>
           </div>
         </div>
       </div>
