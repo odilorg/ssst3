@@ -811,12 +811,12 @@
 
 @push('scripts')
   <!-- HTMX Library -->
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
 
   <!-- Swiper JS -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
 
 
   <!-- Reviews Carousel -->
-  <script src="{{ asset('js/reviews-carousel.js') }}"></script>
+  <script src="{{ asset('js/reviews-carousel.js') }}" defer></script>
 @endpush
