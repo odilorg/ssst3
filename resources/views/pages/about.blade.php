@@ -987,8 +987,8 @@
           </div>
 
           <div class="two-col-section__images">
-            <img src="/images/about/team-sunset.jpg" alt="Team silhouette at sunset" class="story-image story-image--large" loading="lazy">
-            <img src="/images/about/workspace.jpg" alt="Team member planning tours" class="story-image story-image--small" loading="lazy">
+            <img src="/images/about/team-sunset.jpg" alt="Team silhouette at sunset" class="story-image story-image--large" width="1200" height="630" loading="lazy">
+            <img src="/images/about/workspace.jpg" alt="Team member planning tours" class="story-image story-image--small" width="400" height="300" loading="lazy">
           </div>
         </div>
       </div>
@@ -1036,19 +1036,19 @@
 
         <div class="team-grid">
           <div class="team-member">
-            <img src="/images/about/team-member-1.jpg" alt="Jahongir Karimov" class="team-member__photo" loading="lazy">
+            <img src="/images/about/team-member-1.jpg" alt="Jahongir Karimov" class="team-member__photo" width="405" height="340" loading="lazy">
             <h3 class="team-member__name">Jahongir Karimov</h3>
             <p class="team-member__position">Founder & CEO</p>
           </div>
 
           <div class="team-member">
-            <img src="/images/about/team-member-2.jpg" alt="Dilshod Rahimov" class="team-member__photo" loading="lazy">
+            <img src="/images/about/team-member-2.jpg" alt="Dilshod Rahimov" class="team-member__photo" width="405" height="340" loading="lazy">
             <h3 class="team-member__name">Dilshod Rahimov</h3>
             <p class="team-member__position">Head of Operations</p>
           </div>
 
           <div class="team-member">
-            <img src="/images/about/team-member-3.jpg" alt="Madina Sultanova" class="team-member__photo" loading="lazy">
+            <img src="/images/about/team-member-3.jpg" alt="Madina Sultanova" class="team-member__photo" width="405" height="340" loading="lazy">
             <h3 class="team-member__name">Madina Sultanova</h3>
             <p class="team-member__position">Chief Experience Officer</p>
           </div>
