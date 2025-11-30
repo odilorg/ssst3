@@ -52,7 +52,7 @@
                     +998 91 555 08 08
                 </a>
 
-                <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <button type="button" class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
                     <span class="nav__toggle-icon"></span>
                 </button>
             </div>
