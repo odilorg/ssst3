@@ -1,12 +1,5 @@
 @if ($paginator->hasPages())
     <nav class="pagination" role="navigation" aria-label="Pagination Navigation">
-        <div class="pagination__info">
-            <p class="pagination__text">
-                Showing <span class="pagination__highlight">{{ $paginator->firstItem() }}</span>
-                to <span class="pagination__highlight">{{ $paginator->lastItem() }}</span>
-                of <span class="pagination__highlight">{{ $paginator->total() }}</span> tours
-            </p>
-        </div>
 
         <ul class="pagination__list">
             {{-- Previous Page Link --}}
