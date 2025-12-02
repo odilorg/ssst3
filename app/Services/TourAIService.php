@@ -2,13 +2,24 @@
 
 namespace App\Services;
 
+use App\Models\City;
+use App\Models\TourCategory;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TourAIService
 {
+    protected string $apiKey;
+    protected string $model = 'gpt-4o-mini';
+
+    public function __construct()
+    {
+        $this->apiKey = env('OPENAI_REAL_API_KEY', config('openai.api_key'));
+    }
+
     /**
-     * Generate a complete tour using DeepSeek AI
+     * Generate a complete tour using OpenAI
      *
      * @param array $params
      * @return array
@@ -21,11 +32,11 @@ class TourAIService
 
             $response = Http::timeout(120)
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . config('openai.api_key'),
+                    'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])
-                ->post('https://api.deepseek.com/v1/chat/completions', [
-                    'model' => 'deepseek-chat',
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model' => $this->model,
                     'messages' => [
                         [
                             'role' => 'system',
@@ -38,6 +49,7 @@ class TourAIService
                     ],
                     'temperature' => 0.7,
                     'max_tokens' => 4000,
+                    'response_format' => ['type' => 'json_object'],
                 ]);
 
             $data = $response->json();
@@ -50,6 +62,7 @@ class TourAIService
 
             // Parse JSON response
             $tourData = $this->parseAIResponse($content);
+            $tourData = $this->enhanceTourData($tourData, $params);
 
             // Add metadata
             $tourData['_meta'] = [
@@ -62,7 +75,7 @@ class TourAIService
             return $tourData;
 
         } catch (\Exception $e) {
-            Log::error('DeepSeek API Error', [
+            Log::error('OpenAI API Error', [
                 'message' => $e->getMessage(),
                 'params' => $params,
             ]);
@@ -115,11 +128,11 @@ class TourAIService
         try {
             $response = Http::timeout(120)
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . config('openai.api_key'),
+                    'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ])
-                ->post('https://api.deepseek.com/v1/chat/completions', [
-                    'model' => 'deepseek-chat',
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model' => $this->model,
                     'messages' => [
                         [
                             'role' => 'system',
@@ -139,7 +152,7 @@ class TourAIService
             return json_decode($content, true);
 
         } catch (\Exception $e) {
-            Log::error('DeepSeek Regenerate Day Error', [
+            Log::error('OpenAI Regenerate Day Error', [
                 'message' => $e->getMessage(),
                 'tour_id' => $tour->id,
                 'day_number' => $dayNumber,
@@ -188,10 +201,88 @@ class TourAIService
      */
     protected function getSystemPrompt(): string
     {
-        return "You are an expert international tour planner with deep knowledge of destinations worldwide. " .
-               "You create detailed, realistic, and engaging tour itineraries. " .
-               "Always consider practical logistics like travel time, opening hours, and seasonal factors. " .
-               "Respond ONLY with valid JSON, no additional commentary or explanation.";
+        return 'You are an expert tour planner specializing in Uzbekistan Silk Road tours. ' .
+               'Create detailed, realistic itineraries with specific landmarks in Uzbekistan. ' .
+               'Include 3-5 highlights, 5-8 included items, 3-5 excluded items. ' .
+               'Each day should have 2-4 stops with realistic timing. ' .
+               'ALWAYS respond with valid JSON only, no additional text.';
+    }
+
+    /**
+     * Enhance tour data with database lookups
+     */
+    protected function enhanceTourData(array $tourData, array $params): array
+    {
+        $tourData['slug'] = Str::slug($tourData['title']);
+
+        // Match city
+        $destinations = $params['destinations'] ?? '';
+        $city = $this->findMatchingCity($destinations);
+        if ($city) {
+            $tourData['city_id'] = $city->id;
+        }
+
+        // Match category
+        $tourStyle = $params['tour_style'] ?? 'cultural_heritage';
+        $category = $this->findMatchingCategory($tourStyle);
+        if ($category) {
+            $tourData['category_ids'] = [$category->id];
+        }
+
+        $tourData['tour_type'] = match($tourStyle) {
+            'luxury_experience' => 'private_only',
+            'budget_friendly' => 'group_only',
+            default => 'hybrid',
+        };
+
+        $tourData['currency'] = $tourData['currency'] ?? 'USD';
+        $tourData['min_guests'] = $tourData['min_guests'] ?? 1;
+        $tourData['max_guests'] = $tourData['max_guests'] ?? 15;
+        $tourData['min_booking_hours'] = 24;
+        $tourData['cancellation_hours'] = 24;
+        $tourData['has_hotel_pickup'] = true;
+        $tourData['is_active'] = false;
+        $tourData['schema_enabled'] = true;
+
+        if (empty($tourData['seo_title'])) {
+            $tourData['seo_title'] = Str::limit($tourData['title'] . ' | Uzbekistan Tours', 60);
+        }
+        if (empty($tourData['seo_description'])) {
+            $tourData['seo_description'] = Str::limit($tourData['short_description'] ?? $tourData['description'] ?? '', 160);
+        }
+
+        return $tourData;
+    }
+
+    protected function findMatchingCity(string $destinations): ?City
+    {
+        $parts = array_map('trim', explode(',', $destinations));
+        foreach ($parts as $dest) {
+            $city = City::where('name', 'LIKE', "%{$dest}%")->first();
+            if ($city) return $city;
+        }
+        return City::first();
+    }
+
+    protected function findMatchingCategory(string $tourStyle): ?TourCategory
+    {
+        $mapping = [
+            'cultural_heritage' => ['cultural', 'heritage', 'history'],
+            'adventure_nature' => ['adventure', 'nature'],
+            'luxury_experience' => ['luxury', 'premium'],
+            'budget_friendly' => ['budget', 'economy'],
+            'family_friendly' => ['family'],
+            'photography' => ['photography', 'photo'],
+        ];
+
+        $keywords = $mapping[$tourStyle] ?? ['cultural'];
+        foreach ($keywords as $keyword) {
+            $category = TourCategory::where('name', 'LIKE', "%{$keyword}%")
+                ->where('is_active', true)
+                ->first();
+            if ($category) return $category;
+        }
+        return TourCategory::where('is_active', true)->first();
     }
 
     /**
@@ -219,13 +310,16 @@ class TourAIService
     }
 
     /**
-     * Calculate cost based on DeepSeek pricing
-     * DeepSeek pricing: ~$0.14 per million input tokens, ~$0.28 per million output tokens
+     * Calculate cost based on OpenAI GPT-4o-mini pricing
+     * GPT-4o-mini pricing: $0.15 per million input tokens, $0.60 per million output tokens
      */
     protected function calculateCost(object $usage): float
     {
-        $inputCost = ($usage->prompt_tokens / 1000000) * 0.14;
-        $outputCost = ($usage->completion_tokens / 1000000) * 0.28;
+        $inputTokens = $usage->prompt_tokens ?? 0;
+        $outputTokens = $usage->completion_tokens ?? 0;
+
+        $inputCost = ($inputTokens / 1000000) * 0.15;
+        $outputCost = ($outputTokens / 1000000) * 0.60;
 
         return round($inputCost + $outputCost, 6);
     }
@@ -253,8 +347,33 @@ class TourAIService
     {
         return [
             'title' => 'Engaging Tour Title',
+            'short_description' => 'A compelling 1-2 sentence hook for the tour',
             'duration_days' => 8,
-            'description' => 'Brief 2-3 sentence tour overview',
+            'description' => 'Detailed 2-3 paragraph tour overview with highlights',
+            'highlights' => [
+                'Visit the iconic Registan Square',
+                'Experience traditional Uzbek hospitality',
+                'Explore ancient Silk Road architecture',
+            ],
+            'included' => [
+                'Professional English-speaking guide',
+                'All entrance fees',
+                'Hotel pickup and drop-off',
+                'Comfortable air-conditioned transport',
+                'Bottled water during tours',
+            ],
+            'excluded' => [
+                'International flights',
+                'Travel insurance',
+                'Personal expenses',
+                'Tips and gratuities',
+            ],
+            'requirements' => [
+                'Comfortable walking shoes recommended',
+                'Modest dress code for religious sites',
+            ],
+            'private_price' => 150,
+            'group_price' => 75,
             'days' => [
                 [
                     'title' => 'Day Title (e.g., Arrival in Tashkent)',
