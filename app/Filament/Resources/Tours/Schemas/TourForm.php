@@ -9,10 +9,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 
 class TourForm
@@ -21,10 +22,10 @@ class TourForm
     {
         return $schema
             ->components([
-                Wizard::make([
+                Tabs::make('Tour Tabs')
+                    ->tabs([
                     // Step 1: Basic Information
-                    Step::make('Основная информация')
-                        ->description('Название, тип и категории')
+                    Tab::make('Основная информация')
                         ->icon('heroicon-o-information-circle')
                         ->schema([
                             TextInput::make('title')
@@ -95,23 +96,28 @@ class TourForm
                                 ->helperText('Например: "4 hours" или "5 Days / 4 Nights"'),
 
                             Toggle::make('is_active')
-                                ->label('Активный (опубликован)')
+                                ->label('Опубликовать тур')
                                 ->default(true)
+                                ->onColor('success')
+                                ->offColor('danger')
                                 ->helperText('Включите, чтобы тур отображался на сайте')
+                                ->inline(false)
                                 ->columnSpanFull(),
                         ])
                         ->columns(2),
 
                     // Step 2: Description & Content
-                    Step::make('Описание и контент')
-                        ->description('Тексты и основные моменты')
+                    Tab::make('Описание и контент')
                         ->icon('heroicon-o-document-text')
                         ->schema([
-                            TextInput::make('short_description')
+                            Textarea::make('short_description')
                                 ->label('Краткое описание')
                                 ->maxLength(255)
+                                ->rows(2)
                                 ->placeholder('Краткое описание для карточки тура (1-2 предложения)')
-                                ->helperText('Отображается в списке туров')
+                                ->helperText('Отображается в списке туров и карточках')
+                                ->hint(fn ($state) => strlen($state ?? '') . '/255 символов')
+                                ->live(debounce: 500)
                                 ->columnSpanFull(),
 
                             RichEditor::make('long_description')
@@ -130,7 +136,6 @@ class TourForm
                                 ->columnSpanFull(),
 
                             Section::make('Основные моменты и включения')
-                                ->description('Что включено и не включено в тур')
                                 ->schema([
                                     TagsInput::make('highlights')
                                         ->label('Основные моменты (Highlights)')
@@ -160,8 +165,7 @@ class TourForm
                         ]),
 
                     // Step 3: Pricing & Capacity
-                    Step::make('Цены и вместимость')
-                        ->description('Стоимость и количество гостей')
+                    Tab::make('Цены и вместимость')
                         ->icon('heroicon-o-currency-dollar')
                         ->schema([
                             Section::make('Ценообразование')
@@ -175,12 +179,18 @@ class TourForm
                                         ->placeholder('100')
                                         ->helperText('Базовая цена за одного гостя'),
 
-                                    TextInput::make('currency')
+                                    Select::make('currency')
                                         ->label('Валюта')
+                                        ->options([
+                                            'USD' => '🇺🇸 USD - Доллар США',
+                                            'EUR' => '🇪🇺 EUR - Евро',
+                                            'UZS' => '🇺🇿 UZS - Сум',
+                                            'RUB' => '🇷🇺 RUB - Рубль',
+                                            'GBP' => '🇬🇧 GBP - Фунт',
+                                        ])
                                         ->required()
                                         ->default('USD')
-                                        ->maxLength(3)
-                                        ->helperText('Код валюты (USD, EUR, etc.)'),
+                                        ->searchable(),
                                 ])
                                 ->columns(2),
 
@@ -206,12 +216,11 @@ class TourForm
                         ]),
 
                     // Step 4: Images
-                    Step::make('Изображения')
-                        ->description('Фото тура')
+                    Tab::make('Изображения')
                         ->icon('heroicon-o-photo')
                         ->schema([
                             Section::make('Главное изображение')
-                                ->description('Основное фото для карточки и заголовка')
+                                ->description('Основное фото для карточки и заголовка тура')
                                 ->schema([
                                     FileUpload::make('hero_image')
                                         ->label('Главное изображение (Hero)')
@@ -220,12 +229,20 @@ class TourForm
                                         ->disk('public')
                                         ->visibility('public')
                                         ->imageEditor()
-                                        ->helperText('Рекомендуемый размер: 1200×800px. Будет отображаться как обложка тура.')
+                                        ->imageEditorAspectRatios(['16:9', '3:2', '4:3'])
+                                        ->imageCropAspectRatio('16:9')
+                                        ->imageResizeTargetWidth(1200)
+                                        ->imageResizeTargetHeight(675)
+                                        ->maxSize(5120)
+                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                        ->openable()
+                                        ->downloadable()
+                                        ->helperText('Рекомендуемый размер: 1200×675px (16:9). Макс. 5MB. Форматы: JPG, PNG, WebP')
                                         ->columnSpanFull(),
                                 ]),
 
                             Section::make('Галерея')
-                                ->description('Дополнительные фотографии тура')
+                                ->description('Дополнительные фотографии тура (до 15 изображений)')
                                 ->schema([
                                     Repeater::make('gallery_images')
                                         ->label('Изображения галереи')
@@ -237,39 +254,38 @@ class TourForm
                                                 ->disk('public')
                                                 ->visibility('public')
                                                 ->imageEditor()
-                                                ->imageEditorAspectRatios([
-                                                    null,
-                                                    '16:9',
-                                                    '4:3',
-                                                    '1:1',
-                                                ])
+                                                ->imageEditorAspectRatios(['16:9', '4:3', '1:1', null])
+                                                ->imageResizeTargetWidth(1200)
                                                 ->maxSize(5120)
-                                                ->required(),
-                                            TextInput::make('alt')
-                                                ->label('Alt текст (описание)')
-                                                ->helperText('Описание изображения для SEO и доступности')
+                                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                                ->openable()
                                                 ->required()
-                                                ->placeholder('Описание того, что изображено на фото'),
+                                                ->columnSpanFull(),
+                                            TextInput::make('alt')
+                                                ->label('Alt текст')
+                                                ->placeholder('Описание изображения для SEO')
+                                                ->maxLength(255),
                                         ])
-                                        ->columns(2)
+                                        ->grid(2)
+                                        ->itemLabel(fn (array $state): ?string => $state['alt'] ?? 'Изображение')
                                         ->collapsible()
-                                        ->itemLabel(fn (array $state): ?string => $state['alt'] ?? 'Новое изображение')
-                                        ->defaultItems(0)
-                                        ->addActionLabel('Добавить изображение')
+                                        ->collapsed()
+                                        ->cloneable()
                                         ->reorderable()
-                                        ->helperText('Добавьте до 15 изображений для галереи тура')
+                                        ->reorderableWithButtons()
+                                        ->addActionLabel('+ Добавить изображение')
+                                        ->defaultItems(0)
+                                        ->maxItems(15)
                                         ->columnSpanFull(),
                                 ])
                                 ->collapsible(),
                         ]),
 
                     // Step 5: Itinerary & Extras
-                    Step::make('Маршрут и услуги')
-                        ->description('План тура и доп. услуги')
+                    Tab::make('Маршрут и услуги')
                         ->icon('heroicon-o-map')
                         ->schema([
                             Section::make('Маршрут (Itinerary)')
-                                ->description('Пункты маршрута по порядку')
                                 ->schema([
                                     Repeater::make('itineraryItems')
                                         ->label('Пункты маршрута')
@@ -288,10 +304,10 @@ class TourForm
                                                 ->placeholder('Посещение величественной площади Регистан...')
                                                 ->columnSpanFull(),
 
-                                            TextInput::make('default_start_time')
+                                            TimePicker::make('default_start_time')
                                                 ->label('Время начала')
-                                                ->placeholder('09:00')
-                                                ->helperText('Формат: HH:MM'),
+                                                ->seconds(false)
+                                                ->helperText('Время начала посещения'),
 
                                             TextInput::make('duration_minutes')
                                                 ->label('Продолжительность')
@@ -314,7 +330,6 @@ class TourForm
                                 ->collapsible(),
 
                             Section::make('Требования к туристам')
-                                ->description('Что нужно знать перед туром')
                                 ->schema([
                                     Repeater::make('requirements')
                                         ->label('Требования')
@@ -367,7 +382,6 @@ class TourForm
                                 ->collapsed(),
 
                             Section::make('Дополнительные услуги (Extras)')
-                                ->description('Опциональные услуги за доплату')
                                 ->schema([
                                     Repeater::make('extras')
                                         ->label('Дополнительные услуги')
@@ -429,12 +443,10 @@ class TourForm
                         ]),
 
                     // Step 6: Meeting & Booking
-                    Step::make('Встреча и бронирование')
-                        ->description('Место встречи и условия')
+                    Tab::make('Встреча и бронирование')
                         ->icon('heroicon-o-map-pin')
                         ->schema([
                             Section::make('Место встречи')
-                                ->description('Где туристы встречаются с гидом')
                                 ->schema([
                                     Textarea::make('meeting_point_address')
                                         ->label('Адрес места встречи')
@@ -463,7 +475,6 @@ class TourForm
                                 ->columns(2),
 
                             Section::make('Настройки бронирования')
-                                ->description('Условия бронирования и отмены')
                                 ->schema([
                                     TextInput::make('min_booking_hours')
                                         ->label('Минимум часов до бронирования')
@@ -504,18 +515,18 @@ class TourForm
                         ]),
 
                     // Step 7: SEO & Advanced
-                    Step::make('SEO и дополнительно')
-                        ->description('Настройки для поиска и FAQ')
+                    Tab::make('SEO и дополнительно')
                         ->icon('heroicon-o-cog-6-tooth')
                         ->schema([
                             Section::make('SEO настройки')
-                                ->description('Оптимизация для поисковых систем')
                                 ->schema([
                                     TextInput::make('seo_title')
                                         ->label('SEO заголовок')
                                         ->maxLength(60)
                                         ->placeholder('Оставьте пустым для автогенерации')
-                                        ->helperText('Рекомендуется до 60 символов. Пустое = автогенерация.')
+                                        ->helperText('Пустое = автогенерация из названия тура')
+                                        ->hint(fn ($state) => strlen($state ?? '') . '/60 символов')
+                                        ->live(debounce: 500)
                                         ->columnSpanFull(),
 
                                     Textarea::make('seo_description')
@@ -523,7 +534,9 @@ class TourForm
                                         ->maxLength(160)
                                         ->rows(3)
                                         ->placeholder('Оставьте пустым для автогенерации')
-                                        ->helperText('Рекомендуется до 160 символов. Пустое = автогенерация.')
+                                        ->helperText('Пустое = автогенерация из краткого описания')
+                                        ->hint(fn ($state) => strlen($state ?? '') . '/160 символов')
+                                        ->live(debounce: 500)
                                         ->columnSpanFull(),
 
                                     Textarea::make('seo_keywords')
@@ -539,7 +552,14 @@ class TourForm
                                         ->directory('tours/og-images')
                                         ->disk('public')
                                         ->visibility('public')
-                                        ->helperText('Рекомендуется 1200×630px. Пустое = используется Hero Image.')
+                                        ->imageEditor()
+                                        ->imageCropAspectRatio('1.91:1')
+                                        ->imageResizeTargetWidth(1200)
+                                        ->imageResizeTargetHeight(630)
+                                        ->maxSize(2048)
+                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                        ->openable()
+                                        ->helperText('Рекомендуется 1200×630px (1.91:1). Пустое = используется Hero Image.')
                                         ->columnSpanFull(),
 
                                     Toggle::make('schema_enabled')
@@ -550,7 +570,6 @@ class TourForm
                                 ->collapsible(),
 
                             Section::make('FAQ (Часто задаваемые вопросы)')
-                                ->description('Вопросы и ответы для туристов')
                                 ->schema([
                                     Repeater::make('faqs')
                                         ->label('Вопросы и ответы')
@@ -588,7 +607,6 @@ class TourForm
                                 ->collapsible(),
 
                             Section::make('Рейтинги (только просмотр)')
-                                ->description('Автоматически обновляется из отзывов')
                                 ->schema([
                                     TextInput::make('rating')
                                         ->label('Рейтинг')
@@ -611,8 +629,8 @@ class TourForm
                                 ->collapsed(),
                         ]),
                 ])
-                ->skippable()
-                ->persistStepInQueryString()
+                
+                ->persistTabInQueryString()
                 ->columnSpanFull(),
             ]);
     }
