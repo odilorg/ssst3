@@ -207,7 +207,8 @@
 
           </section>
 
-          <!-- Extra Services Section -->
+          {{-- Extra Services Section - DISABLED --}}
+          {{--
           <section class="tour-extras" id="extras"
                    hx-get="{{ url('/partials/tours/' . $tour->slug . '/extras') }}"
                    hx-trigger="load"
@@ -224,6 +225,7 @@
             </div>
 
           </section>
+          --}}
 
           <!-- Customer Reviews Section -->
           <section class="tour-reviews" id="reviews"
