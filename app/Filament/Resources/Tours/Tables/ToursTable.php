@@ -23,18 +23,18 @@ class ToursTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('Название тура')
+                    ->label('Тур')
                     ->searchable()
                     ->limit(60)
                     ->wrap()
                     ->sortable(),
                 TextColumn::make('duration_days')
-                    ->label('Продолжительность')
+                    ->label('Дни')
                     ->suffix(' дн.')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('short_description')
-                    ->label('Краткое описание')
+                    ->label('Описание')
                     ->searchable()
                     ->limit(40)
                     ->wrap(),
@@ -43,7 +43,7 @@ class ToursTable
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('bookings_count')
-                    ->label('Количество бронирований')
+                    ->label('Бронирований')
                     ->counts('bookings')
                     ->sortable(),
                 TextColumn::make('created_at')
