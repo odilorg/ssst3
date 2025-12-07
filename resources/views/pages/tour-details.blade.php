@@ -640,6 +640,14 @@
                 <svg class="icon icon--whatsapp" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.05 0C4.5 0 0 4.48 0 10c0 1.77.46 3.43 1.27 4.87L.05 19.1l4.35-1.14A9.95 9.95 0 0010.05 20c5.52 0 10-4.48 10-10s-4.48-10-10-10zm5.89 14.21c-.24.68-1.41 1.28-1.95 1.35-.51.06-1.02.24-3.44-.74-3.11-1.25-5.11-4.39-5.27-4.59-.15-.2-1.24-1.65-1.24-3.15s.78-2.23 1.06-2.53c.28-.3.61-.38.81-.38.2 0 .41.01.59.01.19 0 .44-.07.69.52.25.61.86 2.1.93 2.25.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.31-.13.61.18.3.79 1.31 1.7 2.12 1.17 1.04 2.16 1.37 2.46 1.52.3.15.48.13.66-.08.18-.2.76-.89.96-1.19.2-.3.41-.25.69-.15.28.1 1.78.84 2.08.99.3.15.5.23.58.35.07.13.07.74-.17 1.42z"/></svg>
                 WhatsApp: +998 90 123 45 67
               </a>
+              
+              <!-- Back to Top Button -->
+              <button id="scroll-to-top-btn" class="btn btn--scroll-top btn--block" aria-label="Scroll to top">
+                <svg class="icon icon--arrow-up" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                Back to Top
+              </button>
             </div>
 
           </div>
@@ -1162,5 +1170,20 @@
 <script src="{{ asset('tour-details.js') }}"></script>
 <script src="{{ asset('js/booking-form.js') }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>
+<script>
+  // Back to Top Button
+  document.addEventListener("DOMContentLoaded", function() {
+    const scrollToTopBtn = document.getElementById("scroll-to-top-btn");
+    
+    if (scrollToTopBtn) {
+      scrollToTopBtn.addEventListener("click", function() {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+    }
+  });
+</script>
 <script src="{{ asset('js/tour-reviews.js') }}"></script>
 @endpush
