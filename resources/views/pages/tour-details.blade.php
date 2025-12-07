@@ -1162,6 +1162,7 @@
   text-shadow: none;
 }
 </style>
+/* Back to Top Button */.btn--scroll-top {    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);    color: white;    border: none;    margin-top: 0.75rem;    display: flex;    align-items: center;    justify-content: center;    gap: 0.5rem;    font-weight: 600;    transition: all 0.3s ease;}.btn--scroll-top:hover {    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);    transform: translateY(-2px);    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);}.btn--scroll-top:active {    transform: translateY(0);}.icon--arrow-up {    animation: bounce-up 2s ease-in-out infinite;}@keyframes bounce-up {    0%, 100% {        transform: translateY(0);    }    50% {        transform: translateY(-4px);    }}.btn--scroll-top:hover .icon--arrow-up {    animation: none;    transform: translateY(-2px);}
 @endpush
 
 
