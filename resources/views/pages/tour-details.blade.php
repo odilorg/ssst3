@@ -228,6 +228,7 @@
           --}}
 
           <!-- Customer Reviews Section -->
+          @if($tour->review_count > 0)
           <section class="tour-reviews" id="reviews"
                    hx-get="{{ url('/partials/tours/' . $tour->slug . '/reviews') }}"
                    hx-trigger="revealed"
@@ -243,6 +244,7 @@
             <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
 
           </section>
+          @endif
 
         </main>
 
