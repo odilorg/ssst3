@@ -22,16 +22,32 @@ class TourListingController extends Controller
      */
     public function index(Request $request): View
     {
-        // Use new query scopes for cleaner, optimized queries
-        $tours = Tour::active()
+        // Start with base query
+        $query = Tour::active()
             ->withFrontendRelations()
             ->select([
                 'id', 'slug', 'title', 'short_description', 'long_description',
                 'hero_image', 'price_per_person', 'currency', 'duration_days',
                 'city_id', 'rating', 'review_count', 'is_active'
-            ])
-            ->recent() // Uses scopeRecent() - orderBy('created_at', 'desc')
-            ->paginate(9);
+            ]);
+
+        // Filter by category if provided
+        if ($request->has('category')) {
+            $category = TourCategory::where('slug', $request->get('category'))
+                ->where('is_active', true)
+                ->first();
+
+            if ($category) {
+                $query->whereHas('categories', function($q) use ($category) {
+                    $q->where('tour_categories.id', $category->id);
+                });
+            }
+        }
+
+        // Get paginated results
+        $tours = $query->recent() // Uses scopeRecent() - orderBy('created_at', 'desc')
+            ->paginate(9)
+            ->appends($request->only('category')); // Preserve category in pagination links
 
         // Get categories with tour counts
         $categories = TourCategory::where('is_active', true)
