@@ -36,7 +36,8 @@ class ToursTable
                 TextColumn::make('short_description')
                     ->label('Краткое описание')
                     ->searchable()
-                    ->limit(50),
+                    ->limit(40)
+                    ->wrap(),
                 IconColumn::make('is_active')
                     ->label('Активный')
                     ->boolean()
