@@ -25,6 +25,8 @@ class ToursTable
                 TextColumn::make('title')
                     ->label('Название тура')
                     ->searchable()
+                    ->limit(60)
+                    ->wrap()
                     ->sortable(),
                 TextColumn::make('duration_days')
                     ->label('Продолжительность')
