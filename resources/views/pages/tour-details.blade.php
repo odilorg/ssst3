@@ -308,6 +308,7 @@
               </div>
               <p class="breakdown-note">Free cancellation up to 24 hours before the tour</p>
             </div>
+            @endif
 
             <!-- Booking Form -->
             <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
