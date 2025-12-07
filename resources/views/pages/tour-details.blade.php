@@ -275,14 +275,22 @@
 
             <!-- Price Header -->
             <div class="booking-card__header">
-              <div class="booking-price">
-                <span class="price-label">from</span>
-                <span class="price-amount" data-base-price="{{ $tour->price }}">${{ number_format($tour->price, 2) }}</span>
-                <span class="price-unit">/person</span>
-              </div>
+              @if($tour->shouldShowPrice())
+                <div class="booking-price">
+                  <span class="price-label">from</span>
+                  <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
+                  <span class="price-unit">/person</span>
+                </div>
+              @else
+                <div class="booking-price-hidden">
+                  <span class="price-contact-label">Price on request</span>
+                  <p class="price-contact-text">Contact us for a personalized quote</p>
+                </div>
+              @endif
             </div>
 
             <!-- Price Breakdown -->
+            @if($tour->shouldShowPrice())
             <div class="price-breakdown" data-breakdown-visible="true">
               <h3 class="breakdown-title">Price Breakdown</h3>
               <div class="breakdown-items">
@@ -643,10 +651,16 @@
   <!-- Hidden on desktop, visible on mobile/tablet only via CSS -->
   <div class="mobile-booking-cta" data-mobile-only="true">
     <div class="mobile-cta__container">
-      <div class="mobile-cta__price">
-        <span class="mobile-cta__amount" data-mobile-price="{{ $tour->price }}">${{ number_format($tour->price, 2) }}</span>
-        <span class="mobile-cta__unit">per person</span>
-      </div>
+      @if($tour->shouldShowPrice())
+        <div class="mobile-cta__price">
+          <span class="mobile-cta__amount" data-mobile-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
+          <span class="mobile-cta__unit">per person</span>
+        </div>
+      @else
+        <div class="mobile-cta__contact">
+          <span>Request Quote</span>
+        </div>
+      @endif
       <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="Scroll to booking form">
         <svg class="icon icon--calendar-check" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm1 2h4v2H7V4zM2 9h14v8H2V9zm11.707 1.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
         Book Now

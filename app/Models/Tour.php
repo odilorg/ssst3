@@ -32,6 +32,7 @@ class Tour extends Model
         // Pricing
         'price_per_person',
         'currency',
+        'show_price',
 
         // Capacity
         'max_guests',
@@ -80,6 +81,7 @@ class Tour extends Model
 
     protected $casts = [
         // Booleans
+        'show_price' => 'boolean',
         'is_active' => 'boolean',
         'include_global_requirements' => 'boolean',
         'include_global_faqs' => 'boolean',
@@ -817,5 +819,13 @@ class Tour extends Model
         }
 
         return $faqSchema;
+    }
+
+    /**
+     * Check if price should be displayed publicly
+     */
+    public function shouldShowPrice(): bool
+    {
+        return $this->show_price && !empty($this->price_per_person);
     }
 }

@@ -164,6 +164,7 @@ class TourForm
                             ->required()
                             ->default('USD')
                             ->maxLength(3),
+                        Toggle::make('show_price')                            ->label('Показывать цену на сайте')                            ->helperText('Если выключено, вместо цены будет "Price on request"')                            ->default(true)                            ->inline(false)                            ->columnSpan(2),
 
                         TextInput::make('max_guests')
                             ->label('Максимум гостей')
