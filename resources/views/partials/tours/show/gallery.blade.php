@@ -4,13 +4,24 @@
     // Use WebP hero image if available, fallback to original
     $heroImage = $tour->hero_image_webp ?: $tour->hero_image;
     $totalImages = count($galleryImages);
+
+    // Helper function to get correct asset path
+    $getImagePath = function($path) {
+        if (empty($path)) return null;
+        // If path starts with 'images/' it's in public folder, use asset() directly
+        if (str_starts_with($path, 'images/')) {
+            return asset($path);
+        }
+        // Otherwise it's in storage folder
+        return asset('storage/' . $path);
+    };
 @endphp
 
 <!-- Main Image (Left) -->
 <div class="tour-hero__main">
     @if($heroImage)
         <img
-            src="{{ asset('storage/' . $heroImage) }}"
+            src="{{ $getImagePath($heroImage) }}"
             alt="{{ $tour->title }}"
             width="1200"
             height="800"
@@ -51,7 +62,7 @@
                 {{-- Show first 3 thumbnails normally --}}
                 <button class="thumbnail {{ $index === 0 ? 'thumbnail--active' : '' }}" data-index="{{ $index }}" aria-label="View image {{ $index + 1 }}">
                     <img
-                        src="{{ asset('storage/' . $image['path']) }}"
+                        src="{{ $getImagePath($image['path']) }}"
                         alt="{{ $image['alt'] ?? $tour->title }}"
                         width="400"
                         height="300"
@@ -62,7 +73,7 @@
                 {{-- 4th thumbnail with overlay showing remaining count --}}
                 <button class="thumbnail thumbnail--overlay" data-index="{{ $index }}" aria-label="View all {{ $totalImages }} photos">
                     <img
-                        src="{{ asset('storage/' . $image['path']) }}"
+                        src="{{ $getImagePath($image['path']) }}"
                         alt="{{ $image['alt'] ?? $tour->title }}"
                         width="400"
                         height="300"
@@ -82,14 +93,14 @@
 
 {{-- Store all gallery images data for JavaScript --}}
 @php
-    $heroImageUrl = $heroImage ? asset('storage/' . $heroImage) : '/images/placeholder-tour.jpg';
+    $heroImageUrl = $heroImage ? $getImagePath($heroImage) : '/images/placeholder-tour.jpg';
 @endphp
 <script id="gallery-data" type="application/json">
 {!! json_encode([
     'heroImage' => $heroImageUrl,
-    'images' => collect($galleryImages)->map(function($image) use ($tour) {
+    'images' => collect($galleryImages)->map(function($image) use ($tour, $getImagePath) {
         return [
-            'src' => asset('storage/' . $image['path']),
+            'src' => $getImagePath($image['path']),
             'alt' => $image['alt'] ?? $tour->title
         ];
     })->toArray()

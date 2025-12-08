@@ -91,6 +91,10 @@ class ImageConversionService
         // Generate a unique filename for WebP
         $pathInfo = pathinfo($originalPath);
         $directory = $pathInfo['dirname'] === '.' ? '' : $pathInfo['dirname'];
+
+        // Strip 'images/' prefix from directory to avoid duplication
+        $directory = preg_replace('#^images/#', '', $directory);
+
         $filename = $pathInfo['filename'];
         $uniqueId = uniqid();
 

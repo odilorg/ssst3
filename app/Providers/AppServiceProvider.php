@@ -51,8 +51,9 @@ class AppServiceProvider extends ServiceProvider
         TourExtra::observe(TourExtraObserver::class);
 
         // Register image conversion observer for models with images
-        Tour::observe(ImageConversionObserver::class);
-        BlogPost::observe(ImageConversionObserver::class);
-        City::observe(ImageConversionObserver::class);
+        // TEMPORARILY DISABLED - WebP conversion causing path issues
+        // Tour::observe(ImageConversionObserver::class);
+        // BlogPost::observe(ImageConversionObserver::class);
+        // City::observe(ImageConversionObserver::class);
     }
 }

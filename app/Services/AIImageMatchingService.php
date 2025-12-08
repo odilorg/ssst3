@@ -38,11 +38,25 @@ class AIImageMatchingService
             throw new \Exception("Not enough images. Found " . count($candidateImages) . ", need at least 5");
         }
 
-        // Limit to first 15 images to avoid token limits
-        $imagesToAnalyze = array_slice($candidateImages, 0, 15);
+        // Get list of already used images from other tours
+        $usedImages = $this->getUsedImages($tour->id);
+
+        // Separate unused and used images
+        $unusedImages = array_filter($candidateImages, function($img) use ($usedImages) {
+            return !in_array($img['relative_path'], $usedImages);
+        });
+
+        // Prioritize unused images, but include some used ones as fallback
+        $imagesToAnalyze = array_merge(
+            array_slice(array_values($unusedImages), 0, 12),
+            array_slice($candidateImages, 0, 3)
+        );
+        $imagesToAnalyze = array_slice($imagesToAnalyze, 0, 15);
 
         // Build tour context
         $tourContext = $this->buildTourContext($tour);
+        $tourContext['unused_count'] = count($unusedImages);
+        $tourContext['used_images'] = count($usedImages) > 0 ? array_slice($usedImages, 0, 5) : [];
 
         // Encode images to base64
         $encodedImages = $this->encodeImages($imagesToAnalyze);
@@ -54,6 +68,38 @@ class AIImageMatchingService
         $selectedImages = $this->parseAIResponse($response, $imagesToAnalyze);
 
         return $selectedImages;
+    }
+
+    /**
+     * Get list of images already used by other tours
+     *
+     * @param int $excludeTourId
+     * @return array
+     */
+    private function getUsedImages(int $excludeTourId): array
+    {
+        $usedImages = [];
+
+        // Get hero images
+        $heroes = Tour::where('id', '!=', $excludeTourId)
+            ->whereNotNull('hero_image')
+            ->pluck('hero_image')
+            ->toArray();
+
+        $usedImages = array_merge($usedImages, $heroes);
+
+        // Get gallery images
+        $galleries = Tour::where('id', '!=', $excludeTourId)
+            ->whereNotNull('gallery_images')
+            ->get()
+            ->pluck('gallery_images')
+            ->flatten(1)
+            ->pluck('path')
+            ->toArray();
+
+        $usedImages = array_merge($usedImages, $galleries);
+
+        return array_unique($usedImages);
     }
 
     /**
@@ -214,6 +260,10 @@ class AIImageMatchingService
     {
         $highlights = !empty($tourContext['highlights']) ? "\n- Highlights: {$tourContext['highlights']}" : '';
 
+        $unusedInfo = isset($tourContext['unused_count'])
+            ? "\n- Available unused images: {$tourContext['unused_count']} (prioritize these to avoid repetition across tours)"
+            : '';
+
         return <<<PROMPT
 I need you to select 5 images for this tour package:
 
@@ -222,7 +272,7 @@ I need you to select 5 images for this tour package:
 - Description: {$tourContext['description']}
 - Duration: {$tourContext['duration']}
 - Main City: {$tourContext['city']}
-- Type: {$tourContext['type']}{$highlights}
+- Type: {$tourContext['type']}{$highlights}{$unusedInfo}
 
 **Your Task:**
 From the {$imageCount} images provided, select exactly 5 images:
@@ -231,12 +281,15 @@ From the {$imageCount} images provided, select exactly 5 images:
 2. **FOUR gallery images** - Supporting images showing variety (landscapes, architecture, culture, activities).
 
 **Selection Criteria:**
-- Images MUST be relevant to the tour location, theme, and description
+- Images MUST be directly relevant to the tour's specific cities, landmarks, and activities
+- Match images to the tour's main focus (e.g., Bukhara tour = Bukhara landmarks, not Samarkand)
 - Hero image should be stunning, high-quality, and immediately captivating
-- Hero image should ideally show the most iconic landmark or scene from the tour
-- Gallery should show diversity of experiences (don't select 4 similar images)
-- Prioritize authentic cultural, architectural, and natural beauty shots
-- Avoid generic or low-quality images
+- Hero image should show THE most iconic landmark mentioned in the tour title/description
+- Gallery should show diversity: mix of wide shots, details, people/culture, and activities
+- Prioritize unique, distinctive images that differentiate this tour from others
+- Avoid overused generic architectural shots
+- Look for images with good lighting, composition, and visual interest
+- Prefer images showing local life, crafts, markets, or cultural activities when relevant
 
 **CRITICAL - Image Orientation Check:**
 - ONLY select images that are properly oriented (correct rotation)
