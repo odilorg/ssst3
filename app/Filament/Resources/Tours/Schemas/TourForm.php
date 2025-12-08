@@ -59,6 +59,7 @@ class TourForm
                             Select::make('city_id')
                                 ->label('Город')
                                 ->relationship('city', 'name')
+                                ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', app()->getLocale()))
                                 ->searchable()
                                 ->preload()
                                 ->required()
