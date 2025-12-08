@@ -238,6 +238,15 @@ From the {$imageCount} images provided, select exactly 5 images:
 - Prioritize authentic cultural, architectural, and natural beauty shots
 - Avoid generic or low-quality images
 
+**CRITICAL - Image Orientation Check:**
+- ONLY select images that are properly oriented (correct rotation)
+- REJECT any images that are:
+  * Upside down (180 degrees rotated)
+  * Sideways (90 or 270 degrees rotated)
+  * Tilted or incorrectly oriented
+- If an image shows people, buildings, or text, verify they appear upright
+- If unsure about orientation, skip that image and select another
+
 **Important Rules:**
 - All 5 selected images must have DIFFERENT index numbers (no duplicates)
 - Image indices must be between 0 and {$imageCount}
