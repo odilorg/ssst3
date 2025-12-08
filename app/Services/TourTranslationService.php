@@ -123,7 +123,7 @@ class TourTranslationService
 
         $response = Http::timeout(120)
             ->withHeaders([
-                'Authorization' => 'Bearer ' . config('services.openai.key'),
+                'Authorization' => 'Bearer ' . config('openai.api_key'),
                 'Content-Type' => 'application/json',
             ])
             ->post('https://api.openai.com/v1/chat/completions', [
