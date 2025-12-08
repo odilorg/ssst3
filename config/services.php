@@ -44,4 +44,10 @@ return [
         'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'vision_model' => env('OPENAI_VISION_MODEL', 'gpt-4o'),
+        'organization' => env('OPENAI_ORGANIZATION'),
+    ],
+
 ];
