@@ -120,19 +120,11 @@ class TourForm
                                 ->live(debounce: 500)
                                 ->columnSpanFull(),
 
-                            RichEditor::make('long_description')
+                            Textarea::make('long_description')
                                 ->label('Подробное описание')
-                                ->toolbarButtons([
-                                    'bold',
-                                    'italic',
-                                    'link',
-                                    'bulletList',
-                                    'orderedList',
-                                    'h2',
-                                    'h3',
-                                ])
-                                ->placeholder('Полное описание тура...')
-                                ->helperText('Подробное описание тура для страницы детального просмотра')
+                                ->placeholder('Полное описание тура (HTML разрешен)...')
+                                ->helperText('Подробное описание тура для страницы детального просмотра. Поддерживает HTML.')
+                                ->rows(10)
                                 ->columnSpanFull(),
 
                             Section::make('Основные моменты и включения')
