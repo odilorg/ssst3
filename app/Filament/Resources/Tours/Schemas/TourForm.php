@@ -58,15 +58,26 @@ class TourForm
 
                             Select::make('city_id')
                                 ->label('Город')
-                                ->relationship('city', 'name')
+                                ->relationship(
+                                    name: 'city',
+                                    titleAttribute: 'name',
+                                    modifyQueryUsing: fn ($query) => $query->where('is_active', true)
+                                )
                                 ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', app()->getLocale()))
+                                ->getSearchResultsUsing(function (string $search) {
+                                    return \App\Models\City::where('is_active', true)
+                                        ->get()
+                                        ->filter(function ($city) use ($search) {
+                                            $name = $city->getTranslation('name', app()->getLocale());
+                                            return stripos($name, $search) !== false;
+                                        })
+                                        ->pluck('name', 'id')
+                                        ->map(fn ($name, $id) => \App\Models\City::find($id)->getTranslation('name', app()->getLocale()))
+                                        ->toArray();
+                                })
                                 ->searchable()
                                 ->preload()
                                 ->required()
-                                ->createOptionForm([
-                                    TextInput::make('name')->required(),
-                                    Textarea::make('description'),
-                                ])
                                 ->helperText('Основной город тура'),
 
                             Select::make('categories')
