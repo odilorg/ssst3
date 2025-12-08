@@ -59,21 +59,26 @@ class TourForm
                             Select::make('city_id')
                                 ->label('Город')
                                 ->options(function () {
+                                    $locale = app()->getLocale();
                                     return \App\Models\City::where('is_active', true)
                                         ->get()
-                                        ->mapWithKeys(function ($city) {
-                                            return [$city->id => $city->getTranslation('name', app()->getLocale())];
+                                        ->mapWithKeys(function ($city) use ($locale) {
+                                            // Try current locale first, fallback to 'ru' if empty
+                                            $name = $city->getTranslation('name', $locale) ?: $city->getTranslation('name', 'ru');
+                                            return [$city->id => $name];
                                         });
                                 })
                                 ->getSearchResultsUsing(function (string $search) {
+                                    $locale = app()->getLocale();
                                     return \App\Models\City::where('is_active', true)
                                         ->get()
-                                        ->filter(function ($city) use ($search) {
-                                            $name = $city->getTranslation('name', app()->getLocale());
+                                        ->filter(function ($city) use ($search, $locale) {
+                                            $name = $city->getTranslation('name', $locale) ?: $city->getTranslation('name', 'ru');
                                             return stripos($name, $search) !== false;
                                         })
-                                        ->mapWithKeys(function ($city) {
-                                            return [$city->id => $city->getTranslation('name', app()->getLocale())];
+                                        ->mapWithKeys(function ($city) use ($locale) {
+                                            $name = $city->getTranslation('name', $locale) ?: $city->getTranslation('name', 'ru');
+                                            return [$city->id => $name];
                                         });
                                 })
                                 ->searchable()
