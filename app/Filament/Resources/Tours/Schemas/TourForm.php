@@ -68,6 +68,12 @@ class TourForm
                                             return [$city->id => $name];
                                         });
                                 })
+                                ->getOptionLabelUsing(function ($value) {
+                                    $city = \App\Models\City::find($value);
+                                    if (!$city) return $value;
+                                    $locale = app()->getLocale();
+                                    return $city->getTranslation('name', $locale) ?: $city->getTranslation('name', 'ru');
+                                })
                                 ->getSearchResultsUsing(function (string $search) {
                                     $locale = app()->getLocale();
                                     return \App\Models\City::where('is_active', true)
