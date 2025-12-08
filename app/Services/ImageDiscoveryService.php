@@ -85,6 +85,13 @@ class ImageDiscoveryService
             $images = array_merge($images, $cityImages);
         }
 
+        // Strategy 4: Fallback to general image pool
+        if (count($images) < 5) {
+            Log::info("Looking in general image pool for tour {$tour->id}");
+            $poolImages = $this->scanImagePool();
+            $images = array_merge($images, $poolImages);
+        }
+
         // Remove duplicates based on filename
         $images = collect($images)->unique('relative_path')->values()->all();
 
@@ -208,6 +215,37 @@ class ImageDiscoveryService
                 $images = array_merge($images, $cityImages);
             }
         }
+
+        return $images;
+    }
+
+    /**
+     * Scan the general image pool
+     *
+     * @return array
+     */
+    private function scanImagePool(): array
+    {
+        $images = [];
+        $poolPath = public_path('images/tours/pool');
+
+        if (!File::exists($poolPath)) {
+            return $images;
+        }
+
+        // Scan all subdirectories in pool (architecture, landmarks, nature, etc.)
+        $categories = File::directories($poolPath);
+
+        foreach ($categories as $categoryPath) {
+            $categoryName = basename($categoryPath);
+            $categoryImages = $this->scanDirectory($categoryPath, "pool:{$categoryName}");
+            $images = array_merge($images, $categoryImages);
+        }
+
+        Log::info('Scanned image pool', [
+            'categories' => count($categories),
+            'total_images' => count($images)
+        ]);
 
         return $images;
     }
