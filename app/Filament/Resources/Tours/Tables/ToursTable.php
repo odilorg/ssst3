@@ -58,6 +58,69 @@ class ToursTable
                 //
             ])
             ->recordActions([
+                Action::make('translate')
+                    ->label('Translate')
+                    ->icon('heroicon-o-language')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Translate Tour with AI')
+                    ->modalDescription(fn ($record) => 'Translate "' . $record->title . '" to all active languages using AI')
+                    ->form([
+                        Select::make('languages')
+                            ->label('Target Languages')
+                            ->options(fn () => \App\Models\Language::where('is_active', true)
+                                ->where('code', '!=', 'en')
+                                ->pluck('native_name', 'code'))
+                            ->multiple()
+                            ->default(fn () => \App\Models\Language::where('is_active', true)
+                                ->where('code', '!=', 'en')
+                                ->pluck('code')->toArray())
+                            ->required(),
+                        \Filament\Forms\Components\Toggle::make('force')
+                            ->label('Force Re-translate')
+                            ->helperText('Re-translate even if translations already exist')
+                            ->default(false),
+                    ])
+                    ->action(function ($record, array $data): void {
+                        $translationService = app(\App\Services\TourTranslationService::class);
+
+                        try {
+                            $results = $translationService->translateTour($record, $data['languages'], $data['force']);
+
+                            $successCount = 0;
+                            $failCount = 0;
+
+                            foreach ($results as $lang => $result) {
+                                if ($result['success']) {
+                                    $successCount++;
+                                } else {
+                                    $failCount++;
+                                }
+                            }
+
+                            if ($successCount > 0) {
+                                Notification::make()
+                                    ->title('Translation completed!')
+                                    ->body("Successfully translated to {$successCount} language(s).")
+                                    ->success()
+                                    ->send();
+                            }
+
+                            if ($failCount > 0) {
+                                Notification::make()
+                                    ->title('Some translations failed')
+                                    ->body("{$failCount} language(s) failed to translate. Check logs for details.")
+                                    ->warning()
+                                    ->send();
+                            }
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Translation failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 Action::make('view_frontend')
                     ->label('View Frontend')
                     ->icon(Heroicon::OutlinedEye)
@@ -115,6 +178,68 @@ class ToursTable
                                 ->body(count($records) . ' tour(s) updated with selected categories.')
                                 ->success()
                                 ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('translate_bulk')
+                        ->label('Translate Selected')
+                        ->icon('heroicon-o-language')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading('Bulk Translate Tours with AI')
+                        ->modalDescription(fn (Collection $records) => 'Translate ' . $records->count() . ' selected tour(s) using AI')
+                        ->form([
+                            Select::make('languages')
+                                ->label('Target Languages')
+                                ->options(fn () => \App\Models\Language::where('is_active', true)
+                                    ->where('code', '!=', 'en')
+                                    ->pluck('native_name', 'code'))
+                                ->multiple()
+                                ->default(fn () => \App\Models\Language::where('is_active', true)
+                                    ->where('code', '!=', 'en')
+                                    ->pluck('code')->toArray())
+                                ->required(),
+                            \Filament\Forms\Components\Toggle::make('force')
+                                ->label('Force Re-translate')
+                                ->helperText('Re-translate even if translations already exist')
+                                ->default(false),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $translationService = app(\App\Services\TourTranslationService::class);
+                            $totalSuccess = 0;
+                            $totalFail = 0;
+
+                            foreach ($records as $record) {
+                                try {
+                                    $results = $translationService->translateTour($record, $data['languages'], $data['force']);
+
+                                    foreach ($results as $lang => $result) {
+                                        if ($result['success']) {
+                                            $totalSuccess++;
+                                        } else {
+                                            $totalFail++;
+                                        }
+                                    }
+                                } catch (\Exception $e) {
+                                    $totalFail += count($data['languages']);
+                                }
+                            }
+
+                            if ($totalSuccess > 0) {
+                                Notification::make()
+                                    ->title('Bulk translation completed!')
+                                    ->body("Successfully completed {$totalSuccess} translation(s) for " . $records->count() . " tour(s).")
+                                    ->success()
+                                    ->send();
+                            }
+
+                            if ($totalFail > 0) {
+                                Notification::make()
+                                    ->title('Some translations failed')
+                                    ->body("{$totalFail} translation(s) failed. Check logs for details.")
+                                    ->warning()
+                                    ->send();
+                            }
                         })
                         ->deselectRecordsAfterCompletion(),
 
