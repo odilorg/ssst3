@@ -15,10 +15,13 @@
                 <li><a href="{{ url('/contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Contact</a></li>
             </ul>
 
-            <button type="button" class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
-                <i class="fas fa-bars nav__toggle-icon-bars"></i>
-                <i class="fas fa-times nav__toggle-icon-close"></i>
-            </button>
+            <div class="nav__actions">
+                <x-language-switcher />
+                <button type="button" class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <i class="fas fa-bars nav__toggle-icon-bars"></i>
+                    <i class="fas fa-times nav__toggle-icon-close"></i>
+                </button>
+            </div>
         </div>
     </nav>
 </header>
