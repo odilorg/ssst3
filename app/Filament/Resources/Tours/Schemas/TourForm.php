@@ -116,7 +116,7 @@ class TourForm
                                 ->rows(2)
                                 ->placeholder('Краткое описание для карточки тура (1-2 предложения)')
                                 ->helperText('Отображается в списке туров и карточках')
-                                ->hint(fn ($state) => strlen($state ?? '') . '/255 символов')
+                                ->hint(fn ($state) => (is_string($state) ? strlen($state) : strlen($state[app()->getLocale()] ?? '')) . '/255 символов')
                                 ->live(debounce: 500)
                                 ->columnSpanFull(),
 
@@ -517,7 +517,7 @@ class TourForm
                                         ->maxLength(60)
                                         ->placeholder('Оставьте пустым для автогенерации')
                                         ->helperText('Пустое = автогенерация из названия тура')
-                                        ->hint(fn ($state) => strlen($state ?? '') . '/60 символов')
+                                        ->hint(fn ($state) => (is_string($state) ? strlen($state) : strlen($state[app()->getLocale()] ?? '')) . '/60 символов')
                                         ->live(debounce: 500)
                                         ->columnSpanFull(),
 
@@ -527,7 +527,7 @@ class TourForm
                                         ->rows(3)
                                         ->placeholder('Оставьте пустым для автогенерации')
                                         ->helperText('Пустое = автогенерация из краткого описания')
-                                        ->hint(fn ($state) => strlen($state ?? '') . '/160 символов')
+                                        ->hint(fn ($state) => (is_string($state) ? strlen($state) : strlen($state[app()->getLocale()] ?? '')) . '/160 символов')
                                         ->live(debounce: 500)
                                         ->columnSpanFull(),
 
