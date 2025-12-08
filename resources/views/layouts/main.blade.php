@@ -76,6 +76,12 @@
         @yield('structured_data')
         </script>
     @endif
+    {{-- Multi-language hreflang tags for SEO --}}
+    @foreach(config('app.available_locales') as $locale)
+        <link rel="alternate" hreflang="{{ $locale }}" href="{{ route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['locale' => $locale])) }}" />
+    @endforeach
+    <link rel="alternate" hreflang="x-default" href="{{ route(Route::currentRouteName(), array_merge(Route::current()->parameters(), ['locale' => 'en'])) }}" />
+
 </head>
 <body>
     {{-- No JavaScript Warning --}}

@@ -18,6 +18,34 @@ class TourForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+/**
+ * Tour Form Schema
+ * 
+ * NOTE: Multi-language support is enabled via Spatie Translatable package.
+ * Translatable fields: title, short_description, long_description, 
+ * seo_title, seo_description, seo_keywords
+ * 
+ * To edit in specific language, ensure locale is set correctly.
+ * Filament v4 translation plugin integration pending.
+ */
+namespace App\Filament\Resources\Tours\Schemas;
+
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+class TourForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
             ->components([
                 Section::make('Основная информация о туре')
                     ->description('Базовая информация о туре')
