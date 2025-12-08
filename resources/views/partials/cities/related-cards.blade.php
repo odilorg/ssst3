@@ -5,7 +5,7 @@
             <i class="fas fa-map-marker-alt"></i>
         </div>
 
-        <h3 class="related-category-card__title">{{ $city->name }}</h3>
+        <h3 class="related-category-card__title">{{ $city->translated_name }}</h3>
 
         @if($city->tagline)
         <p class="related-category-card__tagline" style="font-size: 12px; color: #666; margin-top: 4px;">

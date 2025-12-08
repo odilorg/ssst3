@@ -14,7 +14,7 @@
                 </li>
                 @if($tour->city)
                     <li class="breadcrumbs__item">
-                        <a href="/tours?city={{ $tour->city->slug }}" class="breadcrumbs__link">{{ $tour->city->name }}</a>
+                        <a href="/tours?city={{ $tour->city->slug }}" class="breadcrumbs__link">{{ $tour->city->translated_name }}</a>
                         <span class="breadcrumbs__separator" aria-hidden="true">/</span>
                     </li>
                 @endif
@@ -50,7 +50,7 @@
             <span class="rating-count">({{ $tour->review_count }} {{ Str::plural('review', $tour->review_count) }})</span>
             @if($tour->city)
                 <span class="rating-separator">•</span>
-                <span class="tour-location">{{ $tour->city->name }}, Uzbekistan</span>
+                <span class="tour-location">{{ $tour->city->translated_name }}, Uzbekistan</span>
             @endif
         </div>
 

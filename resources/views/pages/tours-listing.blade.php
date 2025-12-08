@@ -170,7 +170,7 @@
                                 @if($tour->city)
                                     <div class="tour-card__meta-item">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <span>{{ $tour->city->name }}</span>
+                                        <span>{{ $tour->city->translated_name }}</span>
                                     </div>
                                 @endif
                                 <div class="tour-card__price">

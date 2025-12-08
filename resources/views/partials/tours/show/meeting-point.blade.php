@@ -10,7 +10,7 @@
                 </svg>
                 <div>
                     <h3>Hotel Pickup Included</h3>
-                    <p>Free pickup from any hotel within {{ $tour->city->name ?? 'the city' }} city center ({{ $tour->pickup_radius_km ?? 5 }}km radius). Please provide your hotel name when booking.</p>
+                    <p>Free pickup from any hotel within {{ $tour->city->translated_name ?? 'the city' }} city center ({{ $tour->pickup_radius_km ?? 5 }}km radius). Please provide your hotel name when booking.</p>
                 </div>
             </div>
         @endif

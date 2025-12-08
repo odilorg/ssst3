@@ -37,7 +37,7 @@
                 {{-- Tags (City) --}}
                 <div class="tour-card__tags">
                     @if ($tour->city)
-                        <span class="tag">{{ $tour->city->name }}</span>
+                        <span class="tag">{{ $tour->city->translated_name }}</span>
                     @endif
                 </div>
 

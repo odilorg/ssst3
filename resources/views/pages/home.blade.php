@@ -331,7 +331,7 @@
           "itinerary": {
             "@@type": "ItemList",
             "itemListElement": [
-              {"@@type": "City", "name": "{{ $tour->city->name }}"}
+              {"@@type": "City", "name": "{{ $tour->city->translated_name }}"}
             ]
           },
           @endif
@@ -508,13 +508,13 @@
             $tourText = $tourCount === 1 ? 'tour' : 'tours';
 
             // Get city image - use hero_image or placeholder
-            $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
+            $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->translated_name);
 
             // Get tagline or use default
             $tagline = $city->tagline ?? '';
 
             // Get city name
-            $cityName = htmlspecialchars($city->name);
+            $cityName = htmlspecialchars($city->translated_name);
             $citySlug = $city->slug;
 
             // Short description for alt text

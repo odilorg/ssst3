@@ -22,8 +22,8 @@
 {
   "@@context": "https://schema.org",
   "@@type": "TouristDestination",
-  "name": "{{ $city->name }}",
-  "description": "{{ $city->short_description ?? $city->description ?? 'Explore ' . $city->name . ' with Jahongir Travel' }}",
+  "name": "{{ $city->translated_name }}",
+  "description": "{{ $city->short_description ?? $city->description ?? 'Explore ' . $city->translated_name . ' with Jahongir Travel' }}",
   "url": "{{ $canonicalUrl }}",
   "image": "{{ $ogImage }}",
   @if($city->latitude && $city->longitude)
@@ -65,7 +65,7 @@
     {
       "@@type": "ListItem",
       "position": 3,
-      "name": "{{ $city->name }}",
+      "name": "{{ $city->translated_name }}",
       "item": "{{ $canonicalUrl }}"
     }
   ]
@@ -92,11 +92,11 @@
                 </div>
 
                 <!-- Category Name -->
-                <h1 class="category-hero__title" id="category-name">{{ $city->name }}</h1>
+                <h1 class="category-hero__title" id="category-name">{{ $city->translated_name }}</h1>
 
                 <!-- Category Description -->
                 <p class="category-hero__description" id="category-description">
-                    {{ $city->short_description ?? 'Discover amazing tours in ' . $city->name }}
+                    {{ $city->short_description ?? 'Discover amazing tours in ' . $city->translated_name }}
                 </p>
 
                 <!-- Tour Count Badge -->
@@ -113,7 +113,7 @@
          ===================================================== -->
     <section class="tours-catalog" id="main-content">
         <div class="container">
-<!-- Breadcrumb -->            <nav class="breadcrumb breadcrumb--light" aria-label="Breadcrumb">                <a href="/">Home</a>                <span class="breadcrumb__separator">/</span>                <a href="/tours">Tours</a>                <span class="breadcrumb__separator">/</span>                <span>{{ $city->name }}</span>            </nav>
+<!-- Breadcrumb -->            <nav class="breadcrumb breadcrumb--light" aria-label="Breadcrumb">                <a href="/">Home</a>                <span class="breadcrumb__separator">/</span>                <a href="/tours">Tours</a>                <span class="breadcrumb__separator">/</span>                <span>{{ $city->translated_name }}</span>            </nav>
             <div class="tours-catalog__layout">
 
                 <!-- SIDEBAR FILTERS (Desktop) -->

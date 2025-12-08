@@ -155,6 +155,15 @@ class City extends Model
     // ========================================
 
     /**
+     * Get the translated name for the current locale
+     */
+    public function getTranslatedNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        return $this->getTranslation('name', $locale) ?: $this->getTranslation('name', 'ru') ?: '';
+    }
+
+    /**
      * Get the URL for the featured image
      */
     public function getFeaturedImageUrlAttribute(): ?string
