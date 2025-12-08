@@ -58,12 +58,13 @@ class TourForm
 
                             Select::make('city_id')
                                 ->label('Город')
-                                ->relationship(
-                                    name: 'city',
-                                    titleAttribute: 'name',
-                                    modifyQueryUsing: fn ($query) => $query->where('is_active', true)
-                                )
-                                ->getOptionLabelFromRecordUsing(fn ($record) => $record->getTranslation('name', app()->getLocale()))
+                                ->options(function () {
+                                    return \App\Models\City::where('is_active', true)
+                                        ->get()
+                                        ->mapWithKeys(function ($city) {
+                                            return [$city->id => $city->getTranslation('name', app()->getLocale())];
+                                        });
+                                })
                                 ->getSearchResultsUsing(function (string $search) {
                                     return \App\Models\City::where('is_active', true)
                                         ->get()
@@ -71,12 +72,11 @@ class TourForm
                                             $name = $city->getTranslation('name', app()->getLocale());
                                             return stripos($name, $search) !== false;
                                         })
-                                        ->pluck('name', 'id')
-                                        ->map(fn ($name, $id) => \App\Models\City::find($id)->getTranslation('name', app()->getLocale()))
-                                        ->toArray();
+                                        ->mapWithKeys(function ($city) {
+                                            return [$city->id => $city->getTranslation('name', app()->getLocale())];
+                                        });
                                 })
                                 ->searchable()
-                                ->preload()
                                 ->required()
                                 ->helperText('Основной город тура'),
 
