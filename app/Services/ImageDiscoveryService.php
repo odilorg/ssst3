@@ -69,28 +69,14 @@ class ImageDiscoveryService
             $images = $this->scanDirectory($tourPath, $tourSlug);
         }
 
-        // Strategy 2: If not enough images, look for similar tour directories
-        if (count($images) < 5) {
-            Log::info("Tour {$tour->id} has only " . count($images) . " images in dedicated directory");
+        // Strategy 2: Always include general image pool (503 curated images)
+        // Pool images are clean and properly organized, prioritize them over old directories
+        Log::info("Including general image pool for tour {$tour->id}");
+        $poolImages = $this->scanImagePool();
+        $images = array_merge($images, $poolImages);
 
-            // Try to find similar directories by partial slug match
-            $similarImages = $this->findSimilarTourImages($tour);
-            $images = array_merge($images, $similarImages);
-        }
-
-        // Strategy 3: Fallback to city-based images
-        if (count($images) < 5 && $tour->city) {
-            Log::info("Looking for city-based images for tour {$tour->id}");
-            $cityImages = $this->findCityImages($tour->city->slug);
-            $images = array_merge($images, $cityImages);
-        }
-
-        // Strategy 4: Fallback to general image pool
-        if (count($images) < 5) {
-            Log::info("Looking in general image pool for tour {$tour->id}");
-            $poolImages = $this->scanImagePool();
-            $images = array_merge($images, $poolImages);
-        }
+        // Note: Skipping similar tour directories and city-based searches
+        // because they contain mislabeled/corrupted images from old uploads
 
         // Remove duplicates based on filename
         $images = collect($images)->unique('relative_path')->values()->all();

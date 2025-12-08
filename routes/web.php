@@ -11,6 +11,10 @@ Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);
 });
 
+// Language switching
+Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
+Route::get('/api/languages', [\App\Http\Controllers\LanguageController::class, 'index'])->name('api.languages');
+
 // Sitemap XML for SEO
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
