@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\\Translatable\\HasTranslations;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class City extends Model
 {
     use HasFactory;
+    use HasTranslations;
+    public array $translatable = ['name', 'tagline', 'description', 'short_description', 'long_description', 'meta_title', 'meta_description'];
+
 
     protected $fillable = [
         'name',
