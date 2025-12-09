@@ -18,6 +18,11 @@ class EditTour extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('save')
+                ->label('Save')
+                ->action('save')
+                ->color('primary')
+                ->icon('heroicon-o-check'),
             Action::make('view_frontend')
                 ->label('View Frontend')
                 ->icon(Heroicon::OutlinedEye)
@@ -38,25 +43,17 @@ class EditTour extends EditRecord
         return TourForm::getWizardSteps();
     }
 
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getSaveFormAction(),
-            Action::make('save_and_exit')
-                ->label('Save & Exit')
-                ->action('saveAndExit')
-                ->color('gray')
-                ->icon('heroicon-o-arrow-left'),
-        ];
-    }
-
-    public function saveAndExit(): void
+    public function save(bool $shouldRedirect = false): void
     {
         $data = $this->form->getState();
 
         $this->handleRecordUpdate($this->record, $data);
 
-        $this->redirect($this->getRedirectUrl());
+        if ($shouldRedirect) {
+            $this->redirect($this->getRedirectUrl());
+        } else {
+            $this->getSavedNotification()->send();
+        }
     }
 
     public function hasSkippableSteps(): bool

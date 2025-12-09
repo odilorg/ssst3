@@ -25,27 +25,6 @@ class CreateTour extends CreateRecord
         return TourForm::getWizardSteps();
     }
 
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getSaveFormAction(),
-            Action::make('save_and_exit')
-                ->label('Save & Exit')
-                ->action('saveAndExit')
-                ->color('gray')
-                ->icon('heroicon-o-arrow-left'),
-        ];
-    }
-
-    public function saveAndExit(): void
-    {
-        $data = $this->form->getState();
-
-        $this->record = $this->handleRecordCreation($data);
-
-        $this->redirect($this->getRedirectUrl());
-    }
-
     public function hasSkippableSteps(): bool
     {
         return true;
