@@ -62,10 +62,10 @@ return [
     | If true, original JPG/PNG files will be kept after conversion.
     | If false, original files will be deleted to save storage space.
     |
-    | Recommended: false (save storage)
+    | Recommended: true (for Filament FileUpload to display images)
     |
     */
-    'keep_original' => env('IMAGE_KEEP_ORIGINAL', false),
+    'keep_original' => env('IMAGE_KEEP_ORIGINAL', true),
 
     /*
     |--------------------------------------------------------------------------
