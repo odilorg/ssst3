@@ -37,4 +37,29 @@ class EditTour extends EditRecord
     {
         return TourForm::getWizardSteps();
     }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('save_and_exit')
+                ->label('Save & Exit')
+                ->action('saveAndExit')
+                ->color('gray')
+                ->icon('heroicon-o-check'),
+        ];
+    }
+
+    public function saveAndExit(): void
+    {
+        $data = $this->form->getState();
+
+        $this->handleRecordUpdate($this->record, $data);
+
+        $this->redirect($this->getRedirectUrl());
+    }
+
+    public function hasSkippableSteps(): bool
+    {
+        return true;
+    }
 }

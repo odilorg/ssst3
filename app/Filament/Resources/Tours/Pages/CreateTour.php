@@ -7,6 +7,7 @@ use App\Filament\Resources\Tours\Schemas\TourForm;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Wizard;
 use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 
 class CreateTour extends CreateRecord
 {
@@ -22,5 +23,32 @@ class CreateTour extends CreateRecord
     public function getSteps(): array
     {
         return TourForm::getWizardSteps();
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('save_and_exit')
+                ->label('Save & Exit')
+                ->action('saveAndExit')
+                ->color('gray')
+                ->icon('heroicon-o-check'),
+        ];
+    }
+
+    public function saveAndExit(): void
+    {
+        $this->form->getState();
+
+        $data = $this->form->getState();
+
+        $this->record = $this->handleRecordCreation($data);
+
+        $this->redirect($this->getRedirectUrl());
+    }
+
+    public function hasSkippableSteps(): bool
+    {
+        return true;
     }
 }
