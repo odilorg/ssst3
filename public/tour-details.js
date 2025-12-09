@@ -150,37 +150,46 @@ function initFormValidation() {
 // 2. DYNAMIC PRICE CALCULATION
 // =============================================================================
 
-// Price display elements (from price breakdown section)
-const breakdownGuests = document.querySelector('.breakdown-guests');
-const breakdownSubtotal = document.querySelector('[data-subtotal]');
-const breakdownTotal = document.querySelector('[data-total]');
-const breakdownUnitPrice = document.querySelector('.breakdown-unit-price');
-
-// Read tour price from multiple sources (with fallbacks)
+// Price display elements and BASE_PRICE will be initialized when DOM is ready
+let breakdownGuests;
+let breakdownSubtotal;
+let breakdownTotal;
+let breakdownUnitPrice;
 let BASE_PRICE = 0;
 
-// Try to read from data attribute first (server-rendered)
-if (breakdownUnitPrice) {
-  const attrPrice = breakdownUnitPrice.getAttribute('data-unit-price');
-  console.log('Data attribute price:', attrPrice);
-  BASE_PRICE = parseFloat(attrPrice) || 0;
-}
+/**
+ * Initialize BASE_PRICE from DOM or JSON data
+ */
+function initializePrice() {
+  // Get DOM elements
+  breakdownGuests = document.querySelector('.breakdown-guests');
+  breakdownSubtotal = document.querySelector('[data-subtotal]');
+  breakdownTotal = document.querySelector('[data-total]');
+  breakdownUnitPrice = document.querySelector('.breakdown-unit-price');
 
-// If still 0, try reading from tour-data JSON
-if (BASE_PRICE === 0) {
-  const tourDataEl = document.getElementById('tour-data');
-  if (tourDataEl) {
-    try {
-      const tourData = JSON.parse(tourDataEl.textContent);
-      console.log('Tour data:', tourData);
-      BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
-    } catch (e) {
-      console.error('Failed to parse tour data:', e);
+  // Try to read from data attribute first (server-rendered)
+  if (breakdownUnitPrice) {
+    const attrPrice = breakdownUnitPrice.getAttribute('data-unit-price');
+    console.log('Data attribute price:', attrPrice);
+    BASE_PRICE = parseFloat(attrPrice) || 0;
+  }
+
+  // If still 0, try reading from tour-data JSON
+  if (BASE_PRICE === 0) {
+    const tourDataEl = document.getElementById('tour-data');
+    if (tourDataEl) {
+      try {
+        const tourData = JSON.parse(tourDataEl.textContent);
+        console.log('Tour data:', tourData);
+        BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
+      } catch (e) {
+        console.error('Failed to parse tour data:', e);
+      }
     }
   }
-}
 
-console.log('Final BASE_PRICE:', BASE_PRICE);
+  console.log('Final BASE_PRICE:', BASE_PRICE);
+}
 
 /**
  * Update price based on guest count
@@ -221,6 +230,7 @@ function updatePrice() {
  * Initialize price calculation
  */
 function initPriceCalculation() {
+  initializePrice(); // Initialize BASE_PRICE from DOM
   guestsInput?.addEventListener('change', updatePrice);
   updatePrice(); // Set initial price
 }
