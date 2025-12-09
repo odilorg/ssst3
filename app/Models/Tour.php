@@ -858,7 +858,7 @@ class Tour extends Model
     }
 
     /**
-     * Accessor for gallery_images to convert array of objects to array of paths for Filament FileUpload
+     * Accessor for gallery_images - Return array with 'path' and 'alt' keys for Filament Repeater
      */
     public function getGalleryImagesAttribute($value)
     {
@@ -868,21 +868,12 @@ class Tour extends Model
             return [];
         }
 
-        // If it's already an array of strings (new format), return as-is
-        if (isset($decoded[0]) && is_string($decoded[0])) {
-            return $decoded;
-        }
-
-        // If it's array of objects with 'path' key (old format), extract paths
-        if (isset($decoded[0]['path'])) {
-            return array_map(fn($item) => $item['path'], $decoded);
-        }
-
+        // Return the array as-is (Repeater expects array with 'path' and 'alt' keys)
         return $decoded;
     }
 
     /**
-     * Mutator for gallery_images to store as array of strings (paths only)
+     * Mutator for gallery_images - Store as JSON array with 'path' and 'alt' keys
      */
     public function setGalleryImagesAttribute($value)
     {

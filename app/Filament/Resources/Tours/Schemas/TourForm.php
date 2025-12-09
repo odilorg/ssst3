@@ -647,19 +647,36 @@ class TourForm
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
 
-                    FileUpload::make('gallery_images')
+                    Repeater::make('gallery_images')
                         ->label('Галерея изображений')
-                        ->image()
-                        ->multiple()
+                        ->schema([
+                            FileUpload::make('path')
+                                ->label('Изображение')
+                                ->image()
+                                ->directory('tours/gallery')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor()
+                                ->imageEditorAspectRatios([
+                                    null,
+                                    '16:9',
+                                    '4:3',
+                                    '1:1',
+                                ])
+                                ->maxSize(5120)
+                                ->required(),
+                            TextInput::make('alt')
+                                ->label('Alt текст')
+                                ->helperText('Описание изображения для доступности и SEO')
+                                ->required(),
+                        ])
+                        ->columnSpanFull()
+                        ->collapsible()
+                        ->itemLabel(fn (array $state): ?string => $state['alt'] ?? 'Изображение галереи')
+                        ->defaultItems(0)
+                        ->addActionLabel('Добавить изображение')
                         ->reorderable()
-                        ->directory('tours/gallery')
-                        ->disk('public')
-                        ->visibility('public')
-                        ->imageEditor()
-                        ->maxSize(5120)
-                        ->maxFiles(10)
-                        ->helperText('Загрузите до 10 изображений для галереи. Рекомендуемый размер: 1200×800px. Макс. 5MB каждое.')
-                        ->columnSpanFull(),
+                        ->helperText('Добавьте изображения с описанием. Рекомендуемый размер: 1200×800px. Макс. 5MB каждое.'),
                 ]),
 
             // Step 4: Meeting & Booking
