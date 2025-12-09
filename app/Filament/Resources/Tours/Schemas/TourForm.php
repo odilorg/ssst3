@@ -646,6 +646,20 @@ class TourForm
                         ->maxSize(5120)
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
+
+                    FileUpload::make('gallery_images')
+                        ->label('Галерея изображений')
+                        ->image()
+                        ->multiple()
+                        ->reorderable()
+                        ->directory('tours/gallery')
+                        ->disk('public')
+                        ->visibility('public')
+                        ->imageEditor()
+                        ->maxSize(5120)
+                        ->maxFiles(10)
+                        ->helperText('Загрузите до 10 изображений для галереи. Рекомендуемый размер: 1200×800px. Макс. 5MB каждое.')
+                        ->columnSpanFull(),
                 ]),
 
             // Step 4: Meeting & Booking
