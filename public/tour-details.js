@@ -150,16 +150,32 @@ function initFormValidation() {
 // 2. DYNAMIC PRICE CALCULATION
 // =============================================================================
 
-// Read tour data from JSON (injected by server)
-const tourDataEl = document.getElementById('tour-data');
-const tourData = tourDataEl ? JSON.parse(tourDataEl.textContent) : {};
-const BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
-
 // Price display elements (from price breakdown section)
 const breakdownGuests = document.querySelector('.breakdown-guests');
 const breakdownSubtotal = document.querySelector('[data-subtotal]');
 const breakdownTotal = document.querySelector('[data-total]');
 const breakdownUnitPrice = document.querySelector('.breakdown-unit-price');
+
+// Read tour price from multiple sources (with fallbacks)
+let BASE_PRICE = 0;
+
+// Try to read from data attribute first (server-rendered)
+if (breakdownUnitPrice) {
+  BASE_PRICE = parseFloat(breakdownUnitPrice.getAttribute('data-unit-price')) || 0;
+}
+
+// If still 0, try reading from tour-data JSON
+if (BASE_PRICE === 0) {
+  const tourDataEl = document.getElementById('tour-data');
+  if (tourDataEl) {
+    try {
+      const tourData = JSON.parse(tourDataEl.textContent);
+      BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
+    } catch (e) {
+      console.error('Failed to parse tour data:', e);
+    }
+  }
+}
 
 /**
  * Update price based on guest count
