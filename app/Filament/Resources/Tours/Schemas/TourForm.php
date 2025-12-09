@@ -591,14 +591,24 @@ class TourForm
                 ->schema([
                     Section::make('Ценообразование')
                         ->schema([
+                            Toggle::make('show_price')
+                                ->label('Показать цену публично')
+                                ->default(true)
+                                ->onColor('success')
+                                ->offColor('danger')
+                                ->helperText('Выключите, чтобы показывать "Свяжитесь с нами" вместо цены')
+                                ->live()
+                                ->columnSpanFull(),
+
                             TextInput::make('price_per_person')
                                 ->label('Цена за человека')
                                 ->numeric()
-                                ->required()
+                                ->required(fn (callable $get) => $get('show_price'))
                                 ->minValue(0)
                                 ->prefix('$')
                                 ->placeholder('100')
-                                ->helperText('Базовая цена за одного гостя'),
+                                ->helperText('Базовая цена за одного гостя')
+                                ->disabled(fn (callable $get) => !$get('show_price')),
 
                             TextInput::make('min_guests')
                                 ->label('Минимум гостей')
