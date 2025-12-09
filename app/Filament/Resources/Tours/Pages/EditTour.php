@@ -20,7 +20,9 @@ class EditTour extends EditRecord
         return [
             Action::make('save')
                 ->label('Save')
-                ->action('save')
+                ->action(function () {
+                    $this->save(shouldRedirect: false);
+                })
                 ->color('primary')
                 ->icon('heroicon-o-check'),
             Action::make('view_frontend')
@@ -43,16 +45,18 @@ class EditTour extends EditRecord
         return TourForm::getWizardSteps();
     }
 
-    public function save(bool $shouldRedirect = false): void
+    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
         $data = $this->form->getState();
 
         $this->handleRecordUpdate($this->record, $data);
 
+        if ($shouldSendSavedNotification) {
+            $this->getSavedNotification()->send();
+        }
+
         if ($shouldRedirect) {
             $this->redirect($this->getRedirectUrl());
-        } else {
-            $this->getSavedNotification()->send();
         }
     }
 
