@@ -168,23 +168,36 @@ function initializePrice() {
   breakdownUnitPrice = document.querySelector('.breakdown-unit-price');
 
   // Try to read from data attribute first (server-rendered)
+  console.log('breakdownUnitPrice element:', breakdownUnitPrice);
   if (breakdownUnitPrice) {
     const attrPrice = breakdownUnitPrice.getAttribute('data-unit-price');
     console.log('Data attribute price:', attrPrice);
-    BASE_PRICE = parseFloat(attrPrice) || 0;
+    const parsed = parseFloat(attrPrice);
+    console.log('Parsed price:', parsed);
+    if (parsed && !isNaN(parsed)) {
+      BASE_PRICE = parsed;
+    }
   }
+
+  console.log('BASE_PRICE after attribute:', BASE_PRICE);
 
   // If still 0, try reading from tour-data JSON
   if (BASE_PRICE === 0) {
     const tourDataEl = document.getElementById('tour-data');
+    console.log('tourDataEl:', tourDataEl);
     if (tourDataEl) {
+      const jsonText = tourDataEl.textContent.trim();
+      console.log('JSON text:', jsonText);
       try {
-        const tourData = JSON.parse(tourDataEl.textContent);
-        console.log('Tour data:', tourData);
+        const tourData = JSON.parse(jsonText);
+        console.log('Parsed tour data:', tourData);
+        console.log('pricePerPerson value:', tourData.pricePerPerson);
         BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
       } catch (e) {
         console.error('Failed to parse tour data:', e);
       }
+    } else {
+      console.error('tour-data element not found!');
     }
   }
 
