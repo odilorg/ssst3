@@ -515,15 +515,15 @@
 
           <!-- Tour Data for JavaScript -->
           <script type="application/json" id="tour-data">
-            {
-              "id": "{{ $tour->slug }}",
-              "name": "{{ $tour->title }}",
-              "pricePerPerson": {{ $tour->price_per_person ?? 0 }},
-              "currency": "{{ $tour->currency ?? 'USD' }}",
-              "maxGuests": {{ $tour->max_guests ?? 15 }},
-              "minGuests": {{ $tour->min_guests ?? 1 }},
-              "duration": "{{ $tour->duration_text ?? $tour->duration_days . ' days' }}"
-            }
+{!! json_encode([
+  'id' => $tour->slug,
+  'name' => $tour->title,
+  'pricePerPerson' => (float)($tour->price_per_person ?? 0),
+  'currency' => $tour->currency ?? 'USD',
+  'maxGuests' => (int)($tour->max_guests ?? 15),
+  'minGuests' => (int)($tour->min_guests ?? 1),
+  'duration' => $tour->duration_text ?? ($tour->duration_days . ' days')
+], JSON_UNESCAPED_UNICODE) !!}
           </script>
 
           <!-- Screen Reader Live Region for Dynamic Updates -->
