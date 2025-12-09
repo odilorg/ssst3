@@ -47,4 +47,12 @@ class ItineraryItem extends Model
     {
         return $this->hasMany(BookingItineraryItem::class, 'tour_itinerary_item_id');
     }
+
+    public function cities()
+    {
+        return $this->belongsToMany(City::class, 'city_itinerary_item')
+                    ->withPivot('order')
+                    ->withTimestamps()
+                    ->orderBy('city_itinerary_item.order');
+    }
 }

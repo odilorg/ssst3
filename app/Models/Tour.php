@@ -828,4 +828,32 @@ class Tour extends Model
     {
         return $this->show_price && !empty($this->price_per_person);
     }
+
+    /**
+     * Get unique cities from itinerary in order
+     */
+    public function getRouteCities()
+    {
+        $cities = collect();
+
+        foreach ($this->topLevelItems as $item) {
+            foreach ($item->cities as $city) {
+                if (!$cities->contains('id', $city->id)) {
+                    $cities->push($city);
+                }
+            }
+        }
+
+        return $cities;
+    }
+
+    /**
+     * Get route as string (e.g., "Tashkent → Samarkand → Bukhara")
+     */
+    public function getRouteString()
+    {
+        return $this->getRouteCities()
+                    ->pluck('name')
+                    ->join(' → ');
+    }
 }

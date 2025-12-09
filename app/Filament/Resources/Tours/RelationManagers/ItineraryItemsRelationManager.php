@@ -98,6 +98,14 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->label('Порядок сортировки')
                     ->numeric()
                     ->default(0),
+                Forms\Components\Select::make('cities')
+                    ->label('Города маршрута')
+                    ->relationship('cities', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull()
+                    ->helperText('Выберите города, которые посещаются в этом дне/остановке (в порядке посещения)'),
                 Forms\Components\KeyValue::make('meta')
                     ->label('Дополнительные данные')
                     ->keyLabel('Ключ')
