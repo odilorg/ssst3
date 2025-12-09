@@ -516,13 +516,13 @@
           <!-- Tour Data for JavaScript -->
           <script type="application/json" id="tour-data">
             {
-              "id": "samarkand-city-tour",
-              "name": "Samarkand City Tour: Registan Square and Historic Monuments",
-              "pricePerPerson": 50.00,
-              "currency": "USD",
-              "maxGuests": 10,
-              "minGuests": 1,
-              "duration": "4 hours"
+              "id": "{{ $tour->slug }}",
+              "name": "{{ $tour->title }}",
+              "pricePerPerson": {{ $tour->price_per_person ?? 0 }},
+              "currency": "{{ $tour->currency ?? 'USD' }}",
+              "maxGuests": {{ $tour->max_guests ?? 15 }},
+              "minGuests": {{ $tour->min_guests ?? 1 }},
+              "duration": "{{ $tour->duration_text ?? $tour->duration_days . ' days' }}"
             }
           </script>
 
@@ -543,7 +543,7 @@
             <div class="booking-card__header">
               <div class="booking-price">
                 <span class="price-label">from</span>
-                <span class="price-amount" data-base-price="50.00">$50.00</span>
+                <span class="price-amount" data-base-price="{{ $tour->price_per_person ?? 0 }}">${{ number_format($tour->price_per_person ?? 0, 2) }}</span>
                 <span class="price-unit">/person</span>
               </div>
             </div>
@@ -615,17 +615,22 @@
               <div class="breakdown-items">
                 <div class="breakdown-item">
                   <span class="breakdown-label">
-                    <span class="breakdown-guests" data-guests="2">2 guests</span> ×
-                    <span class="breakdown-unit-price" data-unit-price="50.00">$50.00</span>
+                    <span class="breakdown-guests" data-guests="{{ $tour->min_guests ?? 2 }}">{{ $tour->min_guests ?? 2 }} guests</span> ×
+                    <span class="breakdown-unit-price" data-unit-price="{{ $tour->price_per_person ?? 0 }}">${{ number_format($tour->price_per_person ?? 0, 2) }}</span>
                   </span>
-                  <span class="breakdown-value" data-subtotal="100.00">$100.00</span>
+                  @php
+                    $initialGuests = $tour->min_guests ?? 2;
+                    $pricePerPerson = $tour->price_per_person ?? 0;
+                    $initialTotal = $initialGuests * $pricePerPerson;
+                  @endphp
+                  <span class="breakdown-value" data-subtotal="{{ $initialTotal }}">${{ number_format($initialTotal, 2) }}</span>
                 </div>
                 <div class="breakdown-item breakdown-item--total">
                   <span class="breakdown-label">Total</span>
-                  <span class="breakdown-value breakdown-total" data-total="100.00">$100.00</span>
+                  <span class="breakdown-value breakdown-total" data-total="{{ $initialTotal }}">${{ number_format($initialTotal, 2) }}</span>
                 </div>
               </div>
-              <p class="breakdown-note">Free cancellation up to 24 hours before the tour</p>
+              <p class="breakdown-note">Free cancellation up to {{ $tour->cancellation_hours ?? 24 }} hours before the tour</p>
             </div>
 
             <!-- Trust Badges -->
