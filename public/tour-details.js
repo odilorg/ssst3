@@ -161,7 +161,9 @@ let BASE_PRICE = 0;
 
 // Try to read from data attribute first (server-rendered)
 if (breakdownUnitPrice) {
-  BASE_PRICE = parseFloat(breakdownUnitPrice.getAttribute('data-unit-price')) || 0;
+  const attrPrice = breakdownUnitPrice.getAttribute('data-unit-price');
+  console.log('Data attribute price:', attrPrice);
+  BASE_PRICE = parseFloat(attrPrice) || 0;
 }
 
 // If still 0, try reading from tour-data JSON
@@ -170,12 +172,15 @@ if (BASE_PRICE === 0) {
   if (tourDataEl) {
     try {
       const tourData = JSON.parse(tourDataEl.textContent);
+      console.log('Tour data:', tourData);
       BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
     } catch (e) {
       console.error('Failed to parse tour data:', e);
     }
   }
 }
+
+console.log('Final BASE_PRICE:', BASE_PRICE);
 
 /**
  * Update price based on guest count
