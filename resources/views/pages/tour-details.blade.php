@@ -643,13 +643,6 @@
                 WhatsApp: +998 90 123 45 67
               </a>
               
-              <!-- Back to Top Button -->
-              <button id="scroll-to-top-btn" class="btn btn--scroll-top btn--block" aria-label="Scroll to top">
-                <svg class="icon icon--arrow-up" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
-                Back to Top
-              </button>
             </div>
 
           </div>
@@ -1164,7 +1157,6 @@
   text-shadow: none;
 }
 </style>
-/* Back to Top Button */.btn--scroll-top {    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);    color: white;    border: none;    margin-top: 0.75rem;    display: flex;    align-items: center;    justify-content: center;    gap: 0.5rem;    font-weight: 600;    transition: all 0.3s ease;}.btn--scroll-top:hover {    background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);    transform: translateY(-2px);    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);}.btn--scroll-top:active {    transform: translateY(0);}.icon--arrow-up {    animation: bounce-up 2s ease-in-out infinite;}@keyframes bounce-up {    0%, 100% {        transform: translateY(0);    }    50% {        transform: translateY(-4px);    }}.btn--scroll-top:hover .icon--arrow-up {    animation: none;    transform: translateY(-2px);}
 @endpush
 
 
@@ -1174,19 +1166,6 @@
 <script src="{{ asset('js/booking-form.js') }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>
 <script>
-  // Back to Top Button
-  document.addEventListener("DOMContentLoaded", function() {
-    const scrollToTopBtn = document.getElementById("scroll-to-top-btn");
-    
-    if (scrollToTopBtn) {
-      scrollToTopBtn.addEventListener("click", function() {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-      });
-    }
-  });
 </script>
 <script src="{{ asset('js/tour-reviews.js') }}"></script>
 @endpush
