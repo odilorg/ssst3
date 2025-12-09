@@ -14,7 +14,9 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class TourForm
 {
@@ -644,9 +646,441 @@ class TourForm
                                 ->collapsed(),
                         ]),
                 ])
-                
+
                 ->persistTabInQueryString()
                 ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * Get wizard steps for tour creation
+     */
+    public static function getWizardSteps(): array
+    {
+        return [
+            // Step 1: Basic Information
+            Step::make('Основная информация')
+                ->description('Дайте туру название и выберите тип')
+                ->icon('heroicon-o-information-circle')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    TextInput::make('title')
+                        ->label('Название тура')
+                        ->required()
+                        ->maxLength(255)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn ($state, callable $set) =>
+                            $set('slug', Str::slug($state))
+                        )
+                        ->placeholder('Например: Однодневный тур по Самарканду')
+                        ->columnSpanFull(),
+
+                    TextInput::make('slug')
+                        ->label('URL slug')
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true)
+                        ->helperText('Автоматически генерируется из названия')
+                        ->columnSpanFull(),
+
+                    Select::make('tour_type')
+                        ->label('Тип тура')
+                        ->options([
+                            'private_only' => 'Private Only (Только частный)',
+                            'group_only' => 'Group Only (Только групповой)',
+                            'hybrid' => 'Hybrid (Частный и групповой)',
+                        ])
+                        ->required()
+                        ->default('private_only')
+                        ->helperText('Выберите тип проведения тура'),
+
+                    Select::make('city_id')
+                        ->label('Город')
+                        ->relationship('city', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->createOptionForm([
+                            TextInput::make('name')->required(),
+                            Textarea::make('description'),
+                        ])
+                        ->helperText('Основной город тура'),
+
+                    Select::make('categories')
+                        ->label('Категории')
+                        ->relationship(
+                            name: 'categories',
+                            modifyQueryUsing: fn ($query) =>
+                                $query->where('is_active', true)->orderBy('display_order')
+                        )
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->translated_name)
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->helperText('Выберите одну или несколько категорий')
+                        ->columnSpanFull(),
+
+                    TextInput::make('duration_days')
+                        ->label('Продолжительность (дни)')
+                        ->numeric()
+                        ->required()
+                        ->minValue(1)
+                        ->default(1)
+                        ->helperText('Количество дней тура'),
+
+                    TextInput::make('duration_text')
+                        ->label('Текст продолжительности')
+                        ->maxLength(100)
+                        ->placeholder('4 hours')
+                        ->helperText('Например: "4 hours" или "5 Days / 4 Nights"'),
+
+                    Toggle::make('is_active')
+                        ->label('Опубликовать тур')
+                        ->default(true)
+                        ->onColor('success')
+                        ->offColor('danger')
+                        ->helperText('Включите, чтобы тур отображался на сайте')
+                        ->inline(false)
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+
+            // Step 2: Description & Content
+            Step::make('Описание и контент')
+                ->description('Добавьте подробное описание и основные моменты')
+                ->icon('heroicon-o-document-text')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Textarea::make('short_description')
+                        ->label('Краткое описание')
+                        ->maxLength(255)
+                        ->rows(2)
+                        ->placeholder('Краткое описание для карточки тура (1-2 предложения)')
+                        ->helperText('Отображается в списке туров и карточках')
+                        ->hint(fn ($state) => strlen($state ?? '') . '/255 символов')
+                        ->live(debounce: 500)
+                        ->columnSpanFull(),
+
+                    RichEditor::make('long_description')
+                        ->label('Подробное описание')
+                        ->toolbarButtons([
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletList',
+                            'orderedList',
+                            'h2',
+                            'h3',
+                        ])
+                        ->placeholder('Полное описание тура...')
+                        ->helperText('Подробное описание тура для страницы детального просмотра')
+                        ->columnSpanFull(),
+
+                    Section::make('Основные моменты и включения')
+                        ->schema([
+                            TagsInput::make('highlights')
+                                ->label('Основные моменты (Highlights)')
+                                ->helperText('Нажмите Enter после каждого пункта. Максимум 10.')
+                                ->placeholder('Добавьте основной момент...')
+                                ->columnSpanFull(),
+
+                            TagsInput::make('included_items')
+                                ->label('Что включено')
+                                ->helperText('Нажмите Enter после каждого пункта. Максимум 20.')
+                                ->placeholder('Добавьте что включено...')
+                                ->columnSpanFull(),
+
+                            TagsInput::make('excluded_items')
+                                ->label('Что НЕ включено')
+                                ->helperText('Нажмите Enter после каждого пункта. Максимум 20.')
+                                ->placeholder('Добавьте что не включено...')
+                                ->columnSpanFull(),
+
+                            TagsInput::make('languages')
+                                ->label('Языки проведения')
+                                ->suggestions(['English', 'Russian', 'French', 'German', 'Spanish', 'Italian', 'Japanese', 'Chinese'])
+                                ->helperText('На каких языках доступен тур')
+                                ->columnSpanFull(),
+                        ])
+                        ->collapsible(),
+                ]),
+
+            // Step 3: Pricing & Capacity
+            Step::make('Цены и вместимость')
+                ->description('Установите цены и лимиты группы')
+                ->icon('heroicon-o-currency-dollar')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Section::make('Ценообразование')
+                        ->schema([
+                            TextInput::make('price_per_person')
+                                ->label('Цена за человека')
+                                ->numeric()
+                                ->required()
+                                ->minValue(0)
+                                ->prefix('$')
+                                ->placeholder('100')
+                                ->helperText('Базовая цена за одного гостя'),
+
+                            Select::make('currency')
+                                ->label('Валюта')
+                                ->options([
+                                    'USD' => '🇺🇸 USD - Доллар США',
+                                    'EUR' => '🇪🇺 EUR - Евро',
+                                    'UZS' => '🇺🇿 UZS - Сум',
+                                    'RUB' => '🇷🇺 RUB - Рубль',
+                                    'GBP' => '🇬🇧 GBP - Фунт',
+                                ])
+                                ->required()
+                                ->default('USD')
+                                ->searchable(),
+                        ])
+                        ->columns(2),
+
+                    Section::make('Вместимость группы')
+                        ->schema([
+                            TextInput::make('min_guests')
+                                ->label('Минимум гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->helperText('Минимальное количество для проведения тура'),
+
+                            TextInput::make('max_guests')
+                                ->label('Максимум гостей')
+                                ->numeric()
+                                ->required()
+                                ->minValue(1)
+                                ->default(15)
+                                ->helperText('Максимальный размер группы'),
+                        ])
+                        ->columns(2),
+                ])
+                ->columns(2),
+
+            // Step 4: Images
+            Step::make('Изображения')
+                ->description('Загрузите главное фото и галерею')
+                ->icon('heroicon-o-photo')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Section::make('Главное изображение')
+                        ->description('Основное фото для карточки и заголовка тура')
+                        ->schema([
+                            FileUpload::make('hero_image')
+                                ->label('Главное изображение (Hero)')
+                                ->image()
+                                ->directory('tours/heroes')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor()
+                                ->imageEditorAspectRatios(['16:9', '3:2', '4:3'])
+                                ->imageCropAspectRatio('16:9')
+                                ->imageResizeTargetWidth(1200)
+                                ->imageResizeTargetHeight(675)
+                                ->maxSize(5120)
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                ->openable()
+                                ->downloadable()
+                                ->helperText('Рекомендуемый размер: 1200×675px (16:9). Макс. 5MB. Форматы: JPG, PNG, WebP')
+                                ->columnSpanFull(),
+                        ]),
+
+                    Section::make('Галерея')
+                        ->description('Дополнительные фотографии тура (до 15 изображений)')
+                        ->schema([
+                            Repeater::make('gallery_images')
+                                ->label('Изображения галереи')
+                                ->schema([
+                                    FileUpload::make('path')
+                                        ->label('Изображение')
+                                        ->image()
+                                        ->directory('tours/gallery')
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->imageEditor()
+                                        ->imageEditorAspectRatios(['16:9', '4:3', '1:1', null])
+                                        ->imageResizeTargetWidth(1200)
+                                        ->maxSize(5120)
+                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                        ->openable()
+                                        ->required()
+                                        ->columnSpanFull(),
+                                    TextInput::make('alt')
+                                        ->label('Alt текст')
+                                        ->placeholder('Описание изображения для SEO')
+                                        ->maxLength(255),
+                                ])
+                                ->grid(2)
+                                ->itemLabel(fn (array $state): ?string => $state['alt'] ?? 'Изображение')
+                                ->collapsible()
+                                ->collapsed()
+                                ->cloneable()
+                                ->reorderable()
+                                ->reorderableWithButtons()
+                                ->addActionLabel('+ Добавить изображение')
+                                ->defaultItems(0)
+                                ->maxItems(15)
+                                ->columnSpanFull(),
+                        ])
+                        ->collapsible(),
+                ]),
+
+            // Step 5: Meeting & Booking
+            Step::make('Встреча и бронирование')
+                ->description('Настройте место встречи и условия бронирования')
+                ->icon('heroicon-o-map-pin')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Section::make('Место встречи')
+                        ->schema([
+                            Textarea::make('meeting_point_address')
+                                ->label('Адрес места встречи')
+                                ->rows(2)
+                                ->placeholder('Площадь Регистан, возле главного входа')
+                                ->columnSpanFull(),
+
+                            Textarea::make('meeting_instructions')
+                                ->label('Инструкции для встречи')
+                                ->rows(3)
+                                ->placeholder('Гид будет держать табличку с вашим именем. Номер телефона для связи...')
+                                ->columnSpanFull(),
+
+                            TextInput::make('meeting_lat')
+                                ->label('Широта (Latitude)')
+                                ->numeric()
+                                ->placeholder('39.6542')
+                                ->helperText('Координаты для карты'),
+
+                            TextInput::make('meeting_lng')
+                                ->label('Долгота (Longitude)')
+                                ->numeric()
+                                ->placeholder('66.9597')
+                                ->helperText('Координаты для карты'),
+                        ])
+                        ->columns(2),
+
+                    Section::make('Настройки бронирования')
+                        ->schema([
+                            TextInput::make('min_booking_hours')
+                                ->label('Минимум часов до бронирования')
+                                ->numeric()
+                                ->required()
+                                ->default(24)
+                                ->suffix('часов')
+                                ->helperText('За сколько часов нужно бронировать'),
+
+                            TextInput::make('cancellation_hours')
+                                ->label('Бесплатная отмена за')
+                                ->numeric()
+                                ->required()
+                                ->default(24)
+                                ->suffix('часов')
+                                ->helperText('За сколько часов можно отменить бесплатно'),
+
+                            Toggle::make('has_hotel_pickup')
+                                ->label('Трансфер из отеля')
+                                ->default(true)
+                                ->helperText('Предлагается ли забор из отеля'),
+
+                            TextInput::make('pickup_radius_km')
+                                ->label('Радиус трансфера')
+                                ->numeric()
+                                ->default(5)
+                                ->suffix('км')
+                                ->helperText('В пределах какого радиуса'),
+
+                            Textarea::make('cancellation_policy')
+                                ->label('Политика отмены')
+                                ->rows(4)
+                                ->placeholder('Полное описание политики отмены бронирования...')
+                                ->helperText('Детальные условия отмены')
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2),
+                ]),
+
+            // Step 6: SEO & Advanced
+            Step::make('SEO и дополнительно')
+                ->description('Установите SEO настройки')
+                ->icon('heroicon-o-cog-6-tooth')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Section::make('SEO настройки')
+                        ->schema([
+                            TextInput::make('seo_title')
+                                ->label('SEO заголовок')
+                                ->maxLength(60)
+                                ->placeholder('Оставьте пустым для автогенерации')
+                                ->helperText('Пустое = автогенерация из названия тура')
+                                ->hint(fn ($state) => strlen($state ?? '') . '/60 символов')
+                                ->live(debounce: 500)
+                                ->columnSpanFull(),
+
+                            Textarea::make('seo_description')
+                                ->label('SEO описание (Meta Description)')
+                                ->maxLength(160)
+                                ->rows(3)
+                                ->placeholder('Оставьте пустым для автогенерации')
+                                ->helperText('Пустое = автогенерация из краткого описания')
+                                ->hint(fn ($state) => strlen($state ?? '') . '/160 символов')
+                                ->live(debounce: 500)
+                                ->columnSpanFull(),
+
+                            Textarea::make('seo_keywords')
+                                ->label('Ключевые слова')
+                                ->rows(2)
+                                ->placeholder('uzbekistan tours, silk road, samarkand')
+                                ->helperText('Разделяйте запятыми (необязательно)')
+                                ->columnSpanFull(),
+
+                            FileUpload::make('og_image')
+                                ->label('Изображение для соцсетей (Open Graph)')
+                                ->image()
+                                ->directory('tours/og-images')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor()
+                                ->imageCropAspectRatio('1.91:1')
+                                ->imageResizeTargetWidth(1200)
+                                ->imageResizeTargetHeight(630)
+                                ->maxSize(2048)
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                ->openable()
+                                ->helperText('Рекомендуется 1200×630px (1.91:1). Пустое = используется Hero Image.')
+                                ->columnSpanFull(),
+
+                            Toggle::make('schema_enabled')
+                                ->label('Включить Schema.org разметку')
+                                ->helperText('Структурированные данные для Google')
+                                ->default(true),
+                        ])
+                        ->collapsible(),
+
+                    Section::make('Рейтинги (только просмотр)')
+                        ->schema([
+                            TextInput::make('rating')
+                                ->label('Рейтинг')
+                                ->numeric()
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->placeholder('—')
+                                ->helperText('Автоматически'),
+
+                            TextInput::make('review_count')
+                                ->label('Количество отзывов')
+                                ->numeric()
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->placeholder('—')
+                                ->helperText('Автоматически'),
+                        ])
+                        ->columns(2)
+                        ->collapsible()
+                        ->collapsed(),
+                ])
+                ->columns(2),
+        ];
     }
 }
