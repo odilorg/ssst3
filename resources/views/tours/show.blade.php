@@ -518,10 +518,10 @@
 {!! json_encode([
   'id' => $tour->slug,
   'name' => html_entity_decode($tour->title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-  'pricePerPerson' => (float)($tour->price_per_person ?? 0),
+  'pricePerPerson' => floatval($tour->price_per_person ?? 0),
   'currency' => $tour->currency ?? 'USD',
-  'maxGuests' => (int)($tour->max_guests ?? 15),
-  'minGuests' => (int)($tour->min_guests ?? 1),
+  'maxGuests' => intval($tour->max_guests ?? 15),
+  'minGuests' => intval($tour->min_guests ?? 1),
   'duration' => $tour->duration_text ?? ($tour->duration_days . ' days')
 ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
           </script>
