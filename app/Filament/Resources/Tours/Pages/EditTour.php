@@ -41,11 +41,12 @@ class EditTour extends EditRecord
     protected function getFormActions(): array
     {
         return [
+            $this->getSaveFormAction(),
             Action::make('save_and_exit')
                 ->label('Save & Exit')
                 ->action('saveAndExit')
                 ->color('gray')
-                ->icon('heroicon-o-check'),
+                ->icon('heroicon-o-arrow-left'),
         ];
     }
 

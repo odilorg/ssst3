@@ -28,18 +28,17 @@ class CreateTour extends CreateRecord
     protected function getFormActions(): array
     {
         return [
+            $this->getSaveFormAction(),
             Action::make('save_and_exit')
                 ->label('Save & Exit')
                 ->action('saveAndExit')
                 ->color('gray')
-                ->icon('heroicon-o-check'),
+                ->icon('heroicon-o-arrow-left'),
         ];
     }
 
     public function saveAndExit(): void
     {
-        $this->form->getState();
-
         $data = $this->form->getState();
 
         $this->record = $this->handleRecordCreation($data);
