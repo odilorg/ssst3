@@ -1,6 +1,9 @@
 {{-- Tour Gallery Partial - Main hero image and thumbnail grid --}}
 @php
-    $galleryImages = is_array($tour->gallery_images) ? $tour->gallery_images : [];
+    $rawGallery = $tour->getRawOriginal('gallery_images');
+    $decodedGallery = is_string($rawGallery) ? json_decode($rawGallery, true) : $rawGallery;
+    $galleryImages = is_array($decodedGallery) ? $decodedGallery : [];
+
     // Use WebP hero image if available, fallback to original
     $heroImage = $tour->hero_image_webp ?: $tour->hero_image;
     $totalImages = count($galleryImages);
@@ -47,12 +50,17 @@
 @if($totalImages > 0)
     <div class="tour-hero__thumbnails">
         @foreach($galleryImages as $index => $image)
+            @php
+                // Handle both old format (array with path/alt) and new format (simple string)
+                $imagePath = is_array($image) ? $image['path'] : $image;
+                $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tour->title;
+            @endphp
             @if($index < 3)
                 {{-- Show first 3 thumbnails normally --}}
                 <button class="thumbnail {{ $index === 0 ? 'thumbnail--active' : '' }}" data-index="{{ $index }}" aria-label="View image {{ $index + 1 }}">
                     <img
-                        src="{{ asset('storage/' . $image['path']) }}"
-                        alt="{{ $image['alt'] ?? $tour->title }}"
+                        src="{{ asset('storage/' . $imagePath) }}"
+                        alt="{{ $imageAlt }}"
                         width="400"
                         height="300"
                         loading="lazy"
@@ -62,8 +70,8 @@
                 {{-- 4th thumbnail with overlay showing remaining count --}}
                 <button class="thumbnail thumbnail--overlay" data-index="{{ $index }}" aria-label="View all {{ $totalImages }} photos">
                     <img
-                        src="{{ asset('storage/' . $image['path']) }}"
-                        alt="{{ $image['alt'] ?? $tour->title }}"
+                        src="{{ asset('storage/' . $imagePath) }}"
+                        alt="{{ $imageAlt }}"
                         width="400"
                         height="300"
                         loading="lazy"
@@ -88,9 +96,11 @@
 {!! json_encode([
     'heroImage' => $heroImageUrl,
     'images' => collect($galleryImages)->map(function($image) use ($tour) {
+        $imagePath = is_array($image) ? $image['path'] : $image;
+        $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tour->title;
         return [
-            'src' => asset('storage/' . $image['path']),
-            'alt' => $image['alt'] ?? $tour->title
+            'src' => asset('storage/' . $imagePath),
+            'alt' => $imageAlt
         ];
     })->toArray()
 ]) !!}
