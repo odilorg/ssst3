@@ -871,7 +871,7 @@
   </script>
 
   <!-- Tour Details JavaScript -->
-  <script src="tour-details.js" defer></script>
+  <script src="tour-details.js?v={{ filemtime(public_path('tour-details.js')) }}" defer></script>
   <script src="js/gallery-lightbox.js" defer></script>
 
   <!-- Tour Reviews JavaScript -->
