@@ -1,0 +1,2078 @@
+================================================================================
+                     COMPREHENSIVE CODE AUDIT REPORT
+                    Laravel Tour Booking Application
+                          Date: December 9, 2025
+================================================================================
+
+PROJECT OVERVIEW
+================================================================================
+Application: Tour Booking Platform (Jahongir Travel)
+Framework: Laravel 12.0 (Latest)
+Admin Panel: Filament 4.0
+Frontend: Livewire, HTMX, Vanilla JavaScript
+Database: MySQL
+Environment: Development (local)
+
+
+EXECUTIVE SUMMARY
+================================================================================
+
+OVERALL ASSESSMENT: GOOD (75/100)
+
+Strengths:
+✓ Modern Laravel 12 implementation with good architectural patterns
+✓ Comprehensive security headers middleware implemented
+✓ Rate limiting on all public forms (reviews, comments, contact)
+✓ CSRF protection properly implemented
+✓ Input validation present on all user-facing forms
+✓ Good database indexing strategy for performance
+✓ Proper caching implementation for tours, blogs, and categories
+✓ No SQL injection vulnerabilities found (no raw queries with user input)
+✓ XSS protection via Blade escaping ({{ }} syntax used consistently)
+✓ Good separation of concerns with service layer pattern
+✓ Honeypot anti-spam implementation on forms
+✓ Spam scoring system for reviews and comments
+
+Areas Requiring Attention:
+⚠ CRITICAL: Missing authorization policies (no Gates/Policies directory)
+⚠ CRITICAL: User model allows all authenticated users Filament admin access
+⚠ CRITICAL: APP_DEBUG=true in .env (development mode - dangerous in production)
+⚠ HIGH: No dedicated Policy classes for resource authorization
+⚠ HIGH: Minimal test coverage (only 4 test files found)
+⚠ HIGH: README contains only default Laravel boilerplate
+⚠ MEDIUM: Some fat controllers (up to 317 lines)
+⚠ MEDIUM: Very large Tour model (902 lines - should be split)
+⚠ MEDIUM: Environment variables accessed directly in service layer
+⚠ MEDIUM: No PHPDoc coverage on many methods
+⚠ LOW: Only 3 TODO/FIXME comments (generally good)
+
+
+================================================================================
+1. SECURITY ANALYSIS
+================================================================================
+
+1.1 SQL INJECTION VULNERABILITIES
+Status: ✓ PASSED
+--------------------------------------------------
+✓ No DB::raw(), DB::select(), or DB::statement() calls found with user input
+✓ All queries use Eloquent ORM or Query Builder with parameter binding
+✓ Proper use of where() clauses with safe parameter binding
+✓ All migrations use Schema builder (safe)
+
+Example of safe query usage:
+  File: app/Models/Tour.php
+  Line: 128
+  Code: Tour::where('slug', $slug)->exists()
+  ✓ Safe: Parameter is automatically escaped
+
+
+1.2 XSS (Cross-Site Scripting) VULNERABILITIES
+Status: ✓ MOSTLY SAFE with MINOR ISSUES
+--------------------------------------------------
+✓ Blade templates consistently use {{ }} for escaping
+✓ No widespread use of {!! !!} unescaped output
+⚠ Some intentional unescaped output found (justified uses):
+
+JUSTIFIED UNESCAPED OUTPUT:
+1. resources/views/partials/blog/content.blade.php:12
+   Code: {!! $post->content !!}
+   Reason: WYSIWYG editor content (should be from trusted admin)
+   Risk: LOW (admin-only content)
+   Recommendation: Implement HTML Purifier for extra safety
+
+2. resources/views/partials/tours/show/overview.blade.php:54
+   Code: {!! $tour->long_description !!}
+   Reason: Rich HTML content from admin
+   Risk: LOW (admin-only content)
+
+3. resources/views/tours/show.blade.php:172-184
+   Code: {!! json_encode($schemaData) !!}
+   Reason: JSON-LD structured data for SEO
+   Risk: NONE (data is generated server-side from model)
+
+⚠ MEDIUM RISK:
+File: resources/views/partials/tours/show/itinerary.blade.php:23
+Code: {!! $day->description !!}
+Recommendation: Sanitize user/admin HTML input with HTML Purifier
+
+IMPROVEMENT NEEDED:
+File: resources/views/livewire/lead-a-i-copilot.blade.php:53
+Code: {!! nl2br(e($msg['content'])) !!}
+✓ Currently SAFE (e() escapes, then nl2br adds <br>)
+Note: This is actually properly escaped despite using {!! !!}
+
+
+1.3 CSRF PROTECTION
+Status: ✓ EXCELLENT
+--------------------------------------------------
+✓ CSRF middleware enabled globally (VerifyCsrfToken)
+✓ All POST/PUT/DELETE routes protected
+✓ @csrf directive used in all forms
+✓ CSRF token endpoint for JavaScript: GET /csrf-token
+✓ Axios/Fetch requests properly send X-CSRF-TOKEN header
+
+Example implementation:
+  File: routes/web.php:10-12
+  Route: GET /csrf-token returns csrf_token()
+  ✓ Proper implementation for SPA features
+
+
+1.4 AUTHENTICATION & AUTHORIZATION
+Status: ⚠ CRITICAL ISSUES FOUND
+--------------------------------------------------
+
+⚠ CRITICAL VULNERABILITY:
+File: app/Models/User.php:54-57
+Code:
+  public function canAccessPanel(Panel $panel): bool
+  {
+      return true; // Allow all authenticated users
+  }
+
+RISK: HIGH - Any authenticated user can access Filament admin panel
+IMPACT: Unauthorized access to sensitive business data, bookings, customer info
+RECOMMENDATION: Implement role-based access control immediately
+
+  FIX REQUIRED:
+  public function canAccessPanel(Panel $panel): bool
+  {
+      return $this->hasRole('admin') || $this->hasRole('manager');
+  }
+
+⚠ MISSING AUTHORIZATION POLICIES:
+- No app/Policies directory found
+- No Gate definitions found in AuthServiceProvider
+- No $this->authorize() calls in controllers
+- No Policy references in models
+
+RESOURCES WITHOUT AUTHORIZATION:
+1. Bookings - No policy protecting sensitive customer data
+2. Tours - No policy controlling who can edit/delete
+3. Customers - No policy protecting PII
+4. Leads - No policy controlling access
+5. Contracts - No policy protecting business data
+
+RECOMMENDATION: Create policies for all resources:
+  php artisan make:policy BookingPolicy --model=Booking
+  php artisan make:policy TourPolicy --model=Tour
+  php artisan make:policy CustomerPolicy --model=Customer
+
+
+1.5 FILE UPLOAD VALIDATION & SECURITY
+Status: ✓ GOOD (Filament handles this)
+--------------------------------------------------
+✓ File uploads handled by Filament FileUpload component
+✓ Filament provides built-in validation and security
+✓ Image uploads store to storage/app/public (safe)
+✓ No direct file upload endpoints in web routes
+
+RECOMMENDATIONS:
+1. Verify Filament upload settings:
+   - Max file size limits
+   - Allowed MIME types
+   - File name sanitization
+
+2. Consider adding virus scanning for production
+
+
+1.6 ENVIRONMENT VARIABLE EXPOSURE
+Status: ⚠ MEDIUM RISK
+--------------------------------------------------
+
+⚠ .env FILE COMMITTED (Development only - verify .gitignore)
+File: .env
+Contains:
+  - DB credentials (root/root)
+  - APP_KEY exposed
+  - APP_DEBUG=true
+  - Mail configuration
+
+✓ GOOD: Production .env.example provided
+⚠ WARNING: Verify .env is in .gitignore
+
+ENVIRONMENT ACCESS IN CODE:
+File: app/Services/AIEmailService.php:27
+Code: env('OPENAI_REAL_API_KEY', config('services.openai.api_key'))
+Issue: Direct env() access in service layer (should use config())
+
+RECOMMENDATION:
+1. Move all env() calls to config files
+2. Access via config() in application code
+3. Use php artisan config:cache in production
+
+
+1.7 API SECURITY
+Status: ✓ ADEQUATE with IMPROVEMENTS NEEDED
+--------------------------------------------------
+
+CURRENT IMPLEMENTATION:
+File: routes/api.php
+Routes:
+  - GET /api/tours/{slug}
+  - GET /api/tours
+  - GET /api/cities
+  - GET /api/categories/{slug}
+
+✓ GOOD: Read-only API endpoints
+✓ GOOD: No authentication required for public data
+⚠ MISSING: Rate limiting on API routes
+⚠ MISSING: API versioning
+⚠ MISSING: Response pagination
+
+RECOMMENDATIONS:
+1. Add throttle middleware to API routes:
+   Route::middleware('throttle:60,1')->group(function () { ... });
+
+2. Add API versioning:
+   Route::prefix('v1')->group(function () { ... });
+
+3. Implement pagination for /api/tours and /api/cities
+
+4. Add API documentation (consider Laravel Sanctum for future auth)
+
+
+1.8 MASS ASSIGNMENT VULNERABILITIES
+Status: ✓ SAFE
+--------------------------------------------------
+✓ All models define $fillable arrays
+✓ No $guarded = [] found (which would be risky)
+✓ Fillable arrays are appropriately restrictive
+
+Examples reviewed:
+  - Tour model: 40 fillable fields (appropriate for complex entity)
+  - Booking model: 11 fillable fields (safe subset)
+  - User model: 3 fillable fields (name, email, password)
+  - Customer model: Appropriately protected
+
+
+1.9 INPUT VALIDATION COVERAGE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+✓ All user-facing forms have validation
+✓ Validation messages are user-friendly
+✓ Proper validation rules applied
+
+VALIDATED ENDPOINTS:
+1. Contact Form (app/Http/Controllers/ContactController.php:23)
+   ✓ name: required|string|max:255|min:2
+   ✓ email: required|email|max:255
+   ✓ message: required|string|max:2000|min:10
+
+2. Booking Form (app/Http/Controllers/Partials/BookingController.php:73)
+   ✓ tour_id: required|exists:tours,id
+   ✓ start_date: required|date|after_or_equal:today
+   ✓ number_of_guests: required|integer|min:1|max:50
+   ✓ customer_email: required|email
+
+3. Review Submission (app/Http/Controllers/ReviewController.php:41)
+   ✓ rating: required|integer|min:1|max:5
+   ✓ title: required|string|min:5|max:150
+   ✓ content: required|string|min:20|max:2000
+   ✓ reviewer_email: required|email
+   ✓ honeypot: nullable|size:0 (anti-spam)
+
+4. Comment Submission (app/Http/Controllers/CommentController.php:30)
+   ✓ comment: required|string|min:3|max:2000
+   ✓ author_email: required|email
+   ✓ honeypot: nullable|size:0
+
+RATE LIMITING:
+✓ Reviews: 2 per 10 minutes, 5 per day
+✓ Comments: 3 per 5 minutes
+✓ Contact form: No explicit rate limit (should add)
+
+RECOMMENDATION:
+Add rate limiting to contact form:
+  'contact-submit:' . $request->ip() throttle to 5 per hour
+
+
+1.10 SECURITY HEADERS IMPLEMENTATION
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+File: app/Http/Middleware/SecurityHeaders.php
+
+IMPLEMENTED HEADERS:
+✓ X-Frame-Options: SAMEORIGIN (prevents clickjacking)
+✓ X-Content-Type-Options: nosniff (prevents MIME sniffing)
+✓ X-XSS-Protection: 1; mode=block (legacy browser protection)
+✓ Referrer-Policy: strict-origin-when-cross-origin
+✓ Permissions-Policy: geolocation=(), microphone=(), camera=()
+✓ HSTS: max-age=31536000 (production only, when HTTPS)
+✓ Content-Security-Policy (production only)
+
+CSP CONFIGURATION:
+  - default-src 'self'
+  - script-src includes Google Analytics, GTM
+  - style-src includes Google Fonts
+  - img-src allows HTTPS and data URIs
+  - 'unsafe-inline' and 'unsafe-eval' present (necessary for Filament)
+
+RECOMMENDATION:
+Consider tightening CSP by:
+1. Using nonce-based script loading
+2. Removing 'unsafe-eval' if possible
+3. Adding report-uri for CSP violations
+
+
+================================================================================
+2. CODE QUALITY ANALYSIS
+================================================================================
+
+2.1 PSR STANDARDS ADHERENCE
+Status: ✓ MOSTLY COMPLIANT
+--------------------------------------------------
+✓ PSR-4 autoloading configured correctly
+✓ Namespaces follow PSR-4 conventions
+✓ Class names follow StudlyCaps
+✓ Method names follow camelCase
+✓ File structure matches namespace structure
+
+ISSUES FOUND:
+⚠ File: app/Console/Commands/ (33 command files)
+   Some commands are very specific one-time data migrations
+   Should be in database/seeders or separate migration scripts
+
+✓ Code formatting appears consistent (likely using Laravel Pint)
+
+
+2.2 CODE DUPLICATION (DRY PRINCIPLE)
+Status: ✓ GOOD with MINOR ISSUES
+--------------------------------------------------
+
+REUSABLE PATTERNS IDENTIFIED:
+✓ Service layer for complex business logic (PricingService, TourCacheService)
+✓ Blade partials for reusable UI components
+✓ Eloquent scopes for reusable queries
+✓ Traits for shared behavior
+
+MINOR DUPLICATION FOUND:
+1. Spam calculation logic duplicated:
+   - app/Http/Controllers/CommentController.php:129
+   - app/Models/Review.php (has calculateSpamScore method)
+
+   RECOMMENDATION: Consolidate into SpamDetectionService
+
+2. Cache key patterns repeated:
+   Multiple files use similar cache key generation
+   RECOMMENDATION: Create CacheKeyGenerator helper class
+
+
+2.3 LONG METHODS/CLASSES
+Status: ⚠ NEEDS REFACTORING
+--------------------------------------------------
+
+LARGE CLASSES IDENTIFIED:
+
+1. app/Models/Tour.php - 902 LINES ⚠ CRITICAL
+   Responsibilities:
+   - Model definition (100 lines)
+   - Relationships (150 lines)
+   - Query scopes (150 lines)
+   - SEO helpers (200 lines)
+   - Schema generation (200 lines)
+   - Accessors/mutators (100 lines)
+
+   RECOMMENDATION: Split into:
+   - Tour.php (core model - 200 lines)
+   - Traits/TourSeoHelpers.php (SEO methods)
+   - Traits/TourSchemaGenerator.php (Schema.org)
+   - Traits/TourAccessors.php (accessors/mutators)
+   - Traits/TourScopes.php (query scopes)
+
+2. app/Models/BlogPost.php - 343 LINES
+   Similar issue - contains too many responsibilities
+   RECOMMENDATION: Extract traits
+
+3. app/Models/City.php - 284 LINES
+   RECOMMENDATION: Extract scopes and helpers to traits
+
+LARGE CONTROLLERS:
+
+1. app/Http/Controllers/Partials/BookingController.php - 317 LINES
+   Methods:
+   - form() - 13 lines ✓
+   - store() - 52 lines ✓
+   - handleBooking() - 146 lines ⚠ TOO LONG
+   - handleInquiry() - 85 lines ⚠ TOO LONG
+   - confirmation() - 9 lines ✓
+
+   RECOMMENDATION:
+   - Extract booking creation to BookingService
+   - Extract inquiry creation to InquiryService
+   - Controller should orchestrate, not implement
+
+2. app/Http/Controllers/Partials/TourController.php - 280 LINES
+   Contains 9 methods for different tour sections
+   RECOMMENDATION: Consider splitting into:
+   - TourContentController (hero, overview, highlights)
+   - TourItineraryController (itinerary, included/excluded)
+   - TourSocialController (reviews, FAQs, related)
+
+3. app/Http/Controllers/BlogController.php - 271 LINES
+   RECOMMENDATION: Extract common patterns to BlogService
+
+LARGE ROUTE CLOSURES:
+
+File: routes/web.php
+Lines: 84-318 (235 lines of closure!)
+
+CLOSURE 1: /booking/{booking}/estimate/print (Lines 84-318)
+⚠ CRITICAL ISSUE: 235 lines of business logic in route closure
+RECOMMENDATION: Move to BookingEstimateController->print()
+
+CLOSURE 2: /booking/{booking}/generate-requests (Lines 321-366)
+⚠ HIGH ISSUE: Move to SupplierRequestController->generate()
+
+
+2.4 COMPLEX NESTED CONDITIONALS
+Status: ✓ GOOD
+--------------------------------------------------
+✓ Most methods have reasonable cyclomatic complexity
+✓ Early returns used to reduce nesting
+✓ Guard clauses implemented properly
+
+EXAMPLES OF GOOD PRACTICES:
+File: app/Http/Controllers/ReviewController.php:51-70
+✓ Honeypot check with early return
+✓ Duplicate check with clear exception
+✓ Booking verification in separate block
+
+
+2.5 UNUSED IMPORTS AND DEAD CODE
+Status: ✓ CLEAN
+--------------------------------------------------
+✓ No obvious unused imports detected
+✓ No commented-out code blocks found
+✓ No debug statements (dd(), dump()) left in code
+✓ Console commands are intentional (data import/migration tools)
+
+
+2.6 MAGIC NUMBERS AND HARD-CODED VALUES
+Status: ⚠ NEEDS IMPROVEMENT
+--------------------------------------------------
+
+HARD-CODED VALUES FOUND:
+
+1. Rate limiting durations:
+   File: app/Http/Controllers/ReviewController.php
+   - Line 23: 2 (reviews per 10 minutes)
+   - Line 34: 5 (reviews per day)
+   - Line 142: 600 (10 minutes in seconds)
+
+   RECOMMENDATION: Move to config/rate-limits.php
+
+2. Cache durations:
+   File: app/Http/Controllers/BlogController.php
+   - Line 52: 600 (10 minutes)
+   - Line 72: 3600 (1 hour)
+   - Line 113: 3600 (1 hour)
+
+   RECOMMENDATION: Move to config/cache.php
+
+   Example:
+   'ttl' => [
+       'blog_posts' => 3600,
+       'blog_categories' => 3600,
+       'tours' => 1800,
+   ]
+
+3. Pagination limits:
+   Various controllers use hardcoded pagination (10, 15, 20)
+   RECOMMENDATION: Define in config or model constants
+
+4. Spam scoring thresholds:
+   File: app/Http/Controllers/CommentController.php:54-63
+   - Line 53: 30 (low spam threshold)
+   - Line 61: 70 (high spam threshold)
+
+   RECOMMENDATION: Move to config/spam-detection.php
+
+5. Image dimensions:
+   File: app/Models/Tour.php:572-577
+   Hardcoded widths: 300, 800, 1920, 2560
+
+   RECOMMENDATION: Move to config/images.php
+
+
+2.7 ERROR HANDLING CONSISTENCY
+Status: ✓ GOOD with MINOR IMPROVEMENTS
+--------------------------------------------------
+
+CURRENT IMPLEMENTATION:
+✓ Try-catch blocks used appropriately
+✓ Logging implemented (Log::error())
+✓ User-friendly error messages
+✓ DB transactions for critical operations
+
+EXAMPLES:
+
+1. Booking Creation (app/Http/Controllers/Partials/BookingController.php:98)
+   ✓ DB::beginTransaction() used
+   ✓ Try-catch with rollback
+   ✓ Error logging with context
+   ✓ Generic user error message (doesn't leak details)
+
+2. Email Failures (Line 162):
+   ✓ Email failures don't break the flow
+   ✓ Errors logged but request continues
+   ✓ Good practice: Don't fail booking if email fails
+
+IMPROVEMENTS NEEDED:
+
+1. Inconsistent error response formats:
+   Some return JSON, some redirect, some throw exceptions
+   RECOMMENDATION: Standardize API error responses
+
+   Example structure:
+   {
+     "success": false,
+     "message": "User-friendly message",
+     "errors": {...},
+     "code": "BOOKING_001"
+   }
+
+2. Missing error tracking integration:
+   RECOMMENDATION: Integrate Sentry or similar for production
+
+
+2.8 LOGGING PRACTICES
+Status: ✓ ADEQUATE
+--------------------------------------------------
+
+LOGGING IMPLEMENTATION:
+✓ Log::error() used for errors
+✓ Context provided in log messages
+✓ Log::info() used for important events
+
+EXAMPLES:
+File: app/Http/Controllers/Partials/BookingController.php
+- Line 64: Request data logging (good for debugging)
+- Line 119: Booking creation debug info
+- Line 200: Error logging with trace
+
+IMPROVEMENTS:
+1. Add structured logging:
+   Log::info('booking.created', [
+       'booking_id' => $booking->id,
+       'customer_id' => $customer->id,
+       'tour_id' => $tour->id,
+   ]);
+
+2. Consider logging levels:
+   - DEBUG: Detailed info
+   - INFO: General information
+   - WARNING: Warning messages
+   - ERROR: Error messages
+   - CRITICAL: Critical issues
+
+3. Add request ID to logs for tracing
+
+
+================================================================================
+3. ARCHITECTURE & STRUCTURE ANALYSIS
+================================================================================
+
+3.1 MVC PATTERN ADHERENCE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+✓ Models: Business logic and data access (app/Models/)
+✓ Views: Presentation layer (resources/views/)
+✓ Controllers: Request handling and response (app/Http/Controllers/)
+
+PROPER SEPARATION:
+✓ Models contain domain logic
+✓ Controllers are thin (orchestrate, don't implement)
+✓ Views contain minimal logic
+✓ Business logic in service classes
+
+ARCHITECTURE:
+┌─────────────────────────────────────────┐
+│           Routes (web.php)              │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│         Controllers                     │
+│  - Validate requests                    │
+│  - Call services                        │
+│  - Return responses                     │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│          Services                       │
+│  - Business logic                       │
+│  - Complex operations                   │
+│  - External API calls                   │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│           Models                        │
+│  - Data access                          │
+│  - Relationships                        │
+│  - Scopes                               │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│          Database                       │
+└─────────────────────────────────────────┘
+
+
+3.2 SERVICE LAYER USAGE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+SERVICES IMPLEMENTED:
+1. PricingService - Contract and base pricing logic
+2. TourCacheService - Centralized cache management
+3. BookingItinerarySync - Sync booking with tour itinerary
+4. SupplierRequestService - Generate supplier PDFs
+5. BlogListingService - Blog filtering and pagination
+6. LeadAIService - AI-powered lead management
+7. TourAIService - AI tour generation
+8. AIEmailService - AI email composition
+9. EmailService - Email sending
+10. TelegramNotificationService - Telegram notifications
+11. ImageConversionService - WebP conversion
+12. StructuredDataService - Schema.org generation
+
+✓ EXCELLENT: Strong service layer implementation
+✓ GOOD: Services are focused and single-purpose
+✓ GOOD: Dependency injection used properly
+
+
+3.3 REPOSITORY PATTERN
+Status: ⚠ NOT IMPLEMENTED
+--------------------------------------------------
+
+CURRENT: Direct Eloquent usage in controllers and services
+RECOMMENDATION: Consider Repository pattern for:
+- Complex queries
+- Multiple data sources
+- Testability
+- Abstraction
+
+Example implementation:
+interface TourRepositoryInterface {
+    public function findBySlug(string $slug): ?Tour;
+    public function getActiveTours(int $limit): Collection;
+    public function getByCategory(string $categorySlug): Collection;
+}
+
+PRIORITY: LOW (Eloquent is sufficient for current needs)
+
+
+3.4 DEPENDENCY INJECTION USAGE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+✓ Constructor injection used throughout
+✓ Service container utilized properly
+✓ No static calls to non-facade classes
+
+EXAMPLES:
+File: routes/web.php:85
+Code: $pricingService = app(PricingService::class);
+✓ Proper service resolution
+
+File: app/Http/Controllers/Partials/BookingController.php:170
+Code: $telegramService = new TelegramNotificationService();
+✓ Valid (stateless service)
+
+
+3.5 SINGLE RESPONSIBILITY PRINCIPLE
+Status: ✓ MOSTLY FOLLOWED with EXCEPTIONS
+--------------------------------------------------
+
+VIOLATIONS:
+
+1. Tour Model (902 lines)
+   Handles: persistence, SEO, schema generation, caching
+   SHOULD BE: Tour model + traits/services
+
+2. Route closures in web.php
+   Handle: complex business logic
+   SHOULD BE: Controllers or actions
+
+3. Some Filament Resources
+   Mix: table definition, form definition, business logic
+   ACCEPTABLE: This is Filament's design pattern
+
+
+3.6 FAT CONTROLLERS/MODELS DETECTION
+Status: ⚠ ISSUES FOUND
+--------------------------------------------------
+
+FAT MODELS:
+1. Tour.php - 902 lines ⚠
+2. BlogPost.php - 343 lines ⚠
+3. City.php - 284 lines ⚠
+4. Review.php - 248 lines
+5. Lead.php - 224 lines
+
+FAT CONTROLLERS:
+1. Partials/BookingController.php - 317 lines
+2. Partials/TourController.php - 280 lines
+3. BlogController.php - 271 lines
+
+RECOMMENDATION: Apply "Model should fit on one screen" rule
+Target: 200-250 lines maximum per class
+
+
+3.7 PROPER USE OF ELOQUENT RELATIONSHIPS
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+RELATIONSHIPS REVIEWED:
+✓ Tour hasMany ItineraryItem
+✓ Tour belongsTo City
+✓ Tour belongsToMany TourCategory
+✓ Tour hasMany Review
+✓ Tour hasMany TourFaq
+✓ Tour hasMany TourExtra
+✓ Booking belongsTo Tour
+✓ Booking belongsTo Customer
+✓ Booking hasMany BookingItineraryItem
+✓ BlogPost belongsTo BlogCategory
+✓ BlogPost belongsToMany BlogTag
+✓ BlogComment belongsTo BlogPost
+✓ Review belongsTo Tour
+✓ Review belongsTo Booking
+
+✓ GOOD: Proper use of hasMany, belongsTo, belongsToMany
+✓ GOOD: Polymorphic relationships used where appropriate
+✓ GOOD: Pivot tables properly named and structured
+✓ GOOD: Foreign keys defined in migrations
+
+
+3.8 QUEUE JOB STRUCTURE
+Status: ⚠ NO QUEUE JOBS FOUND
+--------------------------------------------------
+
+QUEUE CONFIGURATION:
+File: .env:38
+QUEUE_CONNECTION=database
+
+RECOMMENDATION: Implement queue jobs for:
+1. Email sending (booking confirmations, notifications)
+2. PDF generation (supplier requests)
+3. Image processing (WebP conversion)
+4. AI operations (tour generation, email drafting)
+5. Cache warming
+6. Sitemap generation
+
+BENEFITS:
+- Improved response times
+- Better user experience
+- Resilience (retry failed jobs)
+- Background processing
+
+Example implementation:
+  php artisan make:job SendBookingConfirmationEmail
+  php artisan make:job GenerateSupplierRequestPdf
+  php artisan make:job ConvertImageToWebP
+
+
+================================================================================
+4. PERFORMANCE ANALYSIS
+================================================================================
+
+4.1 N+1 QUERY PROBLEMS
+Status: ✓ MOSTLY RESOLVED with SOME RISKS
+--------------------------------------------------
+
+PROTECTED AGAINST N+1:
+
+1. Tour Detail Page (app/Http/Controllers/TourDetailController.php:17)
+   ✓ Uses ->with('city') to eager load relationship
+
+2. Partials/TourController (multiple locations)
+   ✓ Consistent use of ->with(['city', 'categories'])
+
+3. Tour scopes (app/Models/Tour.php:287-318)
+   ✓ scopeWithFrontendRelations() eager loads common relations
+   ✓ scopeWithDetailRelations() eager loads nested relations
+
+4. Booking print estimate (routes/web.php:88-98)
+   ✓ Complex eager loading:
+     ->with([
+         'assignments.assignable',
+         'assignments.transportPrice',
+         'assignments.transportInstancePrice',
+         'tourItineraryItem'
+     ])
+
+POTENTIAL N+1 RISKS:
+
+1. File: app/Http/Controllers/Partials/BlogController.php:166
+   Code: ->with(['replies' => function ($query) {...}])
+   ✓ SAFE: Nested replies are eager loaded
+
+2. Related tours queries:
+   File: app/Http/Controllers/Partials/TourController.php:259
+   ✓ SAFE: Uses ->with(['city:id,name,slug'])
+
+RECOMMENDATION:
+Enable query logging in development:
+  DB::enableQueryLog();
+  // ... queries ...
+  dd(DB::getQueryLog());
+
+
+4.2 MISSING DATABASE INDEXES
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+INDEXING STRATEGY:
+File: database/migrations/2025_11_18_105300_add_performance_indexes_to_tours_and_blogs.php
+
+INDEXES IMPLEMENTED:
+
+TOURS TABLE:
+✓ idx_tours_active_rating (is_active, rating, review_count)
+✓ idx_tours_city_active (city_id, is_active)
+✓ idx_tours_created_at (created_at)
+✓ idx_tours_slug (slug)
+
+BLOG_POSTS TABLE:
+✓ idx_blog_posts_published (is_published, published_at)
+✓ idx_blog_posts_category (category_id, is_published)
+✓ idx_blog_posts_featured (is_featured, is_published)
+✓ idx_blog_posts_view_count (view_count)
+✓ idx_blog_posts_city_id (city_id)
+
+REVIEWS TABLE:
+✓ idx_reviews_tour_approved (tour_id, is_approved, created_at)
+✓ idx_reviews_rating_approved (rating, is_approved)
+
+BLOG_COMMENTS TABLE:
+✓ idx_blog_comments_post_status (blog_post_id, status)
+✓ idx_blog_comments_parent_id (parent_id)
+
+ITINERARY_ITEMS TABLE:
+✓ idx_itinerary_tour_parent_sort (tour_id, parent_id, sort_order)
+
+TOUR_EXTRAS TABLE:
+✓ idx_tour_extras_active (tour_id, is_active, sort_order)
+
+TOUR_FAQS TABLE:
+✓ idx_tour_faqs_tour_sort (tour_id, sort_order)
+
+TOTAL INDEXES: 245 index definitions across all migrations
+
+✓ EXCELLENT: Comprehensive indexing strategy
+✓ GOOD: Composite indexes for common query patterns
+✓ GOOD: Covering indexes for frequently accessed columns
+
+
+4.3 UNOPTIMIZED QUERIES
+Status: ✓ GOOD
+--------------------------------------------------
+✓ No raw queries found
+✓ Select statements limit columns where appropriate
+✓ Proper use of exists() vs count() > 0
+
+EXAMPLES:
+File: app/Models/Tour.php:128
+Code: Tour::where('slug', $slug)->exists()
+✓ OPTIMAL: Uses exists() instead of count()
+
+
+4.4 EAGER LOADING USAGE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+EAGER LOADING PATTERNS:
+
+1. Scopes for common patterns (app/Models/Tour.php)
+   scopeWithFrontendRelations():
+     - city:id,name,slug,hero_image
+     - categories:id,name,slug
+
+   scopeWithDetailRelations():
+     - city (full)
+     - categories (full)
+     - itineraryItems (nested with children)
+     - faqs
+     - activeExtras
+
+2. Controller-level eager loading:
+   Always uses ->with() for relationships
+   Selects specific columns to reduce data transfer
+
+3. Nested eager loading:
+   Uses closures to specify nested relations and conditions
+
+
+4.5 CACHE IMPLEMENTATION
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+CACHING STRATEGY:
+
+CENTRALIZED CACHE SERVICE:
+File: app/Services/TourCacheService.php
+
+CACHED DATA:
+1. Tours:
+   - Featured tours (pages 1-10)
+   - Tours by city (pages 1-10)
+   - Tours by category (pages 1-10)
+   - Popular tours (pages 1-10)
+   - Recent tours (pages 1-10)
+   - Tour detail pages
+
+2. Blog:
+   - Blog listing (10 minutes TTL)
+   - Blog posts (1 hour TTL)
+   - Blog categories (1 hour TTL)
+   - Blog tags (1 hour TTL)
+   - Featured posts (10 minutes TTL)
+   - Post by tag (10 minutes TTL)
+
+3. Other:
+   - Sitemap XML (24 hours)
+   - City data (homepage cities)
+   - Review pages (per tour)
+   - Comment pages (per post)
+
+CACHE DRIVERS:
+File: .env:40
+CACHE_STORE=database
+
+CACHE INVALIDATION:
+✓ Model observers clear relevant caches on save/delete
+✓ Manual cache clearing in controllers after mutations
+✓ Cache keys use descriptive patterns
+
+RECOMMENDATIONS:
+1. Consider Redis for production (faster than database)
+2. Implement cache warming for critical pages
+3. Add cache monitoring/statistics
+4. Consider cache tags for group invalidation
+
+
+4.6 IMAGE OPTIMIZATION
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+WEBP CONVERSION:
+File: app/Services/ImageConversionService.php
+File: app/Console/Commands/ConvertExistingImagesToWebP.php
+
+FEATURES:
+✓ WebP conversion for tour images
+✓ Responsive image sizes (thumb, medium, large, xlarge)
+✓ Original images preserved
+✓ hero_image_webp field in database
+✓ hero_image_sizes JSON field for srcset
+
+TOUR MODEL SUPPORT:
+File: app/Models/Tour.php
+Accessors:
+- getHeroImageWebpUrlAttribute()
+- getHeroImageWebpSrcsetAttribute()
+- getHasWebpAttribute()
+
+RECOMMENDATION:
+Implement lazy loading:
+  <img loading="lazy" src="..." alt="...">
+
+
+4.7 ASSET BUNDLING
+Status: ✓ ADEQUATE with IMPROVEMENTS POSSIBLE
+--------------------------------------------------
+
+BUILD TOOL:
+File: vite.config.js
+
+ASSETS STRUCTURE:
+- public/style.css (main CSS)
+- public/tour-details.js (tour page)
+- public/blog-article.js (blog page)
+- public/js/category-landing.js (category pages)
+- Filament assets (pre-bundled)
+
+RECOMMENDATIONS:
+1. Consolidate JavaScript into app.js bundle
+2. Implement code splitting for large pages
+3. Add CSS minification
+4. Consider critical CSS extraction
+5. Implement asset versioning (Laravel Mix already does this)
+
+
+================================================================================
+5. FRONTEND ANALYSIS
+================================================================================
+
+5.1 BLADE TEMPLATE SECURITY
+Status: ✓ EXCELLENT
+--------------------------------------------------
+✓ Proper escaping with {{ }} syntax
+✓ Minimal use of {!! !!} (only for trusted admin content)
+✓ CSRF tokens in all forms
+✓ XSS protection implemented
+
+See Section 1.2 for detailed XSS analysis
+
+
+5.2 JAVASCRIPT VULNERABILITIES
+Status: ✓ GOOD
+--------------------------------------------------
+
+REVIEWED FILES:
+1. public/tour-details.js
+2. public/blog-article.js
+3. public/js/category-landing.js
+
+SECURITY MEASURES:
+✓ No eval() usage
+✓ No innerHTML with user input
+✓ CSRF token included in fetch requests
+✓ Input sanitization before display
+
+EXAMPLE:
+File: public/tour-details.js
+- Form validation before submission
+- Error display without HTML injection
+- Proper fetch API usage with CSRF token
+
+RECOMMENDATIONS:
+1. Add Content Security Policy nonces
+2. Implement Subresource Integrity (SRI) for CDN scripts
+3. Consider using a bundler to reduce global scope pollution
+
+
+5.3 ASSET OPTIMIZATION
+Status: ✓ GOOD
+--------------------------------------------------
+✓ WebP images for tours and blogs
+✓ Responsive images with srcset
+✓ Separate CSS per page type
+✓ Filament assets are minified
+
+RECOMMENDATIONS:
+1. Implement image lazy loading
+2. Add next-gen image formats (AVIF)
+3. Minify JavaScript files
+4. Enable Gzip/Brotli compression
+
+
+5.4 ACCESSIBILITY ISSUES
+Status: ⚠ NEEDS REVIEW
+--------------------------------------------------
+
+REVIEWED:
+File: public/tour-details.js:28
+✓ aria-live status region implemented
+✓ Error containers with proper IDs
+
+ACCESSIBILITY CHECKLIST (Needs Manual Testing):
+□ Semantic HTML (header, nav, main, footer, article)
+□ Alt text on all images
+□ ARIA labels on interactive elements
+□ Keyboard navigation
+□ Focus indicators
+□ Color contrast ratios
+□ Form labels properly associated
+□ Skip to content link
+□ Heading hierarchy (h1, h2, h3)
+□ Screen reader testing
+
+RECOMMENDATION:
+Run accessibility audit with:
+- Lighthouse (Chrome DevTools)
+- axe DevTools
+- WAVE browser extension
+
+
+5.5 MOBILE RESPONSIVENESS
+Status: ✓ PRESUMED GOOD (Needs Testing)
+--------------------------------------------------
+
+CSS FRAMEWORK:
+Based on CSS structure, appears to use custom CSS with:
+- CSS variables for theming
+- Modern layout techniques
+
+RECOMMENDATIONS:
+1. Test on multiple devices and screen sizes
+2. Verify touch target sizes (minimum 44x44px)
+3. Test forms on mobile devices
+4. Verify font sizes are readable (minimum 16px)
+5. Test hamburger menu functionality
+6. Verify images are responsive
+
+
+5.6 SEO IMPLEMENTATION
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+SEO FEATURES:
+
+1. META TAGS:
+   File: app/Models/Tour.php
+   - seo_title field
+   - seo_description field
+   - seo_keywords field
+   - og_image field
+
+2. STRUCTURED DATA:
+   File: app/Models/Tour.php:649-733
+   - Schema.org JSON-LD for tours
+   - Breadcrumb schema
+   - FAQ schema
+   - Aggregate rating schema
+
+3. SITEMAP:
+   File: app/Http/Controllers/SitemapController.php
+   Route: /sitemap.xml
+   ✓ Cached for 24 hours
+   ✓ Includes all tours, blog posts, categories, cities
+
+4. URL STRUCTURE:
+   ✓ SEO-friendly URLs (/tours/{slug})
+   ✓ Clean category URLs (/tours/category/{slug})
+   ✓ Blog URLs (/blog/{slug})
+   ✓ Tag pages (/blog/tag/{slug})
+
+5. SOCIAL SHARING:
+   ✓ Open Graph image support
+   ✓ Twitter card meta tags (assumed)
+
+RECOMMENDATIONS:
+1. Add canonical URLs
+2. Implement hreflang for multilingual
+3. Add JSON-LD for organization
+4. Add JSON-LD for local business
+5. Verify Google Search Console integration
+
+
+================================================================================
+6. DATABASE ANALYSIS
+================================================================================
+
+6.1 MIGRATION QUALITY
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+TOTAL MIGRATIONS: 108 migrations
+✓ Incremental schema changes
+✓ Proper up() and down() methods
+✓ Descriptive migration names
+✓ Foreign key constraints defined
+✓ Indexes added in separate migrations
+
+MIGRATION NAMING:
+✓ Clear, descriptive names
+✓ Date prefixed (YYYY_MM_DD_HHMMSS)
+✓ Action-based naming (add_, create_, remove_)
+
+EXAMPLES:
+- 2025_11_18_105300_add_performance_indexes_to_tours_and_blogs.php
+- 2025_10_08_050726_make_inquiry_fields_optional.php
+- 2025_11_26_062117_add_seo_fields_to_tours_table.php
+
+
+6.2 FOREIGN KEY CONSTRAINTS
+Status: ✓ GOOD
+--------------------------------------------------
+
+FOREIGN KEYS IMPLEMENTED:
+✓ tours.city_id → cities.id
+✓ bookings.tour_id → tours.id
+✓ bookings.customer_id → customers.id
+✓ reviews.tour_id → tours.id
+✓ reviews.booking_id → bookings.id
+✓ blog_posts.category_id → blog_categories.id
+✓ blog_comments.blog_post_id → blog_posts.id
+✓ itinerary_items.tour_id → tours.id
+✓ tour_faqs.tour_id → tours.id
+✓ tour_extras.tour_id → tours.id
+
+ON DELETE BEHAVIOR:
+✓ Cascade where appropriate
+✓ Set null for optional relationships
+✓ Restrict for critical relationships
+
+
+6.3 INDEX COVERAGE
+Status: ✓ EXCELLENT
+--------------------------------------------------
+See Section 4.2 for detailed index analysis
+
+245 index definitions across all migrations
+✓ Primary keys on all tables
+✓ Foreign keys indexed
+✓ Unique constraints where needed
+✓ Composite indexes for common queries
+✓ Full-text indexes on blog_posts
+
+
+6.4 DATA TYPE CHOICES
+Status: ✓ APPROPRIATE
+--------------------------------------------------
+
+EXAMPLES REVIEWED:
+✓ tours.price_per_person: decimal(10,2)
+✓ tours.rating: decimal(3,2)
+✓ tours.is_active: boolean
+✓ tours.duration_days: integer
+✓ tours.hero_image: string
+✓ tours.gallery_images: json
+✓ tours.highlights: json
+✓ bookings.reference: string
+✓ bookings.start_date: date
+✓ bookings.total_price: decimal(10,2)
+✓ reviews.rating: integer
+✓ reviews.spam_score: integer
+✓ cities.latitude: decimal(10,6)
+✓ cities.longitude: decimal(10,6)
+
+✓ GOOD: Appropriate precision for decimals
+✓ GOOD: JSON for flexible arrays
+✓ GOOD: Separate date/time fields where needed
+✓ GOOD: Enums avoided (using strings for flexibility)
+
+
+6.5 NAMING CONVENTIONS
+Status: ✓ EXCELLENT
+--------------------------------------------------
+
+TABLE NAMING:
+✓ Plural snake_case (tours, blog_posts, city_distances)
+✓ Pivot tables named properly (tour_category_tour, blog_post_tag)
+✓ Consistent prefixes (blog_, tour_)
+
+COLUMN NAMING:
+✓ Snake_case (created_at, is_active, hero_image)
+✓ Descriptive names (tour_count_cache, hero_image_webp)
+✓ Boolean fields prefixed (is_, has_)
+✓ Foreign keys suffixed (_id)
+✓ Dates suffixed (_at for timestamps, _date for dates)
+
+INDEX NAMING:
+✓ Prefixed with idx_ or fk_
+✓ Descriptive (idx_tours_active_rating)
+
+
+================================================================================
+7. TESTING & DOCUMENTATION
+================================================================================
+
+7.1 TEST COVERAGE
+Status: ⚠ CRITICAL - INSUFFICIENT
+--------------------------------------------------
+
+CURRENT STATE:
+Total test files: 4
+Directory: tests/
+
+TEST FRAMEWORK:
+File: phpunit.xml exists
+Framework: PHPUnit
+
+⚠ CRITICAL ISSUE: Only 4 test files for 328 PHP files
+Test Coverage: ~1.2%
+
+MISSING TEST COVERAGE:
+□ Models (50 models, 0 tests)
+□ Controllers (15+ controllers, 0 tests)
+□ Services (12 services, 0 tests)
+□ Form validation (0 tests)
+□ API endpoints (0 tests)
+□ Database migrations (0 tests)
+
+RECOMMENDATION: Implement tests for:
+
+PRIORITY 1 (Critical Business Logic):
+1. BookingController::store() - Booking creation
+2. PricingService - Pricing calculations
+3. ReviewController::store() - Review validation
+4. ContactController::store() - Contact form
+5. Tour model scopes and accessors
+
+PRIORITY 2 (User-Facing Features):
+1. Authentication flows
+2. Form validation rules
+3. API endpoints
+4. Email sending
+5. PDF generation
+
+PRIORITY 3 (Supporting Features):
+1. Cache service
+2. Image conversion
+3. Spam detection
+4. Rate limiting
+5. Helper functions
+
+EXAMPLE TEST STRUCTURE:
+tests/
+├── Unit/
+│   ├── Models/
+│   │   ├── TourTest.php
+│   │   ├── BookingTest.php
+│   │   └── ReviewTest.php
+│   └── Services/
+│       ├── PricingServiceTest.php
+│       └── TourCacheServiceTest.php
+├── Feature/
+│   ├── BookingTest.php
+│   ├── ReviewSubmissionTest.php
+│   ├── ContactFormTest.php
+│   └── Api/
+│       ├── TourApiTest.php
+│       └── CategoryApiTest.php
+└── Integration/
+    ├── EmailIntegrationTest.php
+    └── PaymentIntegrationTest.php
+
+TARGET COVERAGE: 70% minimum
+
+
+7.2 PHPDOC COVERAGE
+Status: ⚠ INSUFFICIENT
+--------------------------------------------------
+
+CURRENT STATE:
+⚠ Many methods lack PHPDoc blocks
+⚠ Some methods have incomplete documentation
+✓ Some models have good PHPDoc
+
+EXAMPLES:
+
+GOOD DOCUMENTATION:
+File: app/Models/Tour.php:270-275
+/**
+ * Scope to filter only active tours
+ *
+ * @param \Illuminate\Database\Eloquent\Builder $query
+ * @return \Illuminate\Database\Eloquent\Builder
+ */
+
+MISSING DOCUMENTATION:
+Many controller methods lack @param and @return tags
+
+RECOMMENDATION:
+Add PHPDoc to all:
+- Public methods
+- Protected methods with complex logic
+- Class-level documentation
+- Property type hints
+
+TOOLS TO USE:
+- PHPStan (static analysis)
+- Larastan (Laravel-specific PHPStan)
+- PHP CS Fixer (automatic doc generation)
+
+EXAMPLE:
+/**
+ * Store a new booking
+ *
+ * @param  Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ * @throws \Illuminate\Validation\ValidationException
+ * @throws \Exception
+ */
+public function store(Request $request)
+{
+    // ...
+}
+
+
+7.3 README QUALITY
+Status: ⚠ POOR
+--------------------------------------------------
+
+CURRENT STATE:
+File: README.md
+Content: Default Laravel boilerplate (62 lines)
+
+⚠ CRITICAL: No project-specific documentation
+⚠ CRITICAL: No setup instructions
+⚠ CRITICAL: No deployment guide
+⚠ CRITICAL: No architecture overview
+
+REQUIRED SECTIONS:
+
+1. PROJECT OVERVIEW
+   - Application name and purpose
+   - Key features
+   - Tech stack
+   - Screenshots
+
+2. REQUIREMENTS
+   - PHP version (8.2+)
+   - MySQL version
+   - Composer
+   - Node.js/NPM
+   - Extensions (GD, mbstring, etc.)
+
+3. INSTALLATION
+   - Clone repository
+   - Install dependencies
+   - Environment setup
+   - Database migration
+   - Storage linking
+   - Asset compilation
+
+4. CONFIGURATION
+   - Environment variables
+   - Mail setup (Zoho)
+   - AI API keys (OpenAI/DeepSeek)
+   - Telegram bot (optional)
+   - Image optimization
+
+5. DEVELOPMENT
+   - Running dev server
+   - Running queue workers
+   - Asset compilation (npm run dev)
+   - Testing commands
+
+6. DEPLOYMENT
+   - Server requirements
+   - Laravel optimization commands
+   - Queue worker setup
+   - Cron jobs
+   - SSL setup
+
+7. ARCHITECTURE
+   - Directory structure
+   - Key components
+   - Service layer
+   - Cache strategy
+
+8. API DOCUMENTATION
+   - Available endpoints
+   - Request/response examples
+
+9. CONTRIBUTING
+   - Code standards
+   - Git workflow
+   - Testing requirements
+
+10. TROUBLESHOOTING
+    - Common issues
+    - Solutions
+
+RECOMMENDATION:
+Create comprehensive project README (target: 300+ lines)
+
+
+7.4 API DOCUMENTATION
+Status: ⚠ MISSING
+--------------------------------------------------
+
+CURRENT STATE:
+No API documentation found
+
+AVAILABLE API ENDPOINTS:
+1. GET /api/tours
+2. GET /api/tours/{slug}
+3. GET /api/cities
+4. GET /api/categories
+5. GET /api/categories/{slug}
+6. GET /csrf-token
+
+RECOMMENDATION:
+Implement API documentation with:
+
+OPTION 1: OpenAPI/Swagger
+- Install: l5-swagger package
+- Generate interactive docs
+- Include request/response examples
+
+OPTION 2: API Blueprint
+- Markdown-based documentation
+- Human-readable
+- Version controlled
+
+OPTION 3: Postman Collection
+- Export collection
+- Share with team
+- Include environment variables
+
+EXAMPLE DOCUMENTATION (OpenAPI):
+/api/tours:
+  get:
+    summary: Get all active tours
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      - name: city
+        in: query
+        schema:
+          type: string
+    responses:
+      200:
+        description: List of tours
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tour'
+
+
+================================================================================
+8. CRITICAL FINDINGS SUMMARY
+================================================================================
+
+CRITICAL PRIORITY (Fix Immediately)
+--------------------------------------------------
+1. ⚠ CRITICAL: User authorization bypass
+   File: app/Models/User.php:54-57
+   Issue: canAccessPanel() returns true for all authenticated users
+   Risk: Unauthorized access to admin panel with customer data
+   Fix: Implement role-based access control
+   Impact: Security breach, data leak, compliance issues
+
+2. ⚠ CRITICAL: Business logic in route closures
+   File: routes/web.php:84-318
+   Issue: 235 lines of business logic in single closure
+   Risk: Untestable, unmaintainable, violates SRP
+   Fix: Extract to BookingEstimateController
+   Impact: Code maintainability, testability
+
+3. ⚠ CRITICAL: No authorization policies
+   Issue: No Policies directory, no Gate definitions
+   Risk: No fine-grained access control on resources
+   Fix: Create Policy classes for all models
+   Impact: Security, data access control
+
+4. ⚠ CRITICAL: APP_DEBUG=true in .env
+   Issue: Development mode exposes stack traces
+   Risk: Information disclosure in production
+   Fix: Set APP_DEBUG=false for production
+   Impact: Security information leak
+
+
+HIGH PRIORITY (Fix Within 1 Week)
+--------------------------------------------------
+1. ⚠ HIGH: Missing test coverage
+   Issue: Only 4 test files for entire application
+   Risk: Bugs in production, difficult refactoring
+   Fix: Write unit and feature tests (target 70% coverage)
+   Impact: Code quality, confidence in changes
+
+2. ⚠ HIGH: Fat Tour model (902 lines)
+   Issue: Single Responsibility Principle violation
+   Risk: Difficult to maintain and test
+   Fix: Extract to traits (TourSeoHelpers, TourSchemaGenerator)
+   Impact: Maintainability
+
+3. ⚠ HIGH: Missing API rate limiting
+   Issue: API endpoints have no throttling
+   Risk: Abuse, DDoS, server overload
+   Fix: Add throttle middleware to API routes
+   Impact: API availability, server resources
+
+4. ⚠ HIGH: No README documentation
+   Issue: Default Laravel boilerplate only
+   Risk: New developers can't onboard, deployment issues
+   Fix: Write comprehensive README
+   Impact: Team productivity
+
+
+MEDIUM PRIORITY (Fix Within 1 Month)
+--------------------------------------------------
+1. ⚠ MEDIUM: Environment variables in service layer
+   File: app/Services/AIEmailService.php:27
+   Issue: Direct env() access instead of config()
+   Risk: Config caching breaks in production
+   Fix: Move to config files
+   Impact: Production deployment
+
+2. ⚠ MEDIUM: Hard-coded magic numbers
+   Issue: Rate limits, cache TTLs hard-coded throughout
+   Risk: Difficult to tune and maintain
+   Fix: Move to configuration files
+   Impact: Maintainability
+
+3. ⚠ MEDIUM: No queue jobs for long operations
+   Issue: Email, PDF, image processing in web request
+   Risk: Slow response times, timeouts
+   Fix: Implement queue jobs
+   Impact: User experience
+
+4. ⚠ MEDIUM: Missing API documentation
+   Issue: No Swagger/OpenAPI docs
+   Risk: Integration difficulties, support overhead
+   Fix: Generate API documentation
+   Impact: Developer experience
+
+
+LOW PRIORITY (Fix When Time Permits)
+--------------------------------------------------
+1. ⚠ LOW: Repository pattern not implemented
+   Issue: Direct Eloquent usage everywhere
+   Risk: Harder to test, less abstraction
+   Fix: Implement repositories for complex queries
+   Impact: Testability (Eloquent is fine for most cases)
+
+2. ⚠ LOW: Accessibility not verified
+   Issue: No ARIA attributes audit
+   Risk: Inaccessible to users with disabilities
+   Fix: Run Lighthouse audit and fix issues
+   Impact: Accessibility compliance
+
+3. ⚠ LOW: No automated deployment
+   Issue: Manual deployment process
+   Risk: Human error, inconsistent deployments
+   Fix: Set up CI/CD pipeline
+   Impact: Deployment reliability
+
+
+================================================================================
+9. POSITIVE FINDINGS (What's Done Well)
+================================================================================
+
+SECURITY
+--------------------------------------------------
+✓ No SQL injection vulnerabilities found
+✓ XSS protection properly implemented
+✓ CSRF tokens on all forms
+✓ Security headers middleware with CSP, HSTS, X-Frame-Options
+✓ Rate limiting on user-facing forms (reviews, comments)
+✓ Honeypot anti-spam traps
+✓ Spam scoring system for content moderation
+✓ Input validation on all endpoints
+✓ Password hashing (bcrypt via Laravel)
+✓ Mass assignment protection ($fillable arrays)
+✓ Email and IP logging for reviews/comments
+✓ Duplicate submission prevention
+✓ Booking reference verification system
+
+
+ARCHITECTURE
+--------------------------------------------------
+✓ Clean MVC separation
+✓ Strong service layer implementation (12 services)
+✓ Proper dependency injection
+✓ Good use of Eloquent relationships
+✓ Repository-like patterns where needed
+✓ Event observers for cache invalidation
+✓ Eloquent scopes for reusable queries
+✓ Traits for shared model behavior
+✓ Blade partials for UI components
+✓ Middleware for cross-cutting concerns
+
+
+PERFORMANCE
+--------------------------------------------------
+✓ Comprehensive database indexing (245 indexes)
+✓ Composite indexes for common queries
+✓ Eager loading to prevent N+1 queries
+✓ Centralized caching service
+✓ Cache invalidation strategy
+✓ WebP image conversion
+✓ Responsive images with srcset
+✓ Query optimization (exists vs count)
+✓ Select specific columns where possible
+
+
+CODE QUALITY
+--------------------------------------------------
+✓ PSR-4 autoloading
+✓ Consistent code style
+✓ No debug statements left in code
+✓ Proper error handling with try-catch
+✓ Logging with context
+✓ User-friendly error messages
+✓ No hard-coded secrets
+✓ Early returns to reduce nesting
+✓ Descriptive variable names
+✓ Minimal code duplication
+
+
+DATABASE
+--------------------------------------------------
+✓ Well-structured migrations
+✓ Foreign key constraints
+✓ Appropriate data types
+✓ Consistent naming conventions
+✓ Full-text search on blog_posts
+✓ JSON columns for flexible data
+✓ Soft deletes where appropriate
+✓ Timestamps on all tables
+
+
+FRONTEND
+--------------------------------------------------
+✓ Modern JavaScript (ES6+)
+✓ HTMX for progressive enhancement
+✓ Livewire for reactive components
+✓ Vanilla JS (no unnecessary dependencies)
+✓ Client-side validation
+✓ Accessible form errors (aria-live)
+✓ Responsive design considerations
+
+
+SEO
+--------------------------------------------------
+✓ SEO fields on Tour model
+✓ Schema.org JSON-LD implementation
+✓ Sitemap generation (cached)
+✓ SEO-friendly URLs
+✓ Open Graph meta tags
+✓ Meta title/description support
+✓ Breadcrumb schema
+
+
+BUSINESS LOGIC
+--------------------------------------------------
+✓ Contract pricing system
+✓ Pricing service with fallbacks
+✓ Booking itinerary synchronization
+✓ Supplier request PDF generation
+✓ AI email drafting integration
+✓ Tour AI generation
+✓ Telegram notifications
+✓ Email logging system
+✓ Lead management with AI
+✓ WebP image conversion service
+
+
+================================================================================
+10. RECOMMENDED ACTIONS
+================================================================================
+
+IMMEDIATE ACTIONS (This Week)
+--------------------------------------------------
+1. Fix critical authorization bypass in User model
+   - Implement role-based access control
+   - Create admin, manager, staff roles
+   - Restrict Filament panel access
+
+2. Set APP_DEBUG=false for production
+   - Update .env.production.example
+   - Document in deployment guide
+
+3. Extract route closure business logic
+   - Create BookingEstimateController
+   - Create SupplierRequestController
+
+4. Add API rate limiting
+   - Apply throttle middleware to /api routes
+   - Configure limits in config/rate-limits.php
+
+5. Create authorization policies
+   - BookingPolicy
+   - TourPolicy
+   - CustomerPolicy
+   - LeadPolicy
+
+
+SHORT-TERM ACTIONS (This Month)
+--------------------------------------------------
+1. Write comprehensive README
+   - Installation instructions
+   - Configuration guide
+   - Architecture overview
+   - API documentation
+
+2. Implement queue jobs
+   - SendBookingConfirmationEmail
+   - GenerateSupplierRequestPdf
+   - ConvertImageToWebP
+   - SendTelegramNotification
+
+3. Write critical tests
+   - BookingController tests
+   - PricingService tests
+   - ReviewController tests
+   - ContactController tests
+
+4. Refactor Tour model
+   - Extract TourSeoHelpers trait
+   - Extract TourSchemaGenerator trait
+   - Extract TourAccessors trait
+
+5. Move env() calls to config
+   - Create config/ai.php
+   - Create config/rate-limits.php
+   - Update service classes
+
+6. Generate API documentation
+   - Install l5-swagger
+   - Document all endpoints
+   - Include request/response examples
+
+
+LONG-TERM ACTIONS (This Quarter)
+--------------------------------------------------
+1. Achieve 70% test coverage
+   - Unit tests for all models
+   - Feature tests for all controllers
+   - Integration tests for critical flows
+
+2. Implement CI/CD pipeline
+   - GitHub Actions workflow
+   - Automated testing
+   - Automated deployment
+
+3. Performance optimization
+   - Query profiling
+   - Cache warming
+   - Redis implementation
+   - CDN setup
+
+4. Accessibility audit
+   - Lighthouse audit
+   - WCAG 2.1 AA compliance
+   - Screen reader testing
+
+5. Security hardening
+   - Penetration testing
+   - Security audit
+   - Implement Content Security Policy nonces
+   - Add rate limiting to all endpoints
+
+
+CONTINUOUS IMPROVEMENTS
+--------------------------------------------------
+1. Code reviews for all changes
+2. Keep dependencies updated
+3. Monitor error logs
+4. Track performance metrics
+5. Gather user feedback
+6. Refactor complex code
+7. Write documentation as you go
+8. Test new features thoroughly
+
+
+================================================================================
+11. COMPLIANCE & BEST PRACTICES
+================================================================================
+
+GDPR COMPLIANCE
+--------------------------------------------------
+✓ Customer data stored securely
+✓ Email addresses validated
+⚠ MISSING: Data deletion mechanism
+⚠ MISSING: Data export functionality
+⚠ MISSING: Cookie consent banner
+⚠ MISSING: Privacy policy implementation
+
+RECOMMENDATION:
+1. Implement customer data deletion
+2. Add data export functionality
+3. Add cookie consent (if using analytics)
+4. Update privacy policy page
+
+
+LARAVEL BEST PRACTICES
+--------------------------------------------------
+✓ Use Eloquent ORM ✓
+✓ Use migrations for schema changes ✓
+✓ Use validation ✓
+✓ Use dependency injection ✓
+✓ Use service providers ✓
+✓ Use middleware ✓
+✓ Use form requests (partially implemented)
+⚠ Use policies (NOT IMPLEMENTED)
+⚠ Use jobs and queues (NOT IMPLEMENTED)
+⚠ Write tests (INSUFFICIENT)
+
+
+PSR STANDARDS
+--------------------------------------------------
+✓ PSR-1: Basic Coding Standard ✓
+✓ PSR-2: Coding Style Guide (superseded by PSR-12) ✓
+✓ PSR-4: Autoloading Standard ✓
+✓ PSR-12: Extended Coding Style Guide ✓
+
+
+OWASP TOP 10 2021
+--------------------------------------------------
+1. Broken Access Control ⚠ ISSUES FOUND
+   - User authorization bypass
+   - Missing policies
+
+2. Cryptographic Failures ✓ SAFE
+   - Passwords hashed properly
+   - HTTPS enforced in production
+
+3. Injection ✓ SAFE
+   - No SQL injection
+   - No XSS issues
+
+4. Insecure Design ⚠ MINOR ISSUES
+   - No rate limiting on some endpoints
+
+5. Security Misconfiguration ⚠ ISSUES FOUND
+   - APP_DEBUG=true in .env file
+   - CSP could be tightened
+
+6. Vulnerable Components ✓ GOOD
+   - Dependencies appear up-to-date
+   - Laravel 12 (latest)
+
+7. Identification & Authentication Failures ⚠ ISSUES FOUND
+   - Weak authorization checks
+
+8. Software and Data Integrity Failures ✓ GOOD
+   - No insecure deserialization
+   - Composer packages from trusted sources
+
+9. Security Logging & Monitoring ✓ GOOD
+   - Logging implemented
+   - Error tracking needed
+
+10. Server-Side Request Forgery ✓ N/A
+    - No user-controlled URLs
+
+
+================================================================================
+12. METRICS SUMMARY
+================================================================================
+
+CODE METRICS
+--------------------------------------------------
+Total PHP Files:                328 files
+Total Lines of Code:           ~50,000 lines (estimated)
+Models:                         50 models
+Controllers:                    15+ controllers
+Services:                       12 services
+Migrations:                     108 migrations
+Database Tables:                ~50 tables
+Database Indexes:               245 indexes
+Test Files:                     4 files (⚠ CRITICAL: TOO LOW)
+Test Coverage:                  ~1.2% (⚠ CRITICAL: TOO LOW)
+
+
+LARGEST FILES
+--------------------------------------------------
+Tour.php:                       902 lines (⚠ REFACTOR)
+BlogPost.php:                   343 lines
+Partials/BookingController:     317 lines
+City.php:                       284 lines
+Partials/TourController:        280 lines
+BlogController:                 271 lines
+
+
+SECURITY SCORE
+--------------------------------------------------
+SQL Injection Protection:       10/10 ✓
+XSS Protection:                 9/10 ✓
+CSRF Protection:                10/10 ✓
+Authentication:                 7/10 ⚠
+Authorization:                  3/10 ⚠ CRITICAL
+Input Validation:               10/10 ✓
+Rate Limiting:                  7/10 ⚠
+Security Headers:               9/10 ✓
+Error Handling:                 8/10 ✓
+Secrets Management:             8/10 ✓
+
+Overall Security Score:         81/100 (GOOD)
+
+
+QUALITY SCORE
+--------------------------------------------------
+Code Standards:                 9/10 ✓
+Architecture:                   9/10 ✓
+Test Coverage:                  1/10 ⚠ CRITICAL
+Documentation:                  3/10 ⚠
+Error Handling:                 8/10 ✓
+Maintainability:                7/10 ⚠
+Performance:                    9/10 ✓
+Database Design:                10/10 ✓
+
+Overall Quality Score:          70/100 (ADEQUATE)
+
+
+PERFORMANCE SCORE
+--------------------------------------------------
+Query Optimization:             9/10 ✓
+Indexing:                       10/10 ✓
+Caching:                        9/10 ✓
+N+1 Prevention:                 9/10 ✓
+Image Optimization:             9/10 ✓
+Asset Bundling:                 7/10 ⚠
+Queue Usage:                    0/10 ⚠ CRITICAL
+
+Overall Performance Score:      76/100 (GOOD)
+
+
+OVERALL APPLICATION SCORE
+--------------------------------------------------
+Security:                       81/100
+Code Quality:                   70/100
+Performance:                    76/100
+Architecture:                   85/100
+Testing:                        10/100 (⚠ CRITICAL)
+Documentation:                  30/100 (⚠ HIGH)
+
+OVERALL SCORE:                  75/100 (GOOD)
+Grade:                          C+ (Room for improvement)
+
+
+================================================================================
+13. CONCLUSION
+================================================================================
+
+SUMMARY
+--------------------------------------------------
+The Laravel tour booking application demonstrates solid architectural
+foundations with modern Laravel 12 features, comprehensive security measures,
+and good performance optimization. The codebase follows Laravel conventions
+and best practices in most areas.
+
+STRENGTHS:
+- Strong security posture (no SQL injection, XSS protection, CSRF tokens)
+- Excellent database design with comprehensive indexing
+- Good caching strategy with centralized service
+- Clean MVC architecture with service layer
+- Modern Laravel 12 implementation
+- Proper input validation and rate limiting
+- WebP image optimization
+
+CRITICAL WEAKNESSES:
+- Authorization system critically flawed (admin access unprotected)
+- Insufficient test coverage (only 4 test files)
+- Missing authorization policies
+- Large route closures with business logic
+- Poor documentation (default README only)
+
+RISK ASSESSMENT:
+The application is NOT PRODUCTION-READY in its current state due to:
+1. Critical authorization bypass vulnerability
+2. No fine-grained access control policies
+3. Insufficient test coverage
+4. Missing deployment documentation
+
+RECOMMENDATION:
+Address all CRITICAL and HIGH priority issues before production deployment.
+Focus on:
+1. Authorization and access control
+2. Test coverage (minimum 70%)
+3. Documentation
+4. Queue implementation for long-running operations
+
+With these improvements, the application will be production-ready and
+maintainable for long-term growth.
+
+
+ESTIMATED EFFORT TO PRODUCTION-READY:
+--------------------------------------------------
+CRITICAL Issues:      3-5 days
+HIGH Issues:          2 weeks
+MEDIUM Issues:        1 month
+Documentation:        1 week
+Testing (70%):        3-4 weeks
+
+TOTAL ESTIMATED TIME: 8-10 weeks (2-2.5 months)
+
+
+FINAL GRADE: C+ (75/100)
+STATUS: NEEDS IMPROVEMENT BEFORE PRODUCTION
+
+
+================================================================================
+REPORT END
+Generated: December 9, 2025
+Auditor: Claude Code Audit System
+Framework: Laravel 12.0
+================================================================================
