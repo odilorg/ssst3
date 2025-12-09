@@ -856,4 +856,47 @@ class Tour extends Model
                     ->pluck('name')
                     ->join(' → ');
     }
+
+    /**
+     * Accessor for gallery_images to convert array of objects to array of paths for Filament FileUpload
+     */
+    public function getGalleryImagesAttribute($value)
+    {
+        $decoded = json_decode($value, true);
+
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        // If it's already an array of strings (new format), return as-is
+        if (isset($decoded[0]) && is_string($decoded[0])) {
+            return $decoded;
+        }
+
+        // If it's array of objects with 'path' key (old format), extract paths
+        if (isset($decoded[0]['path'])) {
+            return array_map(fn($item) => $item['path'], $decoded);
+        }
+
+        return $decoded;
+    }
+
+    /**
+     * Mutator for gallery_images to store as array of strings (paths only)
+     */
+    public function setGalleryImagesAttribute($value)
+    {
+        if (is_null($value)) {
+            $this->attributes['gallery_images'] = null;
+            return;
+        }
+
+        // If it's already an array, store as JSON
+        if (is_array($value)) {
+            $this->attributes['gallery_images'] = json_encode(array_values($value));
+            return;
+        }
+
+        $this->attributes['gallery_images'] = $value;
+    }
 }
