@@ -9,9 +9,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class TourForm
 {
@@ -522,5 +525,153 @@ class TourForm
                     ->columns(2)
                     ->collapsible(),
             ]);
+    }
+
+    /**
+     * Get wizard steps for tour creation
+     */
+    public static function getWizardSteps(): array
+    {
+        return [
+            // Step 1: Basic Information
+            Step::make('Основная информация')
+                ->description('Дайте туру название и выберите тип')
+                ->icon('heroicon-o-information-circle')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    TextInput::make('title')
+                        ->label('Название тура')
+                        ->required()
+                        ->maxLength(255)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn ($state, callable $set) =>
+                            $set('slug', Str::slug($state))
+                        )
+                        ->placeholder('Например: Однодневный тур по Самарканду')
+                        ->columnSpanFull(),
+
+                    TextInput::make('slug')
+                        ->label('URL slug')
+                        ->required()
+                        ->maxLength(255)
+                        ->unique(ignoreRecord: true)
+                        ->helperText('Автоматически генерируется из названия')
+                        ->columnSpanFull(),
+
+                    TextInput::make('duration_days')
+                        ->label('Продолжительность (дни)')
+                        ->numeric()
+                        ->required()
+                        ->minValue(1)
+                        ->default(1)
+                        ->helperText('Количество дней тура'),
+
+                    TextInput::make('duration_text')
+                        ->label('Текст продолжительности')
+                        ->maxLength(100)
+                        ->placeholder('4 hours')
+                        ->helperText('Например: "4 hours" или "5 Days / 4 Nights"'),
+
+                    Toggle::make('is_active')
+                        ->label('Опубликовать тур')
+                        ->default(true)
+                        ->onColor('success')
+                        ->offColor('danger')
+                        ->helperText('Включите, чтобы тур отображался на сайте')
+                        ->inline(false)
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+
+            // Step 2: Pricing
+            Step::make('Цены')
+                ->description('Установите цены')
+                ->icon('heroicon-o-currency-dollar')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Section::make('Ценообразование')
+                        ->schema([
+                            TextInput::make('price_per_person')
+                                ->label('Цена за человека')
+                                ->numeric()
+                                ->required()
+                                ->minValue(0)
+                                ->prefix('$')
+                                ->placeholder('100')
+                                ->helperText('Базовая цена за одного гостя'),
+
+                            TextInput::make('min_guests')
+                                ->label('Минимум гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->helperText('Минимальное количество для проведения тура'),
+
+                            TextInput::make('max_guests')
+                                ->label('Максимум гостей')
+                                ->numeric()
+                                ->required()
+                                ->minValue(1)
+                                ->default(15)
+                                ->helperText('Максимальный размер группы'),
+                        ])
+                        ->columns(3),
+                ])
+                ->columns(2),
+
+            // Step 3: Images
+            Step::make('Изображения')
+                ->description('Загрузите фотографии')
+                ->icon('heroicon-o-photo')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    FileUpload::make('hero_image')
+                        ->label('Главное изображение (Hero)')
+                        ->image()
+                        ->directory('tours/heroes')
+                        ->disk('public')
+                        ->visibility('public')
+                        ->imageEditor()
+                        ->maxSize(5120)
+                        ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
+                        ->columnSpanFull(),
+                ]),
+
+            // Step 4: Meeting & Booking
+            Step::make('Встреча и бронирование')
+                ->description('Настройте условия встречи и бронирования')
+                ->icon('heroicon-o-map-pin')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Textarea::make('meeting_point_address')
+                        ->label('Адрес места встречи')
+                        ->rows(2)
+                        ->placeholder('Площадь Регистан, возле главного входа')
+                        ->columnSpanFull(),
+
+                    TextInput::make('min_booking_hours')
+                        ->label('Минимум часов до бронирования')
+                        ->numeric()
+                        ->required()
+                        ->default(24)
+                        ->helperText('За сколько часов нужно бронировать'),
+
+                    TextInput::make('cancellation_hours')
+                        ->label('Бесплатная отмена за')
+                        ->numeric()
+                        ->required()
+                        ->default(24)
+                        ->helperText('За сколько часов можно отменить бесплатно'),
+
+                    Textarea::make('cancellation_policy')
+                        ->label('Политика отмены')
+                        ->rows(4)
+                        ->placeholder('Полное описание политики отмены бронирования...')
+                        ->helperText('Детальные условия отмены')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+        ];
     }
 }
