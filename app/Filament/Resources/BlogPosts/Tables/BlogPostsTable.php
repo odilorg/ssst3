@@ -21,11 +21,15 @@ class BlogPostsTable
                 TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),
+                ImageColumn::make('featured_image')
+                    ->label('Image')
+                    ->disk('public')
+                    ->size(60)
+                    ->circular(false),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('featured_image'),
                 TextColumn::make('author_name')
                     ->searchable(),
                 ImageColumn::make('author_image'),

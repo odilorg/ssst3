@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,6 +29,12 @@ class ToursTable
                     ->limit(60)
                     ->wrap()
                     ->sortable(),
+                ImageColumn::make('hero_image')
+                    ->label('Image')
+                    ->disk('public')
+                    ->size(60)
+                    ->circular(false)
+                    ->defaultImageUrl(asset('images/placeholder-tour.jpg')),
                 TextColumn::make('duration_days')
                     ->label('Дни')
                     ->suffix(' дн.')
