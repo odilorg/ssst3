@@ -156,6 +156,7 @@ let breakdownSubtotal;
 let breakdownTotal;
 let breakdownUnitPrice;
 let BASE_PRICE = 0;
+let SHOW_PRICE = true;
 
 /**
  * Initialize BASE_PRICE from DOM or JSON data
@@ -181,27 +182,33 @@ function initializePrice() {
 
   console.log('BASE_PRICE after attribute:', BASE_PRICE);
 
-  // If still 0, try reading from tour-data JSON
-  if (BASE_PRICE === 0) {
-    const tourDataEl = document.getElementById('tour-data');
-    console.log('tourDataEl:', tourDataEl);
-    if (tourDataEl) {
-      const jsonText = tourDataEl.textContent.trim();
-      console.log('JSON text:', jsonText);
-      try {
-        const tourData = JSON.parse(jsonText);
-        console.log('Parsed tour data:', tourData);
+  // Always read tour-data JSON for showPrice flag and fallback price
+  const tourDataEl = document.getElementById('tour-data');
+  console.log('tourDataEl:', tourDataEl);
+  if (tourDataEl) {
+    const jsonText = tourDataEl.textContent.trim();
+    console.log('JSON text:', jsonText);
+    try {
+      const tourData = JSON.parse(jsonText);
+      console.log('Parsed tour data:', tourData);
+
+      // Read showPrice flag (always)
+      SHOW_PRICE = tourData.showPrice !== false;
+
+      // Only use JSON price if we didn't get it from attribute
+      if (BASE_PRICE === 0) {
         console.log('pricePerPerson value:', tourData.pricePerPerson);
         BASE_PRICE = parseFloat(tourData.pricePerPerson) || 0;
-      } catch (e) {
-        console.error('Failed to parse tour data:', e);
       }
-    } else {
-      console.error('tour-data element not found!');
+    } catch (e) {
+      console.error('Failed to parse tour data:', e);
     }
+  } else {
+    console.error('tour-data element not found!');
   }
 
   console.log('Final BASE_PRICE:', BASE_PRICE);
+  console.log('SHOW_PRICE:', SHOW_PRICE);
 }
 
 /**
@@ -209,6 +216,36 @@ function initializePrice() {
  */
 function updatePrice() {
   const guests = parseInt(guestsInput?.value || 1);
+
+  // Check if price should be displayed
+  const shouldShowPrice = SHOW_PRICE && BASE_PRICE > 0;
+
+  if (!shouldShowPrice) {
+    // Hide price, show contact message
+    if (breakdownUnitPrice) {
+      breakdownUnitPrice.textContent = 'Contact us';
+      breakdownUnitPrice.setAttribute('data-unit-price', '0');
+    }
+
+    if (breakdownSubtotal) {
+      breakdownSubtotal.textContent = 'Please contact us';
+      breakdownSubtotal.setAttribute('data-subtotal', '0');
+    }
+
+    if (breakdownTotal) {
+      breakdownTotal.textContent = 'Please contact us';
+      breakdownTotal.setAttribute('data-total', '0');
+    }
+
+    // Update booking status for screen readers
+    if (bookingStatus) {
+      bookingStatus.textContent = 'Price available upon request. Please contact us for pricing.';
+    }
+
+    return; // Exit early
+  }
+
+  // Normal price calculation when price should be shown
   const total = BASE_PRICE * guests;
 
   // Update unit price display

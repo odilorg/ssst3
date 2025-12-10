@@ -252,16 +252,17 @@
         <aside class="booking-sidebar" data-sticky="true">
 
           <!-- Tour Data for JavaScript -->
-          <script type="application/json" id="tour-data">
-            {
-              "id": "{{ $tour->slug }}",
-              "name": "{{ $tour->name }}",
-              "pricePerPerson": {{ $tour->price }},
-              "currency": "USD",
-              "maxGuests": {{ $tour->max_guests ?? 10 }},
-              "minGuests": {{ $tour->min_guests ?? 1 }},
-              "duration": "{{ $tour->duration }}"
-            }
+          <script type=application/json id=tour-data>
+{!! json_encode([
+  'id' => $tour->slug,
+  'name' => html_entity_decode($tour->title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+  'pricePerPerson' => floatval($tour->price_per_person ?? 0),
+  'showPrice' => boolval($tour->show_price ?? true),
+  'currency' => $tour->currency ?? 'USD',
+  'maxGuests' => intval($tour->max_guests ?? 15),
+  'minGuests' => intval($tour->min_guests ?? 1),
+  'duration' => $tour->duration_text ?? ($tour->duration_days . ' days')
+], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
           </script>
 
           <!-- Screen Reader Live Region for Dynamic Updates -->
@@ -301,16 +302,34 @@
                 <div class="breakdown-item">
                   <span class="breakdown-label">
                     <span class="breakdown-guests" data-guests="2">2 guests</span> ×
-                    <span class="breakdown-unit-price" data-unit-price="{{ $tour->price }}">${{ number_format($tour->price, 2) }}</span>
+                    <span class="breakdown-unit-price" data-unit-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
                   </span>
-                  <span class="breakdown-value" data-subtotal="{{ $tour->price * 2 }}">${{ number_format($tour->price * 2, 2) }}</span>
+                  <span class="breakdown-value" data-subtotal="{{ $tour->price_per_person * 2 }}">${{ number_format($tour->price_per_person * 2, 2) }}</span>
                 </div>
                 <div class="breakdown-item breakdown-item--total">
                   <span class="breakdown-label">Total</span>
-                  <span class="breakdown-value breakdown-total" data-total="{{ $tour->price * 2 }}">${{ number_format($tour->price * 2, 2) }}</span>
+                  <span class="breakdown-value breakdown-total" data-total="{{ $tour->price_per_person * 2 }}">${{ number_format($tour->price_per_person * 2, 2) }}</span>
                 </div>
               </div>
               <p class="breakdown-note">Free cancellation up to 24 hours before the tour</p>
+            @else
+            <div class=price-breakdown data-breakdown-visible=true>
+              <h3 class=breakdown-title>Price Breakdown</h3>
+              <div class=breakdown-items>
+                <div class=breakdown-item>
+                  <span class=breakdown-label>
+                    <span class=breakdown-guests data-guests=2>2 guests</span> ×
+                    <span class=breakdown-unit-price data-unit-price="0">Contact us</span>
+                  </span>
+                  <span class="breakdown-value" data-subtotal="0">Please contact us</span>
+                </div>
+                <div class="breakdown-item breakdown-item--total">
+                  <span class="breakdown-label">Total</span>
+                  <span class="breakdown-value breakdown-total" data-total="0">Please contact us</span>
+                </div>
+              </div>
+              <p class="breakdown-note">Contact us for pricing information</p>
+            </div>
             </div>
             @endif
 

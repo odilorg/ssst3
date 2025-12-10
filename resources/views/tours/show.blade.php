@@ -519,6 +519,7 @@
   'id' => $tour->slug,
   'name' => html_entity_decode($tour->title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
   'pricePerPerson' => floatval($tour->price_per_person ?? 0),
+  'showPrice' => boolval($tour->show_price ?? true),
   'currency' => $tour->currency ?? 'USD',
   'maxGuests' => intval($tour->max_guests ?? 15),
   'minGuests' => intval($tour->min_guests ?? 1),
@@ -538,13 +539,17 @@
 
           <!-- Booking Card -->
           <div class="booking-card">
-
             <!-- Price Header -->
             <div class="booking-card__header">
               <div class="booking-price">
-                <span class="price-label">from</span>
-                <span class="price-amount" data-base-price="{{ $tour->price_per_person ?? 0 }}">${{ number_format($tour->price_per_person ?? 0, 2) }}</span>
-                <span class="price-unit">/person</span>
+                @if($tour->show_price && $tour->price_per_person > 0)
+                  <span class="price-label">from</span>
+                  <span class="price-amount" data-base-price="{{ $tour->price_per_person ?? 0 }}">${{ number_format($tour->price_per_person ?? 0, 2) }}</span>
+                  <span class="price-unit">/person</span>
+                @else
+                  <span class="price-label">Price</span>
+                  <span class="price-amount" data-base-price="0">Contact us for pricing</span>
+                @endif
               </div>
             </div>
 
