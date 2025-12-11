@@ -132,12 +132,45 @@ class TourForm
                             ->helperText('Выберите одну или несколько категорий для этого тура')
                             ->columnSpanFull(),
 
-                        TextInput::make('short_description')
-                            ->label('Краткое описание')
-                            
+                        TextInput::make('short_description_en')
+                            ->label('🇬🇧 Short Description (English)')
                             ->maxLength(255)
-                            
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('short_description', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
+
+                        TextInput::make('short_description_ru')
+                            ->label('🇷🇺 Краткое описание (Русский)')
+                            ->maxLength(255)
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('short_description', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TextInput::make('short_description_uz')
+                            ->label('🇺🇿 Qisqa tavsif (O\'zbek)')
+                            ->maxLength(255)
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('short_description', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('short_description')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('short_description'));
+                                }
+                            }),
 
                         Toggle::make('is_active')
                             ->label('Активный')
@@ -147,8 +180,8 @@ class TourForm
 
                 Section::make('Подробное описание')
                     ->schema([
-                        RichEditor::make('long_description')
-                            ->label('Подробное описание')
+                        RichEditor::make('long_description_en')
+                            ->label('🇬🇧 Long Description (English)')
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -158,34 +191,194 @@ class TourForm
                                 'h2',
                                 'h3',
                             ])
-                            
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('long_description', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
+
+                        RichEditor::make('long_description_ru')
+                            ->label('🇷🇺 Подробное описание (Русский)')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletList',
+                                'orderedList',
+                                'h2',
+                                'h3',
+                            ])
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('long_description', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        RichEditor::make('long_description_uz')
+                            ->label('🇺🇿 Batafsil tavsif (O\'zbek)')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletList',
+                                'orderedList',
+                                'h2',
+                                'h3',
+                            ])
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('long_description', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('long_description')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('long_description'));
+                                }
+                            }),
                     ]),
 
                 Section::make('SEO и социальные сети')
                     ->description('Настройки для поисковой оптимизации и социальных сетей')
                     ->schema([
-                        TextInput::make('seo_title')
-                            ->label('SEO заголовок')
+                        TextInput::make('seo_title_en')
+                            ->label('🇬🇧 SEO Title (English)')
                             ->maxLength(60)
-                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 60 символов.')
-                            
+                            ->helperText('Leave empty for auto-generation. Max 60 characters.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_title', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
 
-                        Textarea::make('seo_description')
-                            ->label('SEO описание')
+                        TextInput::make('seo_title_ru')
+                            ->label('🇷🇺 SEO заголовок (Русский)')
+                            ->maxLength(60)
+                            ->helperText('Оставьте пустым для автоматической генерации. До 60 символов.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_title', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TextInput::make('seo_title_uz')
+                            ->label('🇺🇿 SEO sarlavha (O\'zbek)')
+                            ->maxLength(60)
+                            ->helperText('Avtomatik yaratish uchun bo\'sh qoldiring. Max 60 ta belgi.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_title', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('seo_title')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('seo_title'));
+                                }
+                            }),
+
+                        Textarea::make('seo_description_en')
+                            ->label('🇬🇧 SEO Description (English)')
                             ->maxLength(160)
                             ->rows(3)
-                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 160 символов.')
-                            
+                            ->helperText('Leave empty for auto-generation. Max 160 characters.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_description', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
 
-                        Textarea::make('seo_keywords')
-                            ->label('SEO ключевые слова')
-                            ->rows(2)
-                            ->helperText('Необязательно. Разделяйте запятыми. Например: uzbekistan tours, silk road, samarkand')
-                            
+                        Textarea::make('seo_description_ru')
+                            ->label('🇷🇺 SEO описание (Русский)')
+                            ->maxLength(160)
+                            ->rows(3)
+                            ->helperText('Оставьте пустым для автоматической генерации. До 160 символов.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_description', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
+
+                        Textarea::make('seo_description_uz')
+                            ->label('🇺🇿 SEO tavsif (O\'zbek)')
+                            ->maxLength(160)
+                            ->rows(3)
+                            ->helperText('Avtomatik yaratish uchun bo\'sh qoldiring. Max 160 ta belgi.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_description', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('seo_description')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('seo_description'));
+                                }
+                            }),
+
+                        Textarea::make('seo_keywords_en')
+                            ->label('🇬🇧 SEO Keywords (English)')
+                            ->rows(2)
+                            ->helperText('Optional. Comma-separated. E.g.: uzbekistan tours, silk road, samarkand')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_keywords', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Textarea::make('seo_keywords_ru')
+                            ->label('🇷🇺 SEO ключевые слова (Русский)')
+                            ->rows(2)
+                            ->helperText('Необязательно. Через запятую. Например: туры узбекистан, шелковый путь')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_keywords', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Textarea::make('seo_keywords_uz')
+                            ->label('🇺🇿 SEO kalit so\'zlar (O\'zbek)')
+                            ->rows(2)
+                            ->helperText('Ixtiyoriy. Vergul bilan ajratilgan.')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('seo_keywords', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('seo_keywords')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('seo_keywords'));
+                                }
+                            }),
 
                         FileUpload::make('og_image')
                             ->label('Изображение для социальных сетей (Open Graph)')
@@ -282,23 +475,125 @@ class TourForm
                 Section::make('Контент тура')
                     ->description('Основные моменты, что включено/исключено, требования')
                     ->schema([
-                        TagsInput::make('highlights')
-                            ->label('Основные моменты')
-                            ->helperText('Нажмите Enter после каждого пункта')
-                            
+                        TagsInput::make('highlights_en')
+                            ->label('🇬🇧 Highlights (English)')
+                            ->helperText('Press Enter after each item')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('highlights', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
 
-                        TagsInput::make('included_items')
-                            ->label('Что включено')
+                        TagsInput::make('highlights_ru')
+                            ->label('🇷🇺 Основные моменты (Русский)')
                             ->helperText('Нажмите Enter после каждого пункта')
-                            
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('highlights', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
 
-                        TagsInput::make('excluded_items')
-                            ->label('Что не включено')
-                            ->helperText('Нажмите Enter после каждого пункта')
-                            
+                        TagsInput::make('highlights_uz')
+                            ->label('🇺🇿 Asosiy jihatlar (O\'zbek)')
+                            ->helperText('Har bir elementdan keyin Enter tugmasini bosing')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('highlights', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
+
+                        Hidden::make('highlights')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('highlights'));
+                                }
+                            }),
+
+                        TagsInput::make('included_items_en')
+                            ->label('🇬🇧 What\'s Included (English)')
+                            ->helperText('Press Enter after each item')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('included_items', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TagsInput::make('included_items_ru')
+                            ->label('🇷🇺 Что включено (Русский)')
+                            ->helperText('Нажмите Enter после каждого пункта')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('included_items', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TagsInput::make('included_items_uz')
+                            ->label('🇺🇿 Nima kiritilgan (O\'zbek)')
+                            ->helperText('Har bir elementdan keyin Enter tugmasini bosing')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('included_items', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('included_items')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('included_items'));
+                                }
+                            }),
+
+                        TagsInput::make('excluded_items_en')
+                            ->label('🇬🇧 What\'s NOT Included (English)')
+                            ->helperText('Press Enter after each item')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('excluded_items', 'en'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TagsInput::make('excluded_items_ru')
+                            ->label('🇷🇺 Что не включено (Русский)')
+                            ->helperText('Нажмите Enter после каждого пункта')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('excluded_items', 'ru'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        TagsInput::make('excluded_items_uz')
+                            ->label('🇺🇿 Nima kiritilmagan (O\'zbek)')
+                            ->helperText('Har bir elementdan keyin Enter tugmasini bosing')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslation('excluded_items', 'uz'));
+                                }
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Hidden::make('excluded_items')
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $component->state($record->getTranslations('excluded_items'));
+                                }
+                            }),
 
                         Repeater::make('requirements')
                             ->label('Требования')
