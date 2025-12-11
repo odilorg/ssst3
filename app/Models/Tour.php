@@ -5,10 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class Tour extends Model
 {
     use HasFactory;
+    use HasTranslations;
+
+    public array $translatable = [
+        'title',
+        'short_description',
+        'long_description',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'highlights',
+        'included_items',
+        'excluded_items',
+    ];
 
     protected $fillable = [
         // Basic Info
