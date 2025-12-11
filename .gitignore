@@ -36,3 +36,4 @@ partials-answers.txt
 
 # Keep documentation in repo (they're useful!)
 # *.md files will be committed
+config/livewire.php
