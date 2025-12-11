@@ -45,9 +45,12 @@ class EditTour extends EditRecord
         return TourForm::getWizardSteps();
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
+    protected function fillForm(): void
     {
-        // Get the raw translations from the record using Spatie's method
+        // Get the base data
+        $data = $this->record->attributesToArray();
+        
+        // Manually expand translatable fields
         $translatableFields = [
             'title', 'short_description', 'long_description',
             'seo_title', 'seo_description', 'seo_keywords',
@@ -55,24 +58,45 @@ class EditTour extends EditRecord
         ];
 
         foreach ($translatableFields as $field) {
-            // Use Spatie's getTranslations() method to get the full translation array
-            $translations = $this->record->getTranslations($field);
-            
-            // Ensure all locales exist
-            $data[$field] = [
-                'en' => $translations['en'] ?? '',
-                'ru' => $translations['ru'] ?? '',
-                'uz' => $translations['uz'] ?? '',
-            ];
+            if (isset($data[$field])) {
+                // Get raw translations
+                $translations = $this->record->getTranslations($field);
+                
+                // Remove the original field
+                unset($data[$field]);
+                
+                // Add locale-specific fields
+                $data[$field . '.en'] = $translations['en'] ?? '';
+                $data[$field . '.ru'] = $translations['ru'] ?? '';
+                $data[$field . '.uz'] = $translations['uz'] ?? '';
+            }
         }
 
-        return $data;
+        $this->form->fill($data);
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // Data is already in correct format from TranslatableField
-        // Spatie will handle the JSON conversion automatically
+        // Collapse locale-specific fields back to arrays
+        $translatableFields = [
+            'title', 'short_description', 'long_description',
+            'seo_title', 'seo_description', 'seo_keywords',
+            'highlights', 'included_items', 'excluded_items'
+        ];
+
+        foreach ($translatableFields as $field) {
+            $data[$field] = [
+                'en' => $data[$field . '.en'] ?? '',
+                'ru' => $data[$field . '.ru'] ?? '',
+                'uz' => $data[$field . '.uz'] ?? '',
+            ];
+            
+            // Remove the locale-specific fields
+            unset($data[$field . '.en']);
+            unset($data[$field . '.ru']);
+            unset($data[$field . '.uz']);
+        }
+
         return $data;
     }
 
