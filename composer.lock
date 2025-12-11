@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4b6340d91298b918b915908a2e790432",
+    "content-hash": "7e9f52cbb1343f1dd0bfe09efaa3ccc7",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2714,6 +2714,64 @@
             "time": "2025-08-14T18:43:05+00:00"
         },
         {
+            "name": "lara-zeus/spatie-translatable",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lara-zeus/spatie-translatable.git",
+                "reference": "beef575188bf899a83c0ab8eab26be890611ce97"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lara-zeus/spatie-translatable/zipball/beef575188bf899a83c0ab8eab26be890611ce97",
+                "reference": "beef575188bf899a83c0ab8eab26be890611ce97",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "filament/filament": "^4.0",
+                "php": "^8.1",
+                "spatie/laravel-translatable": "^6.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.4",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^10.2",
+                "phpstan/extension-installer": "^1.4",
+                "roave/security-advisories": "dev-latest"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaraZeus\\SpatieTranslatable\\SpatieTranslatableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaraZeus\\SpatieTranslatable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament support for `spatie/laravel-translatable`.",
+            "homepage": "https://github.com/lara-zeus/spatie-translatable",
+            "support": {
+                "issues": "https://github.com/lara-zeus/spatie-translatable/issues",
+                "source": "https://github.com/lara-zeus/spatie-translatable"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/atmonshi",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-10-17T09:30:19+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v12.31.1",
             "source": {
@@ -5100,61 +5158,6 @@
                 }
             ],
             "time": "2025-01-30T13:51:11+00:00"
-        },
-        {
-            "name": "outerweb/filament-translatable-fields",
-            "version": "v3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/outer-web/filament-translatable-fields.git",
-                "reference": "87b70b005a37cd6d13a85e864838317102ca364f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/outer-web/filament-translatable-fields/zipball/87b70b005a37cd6d13a85e864838317102ca364f",
-                "reference": "87b70b005a37cd6d13a85e864838317102ca364f",
-                "shasum": ""
-            },
-            "require": {
-                "filament/filament": "^4.0",
-                "laravel/framework": "^10.0|^11.0|^12.0",
-                "php": "^8.1",
-                "spatie/laravel-package-tools": "^1.16",
-                "spatie/laravel-translatable": "^6.6"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Outerweb\\FilamentTranslatableFields\\FilamentTranslatableFieldsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src\\Helpers\\helpers.php"
-                ],
-                "psr-4": {
-                    "Outerweb\\FilamentTranslatableFields\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Outerweb",
-                    "email": "info@outerweb.be"
-                }
-            ],
-            "description": "This package adds a way to interact with outerweb/translatable-fields in Filament.",
-            "homepage": "https://github.com/outer-web/filament-translatable-fields",
-            "support": {
-                "issues": "https://github.com/outer-web/filament-translatable-fields/issues",
-                "source": "https://github.com/outer-web/filament-translatable-fields/tree/v3.0.0"
-            },
-            "time": "2025-08-20T11:24:19+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

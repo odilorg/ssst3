@@ -10,11 +10,11 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "filament/filament": "4.0.0",
         "intervention/image-laravel": "*",
+        "lara-zeus/spatie-translatable": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
         "openai-php/laravel": "^0.17.1",
-        "outerweb/filament-translatable-fields": "^3.0",
         "spatie/laravel-translatable": "^6.11"
     },
     "require-dev": {
