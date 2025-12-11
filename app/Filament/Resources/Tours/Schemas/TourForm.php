@@ -595,53 +595,45 @@ class TourForm
                 ->icon('heroicon-o-information-circle')
                 ->completedIcon('heroicon-s-check-circle')
                 ->schema([
-                    Tabs::make('title_tabs')
-                        ->tabs([
-                            Tabs\Tab::make('English')
-                                ->schema([
-                                    TextInput::make('title_en')
-                                        ->label('Title (English)')
-                                        ->required()
-                                        ->maxLength(255)
-                                        ->live(onBlur: true)
-                                        ->afterStateHydrated(function ($component, $state, $record) {
-                                            if ($record) {
-                                                $component->state($record->getTranslation('title', 'en'));
-                                            }
-                                        })
-                                        ->afterStateUpdated(fn ($state, callable $set) =>
-                                            $set('slug', Str::slug($state))
-                                        )
-                                        ->placeholder('e.g., One Day Samarkand Tour')
-                                        ->dehydrated(false),
-                                ]),
-                            Tabs\Tab::make('Русский')
-                                ->schema([
-                                    TextInput::make('title_ru')
-                                        ->label('Название (Русский)')
-                                        ->maxLength(255)
-                                        ->afterStateHydrated(function ($component, $state, $record) {
-                                            if ($record) {
-                                                $component->state($record->getTranslation('title', 'ru'));
-                                            }
-                                        })
-                                        ->placeholder('Например: Однодневный тур по Самарканду')
-                                        ->dehydrated(false),
-                                ]),
-                            Tabs\Tab::make('O\'zbek')
-                                ->schema([
-                                    TextInput::make('title_uz')
-                                        ->label('Sarlavha (O\'zbek)')
-                                        ->maxLength(255)
-                                        ->afterStateHydrated(function ($component, $state, $record) {
-                                            if ($record) {
-                                                $component->state($record->getTranslation('title', 'uz'));
-                                            }
-                                        })
-                                        ->placeholder('Masalan: Samarqandga bir kunlik sayohat')
-                                        ->dehydrated(false),
-                                ]),
-                        ])
+                    TextInput::make('title_en')
+                        ->label('🇬🇧 Title (English)')
+                        ->required()
+                        ->maxLength(255)
+                        ->live(onBlur: true)
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            if ($record) {
+                                $component->state($record->getTranslation('title', 'en'));
+                            }
+                        })
+                        ->afterStateUpdated(fn ($state, callable $set) =>
+                            $set('slug', Str::slug($state))
+                        )
+                        ->placeholder('e.g., One Day Samarkand Tour')
+                        ->dehydrated(false)
+                        ->columnSpanFull(),
+
+                    TextInput::make('title_ru')
+                        ->label('🇷🇺 Название (Русский)')
+                        ->maxLength(255)
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            if ($record) {
+                                $component->state($record->getTranslation('title', 'ru'));
+                            }
+                        })
+                        ->placeholder('Например: Однодневный тур по Самарканду')
+                        ->dehydrated(false)
+                        ->columnSpanFull(),
+
+                    TextInput::make('title_uz')
+                        ->label('🇺🇿 Sarlavha (O\'zbek)')
+                        ->maxLength(255)
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            if ($record) {
+                                $component->state($record->getTranslation('title', 'uz'));
+                            }
+                        })
+                        ->placeholder('Masalan: Samarqandga bir kunlik sayohat')
+                        ->dehydrated(false)
                         ->columnSpanFull(),
 
                     Hidden::make('title')
