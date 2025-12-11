@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use App\Filament\Helpers\TranslatableField;
 
 class TourForm
 {
@@ -25,13 +26,12 @@ class TourForm
                 Section::make('Основная информация о туре')
                     ->description('Базовая информация о туре')
                     ->schema([
-                        TextInput::make('title')
-                            ->label('Название тура')
-                            ->required()
-                            ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state)))
-                            ->translatable(),
+                        TranslatableField::text('title', [
+                            'label' => 'Название тура',
+                            'required' => true,
+                            'maxLength' => 255,
+                        ]),
+
 
                         TextInput::make('slug')
                             ->label('URL slug')
@@ -86,12 +86,11 @@ class TourForm
                             ->helperText('Выберите одну или несколько категорий для этого тура')
                             ->columnSpanFull(),
 
-                        TextInput::make('short_description')
-                            ->label('Краткое описание')
-                            ->translatable()
-                            ->maxLength(255)
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::text('short_description', [
+                            'label' => 'Краткое описание',
+                            'maxLength' => 255,
+                            'columnSpanFull' => true,
+                        ]),
 
                         Toggle::make('is_active')
                             ->label('Активный')
@@ -101,45 +100,33 @@ class TourForm
 
                 Section::make('Подробное описание')
                     ->schema([
-                        RichEditor::make('long_description')
-                            ->label('Подробное описание')
-                            ->toolbarButtons([
-                                'bold',
-                                'italic',
-                                'link',
-                                'bulletList',
-                                'orderedList',
-                                'h2',
-                                'h3',
-                            ])
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::richtext('long_description', [
+                            'label' => 'Подробное описание',
+                            'columnSpanFull' => true,
+                        ]),
                     ]),
 
                 Section::make('SEO и социальные сети')
                     ->description('Настройки для поисковой оптимизации и социальных сетей')
                     ->schema([
-                        TextInput::make('seo_title')
-                            ->label('SEO заголовок')
-                            ->maxLength(60)
-                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 60 символов.')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::text('seo_title', [
+                            'label' => 'SEO заголовок',
+                            'maxLength' => 60,
+                            'columnSpanFull' => true,
+                        ]),
 
-                        Textarea::make('seo_description')
-                            ->label('SEO описание')
-                            ->maxLength(160)
-                            ->rows(3)
-                            ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 160 символов.')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::textarea('seo_description', [
+                            'label' => 'SEO описание',
+                            'maxLength' => 160,
+                            'rows' => 3,
+                            'columnSpanFull' => true,
+                        ]),
 
-                        Textarea::make('seo_keywords')
-                            ->label('SEO ключевые слова')
-                            ->rows(2)
-                            ->helperText('Необязательно. Разделяйте запятыми. Например: uzbekistan tours, silk road, samarkand')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::textarea('seo_keywords', [
+                            'label' => 'SEO ключевые слова',
+                            'rows' => 2,
+                            'columnSpanFull' => true,
+                        ]),
 
                         FileUpload::make('og_image')
                             ->label('Изображение для социальных сетей (Open Graph)')
@@ -236,23 +223,20 @@ class TourForm
                 Section::make('Контент тура')
                     ->description('Основные моменты, что включено/исключено, требования')
                     ->schema([
-                        TagsInput::make('highlights')
-                            ->label('Основные моменты')
-                            ->helperText('Нажмите Enter после каждого пункта')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::tags('highlights', [
+                            'label' => 'Основные моменты',
+                            'columnSpanFull' => true,
+                        ]),
 
-                        TagsInput::make('included_items')
-                            ->label('Что включено')
-                            ->helperText('Нажмите Enter после каждого пункта')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::tags('included_items', [
+                            'label' => 'Что включено',
+                            'columnSpanFull' => true,
+                        ]),
 
-                        TagsInput::make('excluded_items')
-                            ->label('Что не включено')
-                            ->helperText('Нажмите Enter после каждого пункта')
-                            ->translatable()
-                            ->columnSpanFull(),
+                        TranslatableField::tags('excluded_items', [
+                            'label' => 'Что не включено',
+                            'columnSpanFull' => true,
+                        ]),
 
                         Repeater::make('requirements')
                             ->label('Требования')
