@@ -25,6 +25,13 @@ class CreateTour extends CreateRecord
         return TourForm::getWizardSteps();
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        // Data from TranslatableField is already in correct format
+        // Spatie will handle the JSON conversion automatically
+        return $data;
+    }
+
     public function hasSkippableSteps(): bool
     {
         return true;

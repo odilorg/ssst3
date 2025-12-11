@@ -45,6 +45,49 @@ class EditTour extends EditRecord
         return TourForm::getWizardSteps();
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Expand JSON translations to separate locale fields
+        $translatableFields = [
+            'title', 'short_description', 'long_description',
+            'seo_title', 'seo_description', 'seo_keywords',
+            'highlights', 'included_items', 'excluded_items'
+        ];
+
+        foreach ($translatableFields as $field) {
+            if (isset($data[$field])) {
+                // Get translations from the model
+                $translations = is_string($data[$field]) 
+                    ? json_decode($data[$field], true) 
+                    : $data[$field];
+
+                // If it's still a string, treat as English
+                if (is_string($translations)) {
+                    $data[$field] = [
+                        'en' => $translations,
+                        'ru' => '',
+                        'uz' => '',
+                    ];
+                } elseif (is_array($translations)) {
+                    $data[$field] = [
+                        'en' => $translations['en'] ?? '',
+                        'ru' => $translations['ru'] ?? '',
+                        'uz' => $translations['uz'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Data is already in correct format from TranslatableField
+        // Spatie will handle the JSON conversion automatically
+        return $data;
+    }
+
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
         $data = $this->form->getState();
