@@ -30,7 +30,8 @@ class TourForm
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                            ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state)))
+                            ->translatable(),
 
                         TextInput::make('slug')
                             ->label('URL slug')
@@ -87,7 +88,9 @@ class TourForm
 
                         TextInput::make('short_description')
                             ->label('Краткое описание')
+                            ->translatable()
                             ->maxLength(255)
+                            ->translatable()
                             ->columnSpanFull(),
 
                         Toggle::make('is_active')
@@ -109,6 +112,7 @@ class TourForm
                                 'h2',
                                 'h3',
                             ])
+                            ->translatable()
                             ->columnSpanFull(),
                     ]),
 
@@ -119,6 +123,7 @@ class TourForm
                             ->label('SEO заголовок')
                             ->maxLength(60)
                             ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 60 символов.')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         Textarea::make('seo_description')
@@ -126,12 +131,14 @@ class TourForm
                             ->maxLength(160)
                             ->rows(3)
                             ->helperText('Оставьте пустым для автоматической генерации. Рекомендуется до 160 символов.')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         Textarea::make('seo_keywords')
                             ->label('SEO ключевые слова')
                             ->rows(2)
                             ->helperText('Необязательно. Разделяйте запятыми. Например: uzbekistan tours, silk road, samarkand')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         FileUpload::make('og_image')
@@ -232,16 +239,19 @@ class TourForm
                         TagsInput::make('highlights')
                             ->label('Основные моменты')
                             ->helperText('Нажмите Enter после каждого пункта')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         TagsInput::make('included_items')
                             ->label('Что включено')
                             ->helperText('Нажмите Enter после каждого пункта')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         TagsInput::make('excluded_items')
                             ->label('Что не включено')
                             ->helperText('Нажмите Enter после каждого пункта')
+                            ->translatable()
                             ->columnSpanFull(),
 
                         Repeater::make('requirements')
