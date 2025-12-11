@@ -27,8 +27,26 @@ class CreateTour extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Data from TranslatableField is already in correct format
-        // Spatie will handle the JSON conversion automatically
+        // Collect locale-specific fields into JSON structure
+        $translatableFields = ['title', 'short_description', 'long_description',
+            'seo_title', 'seo_description', 'seo_keywords',
+            'highlights', 'included_items', 'excluded_items'];
+
+        foreach ($translatableFields as $field) {
+            if (isset($data[$field . '_en']) || isset($data[$field . '_ru']) || isset($data[$field . '_uz'])) {
+                $data[$field] = [
+                    'en' => $data[$field . '_en'] ?? '',
+                    'ru' => $data[$field . '_ru'] ?? '',
+                    'uz' => $data[$field . '_uz'] ?? '',
+                ];
+                
+                // Remove the temporary locale fields
+                unset($data[$field . '_en']);
+                unset($data[$field . '_ru']);
+                unset($data[$field . '_uz']);
+            }
+        }
+
         return $data;
     }
 
