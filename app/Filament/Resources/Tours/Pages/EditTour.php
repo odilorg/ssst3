@@ -47,7 +47,7 @@ class EditTour extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        // Expand JSON translations to separate locale fields
+        // Get the raw translations from the record using Spatie's method
         $translatableFields = [
             'title', 'short_description', 'long_description',
             'seo_title', 'seo_description', 'seo_keywords',
@@ -55,27 +55,15 @@ class EditTour extends EditRecord
         ];
 
         foreach ($translatableFields as $field) {
-            if (isset($data[$field])) {
-                // Get translations from the model
-                $translations = is_string($data[$field]) 
-                    ? json_decode($data[$field], true) 
-                    : $data[$field];
-
-                // If it's still a string, treat as English
-                if (is_string($translations)) {
-                    $data[$field] = [
-                        'en' => $translations,
-                        'ru' => '',
-                        'uz' => '',
-                    ];
-                } elseif (is_array($translations)) {
-                    $data[$field] = [
-                        'en' => $translations['en'] ?? '',
-                        'ru' => $translations['ru'] ?? '',
-                        'uz' => $translations['uz'] ?? '',
-                    ];
-                }
-            }
+            // Use Spatie's getTranslations() method to get the full translation array
+            $translations = $this->record->getTranslations($field);
+            
+            // Ensure all locales exist
+            $data[$field] = [
+                'en' => $translations['en'] ?? '',
+                'ru' => $translations['ru'] ?? '',
+                'uz' => $translations['uz'] ?? '',
+            ];
         }
 
         return $data;
