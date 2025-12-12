@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class GenerateTourWithAI implements ShouldQueue
 {
@@ -42,36 +43,68 @@ class GenerateTourWithAI implements ShouldQueue
 
             // Create tour and itinerary items in transaction
             $tour = DB::transaction(function () use ($tourData) {
-                // Create tour
+                // Create tour with all required fields for wizard compatibility
                 $tour = Tour::create([
                     'title' => $tourData['title'],
+                    'slug' => Str::slug($tourData['title']) . '-' . time(),
                     'duration_days' => $tourData['duration_days'],
-                    'description' => $tourData['description'] ?? null,
-                    'status' => 'draft',
+                    'duration_text' => ($tourData['duration_days'] == 1) 
+                        ? '1 day' 
+                        : $tourData['duration_days'] . ' days / ' . ($tourData['duration_days'] - 1) . ' nights',
+                    'long_description' => $tourData['description'] ?? null,
+                    'short_description' => $tourData['short_description'] ?? Str::limit(strip_tags($tourData['description'] ?? ''), 200),
+                    
+                    // Default pricing (user can edit later)
+                    'price_per_person' => $tourData['estimated_price'] ?? 100,
+                    'show_price' => false, // Hide price until user sets it
+                    'currency' => 'USD',
+                    'min_guests' => 1,
+                    'max_guests' => 15,
+                    
+                    // Tour type
+                    'tour_type' => 'hybrid',
+                    
+                    // Arrays from AI
+                    'highlights' => $tourData['highlights'] ?? [],
+                    'included_items' => $tourData['included'] ?? [],
+                    'excluded_items' => $tourData['excluded'] ?? [],
+                    'languages' => $tourData['languages'] ?? ['English'],
+                    
+                    // Booking settings
+                    'min_booking_hours' => 24,
+                    'cancellation_hours' => 24,
+                    'has_hotel_pickup' => true,
+                    'pickup_radius_km' => 5,
+                    
+                    // Status
+                    'is_active' => false, // Draft mode
+                    'schema_enabled' => true,
                 ]);
 
                 // Create days and stops
-                foreach ($tourData['days'] as $dayIndex => $dayData) {
-                    $day = $tour->itineraryItems()->create([
-                        'type' => 'day',
-                        'title' => $dayData['title'],
-                        'description' => $dayData['description'] ?? null,
-                        'default_start_time' => $dayData['default_start_time'] ?? '09:00',
-                        'sort_order' => $dayIndex,
-                    ]);
+                if (isset($tourData['days']) && is_array($tourData['days'])) {
+                    foreach ($tourData['days'] as $dayIndex => $dayData) {
+                        $day = $tour->itineraryItems()->create([
+                            'type' => 'day',
+                            'title' => $dayData['title'] ?? 'Day ' . ($dayIndex + 1),
+                            'description' => $dayData['description'] ?? null,
+                            'default_start_time' => $dayData['default_start_time'] ?? '09:00',
+                            'sort_order' => $dayIndex,
+                        ]);
 
-                    // Create stops for this day
-                    if (isset($dayData['stops']) && is_array($dayData['stops'])) {
-                        foreach ($dayData['stops'] as $stopIndex => $stopData) {
-                            $day->children()->create([
-                                'tour_id' => $tour->id,
-                                'type' => 'stop',
-                                'title' => $stopData['title'],
-                                'description' => $stopData['description'] ?? null,
-                                'default_start_time' => $stopData['default_start_time'] ?? null,
-                                'duration_minutes' => $stopData['duration_minutes'] ?? 60,
-                                'sort_order' => $stopIndex,
-                            ]);
+                        // Create stops for this day
+                        if (isset($dayData['stops']) && is_array($dayData['stops'])) {
+                            foreach ($dayData['stops'] as $stopIndex => $stopData) {
+                                $day->children()->create([
+                                    'tour_id' => $tour->id,
+                                    'type' => 'stop',
+                                    'title' => $stopData['title'] ?? 'Stop ' . ($stopIndex + 1),
+                                    'description' => $stopData['description'] ?? null,
+                                    'default_start_time' => $stopData['default_start_time'] ?? null,
+                                    'duration_minutes' => $stopData['duration_minutes'] ?? 60,
+                                    'sort_order' => $stopIndex,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -89,11 +122,16 @@ class GenerateTourWithAI implements ShouldQueue
                 'cost' => $tourData['_meta']['cost'] ?? null,
             ]);
 
-            // Send success notification
+            // Send success notification with edit link
             Notification::make()
                 ->success()
                 ->title('Tour Generated Successfully!')
-                ->body("Your tour '{$tour->title}' is ready to edit. Check the Tours list to view it.")
+                ->body("Your tour {\$tour->title} is ready. Click to edit and complete the details.")
+                ->actions([
+                    \Filament\Notifications\Actions\Action::make('edit')
+                        ->button()
+                        ->url(route('filament.admin.resources.tours.tours.edit', ['record' => $tour->id]))
+                ])
                 ->sendToDatabase($this->generation->user);
 
             Log::info('Tour generated successfully', [
