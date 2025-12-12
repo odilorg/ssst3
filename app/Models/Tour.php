@@ -617,7 +617,7 @@ class Tour extends Model
      */
     public function getSeoTitle(): string
     {
-        return $this->attributes['seo_title'] ?? ($this->attributes['title'] . ' | Jahongir Travel');
+        return $this->seo_title ?? ($this->title . " | Jahongir Travel");
     }
 
     /**
@@ -625,17 +625,17 @@ class Tour extends Model
      */
     public function getSeoDescription(): ?string
     {
-        if (!empty($this->attributes['seo_description'])) {
-            return $this->attributes['seo_description'];
+        if (!empty($this->seo_description)) {
+            return $this->seo_description;
         }
 
         // Fallback to short_description or stripped long_description
-        if (!empty($this->attributes['short_description'])) {
-            return \Illuminate\Support\Str::limit(strip_tags($this->attributes['short_description']), 160);
+        if (!empty($this->short_description)) {
+            return \Illuminate\Support\Str::limit(strip_tags($this->short_description), 160);
         }
 
-        if (!empty($this->attributes['long_description'])) {
-            return \Illuminate\Support\Str::limit(strip_tags($this->attributes['long_description']), 160);
+        if (!empty($this->long_description)) {
+            return \Illuminate\Support\Str::limit(strip_tags($this->long_description), 160);
         }
 
         return null;

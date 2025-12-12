@@ -101,7 +101,8 @@ class TourController extends Controller
     public function itinerary(string $slug)
     {
         // Get tour with eager-loaded itinerary items (hierarchical structure)
-        $tour = Cache::remember("tour.{$slug}.with_itinerary", 3600, function () use ($slug) {
+        $locale = app()->getLocale();
+        $tour = Cache::remember("tour.{$slug}.with_itinerary.{$locale}", 3600, function () use ($slug) {
             return Tour::where('slug', $slug)
                 ->where('is_active', true)
                 ->with([
@@ -138,7 +139,8 @@ class TourController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        $faqs = Cache::remember("tour.{$slug}.faqs", 86400, function () use ($tour) {
+        $locale = app()->getLocale();
+        $faqs = Cache::remember("tour.{$slug}.faqs.{$locale}", 86400, function () use ($tour) {
             return $tour->faqs()->orderBy('sort_order')->get();
         });
 
@@ -191,7 +193,8 @@ class TourController extends Controller
      */
     protected function getCachedTour(string $slug): Tour
     {
-        return Cache::remember("tour.{$slug}", 3600, function () use ($slug) {
+                $locale = app()->getLocale();
+        return Cache::remember("tour.{$slug}.{$locale}", 3600, function () use ($slug) {
             return Tour::where('slug', $slug)
                 ->where('is_active', true)
                 ->with('city')
