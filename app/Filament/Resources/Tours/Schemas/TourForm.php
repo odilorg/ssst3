@@ -583,6 +583,78 @@ class TourForm
                 ])
                 ->columns(2),
 
+            // Step 2: Tour Details & Content
+            Step::make('Детали и описание')
+                ->description('Город, категории и описание тура')
+                ->icon('heroicon-o-document-text')
+                ->completedIcon('heroicon-s-check-circle')
+                ->schema([
+                    Select::make('city_id')
+                        ->label('Город')
+                        ->relationship('city', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->helperText('Основной город тура'),
+
+                    Select::make('categories')
+                        ->label('Категории')
+                        ->relationship(
+                            name: 'categories',
+                            modifyQueryUsing: fn ($query) =>
+                                $query->where('is_active', true)->orderBy('display_order')
+                        )
+                        ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->helperText('Выберите одну или несколько категорий')
+                        ->columnSpanFull(),
+
+                    Textarea::make('short_description')
+                        ->label('Краткое описание')
+                        ->maxLength(255)
+                        ->rows(2)
+                        ->placeholder('Краткое описание для карточки тура')
+                        ->helperText('Отображается в списке туров и карточках')
+                        ->columnSpanFull(),
+
+                    RichEditor::make('long_description')
+                        ->label('Подробное описание')
+                        ->toolbarButtons([
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletList',
+                            'orderedList',
+                            'h2',
+                            'h3',
+                        ])
+                        ->placeholder('Полное описание тура...')
+                        ->helperText('Подробное описание тура для страницы детального просмотра')
+                        ->columnSpanFull(),
+
+                    TagsInput::make('highlights')
+                        ->label('Основные моменты (Highlights)')
+                        ->helperText('Нажмите Enter после каждого пункта')
+                        ->placeholder('Добавьте основной момент...')
+                        ->columnSpanFull(),
+
+                    TagsInput::make('included_items')
+                        ->label('Что включено')
+                        ->helperText('Нажмите Enter после каждого пункта')
+                        ->placeholder('Добавьте что включено...')
+                        ->columnSpanFull(),
+
+                    TagsInput::make('excluded_items')
+                        ->label('Что НЕ включено')
+                        ->helperText('Нажмите Enter после каждого пункта')
+                        ->placeholder('Добавьте что не включено...')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+
+
             // Step 2: Pricing
             Step::make('Цены')
                 ->description('Установите цены')
