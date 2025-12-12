@@ -48,6 +48,9 @@ class EditTour extends EditRecord
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
         $data = $this->form->getState();
+        
+        // IMPORTANT: Call mutation method to transform locale fields into JSON
+        $data = $this->mutateFormDataBeforeSave($data);
 
         $this->handleRecordUpdate($this->record, $data);
 
