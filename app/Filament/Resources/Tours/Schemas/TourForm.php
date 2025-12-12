@@ -232,17 +232,20 @@ class TourForm
                         TagsInput::make('highlights')
                             ->label('Основные моменты')
                             ->helperText('Нажмите Enter после каждого пункта')
-                            ->columnSpanFull(),
+                            ->splitKeys(['Enter', ','])
+                        ->columnSpanFull(),
 
                         TagsInput::make('included_items')
                             ->label('Что включено')
                             ->helperText('Нажмите Enter после каждого пункта')
-                            ->columnSpanFull(),
+                            ->splitKeys(['Enter', ','])
+                        ->columnSpanFull(),
 
                         TagsInput::make('excluded_items')
                             ->label('Что не включено')
                             ->helperText('Нажмите Enter после каждого пункта')
-                            ->columnSpanFull(),
+                            ->splitKeys(['Enter', ','])
+                        ->columnSpanFull(),
 
                         Repeater::make('requirements')
                             ->label('Требования')
@@ -297,7 +300,8 @@ class TourForm
                         TagsInput::make('languages')
                             ->label('Языки')
                             ->suggestions(['English', 'Russian', 'French', 'German', 'Spanish', 'Italian', 'Japanese', 'Chinese'])
-                            ->columnSpanFull(),
+                            ->splitKeys(['Enter', ','])
+                        ->columnSpanFull(),
                     ]),
 
                 Section::make('FAQ (Часто задаваемые вопросы)')
@@ -656,24 +660,28 @@ class TourForm
                         ->label('Основные моменты (Highlights)')
                         ->helperText('Нажмите Enter после каждого пункта')
                         ->placeholder('Добавьте основной момент...')
+                        ->splitKeys(['Enter', ','])
                         ->columnSpanFull(),
 
                     TagsInput::make('included_items')
                         ->label('Что включено')
                         ->helperText('Нажмите Enter после каждого пункта')
                         ->placeholder('Добавьте что включено...')
+                        ->splitKeys(['Enter', ','])
                         ->columnSpanFull(),
 
                     TagsInput::make('excluded_items')
                         ->label('Что НЕ включено')
                         ->helperText('Нажмите Enter после каждого пункта')
                         ->placeholder('Добавьте что не включено...')
+                        ->splitKeys(['Enter', ','])
                         ->columnSpanFull(),
 
                     TagsInput::make('languages')
                         ->label('Языки')
                         ->suggestions(['English', 'Russian', 'French', 'German', 'Spanish', 'Italian', 'Japanese', 'Chinese'])
                         ->helperText('Языки, на которых проводится тур')
+                        ->splitKeys(['Enter', ','])
                         ->columnSpanFull(),
                 ])
                 ->columns(2),
