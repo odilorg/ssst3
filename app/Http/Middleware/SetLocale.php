@@ -21,7 +21,6 @@ class SetLocale
             $locale = $request->get('locale');
             
             if (in_array($locale, $availableLocales)) {
-        Log::info("SetLocale middleware - locale param:", [$request->get("locale")]);
                 session(['locale' => $locale]);
                 app()->setLocale($locale);
                 return $next($request);
