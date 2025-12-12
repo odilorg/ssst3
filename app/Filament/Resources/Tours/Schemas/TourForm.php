@@ -43,7 +43,7 @@ class TourForm
                                                 }
                                             })
                                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state)))
-                                            ->dehydrated(false),
+                                            
                                     ]),
                                 Tabs\Tab::make('Русский')
                                     ->schema([
@@ -55,7 +55,7 @@ class TourForm
                                                     $component->state($record->getTranslation('title', 'ru'));
                                                 }
                                             })
-                                            ->dehydrated(false),
+                                            
                                     ]),
                                 Tabs\Tab::make('O\'zbek')
                                     ->schema([
@@ -67,17 +67,11 @@ class TourForm
                                                     $component->state($record->getTranslation('title', 'uz'));
                                                 }
                                             })
-                                            ->dehydrated(false),
+                                            
                                     ]),
                             ])
                             ->columnSpanFull(),
                         
-                        Hidden::make('title')
-                            ->afterStateHydrated(function ($component, $record) {
-                                if ($record) {
-                                    $component->state($record->getTranslations('title'));
-                                }
-                            }),
 
                         TextInput::make('slug')
                             ->label('URL slug')
@@ -140,7 +134,6 @@ class TourForm
                                     $component->state($record->getTranslation('short_description', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TextInput::make('short_description_ru')
@@ -151,7 +144,6 @@ class TourForm
                                     $component->state($record->getTranslation('short_description', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TextInput::make('short_description_uz')
@@ -162,7 +154,6 @@ class TourForm
                                     $component->state($record->getTranslation('short_description', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('short_description')
@@ -196,7 +187,6 @@ class TourForm
                                     $component->state($record->getTranslation('long_description', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         RichEditor::make('long_description_ru')
@@ -215,7 +205,6 @@ class TourForm
                                     $component->state($record->getTranslation('long_description', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         RichEditor::make('long_description_uz')
@@ -234,7 +223,6 @@ class TourForm
                                     $component->state($record->getTranslation('long_description', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('long_description')
@@ -257,7 +245,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_title', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TextInput::make('seo_title_ru')
@@ -269,7 +256,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_title', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TextInput::make('seo_title_uz')
@@ -281,7 +267,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_title', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('seo_title')
@@ -301,7 +286,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_description', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Textarea::make('seo_description_ru')
@@ -314,7 +298,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_description', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Textarea::make('seo_description_uz')
@@ -327,7 +310,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_description', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('seo_description')
@@ -346,7 +328,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_keywords', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Textarea::make('seo_keywords_ru')
@@ -358,7 +339,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_keywords', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Textarea::make('seo_keywords_uz')
@@ -370,7 +350,6 @@ class TourForm
                                     $component->state($record->getTranslation('seo_keywords', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('seo_keywords')
@@ -483,7 +462,6 @@ class TourForm
                                     $component->state($record->getTranslation('highlights', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('highlights_ru')
@@ -494,7 +472,6 @@ class TourForm
                                     $component->state($record->getTranslation('highlights', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('highlights_uz')
@@ -505,7 +482,6 @@ class TourForm
                                     $component->state($record->getTranslation('highlights', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('highlights')
@@ -523,7 +499,6 @@ class TourForm
                                     $component->state($record->getTranslation('included_items', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('included_items_ru')
@@ -534,7 +509,6 @@ class TourForm
                                     $component->state($record->getTranslation('included_items', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('included_items_uz')
@@ -545,7 +519,6 @@ class TourForm
                                     $component->state($record->getTranslation('included_items', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('included_items')
@@ -563,7 +536,6 @@ class TourForm
                                     $component->state($record->getTranslation('excluded_items', 'en'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('excluded_items_ru')
@@ -574,7 +546,6 @@ class TourForm
                                     $component->state($record->getTranslation('excluded_items', 'ru'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         TagsInput::make('excluded_items_uz')
@@ -585,7 +556,6 @@ class TourForm
                                     $component->state($record->getTranslation('excluded_items', 'uz'));
                                 }
                             })
-                            ->dehydrated(false)
                             ->columnSpanFull(),
 
                         Hidden::make('excluded_items')
@@ -802,14 +772,12 @@ class TourForm
                             ->label('Рейтинг')
                             ->numeric()
                             ->disabled()
-                            ->dehydrated(false)
                             ->helperText('Обновляется автоматически'),
 
                         TextInput::make('review_count')
                             ->label('Количество отзывов')
                             ->numeric()
                             ->disabled()
-                            ->dehydrated(false)
                             ->helperText('Обновляется автоматически'),
                     ])
                     ->columns(2),
@@ -904,7 +872,6 @@ class TourForm
                             $set('slug', Str::slug($state))
                         )
                         ->placeholder('e.g., One Day Samarkand Tour')
-                        ->dehydrated(false)
                         ->columnSpanFull(),
 
                     TextInput::make('title_ru')
@@ -916,7 +883,6 @@ class TourForm
                             }
                         })
                         ->placeholder('Например: Однодневный тур по Самарканду')
-                        ->dehydrated(false)
                         ->columnSpanFull(),
 
                     TextInput::make('title_uz')
@@ -928,7 +894,6 @@ class TourForm
                             }
                         })
                         ->placeholder('Masalan: Samarqandga bir kunlik sayohat')
-                        ->dehydrated(false)
                         ->columnSpanFull(),
 
                     Hidden::make('title')
