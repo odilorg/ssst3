@@ -55,6 +55,11 @@ class TourResource extends Resource
         return $count > 5 ? 'success' : 'primary';
     }
 
+    public static function form(Schema $schema): Schema
+    {
+        return TourForm::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return ToursTable::configure($table);
