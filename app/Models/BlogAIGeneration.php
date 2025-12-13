@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlogAIGeneration extends Model
 {
+    protected $table = 'blog_ai_generations';
+    
     protected $fillable = [
         'user_id',
         'blog_post_id',
@@ -27,17 +29,11 @@ class BlogAIGeneration extends Model
         'cost' => 'decimal:4',
     ];
 
-    /**
-     * Get the user who created this generation
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the generated blog post
-     */
     public function blogPost(): BelongsTo
     {
         return $this->belongsTo(BlogPost::class);
