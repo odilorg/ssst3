@@ -8,7 +8,6 @@ use App\Models\BlogTag;
 use App\Models\BlogCategory;
 use App\Services\BlogAIService;
 use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -83,7 +82,7 @@ class GenerateBlogPostWithAI implements ShouldQueue
                 ->title('Blog Post Generated Successfully!')
                 ->body("'{$blogPost->title}' is ready to edit and publish.")
                 ->actions([
-                    Action::make('edit')
+                    \Filament\Notifications\Actions\Action::make('edit')
                         ->button()
                         ->url(route('filament.admin.resources.blog-posts.blog-posts.edit', ['record' => $blogPost->id]))
                 ])
