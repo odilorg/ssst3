@@ -17,8 +17,8 @@ class BlogAIService
                     'Authorization' => 'Bearer ' . config('openai.api_key'),
                     'Content-Type' => 'application/json',
                 ])
-                ->post('https://api.deepseek.com/v1/chat/completions', [
-                    'model' => 'deepseek-chat',
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model' => 'gpt-4o-mini',
                     'messages' => [
                         ['role' => 'system', 'content' => $this->getSystemPrompt()],
                         ['role' => 'user', 'content' => $prompt]
@@ -30,7 +30,8 @@ class BlogAIService
             $data = $response->json();
 
             if (!$response->successful() || !isset($data['choices'][0]['message']['content'])) {
-                throw new \Exception('Invalid API response');
+                Log::error('OpenAI API Response', ['status' => $response->status(), 'body' => $response->body()]);
+                throw new \Exception('Invalid API response from OpenAI: ' . $response->body());
             }
 
             $content = $data['choices'][0]['message']['content'];
@@ -46,7 +47,7 @@ class BlogAIService
             return $blogData;
 
         } catch (\Exception $e) {
-            Log::error('DeepSeek API Error (Blog)', [
+            Log::error('OpenAI API Error (Blog)', [
                 'message' => $e->getMessage(),
                 'params' => $params,
             ]);
@@ -56,7 +57,7 @@ class BlogAIService
 
     protected function getSystemPrompt(): string
     {
-        return 'You are an expert travel blog writer specializing in Uzbekistan tourism. Write engaging, SEO-optimized content with proper HTML formatting using h2, h3, p, ul, li tags. Include practical details like prices, timing, and tips. Never use h1 tags.';
+        return 'You are an expert travel blog writer specializing in Uzbekistan tourism and Central Asian travel. Write engaging, SEO-optimized content with proper HTML formatting using h2, h3, p, ul, li tags. Include practical details like prices, timing, and tips. Never use h1 tags. Write in a friendly, informative tone that helps travelers plan their trips.';
     }
 
     protected function buildPrompt(array $params): string
@@ -81,8 +82,8 @@ class BlogAIService
             $prompt .= "Additional notes: {$notes}\n";
         }
 
-        $prompt .= "\nReturn ONLY valid JSON with this structure:\n";
-        $prompt .= '{"title": "SEO title", "excerpt": "150-200 char summary", "content": "HTML formatted content with h2, h3, p, ul tags", "suggested_tags": ["tag1", "tag2"], "suggested_category": "category name", "meta_title": "60 char SEO title", "meta_description": "160 char SEO description", "reading_time": 8}';
+        $prompt .= "\nReturn ONLY valid JSON with this structure (no markdown code blocks):\n";
+        $prompt .= '{"title": "SEO title 50-60 chars", "excerpt": "150-200 char summary", "content": "HTML formatted content with h2, h3, p, ul tags", "suggested_tags": ["tag1", "tag2", "tag3"], "suggested_category": "category name", "meta_title": "60 char SEO title", "meta_description": "160 char SEO description", "reading_time": 8}';
 
         return $prompt;
     }
@@ -96,6 +97,7 @@ class BlogAIService
         $data = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::error('JSON Parse Error', ['content' => $content, 'error' => json_last_error_msg()]);
             throw new \Exception('Failed to parse JSON: ' . json_last_error_msg());
         }
 
@@ -113,8 +115,11 @@ class BlogAIService
     {
         $inputTokens = $usage->prompt_tokens ?? 0;
         $outputTokens = $usage->completion_tokens ?? 0;
-        $inputCost = ($inputTokens / 1000000) * 0.14;
-        $outputCost = ($outputTokens / 1000000) * 0.28;
+        
+        // GPT-4o-mini pricing: $0.150 per 1M input tokens, $0.600 per 1M output tokens
+        $inputCost = ($inputTokens / 1000000) * 0.150;
+        $outputCost = ($outputTokens / 1000000) * 0.600;
+        
         return round($inputCost + $outputCost, 4);
     }
 }
