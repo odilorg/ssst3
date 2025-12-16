@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class City extends Model
 {
     use HasFactory;
+    use HasTranslations;
 
     protected $fillable = [
         'name',
@@ -30,6 +32,19 @@ class City extends Model
         'meta_title',
         'meta_description',
         'tour_count_cache',
+    ];
+
+    /**
+     * Translatable attributes
+     */
+    public array $translatable = [
+        'name',
+        'tagline',
+        'description',
+        'short_description',
+        'long_description',
+        'meta_title',
+        'meta_description',
     ];
 
     protected $casts = [

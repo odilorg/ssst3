@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class Tour extends Model
 {
     use HasFactory;
+    use HasTranslations;
 
     protected $fillable = [
         // Basic Info
@@ -77,6 +79,19 @@ class Tour extends Model
         // Cancellation
         'cancellation_hours',
         'cancellation_policy',
+    ];
+
+    /**
+     * Translatable attributes
+     */
+    public array $translatable = [
+        'title',
+        'short_description',
+        'long_description',
+        'highlights',
+        'included_items',
+        'excluded_items',
+        'requirements',
     ];
 
     protected $casts = [

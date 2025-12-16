@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Spatie\Translatable\HasTranslations;
 
 class TourCategory extends Model
 {
     use SoftDeletes;
+    use HasTranslations;
 
     protected $fillable = [
         'name',
@@ -22,6 +24,16 @@ class TourCategory extends Model
         'display_order',
         'is_active',
         'show_on_homepage',
+        'meta_title',
+        'meta_description',
+    ];
+
+    /**
+     * Translatable attributes
+     */
+    public array $translatable = [
+        'name',
+        'description',
         'meta_title',
         'meta_description',
     ];
