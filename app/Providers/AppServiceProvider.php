@@ -20,7 +20,7 @@ use App\Observers\TourObserver;
 use App\Observers\TransportObserver;
 use App\Observers\TransportInstancePriceObserver;
 use Illuminate\Support\ServiceProvider;
-// use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,17 +36,16 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
-        // TODO: Re-enable after package issue is resolved
-        // LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-        //     $switch
-        //         ->locales(['ru', 'en', 'uz'])
-        //         ->visible(outsidePanels: true)
-        //         ->flags([
-        //             'ru' => 'ru',
-        //             'en' => 'gb',
-        //             'uz' => 'uz',
-        //         ]);
-        // });
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['ru', 'en', 'uz'])
+                ->visible(outsidePanels: true)
+                ->flags([
+                    'ru' => 'ru',
+                    'en' => 'gb',
+                    'uz' => 'uz',
+                ]);
+        });
 
         // Register observers
         Booking::observe(BookingObserver::class);
