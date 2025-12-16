@@ -242,7 +242,7 @@
         </div>
 
         <div class="cards-grid-1">
-            @foreach (->take(3) as $tour)
+            @foreach ($tours->take(3) as $tour)
                 @include('partials.tours.card-option1-horizontal', ['tour' => $tour])
             @endforeach
         </div>
@@ -291,7 +291,7 @@
         </div>
 
         <div class="cards-grid-2">
-            @foreach (->take(3) as $tour)
+            @foreach ($tours->take(3) as $tour)
                 @include('partials.tours.card-option2-compact', ['tour' => $tour])
             @endforeach
         </div>
@@ -339,7 +339,7 @@
         </div>
 
         <div class="cards-grid-3">
-            @foreach (->take(3) as $tour)
+            @foreach ($tours->take(3) as $tour)
                 @include('partials.tours.card-option3-overlay', ['tour' => $tour])
             @endforeach
         </div>
