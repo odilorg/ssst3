@@ -17,80 +17,70 @@
 
     {{-- TOUR CARDS (Always rendered) --}}
     @forelse ($tours as $tour)
-        <article class="tour-card" data-tour-id="{{ $tour->id }}">
+{{--
+    OPTION 3: Grid Card with Info Overlay
+    Modern, space-efficient, image-heavy
+    Aspect ratio: ~1:1.3 (300px × 400px)
+--}}
 
-            {{-- Tour Image --}}
-            <div class="tour-card__media">
-                <img
-                    src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
-                    alt="{{ $tour->title }}"
-                    width="400"
-                    height="300"
-                    loading="lazy"
-                    decoding="async"
-                >
+{{--
+    OPTION 2: Compact Vertical Card
+    Reduced height, better aspect ratio, still familiar vertical pattern
+    Aspect ratio: ~1:1.5 (300px × 450px)
+--}}
+
+<article class="tour-card-v" data-tour-id="{{ $tour->id }}">
+    
+    {{-- Image with floating badges --}}
+    <div class="tour-card-v__media">
+        <img
+            src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
+            alt="{{ $tour->title }}"
+            width="400"
+            height="300"
+            loading="lazy"
+            decoding="async"
+        >
+        
+        {{-- Floating badges --}}
+        <div class="tour-card-v__badges">
+            <span class="tour-card-v__badge">
+                <i class="far fa-clock" aria-hidden="true"></i>
+                {{ $tour->duration_text ?? $tour->duration_days . ' days' }}
+            </span>
+            <span class="tour-card-v__badge">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                {{ $tour->city->name ?? 'Uzbekistan' }}
+            </span>
+        </div>
+    </div>
+
+    {{-- Content --}}
+    <div class="tour-card-v__content">
+        {{-- Title --}}
+        <h3 class="tour-card-v__title">
+            <a href="/tours/{{ $tour->slug }}">
+                {{ $tour->title }}
+            </a>
+        </h3>
+
+        {{-- Description --}}
+        <p class="tour-card-v__description">
+            {{ Str::limit($tour->meta_description ?? $tour->description, 100) }}
+        </p>
+
+        {{-- Footer (Price + CTA) --}}
+        <div class="tour-card-v__footer">
+            <div class="tour-card-v__price">
+                <span class="tour-card-v__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
             </div>
-
-            {{-- Tour Content --}}
-            <div class="tour-card__content">
-
-                {{-- Tags (City) --}}
-                <div class="tour-card__tags">
-                    @if ($tour->city)
-                        <span class="tag">{{ $tour->city->name }}</span>
-                    @endif
-                </div>
-
-                {{-- Title --}}
-                <h3 class="tour-card__title">
-                    <a href="/tours/{{ $tour->slug }}">
-                        {{ $tour->title }}
-                    </a>
-                </h3>
-
-                {{-- Meta (Duration + Rating) --}}
-                <div class="tour-card__meta">
-
-                    {{-- Duration --}}
-                    <div class="tour-card__duration">
-                        <i class="far fa-clock" aria-hidden="true"></i>
-                        <span>{{ $tour->duration_text ?? $tour->duration_days . ' days' }}</span>
-                    </div>
-
-                    {{-- Rating --}}
-                    @if ($tour->rating > 0)
-                        <div class="tour-card__rating">
-                            <div class="stars" aria-label="Rated {{ number_format($tour->rating, 1) }} out of 5 stars">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($i <= floor($tour->rating))
-                                        <i class="fas fa-star" aria-hidden="true"></i>
-                                    @elseif ($i - 0.5 <= $tour->rating)
-                                        <i class="fas fa-star-half-alt" aria-hidden="true"></i>
-                                    @else
-                                        <i class="far fa-star" aria-hidden="true"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <span class="tour-card__reviews">({{ $tour->review_count ?? 0 }} reviews)</span>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Footer (Price + CTA) --}}
-                <div class="tour-card__footer">
-                    <div class="tour-card__price">
-                        <span class="tour-card__price-label">From</span>
-                        <span class="tour-card__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
-                        <span class="tour-card__price-unit">per person</span>
-                    </div>
-                    <a href="/tours/{{ $tour->slug }}" class="btn btn--primary">
-                        View Details
-                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                    </a>
-                </div>
-
-            </div>
-        </article>
+            <a href="/tours/{{ $tour->slug }}" class="tour-card-v__btn">
+                View Details
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</article>
     @empty
         {{-- No tours found --}}
         <div class="no-results">
