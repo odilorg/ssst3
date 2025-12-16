@@ -18,12 +18,13 @@ class TourCategoryForm
             ->components([
                 Section::make('Basic Information')
                     ->schema([
-                        TextInput::make('name.en')
-                            ->label('Name (English)')
+                        TextInput::make('name')
+                            ->label('Name')
                             ->required()
+                            ->translatable()
                             ->live(onBlur: true)
                             ->afterStateUpdated(function ($state, callable $set, $get) {
-                                // Auto-generate slug from English name
+                                // Auto-generate slug from name
                                 if (!$get('slug')) {
                                     $set('slug', Str::slug($state));
                                 }
@@ -34,24 +35,11 @@ class TourCategoryForm
                             ->unique(ignoreRecord: true)
                             ->helperText('URL-friendly identifier'),
 
-                        TextInput::make('name.ru')
-                            ->label('Name (Russian)'),
-
-                        TextInput::make('name.fr')
-                            ->label('Name (French)'),
-
-                        Textarea::make('description.en')
-                            ->label('Description (English)')
+                        Textarea::make('description')
+                            ->label('Description')
                             ->rows(3)
+                            ->translatable()
                             ->columnSpanFull(),
-
-                        Textarea::make('description.ru')
-                            ->label('Description (Russian)')
-                            ->rows(3),
-
-                        Textarea::make('description.fr')
-                            ->label('Description (French)')
-                            ->rows(3),
                     ])
                     ->columns(2),
 
@@ -120,32 +108,18 @@ class TourCategoryForm
                 Section::make('SEO Settings')
                     ->collapsed()
                     ->schema([
-                        TextInput::make('meta_title.en')
-                            ->label('Meta Title (English)')
-                            ->maxLength(60),
+                        TextInput::make('meta_title')
+                            ->label('Meta Title')
+                            ->maxLength(60)
+                            ->translatable()
+                            ->helperText('SEO title for search engines (leave empty to use category name)'),
 
-                        Textarea::make('meta_description.en')
-                            ->label('Meta Description (English)')
+                        Textarea::make('meta_description')
+                            ->label('Meta Description')
                             ->rows(2)
-                            ->maxLength(160),
-
-                        TextInput::make('meta_title.ru')
-                            ->label('Meta Title (Russian)')
-                            ->maxLength(60),
-
-                        TextInput::make('meta_title.fr')
-                            ->label('Meta Title (French)')
-                            ->maxLength(60),
-
-                        Textarea::make('meta_description.ru')
-                            ->label('Meta Description (Russian)')
-                            ->rows(2)
-                            ->maxLength(160),
-
-                        Textarea::make('meta_description.fr')
-                            ->label('Meta Description (French)')
-                            ->rows(2)
-                            ->maxLength(160),
+                            ->maxLength(160)
+                            ->translatable()
+                            ->helperText('SEO description for search engines'),
                     ])
                     ->columns(2),
             ]);

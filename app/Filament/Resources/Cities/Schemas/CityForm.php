@@ -24,6 +24,7 @@ class CityForm
                                     ->label('City Name')
                                     ->required()
                                     ->maxLength(255)
+                                    ->translatable()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, $set, $get) {
                                         if (empty($get('slug'))) {
@@ -42,6 +43,7 @@ class CityForm
                         TextInput::make('tagline')
                             ->label('Tagline')
                             ->maxLength(255)
+                            ->translatable()
                             ->helperText('Short catchy phrase (e.g., "The Jewel of the Silk Road")')
                             ->columnSpanFull(),
 
@@ -49,18 +51,21 @@ class CityForm
                             ->label('Short Description')
                             ->rows(3)
                             ->maxLength(500)
+                            ->translatable()
                             ->helperText('Brief description for cards and previews (max 500 characters)')
                             ->columnSpanFull(),
 
                         Textarea::make('description')
                             ->label('Description')
                             ->rows(5)
+                            ->translatable()
                             ->helperText('Main description for the city')
                             ->columnSpanFull(),
 
                         Textarea::make('long_description')
                             ->label('Long Description')
                             ->rows(8)
+                            ->translatable()
                             ->helperText('Detailed description for dedicated city pages')
                             ->columnSpanFull(),
                     ]),
@@ -120,6 +125,7 @@ class CityForm
                         TextInput::make('meta_title')
                             ->label('Meta Title')
                             ->maxLength(255)
+                            ->translatable()
                             ->helperText('SEO title for search engines (leave empty to use city name)')
                             ->columnSpanFull(),
 
@@ -127,6 +133,7 @@ class CityForm
                             ->label('Meta Description')
                             ->rows(3)
                             ->maxLength(255)
+                            ->translatable()
                             ->helperText('SEO description for search engines')
                             ->columnSpanFull(),
                     ]),

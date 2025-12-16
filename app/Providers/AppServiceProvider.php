@@ -40,10 +40,10 @@ class AppServiceProvider extends ServiceProvider
             $switch
                 ->locales(['ru', 'en', 'uz'])
                 ->visible(outsidePanels: true)
-                ->flags([
-                    'ru' => 'ru',
-                    'en' => 'gb',
-                    'uz' => 'uz',
+                ->labels([
+                    'ru' => 'Русский',
+                    'en' => 'English',
+                    'uz' => 'O\'zbekcha',
                 ]);
         });
 

@@ -29,6 +29,7 @@ class TourForm
                             ->label('Название тура')
                             ->required()
                             ->maxLength(255)
+                            ->translatable()
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
 
@@ -88,6 +89,7 @@ class TourForm
                         TextInput::make('short_description')
                             ->label('Краткое описание')
                             ->maxLength(255)
+                            ->translatable()
                             ->columnSpanFull(),
 
                         Toggle::make('is_active')
@@ -100,6 +102,7 @@ class TourForm
                     ->schema([
                         RichEditor::make('long_description')
                             ->label('Подробное описание')
+                            ->translatable()
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -231,21 +234,25 @@ class TourForm
                     ->schema([
                         TagsInput::make('highlights')
                             ->label('Основные моменты')
+                            ->translatable()
                             ->helperText('Нажмите Enter после каждого пункта')
                             ->columnSpanFull(),
 
                         TagsInput::make('included_items')
                             ->label('Что включено')
+                            ->translatable()
                             ->helperText('Нажмите Enter после каждого пункта')
                             ->columnSpanFull(),
 
                         TagsInput::make('excluded_items')
                             ->label('Что не включено')
+                            ->translatable()
                             ->helperText('Нажмите Enter после каждого пункта')
                             ->columnSpanFull(),
 
                         Repeater::make('requirements')
                             ->label('Требования')
+                            ->translatable()
                             ->schema([
                                 Select::make('icon')
                                     ->label('Иконка')
