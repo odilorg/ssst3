@@ -142,47 +142,68 @@
 
             <div id="tours-container" class="tours-grid__container">
                 @forelse($initialTours as $tour)
-                    <a href="/tours/{{ $tour->slug }}" class="tour-card">
-                        <img src="{{ $tour->featured_image_url ?? asset('images/default-tour.jpg') }}"
-                             alt="{{ $tour->title }}"
-                             class="tour-card__image"
-                             width="400"
-                             height="300"
-                             loading="lazy">
-                        <div class="tour-card__content">
-                            <h3 class="tour-card__title">{{ $tour->title }}</h3>
-                            <p class="tour-card__description">
-                                {{ !empty($tour->short_description) ? $tour->short_description : \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120) }}
-                            </p>
-                            <div class="tour-card__meta">
-                                <div class="tour-card__meta-item">
+                    <article class="tour-card-o" data-tour-id="{{ $tour->id }}">
+                        {{-- Background Image --}}
+                        <img
+                            src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
+                            alt="{{ $tour->title }}"
+                            class="tour-card-o__bg"
+                            width="400"
+                            height="500"
+                            loading="lazy"
+                        >
+                        
+                        <div class="tour-card-o__overlay"></div>
+
+                        <div class="tour-card-o__content">
+                            <div class="tour-card-o__top">
+                                <span class="tour-card-o__badge">
                                     <i class="far fa-clock"></i>
-                                    <span>
-                                        @if($tour->duration_days === 1)
-                                            1 day
-                                        @elseif($tour->duration_days)
-                                            {{ $tour->duration_days }} days
-                                        @else
-                                            Flexible
-                                        @endif
-                                    </span>
-                                </div>
-                                @if($tour->city)
-                                    <div class="tour-card__meta-item">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>{{ $tour->city->name }}</span>
-                                    </div>
-                                @endif
-                                <div class="tour-card__price">
-                                    @if($tour->price_per_person)
-                                        ${{ number_format($tour->price_per_person, 0) }}
+                                    @if($tour->duration_days === 1)
+                                        1 day
+                                    @elseif($tour->duration_days)
+                                        {{ $tour->duration_days }} days
                                     @else
-                                        Contact us
+                                        Flexible
                                     @endif
+                                </span>
+                                @if($tour->city)
+                                <span class="tour-card-o__badge">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ $tour->city->name }}
+                                </span>
+                                @endif
+                            </div>
+
+                            <div class="tour-card-o__bottom">
+                                <h3 class="tour-card-o__title">
+                                    <a href="/tours/{{ $tour->slug }}">
+                                        {{ $tour->title }}
+                                    </a>
+                                </h3>
+
+                                <p class="tour-card-o__description">
+                                    {{ Str::limit($tour->short_description ?? strip_tags($tour->long_description ?? ''), 90) }}
+                                </p>
+
+                                <div class="tour-card-o__footer">
+                                    <div class="tour-card-o__price">
+                                        <span class="tour-card-o__price-amount">
+                                            @if($tour->price_per_person)
+                                                ${{ number_format($tour->price_per_person, 0) }}
+                                            @else
+                                                Contact
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <a href="/tours/{{ $tour->slug }}" class="tour-card-o__btn">
+                                        View Tour
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </article>
                 @empty
                     <div class="empty-state">
                         <i class="fas fa-map fa-3x"></i>
