@@ -522,3 +522,9 @@ Route::get('/test-home', function () {
 
     return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews', 'featuredTours'));
 })->name('test.home');
+
+// TEMPORARY: Card Design Comparison Page (for testing UI options)
+Route::get('/card-comparison', function () {
+    $tours = \App\Models\Tour::with('city')->where('is_published', true)->take(6)->get();
+    return view('card-comparison', ['tours' => $tours]);
+})->name('card.comparison');

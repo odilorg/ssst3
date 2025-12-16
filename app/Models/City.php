@@ -30,6 +30,7 @@ class City extends Model
         'meta_title',
         'meta_description',
         'tour_count_cache',
+        'country',
     ];
 
     protected $casts = [
@@ -249,10 +250,10 @@ class City extends Model
     public static function getHomepageCities()
     {
         return Cache::remember('homepage.cities', 3600, function () {
-            return self::active()
+            return self::where('country', 'Uzbekistan')->active()
                 ->featured()
                 ->orderBy('display_order')
-                ->orderBy('name')
+                ->orderBy('name')->take(4)
                 ->get();
         });
     }

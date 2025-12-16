@@ -33,12 +33,14 @@ class TourCategoriesTable
                     ->color('gray'),
 
                 ImageColumn::make('image_path')
+                    ->disk('public')
                     ->label('Card Image')
                     ->circular()
                     ->defaultImageUrl(fn () => asset('images/placeholder-category.png'))
                     ->tooltip('Homepage card background'),
 
                 ImageColumn::make('hero_image')
+                    ->disk('public')
                     ->label('Hero Image')
                     ->circular()
                     ->defaultImageUrl(fn () => asset('images/placeholder-hero.png'))

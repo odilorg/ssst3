@@ -81,11 +81,6 @@ class GenerateBlogPostWithAI implements ShouldQueue
                 ->success()
                 ->title('Blog Post Generated Successfully!')
                 ->body("'{$blogPost->title}' is ready to edit and publish.")
-                ->actions([
-                    \Filament\Notifications\Actions\Action::make('edit')
-                        ->button()
-                        ->url(route('filament.admin.resources.blog-posts.blog-posts.edit', ['record' => $blogPost->id]))
-                ])
                 ->sendToDatabase($this->generation->user);
 
             Log::info('Blog post generated successfully', [
