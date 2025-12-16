@@ -16,11 +16,13 @@ use Filament\Tables\Table;
 
 class TourCategoryResource extends Resource
 {
+    use \LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+
     protected static ?string $model = TourCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'name.en';
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 2;
 

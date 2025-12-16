@@ -11,6 +11,9 @@ Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);
 });
 
+// Language switcher
+Route::get('/locale/{locale}', [\App\Http\Controllers\LocaleController::class, 'change'])->name('locale.change');
+
 // Sitemap XML for SEO
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
@@ -522,3 +525,68 @@ Route::get('/test-home', function () {
 
     return view('pages.home', compact('categories', 'blogPosts', 'cities', 'reviews', 'featuredTours'));
 })->name('test.home');
+
+// ============================================
+// MULTILINGUAL ROUTES (SEO-Friendly URLs)
+// ============================================
+// Routes with locale prefix for non-default languages (en, uz)
+// Russian (default) uses routes above without prefix
+
+Route::group([
+    'prefix' => '{locale}',
+    'where' => ['locale' => 'en|uz'],
+    'middleware' => ['web']
+], function () {
+    
+    // Home
+    Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.locale');
+    
+    // Tours
+    Route::get('/tours', [\App\Http\Controllers\TourListingController::class, 'index'])->name('tours.index.locale');
+    Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])->name('tours.category.locale');
+    Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show.locale');
+    
+    // Destinations
+    Route::get('/destinations', [\App\Http\Controllers\DestinationController::class, 'index'])->name('destinations.index.locale');
+    Route::get('/destinations/{slug}', [\App\Http\Controllers\DestinationController::class, 'show'])->name('city.show.locale');
+    
+    // Static Pages
+    Route::get('/about', function () {
+        return view('pages.about');
+    })->name('about.locale');
+    
+    Route::get('/contact', function () {
+        return view('pages.contact');
+    })->name('contact.locale');
+    
+    // Legal Pages
+    Route::get('/privacy', function () {
+        return view('pages.privacy');
+    })->name('privacy.locale');
+    
+    Route::get('/terms', function () {
+        return view('pages.terms');
+    })->name('terms.locale');
+    
+    Route::get('/cookies', function () {
+        return view('pages.cookies');
+    })->name('cookies.locale');
+    
+    // Blog
+    Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index.locale');
+    Route::get('/blog/tag/{slug}', [\App\Http\Controllers\BlogController::class, 'tagPage'])
+        ->name('blog.tag.locale')
+        ->where('slug', '[a-z0-9-]+');
+    Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
+        ->name('blog.show.locale')
+        ->where('slug', '[a-z0-9-]+');
+    
+    // POST routes (forms work the same for all languages)
+    Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store.locale');
+    Route::post('/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store.locale');
+    Route::post('/comments/{comment}/flag', [\App\Http\Controllers\CommentController::class, 'flag'])->name('comments.flag.locale');
+    Route::post('/tours/{slug}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store.locale');
+    Route::post('/reviews/{review}/flag', [\App\Http\Controllers\ReviewController::class, 'flag'])->name('reviews.flag.locale');
+    
+});
+

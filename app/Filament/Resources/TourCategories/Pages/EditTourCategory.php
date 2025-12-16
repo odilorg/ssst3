@@ -10,6 +10,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditTourCategory extends EditRecord
 {
+    use \LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
+
     protected static string $resource = TourCategoryResource::class;
 
     protected function getHeaderActions(): array

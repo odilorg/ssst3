@@ -16,6 +16,8 @@ use Filament\Tables\Table;
 
 class CityResource extends Resource
 {
+    use \LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+
     protected static ?string $model = City::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;

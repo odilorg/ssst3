@@ -19,6 +19,8 @@ use Filament\Tables\Table;
 
 class TourResource extends Resource
 {
+    use \LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+
     protected static ?string $model = Tour::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;

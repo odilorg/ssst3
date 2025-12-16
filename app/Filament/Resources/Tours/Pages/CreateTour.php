@@ -12,6 +12,7 @@ use Filament\Actions\Action;
 class CreateTour extends CreateRecord
 {
     use CreateRecord\Concerns\HasWizard;
+    use \LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 
     protected static string $resource = TourResource::class;
 

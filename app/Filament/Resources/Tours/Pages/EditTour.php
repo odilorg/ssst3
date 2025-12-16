@@ -12,6 +12,7 @@ use Filament\Support\Icons\Heroicon;
 class EditTour extends EditRecord
 {
     use EditRecord\Concerns\HasWizard;
+    use \LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 
     protected static string $resource = TourResource::class;
 

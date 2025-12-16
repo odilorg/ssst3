@@ -11,7 +11,24 @@
     
     {{-- Canonical URL --}}
     <link rel="canonical" href="@yield('canonical', url()->current())">
-    
+
+    {{-- Hreflang tags for multilingual SEO --}}
+    @php
+        $segments = request()->segments();
+        $availableLocales = array_keys(config('locales.available'));
+
+        // Remove locale prefix if present
+        if (count($segments) > 0 && in_array($segments[0], $availableLocales)) {
+            array_shift($segments);
+        }
+
+        $pathWithoutLocale = implode('/', $segments);
+    @endphp
+    <link rel="alternate" hreflang="ru" href="{{ url($pathWithoutLocale ?: '/') }}" />
+    <link rel="alternate" hreflang="en" href="{{ url('en/' . $pathWithoutLocale) }}" />
+    <link rel="alternate" hreflang="uz" href="{{ url('uz/' . $pathWithoutLocale) }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ url($pathWithoutLocale ?: '/') }}" />
+
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="@yield('og_url', url()->current())">
