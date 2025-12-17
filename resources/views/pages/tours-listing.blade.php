@@ -103,7 +103,7 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
                 @php
-                    $craftTours = App\Models\Tour::whereIn('id', [48, 47, 46])->orderBy('duration_days')->get();
+                    $craftTours = App\Models\Tour::where('is_active', 1)->orderBy('duration_days')->get();
                 @endphp
 
                 @foreach($craftTours as $craftTour)
