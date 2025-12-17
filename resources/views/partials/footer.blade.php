@@ -6,7 +6,7 @@
                 <i class="fas fa-compass footer-brand__logo"></i>
                 <span class="footer-brand__text">Jahongir Travel</span>
             </a>
-            <p class="footer-brand__tagline">Tailor-made Uzbekistan tours since 2012.</p>
+            <p class="footer-brand__tagline">Supporting artisans and preserving traditional crafts since 2012.</p>
 
             <div class="footer-brand__contact-section">
                 <div class="footer-brand__contact-title">Get in Touch</div>

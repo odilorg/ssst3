@@ -9,7 +9,7 @@
                     <span class="breadcrumbs__separator" aria-hidden="true">/</span>
                 </li>
                 <li class="breadcrumbs__item">
-                    <a href="/tours" class="breadcrumbs__link">Tours</a>
+                    <a href="/tours" class="breadcrumbs__link">Craft Journeys</a>
                     <span class="breadcrumbs__separator" aria-hidden="true">/</span>
                 </li>
                 @if($tour->city)

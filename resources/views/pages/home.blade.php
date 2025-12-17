@@ -57,13 +57,13 @@
     <div class="hero__content">
       <div class="container container--wide">
         <div class="hero__text">
-          <h1 id="hero-heading" class="hero__title">Discover the Magic of Uzbekistan</h1>
-          <p class="hero__sub">Experience the ancient Silk Road with expert local guides</p>
+          <h1 id="hero-heading" class="hero__title">Live the Craft. Meet the Masters. Preserve the Tradition.</h1>
+          <p class="hero__sub">Small-group craft immersion in Uzbekistan (Max 6 travelers)</p>
 
           <div class="hero__cta">
             <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
               <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-              Choose a Destination
+              Explore Craft Journeys
             </a>
           </div>
         </div>
