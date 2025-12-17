@@ -18,7 +18,6 @@
 @endpush
 
 @push('styles')<link rel="stylesheet" href="{{ asset('css/tours-listing.css') }}">@endpush
-<link rel="stylesheet" href="{{ asset('css/tour-card-option2.css') }}">
 
 @section('content')
 
@@ -143,7 +142,47 @@
 
             <div id="tours-container" class="tours-grid__container">
                 @forelse($initialTours as $tour)
-                    @include('partials.tours.card-option2-compact', ['tour' => $tour])
+                    <a href="/tours/{{ $tour->slug }}" class="tour-card">
+                        <img src="{{ $tour->featured_image_url ?? asset('images/default-tour.jpg') }}"
+                             alt="{{ $tour->title }}"
+                             class="tour-card__image"
+                             width="400"
+                             height="300"
+                             loading="lazy">
+                        <div class="tour-card__content">
+                            <h3 class="tour-card__title">{{ $tour->title }}</h3>
+                            <p class="tour-card__description">
+                                {{ !empty($tour->short_description) ? $tour->short_description : \Illuminate\Support\Str::limit(strip_tags($tour->long_description ?? ''), 120) }}
+                            </p>
+                            <div class="tour-card__meta">
+                                <div class="tour-card__meta-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>
+                                        @if($tour->duration_days === 1)
+                                            1 day
+                                        @elseif($tour->duration_days)
+                                            {{ $tour->duration_days }} days
+                                        @else
+                                            Flexible
+                                        @endif
+                                    </span>
+                                </div>
+                                @if($tour->city)
+                                    <div class="tour-card__meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>{{ $tour->city->name }}</span>
+                                    </div>
+                                @endif
+                                <div class="tour-card__price">
+                                    @if($tour->price_per_person)
+                                        ${{ number_format($tour->price_per_person, 0) }}
+                                    @else
+                                        Contact us
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 @empty
                     <div class="empty-state">
                         <i class="fas fa-map fa-3x"></i>

@@ -41,7 +41,7 @@
 
         {{-- Description --}}
         <p class="tour-card-v__description">
-            {{ Str::limit($tour->meta_description ?? $tour->description, 100) }}
+            {{ $tour->short_description ?? Str::limit($tour->meta_description, 150) }}
         </p>
 
         {{-- Footer (Price + CTA) --}}
