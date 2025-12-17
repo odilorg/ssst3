@@ -4,8 +4,8 @@
     $initialTours = $tours ?? collect();
 @endphp
 
-@section('title', 'Uzbekistan Tours | Jahongir Travel')
-@section('meta_description', 'Explore all available tours in Uzbekistan. From cultural heritage tours to mountain adventures, find your perfect Silk Road journey with Jahongir Travel.')
+@section('title', 'Craft Immersion Journeys in Uzbekistan | Hands-On Artisan Workshops')
+@section('meta_description', 'Authentic craft tourism in Uzbekistan. Learn pottery, silk weaving, and suzani embroidery from master artisans. Small groups (max 6). Weekend to 2-week immersive journeys from $850.')
 @section('canonical', url('/tours'))
 
 @section('structured_data')
@@ -29,10 +29,10 @@
         <div class="tours-hero__overlay"></div>
         <div class="container">
             <div class="tours-hero__content">
-                <h1 class="tours-hero__title">Discover Amazing Tours</h1>
-                <p class="tours-hero__subtitle">Handcrafted journeys through the heart of the Silk Road - cultural experiences, historical tours, and authentic adventures</p>
-                <a href="#main-content" class="hero-cta-btn">
-                    Browse All Tours
+                <h1 class="tours-hero__title">Learn From the Masters</h1>
+                <p class="tours-hero__subtitle">Small-group craft immersion journeys (max 6 travelers) with hands-on workshops, artisan homestays, and UNESCO-recognized master craftspeople</p>
+                <a href="#craft-journeys" class="hero-cta-btn">
+                    Explore Craft Journeys
                     <i class="fas fa-arrow-down"></i>
                 </a>
             </div>
@@ -61,35 +61,64 @@
                 <div class="trust-badge">
                     <i class="fas fa-users"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">500+</div>
-                        <div class="trust-badge__label">Happy Travelers</div>
+                        <div class="trust-badge__number">Max 6</div>
+                        <div class="trust-badge__label">Small Groups</div>
                     </div>
                 </div>
                 <div class="trust-badge">
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-hands-helping"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">4.7/5</div>
-                        <div class="trust-badge__label">Average Rating</div>
+                        <div class="trust-badge__number">45+</div>
+                        <div class="trust-badge__label">Master Artisans</div>
                     </div>
                 </div>
                 <div class="trust-badge">
-                    <i class="fas fa-certificate"></i>
+                    <i class="fas fa-home"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">Licensed</div>
-                        <div class="trust-badge__label">Tour Operator</div>
+                        <div class="trust-badge__number">Homestays</div>
+                        <div class="trust-badge__label">With Artisan Families</div>
                     </div>
                 </div>
                 <div class="trust-badge">
-                    <i class="fas fa-headset"></i>
+                    <i class="fas fa-hand-holding-usd"></i>
                     <div class="trust-badge__content">
-                        <div class="trust-badge__number">24/7</div>
-                        <div class="trust-badge__label">Customer Support</div>
+                        <div class="trust-badge__number">70%</div>
+                        <div class="trust-badge__label">Direct to Artisans</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- =====================================================
+         FEATURED CRAFT JOURNEYS
+         ===================================================== -->
+    <section id="craft-journeys" style="padding: 80px 0; background: #f9fafb;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <span style="display: block; font-size: 0.875rem; font-weight: 600; color: #27ae60; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">FEATURED CRAFT IMMERSION JOURNEYS</span>
+                <h2 style="font-size: 2.5rem; font-weight: 700; color: #1a1a1a; margin-bottom: 1rem; font-family: 'Playfair Display', serif;">Choose Your Journey</h2>
+                <p style="font-size: 1.125rem; color: #666; max-width: 700px; margin: 0 auto;">From weekend tasters to comprehensive craft tours—all feature small groups, hands-on workshops, and artisan homestays.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                @php
+                    $craftTours = App\Models\Tour::whereIn('id', [48, 47, 46])->orderBy('duration_days')->get();
+                @endphp
+
+                @foreach($craftTours as $craftTour)
+                    @include('partials.tours.card-option2-compact', ['tour' => $craftTour])
+                @endforeach
+            </div>
+
+            <div style="text-align: center;">
+                <a href="#main-content" style="display: inline-block; padding: 0.75rem 1.5rem; background: white; color: #1a5490; border: 2px solid #1a5490; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                    View All Tours
+                    <i class="fas fa-arrow-down" style="margin-left: 0.5rem;"></i>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- =====================================================
          FILTERS SECTION

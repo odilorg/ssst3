@@ -23,6 +23,11 @@ Route::get('/tours', [\App\Http\Controllers\TourListingController::class, 'index
 // Category landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])->name('tours.category');
 
+// Tour comparison page
+Route::get('/tours/compare', function () {
+    return view('pages.tour-comparison');
+})->name('tours.compare');
+
 // Tour details page - SEO-friendly URL with Blade template
 Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show');
 
