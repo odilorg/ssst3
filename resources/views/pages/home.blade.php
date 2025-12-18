@@ -184,8 +184,29 @@
           <div class="hero__cta">
             <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
               <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-              Explore Craft Journeys
+              View 2025 Craft Workshops
+              <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
+
+            <!-- Trust Badges -->
+            <div class="hero__trust-badges">
+              <div class="trust-badge-item">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                <span>Secure Booking</span>
+              </div>
+              <div class="trust-badge-item">
+                <i class="fas fa-undo-alt" aria-hidden="true"></i>
+                <span>Free Cancellation</span>
+              </div>
+              <div class="trust-badge-item">
+                <i class="fas fa-headset" aria-hidden="true"></i>
+                <span>24/7 Support</span>
+              </div>
+              <div class="trust-badge-item">
+                <i class="fas fa-certificate" aria-hidden="true"></i>
+                <span>Licensed Operator</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -967,6 +988,44 @@
 
 @push('styles')
 <style>
+/* Hero Trust Badges */
+.hero__trust-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.trust-badge-item i {
+  font-size: 1rem;
+  color: #4ade80;
+}
+
+@media (max-width: 640px) {
+  .hero__trust-badges {
+    gap: 16px;
+  }
+
+  .trust-badge-item {
+    font-size: 0.8125rem;
+  }
+
+  .trust-badge-item i {
+    font-size: 0.9375rem;
+  }
+}
+
 /* WhatsApp Floating Widget */
 .whatsapp-float {
   position: fixed;
