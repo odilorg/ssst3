@@ -33,6 +33,127 @@
 
   <!-- Reviews Carousel Custom CSS -->
   <link rel="stylesheet" href="{{ asset('css/reviews-carousel.css') }}">
+
+  <!-- Master Cards Hover Effects -->
+  <style>
+    /* Master Cards Base Styles */
+    .master-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .master-card .city-card__link {
+      display: block;
+      height: 100%;
+      text-decoration: none;
+    }
+
+    .master-card .city-card__media {
+      position: relative;
+    }
+
+    .master-card .city-card__media img {
+      object-fit: cover;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Gradient Overlay */
+    .card-gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+    }
+
+    .master-card .city-card__content {
+      position: relative;
+      z-index: 2;
+      padding: 20px 24px; /* Better breathing room */
+    }
+
+    /* Location/Stats Spacing */
+    .master-card .city-card__stats {
+      margin-top: 8px; /* Better separation from tagline */
+    }
+
+    /* Card Description Text */
+    .card-description {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 12px; /* More breathing room */
+      margin-bottom: 0; /* Remove bottom margin - let CTA control spacing */
+      line-height: 1.5;
+    }
+
+    /* CTA Button */
+    .master-card .city-card__cta {
+      display: inline-block;
+      margin-top: 16px; /* Consistent spacing from description */
+      color: #fff;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+
+    .master-card .city-card__cta i {
+      margin-left: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+
+    /* Hover Effects */
+    .master-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .master-card:hover .city-card__cta {
+      transform: translateX(4px);
+    }
+
+    /* Mobile Touch Feedback */
+    .master-card:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+
+    /* Focus States for Accessibility */
+    .master-card .city-card__link:focus {
+      outline: 3px solid #27ae60;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+
+    /* Add cursor pointer for better UX */
+    .master-card {
+      cursor: pointer;
+    }
+
+    /* Mobile Responsive - Single Column on Small Screens */
+    @media (max-width: 500px) {
+      .places__grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px;
+      }
+
+      .master-card {
+        max-width: 100%;
+      }
+
+      .card-description {
+        font-size: 0.9375rem; /* Slightly larger on mobile */
+      }
+    }
+
+    /* Tablet Responsive */
+    @media (min-width: 501px) and (max-width: 768px) {
+      .places__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+  </style>
 @endpush
 
 @section('content')
@@ -219,7 +340,7 @@
     {
       "@@context": "https://schema.org",
       "@@type": "ItemList",
-      "name": "Trending Activities in Uzbekistan",
+      "name": "Featured Craft Workshops in Uzbekistan",
       "itemListElement": [
         @foreach($categories as $index => $category)
         {
@@ -238,9 +359,9 @@
 
       <!-- Section Header -->
       <div class="section-header">
-        <p class="section-eyebrow">WHAT MOVES YOU</p>
-        <h2 class="section-header__title">Trending Activities in Uzbekistan</h2>
-        <p class="section-header__subtitle">Choose your style of travel — from ancient history to mountain adventures</p>
+        <p class="section-eyebrow">MASTER THE CRAFTS</p>
+        <h2 class="section-header__title">Learn From UNESCO Master Artisans</h2>
+        <p class="section-header__subtitle">Hands-on workshops in pottery, silk weaving, suzani embroidery, and traditional crafts passed down through generations</p>
       </div>
 
       <!-- Activity Cards Grid (DYNAMIC) -->
@@ -364,10 +485,10 @@
 
       <!-- Section Header -->
       <div class="tours__header">
-        <p class="section-eyebrow">Featured Adventures</p>
-        <h2 class="section-title">Explore Popular Uzbekistan Tours</h2>
+        <p class="section-eyebrow">CRAFT IMMERSION JOURNEYS</p>
+        <h2 class="section-title">Choose Your Craft Journey</h2>
         <p class="section-subtitle">
-          Handcrafted journeys through the heart of the Silk Road
+          From weekend pottery tasters to 12-day craft odysseys. Small groups (max 6), hands-on workshops, artisan homestays.
         </p>
       </div>
 
@@ -391,9 +512,9 @@
 
       <!-- View All CTA -->
       <div class="tours__cta">
-        <a href="{{ url('/tours') }}" class="btn btn--accent btn--large" aria-label="Find your perfect Uzbekistan tour">
-          <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-          Find Your Perfect Journey
+        <a href="{{ url('/tours') }}" class="btn btn--accent btn--large" aria-label="View all craft immersion journeys">
+          <i class="fas fa-hands-helping" aria-hidden="true"></i>
+          View All Craft Journeys
         </a>
       </div>
 
@@ -401,88 +522,70 @@
   </section>
 
   <!-- ========================================
-       SECTION 5: TOP PLACES TO TRAVEL
+       SECTION 5: MEET THE MASTERS
   ========================================= -->
-  <section class="places" id="places">
+  <section class="places" id="masters">
 
-    <!-- JSON-LD Schema: Place for Top Destinations -->
+    <!-- JSON-LD Schema: Master Artisans -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "ItemList",
-      "name": "Top Places to Travel in Uzbekistan",
+      "name": "Master Artisans of Uzbekistan",
+      "description": "UNESCO-recognized master craftspeople teaching pottery, silk weaving, suzani embroidery, and traditional crafts",
       "itemListElement": [
         {
-          "@@type": "Place",
+          "@@type": "Person",
           "position": 1,
-          "name": "Samarkand",
-          "description": "The Jewel of the Silk Road. Historic city famous for Registan Square, Shah-i-Zinda necropolis, and Gur-e-Amir mausoleum.",
-          "geo": {
-            "@@type": "GeoCoordinates",
-            "latitude": "39.6542",
-            "longitude": "66.9597"
-          },
+          "name": "Alisher Nazirov",
+          "jobTitle": "UNESCO Master Potter (5th Generation)",
+          "description": "UNESCO-recognized ceramics master in Gijduvan. 5th-generation potter teaching the famous 'Gijduvan blue' glaze technique.",
+          "knowsAbout": ["Pottery", "Ceramics", "Traditional Uzbek Glazing"],
           "address": {
             "@@type": "PostalAddress",
-            "addressLocality": "Samarkand",
+            "addressLocality": "Gijduvan",
+            "addressRegion": "Bukhara Province",
             "addressCountry": "UZ"
-          },
-          "url": "{{ url('/destinations/samarkand') }}",
-          "touristType": "Cultural & Historical"
+          }
         },
         {
-          "@@type": "Place",
+          "@@type": "Organization",
           "position": 2,
-          "name": "Bukhara",
-          "description": "Living Museum of Central Asia. Ancient city with over 140 architectural monuments and a UNESCO World Heritage old town.",
-          "geo": {
-            "@@type": "GeoCoordinates",
-            "latitude": "39.7747",
-            "longitude": "64.4286"
-          },
+          "name": "Yodgorlik Silk Factory",
+          "description": "Legendary silk factory in Margilan with 100-year-old machines. Watch silk being spun from cocoons using traditional methods.",
+          "knowsAbout": ["Silk Weaving", "Ikat Dyeing", "Textile Arts"],
+          "address": {
+            "@@type": "PostalAddress",
+            "addressLocality": "Margilan",
+            "addressRegion": "Fergana Valley",
+            "addressCountry": "UZ"
+          }
+        },
+        {
+          "@@type": "Person",
+          "position": 3,
+          "name": "Master Embroiderers of Bukhara",
+          "jobTitle": "Suzani Embroidery Masters",
+          "description": "Learn suzani embroidery from families who have passed down designs for 5+ generations. Chain stitch, satin stitch, and traditional patterns.",
+          "knowsAbout": ["Suzani Embroidery", "Traditional Textiles", "Chain Stitch"],
           "address": {
             "@@type": "PostalAddress",
             "addressLocality": "Bukhara",
             "addressCountry": "UZ"
-          },
-          "url": "{{ url('/destinations/bukhara') }}",
-          "touristType": "Cultural & Historical"
+          }
         },
         {
-          "@@type": "Place",
-          "position": 3,
-          "name": "Khiva",
-          "description": "Ancient Desert Fortress. UNESCO-protected Itchan Kala fortress city with perfectly preserved Silk Road architecture.",
-          "geo": {
-            "@@type": "GeoCoordinates",
-            "latitude": "41.3775",
-            "longitude": "60.3642"
-          },
-          "address": {
-            "@@type": "PostalAddress",
-            "addressLocality": "Khiva",
-            "addressCountry": "UZ"
-          },
-          "url": "{{ url('/destinations/khiva') }}",
-          "touristType": "Cultural & Historical"
-        },
-        {
-          "@@type": "Place",
+          "@@type": "Person",
           "position": 4,
-          "name": "Tashkent",
-          "description": "Modern Heart of Uzbekistan. Capital city blending Soviet architecture, vibrant bazaars, and contemporary culture.",
-          "geo": {
-            "@@type": "GeoCoordinates",
-            "latitude": "41.2995",
-            "longitude": "69.2401"
-          },
+          "name": "Miniature Painting Masters",
+          "jobTitle": "Persian Miniature Artists",
+          "description": "Study Persian miniature painting techniques in Bukhara. Learn pigment preparation, brush techniques, and traditional motifs.",
+          "knowsAbout": ["Miniature Painting", "Persian Art", "Traditional Pigments"],
           "address": {
             "@@type": "PostalAddress",
-            "addressLocality": "Tashkent",
+            "addressLocality": "Bukhara",
             "addressCountry": "UZ"
-          },
-          "url": "{{ url('/destinations/tashkent') }}",
-          "touristType": "Urban & Modern"
+          }
         }
       ]
     }
@@ -492,94 +595,145 @@
 
       <!-- Section Header -->
       <div class="places__header">
-        <p class="section-eyebrow">Discover Uzbekistan</p>
-        <h2 class="section-title">Top Places to Travel</h2>
+        <p class="section-eyebrow">THE ARTISANS</p>
+        <h2 class="section-title">Meet the Masters</h2>
         <p class="section-subtitle">
-          Explore the legendary cities of the ancient Silk Road
+          Learn from UNESCO-recognized craftspeople and families who have passed down skills for generations
         </p>
       </div>
 
-      <!-- Places Grid (DYNAMIC) -->
+      <!-- Masters Grid -->
       <div class="places__grid">
-        @if(!empty($cities) && count($cities) > 0)
-        @foreach($cities as $city)
-          @php
-            $tourCount = $city->tour_count;
-            $tourText = $tourCount === 1 ? 'tour' : 'tours';
+        <!-- Master 1: Alisher Nazirov - Gijduvan Pottery -->
+        <article class="city-card master-card">
+          <a href="{{ url('/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn pottery with Alisher Nazirov">
+            <div class="city-card__media">
+              <img
+                src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&h=533&fit=crop&q=80"
+                alt="Master potter shaping clay on pottery wheel in Gijduvan"
+                width="400"
+                height="533"
+                loading="lazy"
+                decoding="async"
+                >
+              <div class="card-gradient-overlay"></div>
+            </div>
+            <div class="city-card__content">
+              <h3 class="city-card__title">Alisher Nazirov</h3>
+              <p class="city-card__tagline">UNESCO Master Potter (5th Generation)</p>
+              <p class="city-card__stats">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Gijduvan • Ceramics & Glazing
+              </p>
+              <p class="card-description">
+                Learn the famous "Gijduvan blue" glaze technique from a 5th-generation UNESCO master.
+              </p>
+              <span class="city-card__cta">
+                View Pottery Workshops<i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </span>
+            </div>
+          </a>
+        </article>
 
-            // Get city image - use hero_image or placeholder
-            $imageUrl = $city->featured_image_url ?? 'https://placehold.co/400x533/0D4C92/FFFFFF?text=' . urlencode($city->name);
+        <!-- Master 2: Yodgorlik Silk Factory -->
+        <article class="city-card master-card">
+          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn silk weaving at Yodgorlik Factory">
+            <div class="city-card__media">
+              <img
+                src="https://images.unsplash.com/photo-1616430285525-27165e1c45d8?w=400&h=533&fit=crop&q=80"
+                alt="Vibrant silk fabrics with traditional ikat patterns at Yodgorlik Factory"
+                width="400"
+                height="533"
+                loading="lazy"
+                decoding="async"
+                >
+              <div class="card-gradient-overlay"></div>
+            </div>
+            <div class="city-card__content">
+              <h3 class="city-card__title">Yodgorlik Silk Factory</h3>
+              <p class="city-card__tagline">Legendary Silk Masters of Margilan</p>
+              <p class="city-card__stats">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Margilan • Silk Weaving & Ikat
+              </p>
+              <p class="card-description">
+                Watch silk being spun from cocoons on 100-year-old machines. Learn traditional ikat dyeing.
+              </p>
+              <span class="city-card__cta">
+                View Silk Workshops<i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </span>
+            </div>
+          </a>
+        </article>
 
-            // Get tagline or use default
-            $tagline = $city->tagline ?? '';
+        <!-- Master 3: Suzani Embroidery -->
+        <article class="city-card master-card">
+          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn suzani embroidery with master embroiderers">
+            <div class="city-card__media">
+              <img
+                src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=533&fit=crop&q=80"
+                alt="Master embroiderer working on traditional suzani textile in Bukhara"
+                width="400"
+                height="533"
+                loading="lazy"
+                decoding="async"
+                >
+              <div class="card-gradient-overlay"></div>
+            </div>
+            <div class="city-card__content">
+              <h3 class="city-card__title">Suzani Embroidery Masters</h3>
+              <p class="city-card__tagline">5+ Generations of Family Designs</p>
+              <p class="city-card__stats">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Bukhara • Textile Embroidery
+              </p>
+              <p class="card-description">
+                Learn chain stitch and satin stitch from families who've passed down patterns for 5 generations.
+              </p>
+              <span class="city-card__cta">
+                View Embroidery Classes<i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </span>
+            </div>
+          </a>
+        </article>
 
-            // Get city name
-            $cityName = htmlspecialchars($city->name);
-            $citySlug = $city->slug;
-
-            // Short description for alt text
-            $altText = $city->short_description
-                ? htmlspecialchars(strip_tags($city->short_description))
-                : "{$cityName}, Uzbekistan";
-          @endphp
-
-          <!-- City Card: {{ $cityName }} -->
-          <article class="city-card">
-            <a href="{{ url('/destinations/' . $citySlug) }}" class="city-card__link" aria-label="Discover {{ $cityName }}">
-              <div class="city-card__media">
-                @if($city->has_webp && $city->hero_image_webp_srcset)
-                  {{-- Serve WebP with responsive sizes --}}
-                  <picture>
-                    <source
-                      type="image/webp"
-                      srcset="{{ $city->hero_image_webp_srcset }}"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px">
-                    <img
-                      src="{{ $imageUrl }}"
-                      alt="{{ $altText }}"
-                      width="400"
-                      height="533"
-                      loading="lazy"
-                      decoding="async">
-                  </picture>
-                @else
-                  {{-- Fallback to original image --}}
-                  <img
-                    src="{{ $imageUrl }}"
-                    alt="{{ $altText }}"
-                    width="400"
-                    height="533"
-                    loading="lazy"
-                    decoding="async">
-                @endif
-              </div>
-              <div class="city-card__content">
-                <h3 class="city-card__title">{{ $cityName }}</h3>
-                <p class="city-card__tagline">{{ $tagline }}</p>
-                <p class="city-card__stats">
-                  <i class="fas fa-route" aria-hidden="true"></i>
-                  {{ $tourCount }} {{ $tourText }} available
-                </p>
-                <span class="city-card__cta">
-                  Discover {{ $cityName }}
-                  <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                </span>
-              </div>
-            </a>
-          </article>
-        @endforeach
-        @else
-          <div class="empty-state">
-            <p class="empty-state__message">No destinations available at the moment. Please check back later.</p>
-          </div>
-        @endif
+        <!-- Master 4: Miniature Painting -->
+        <article class="city-card master-card">
+          <a href="{{ url('/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn Persian miniature painting">
+            <div class="city-card__media">
+              <img
+                src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=533&fit=crop&q=80"
+                alt="Artist painting intricate Persian miniature artwork in Bukhara"
+                width="400"
+                height="533"
+                loading="lazy"
+                decoding="async"
+                >
+              <div class="card-gradient-overlay"></div>
+            </div>
+            <div class="city-card__content">
+              <h3 class="city-card__title">Miniature Painting Masters</h3>
+              <p class="city-card__tagline">Persian Miniature Artists</p>
+              <p class="city-card__stats">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Bukhara • Visual Arts
+              </p>
+              <p class="card-description">
+                Study Persian miniature painting techniques. Learn pigment preparation and brush techniques.
+              </p>
+              <span class="city-card__cta">
+                View Painting Workshops<i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </span>
+            </div>
+          </a>
+        </article>
       </div>
 
-      <!-- View All Destinations CTA -->
+      <!-- View All Masters CTA -->
       <div class="places__cta">
-        <a href="{{ url('/destinations') }}" class="btn btn--primary btn--large" aria-label="Explore all destinations in Uzbekistan">
-          <i class="fas fa-map-marked" aria-hidden="true"></i>
-          Explore Destinations
+        <a href="{{ url('/tours') }}" class="btn btn--primary btn--large" aria-label="Explore craft immersion journeys">
+          <i class="fas fa-users" aria-hidden="true"></i>
+          Meet All Our Master Artisans
         </a>
       </div>
 
