@@ -6,25 +6,81 @@
 @section('canonical', url('/'))
 
 @section('structured_data')
-{
-  "@@context": "https://schema.org",
-  "@@type": "TravelAgency",
-  "name": "Jahongir Travel",
-  "description": "Expert guided tours in Uzbekistan and the Silk Road",
-  "url": "{{ url('/') }}",
-  "telephone": "+998 91 555 08 08",
-  "email": "info@jahongirtravel.com",
-  "address": {
-    "@@type": "PostalAddress",
-    "addressLocality": "Samarkand",
-    "addressCountry": "UZ"
+[
+  {
+    "@@context": "https://schema.org",
+    "@@type": "TravelAgency",
+    "name": "Jahongir Travel",
+    "description": "Expert guided tours in Uzbekistan and the Silk Road",
+    "url": "{{ url('/') }}",
+    "telephone": "+998 91 555 08 08",
+    "email": "info@jahongirtravel.com",
+    "address": {
+      "@@type": "PostalAddress",
+      "addressLocality": "Samarkand",
+      "addressCountry": "UZ"
+    },
+    "aggregateRating": {
+      "@@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "2400"
+    }
   },
-  "aggregateRating": {
-    "@@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "2400"
+  {
+    "@@context": "https://schema.org",
+    "@@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@@type": "Question",
+        "name": "Do I need prior craft experience to join a workshop?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "No prior experience required! Our workshops are designed for complete beginners through advanced practitioners. Master artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful. Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries."
+        }
+      },
+      {
+        "@@type": "Question",
+        "name": "Are workshops suitable for children?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "Yes, for ages 12 and up. Craft workshops are hands-on and engaging for teens and adults. Children aged 12-17 must be accompanied by a participating adult. For families with younger children (under 12), we offer customized private workshops where artisans can adapt activities to suit all ages."
+        }
+      },
+      {
+        "@@type": "Question",
+        "name": "What languages are workshops conducted in?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "All workshops include English-speaking guides. While master artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time. Russian-speaking travelers can request direct instruction in Russian."
+        }
+      },
+      {
+        "@@type": "Question",
+        "name": "Can I book a private workshop journey?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "Absolutely! Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with master artisans and a fully customized itinerary. Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations."
+        }
+      },
+      {
+        "@@type": "Question",
+        "name": "What's included in the workshop price?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "Everything you need for an immersive experience: Hands-on instruction from master artisans (12+ hours), all materials tools and kiln/loom fees, English-speaking expert guides, transportation between workshop locations, artisan homestay accommodation (2 nights), traditional meals with host families, and your finished craft pieces to take home. Not included: International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule."
+        }
+      },
+      {
+        "@@type": "Question",
+        "name": "What is your cancellation policy?",
+        "acceptedAnswer": {
+          "@@type": "Answer",
+          "text": "Free cancellation up to 14 days before departure with a full refund minus payment processing fees (3%). Cancellations 7-14 days before: 50% refund. Cancellations less than 7 days: No refund (but you can transfer to a future workshop date within 12 months). We strongly recommend purchasing travel insurance to protect your investment against unforeseen circumstances."
+        }
+      }
+    ]
   }
-}
+]
 @endsection
 
 @push('styles')
@@ -530,11 +586,27 @@
             <p class="cta-subtext">Free consultation • Custom itineraries • Expert guides</p>
           </div>
 
-          {{-- Pricing Preview --}}
-          <div class="pricing-preview">
-            <p class="pricing-preview__label">Workshop tours from</p>
-            <p class="pricing-preview__amount">$890 <span class="pricing-preview__duration">/ 3 days</span></p>
-            <a href="{{ url('/tours') }}" class="pricing-preview__link">View all packages →</a>
+          {{-- CRITICAL FIX #1: Enhanced Pricing with Inclusion Checklist --}}
+          <div class="pricing-preview pricing-preview--enhanced">
+            <p class="pricing-preview__label">3-Day Pottery Workshop</p>
+            <p class="pricing-preview__amount">$890 <span class="pricing-preview__duration">per person</span></p>
+
+            {{-- What's Included Checklist (CRITICAL for conversion) --}}
+            <ul class="pricing-includes">
+              <li><i class="fas fa-check" aria-hidden="true"></i> 12+ hours hands-on pottery instruction</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> All materials & kiln firing included</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> English-speaking master artisan guide</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Transport between workshop locations</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Artisan homestay (2 nights)</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Traditional meals with host family</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> Keep your finished pottery pieces</li>
+            </ul>
+
+            <p class="pricing-value">
+              <strong>Actual value:</strong> $1,200+ if booked separately
+            </p>
+
+            <a href="{{ url('/tours') }}" class="pricing-preview__link">View all workshop packages →</a>
           </div>
 
           <div class="why-us__divider"></div>
@@ -1370,6 +1442,180 @@
         </a>
       </div>
 
+    </div>
+  </section>
+
+  {{-- Audience Filtering Section (HIGH: Protects brand + improves reviews) --}}
+  <section class="audience-filter">
+    <div class="container">
+      <div class="audience-filter__content">
+        <h2 class="audience-filter__title">Is This Experience Right for You?</h2>
+
+        <div class="audience-filter__grid">
+          {{-- Perfect For --}}
+          <div class="audience-filter__card audience-filter__card--positive">
+            <div class="audience-filter__icon">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+            </div>
+            <h3 class="audience-filter__heading">Perfect For You If...</h3>
+            <ul class="audience-filter__list">
+              <li><i class="fas fa-check" aria-hidden="true"></i> You enjoy hands-on learning and creative activities</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> You prefer small groups (max 6 travelers)</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> You value cultural depth over fast sightseeing</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> You want authentic connections with local artisans</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> You appreciate slow travel and immersive experiences</li>
+            </ul>
+          </div>
+
+          {{-- Not Ideal For --}}
+          <div class="audience-filter__card audience-filter__card--negative">
+            <div class="audience-filter__icon">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+            </div>
+            <h3 class="audience-filter__heading">Not Ideal If...</h3>
+            <ul class="audience-filter__list">
+              <li><i class="fas fa-times" aria-hidden="true"></i> You want to see 10+ attractions per day</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> You prefer large bus tours with 30+ people</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> You're looking for luxury 5-star hotels</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> You want a fully pre-planned itinerary with no flexibility</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> You're uncomfortable with artisan homestays</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="audience-filter__footer">
+          <strong>Still unsure?</strong> <a href="{{ url('/contact') }}">Chat with our team</a> to find the perfect workshop for your travel style.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {{-- FAQ Section (CRITICAL for SEO + Conversion) --}}
+  <section class="faq-section">
+    <div class="container">
+      <div class="faq-section__header">
+        <p class="section-eyebrow">FREQUENTLY ASKED QUESTIONS</p>
+        <h2 class="section-title">Everything You Need to Know About Our Craft Workshops</h2>
+        <p class="section-subtitle">
+          Planning your first craft workshop in Uzbekistan? Here are answers to the most common questions from travelers like you.
+        </p>
+      </div>
+
+      <div class="faq-grid">
+        {{-- FAQ Item 1: Prior Experience --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            Do I need prior craft experience to join a workshop?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>No prior experience required!</strong> Our workshops are designed for complete beginners through advanced practitioners. Master artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful.</p>
+              <p>Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- FAQ Item 2: Children --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            Are workshops suitable for children?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>Yes, for ages 12 and up.</strong> Craft workshops are hands-on and engaging for teens and adults. Children aged 12-17 must be accompanied by a participating adult.</p>
+              <p>For families with younger children (under 12), we offer customized private workshops where artisans can adapt activities to suit all ages. Contact us to arrange a family-friendly experience.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- FAQ Item 3: Languages --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            What languages are workshops conducted in?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>All workshops include English-speaking guides.</strong> While master artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time.</p>
+              <p>Russian-speaking travelers can request direct instruction in Russian. This creates an even more immersive cultural experience as you learn traditional techniques in the language artisans use.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- FAQ Item 4: Private Journeys --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            Can I book a private workshop journey?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>Absolutely!</strong> Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with master artisans and a fully customized itinerary.</p>
+              <p>Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations. <a href="{{ url('/contact') }}">Contact us for a custom quote</a>.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- FAQ Item 5: What's Included --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            What's included in the workshop price?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>Everything you need for an immersive experience:</strong></p>
+              <ul>
+                <li>Hands-on instruction from master artisans (12+ hours)</li>
+                <li>All materials, tools, and kiln/loom fees</li>
+                <li>English-speaking expert guides</li>
+                <li>Transportation between workshop locations</li>
+                <li>Artisan homestay accommodation (2 nights)</li>
+                <li>Traditional meals with host families</li>
+                <li>Your finished craft pieces to take home</li>
+              </ul>
+              <p><strong>Not included:</strong> International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- FAQ Item 6: Cancellation --}}
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            What is your cancellation policy?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>Free cancellation up to 14 days before departure</strong> with a full refund minus payment processing fees (3%).</p>
+              <p>Cancellations 7-14 days before: 50% refund<br>
+              Cancellations less than 7 days: No refund (but you can transfer to a future workshop date within 12 months)</p>
+              <p>We strongly recommend purchasing travel insurance to protect your investment against unforeseen circumstances.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      {{-- FAQ Footer CTA --}}
+      <div class="faq-section__footer">
+        <p class="faq-section__footer-text">Still have questions? We're here to help!</p>
+        <a href="{{ url('/contact') }}" class="btn btn--primary btn--large">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+          Contact Our Team
+        </a>
+        <p class="faq-section__response-time">
+          <i class="fas fa-clock" aria-hidden="true"></i>
+          We typically respond within 24 hours
+        </p>
+      </div>
     </div>
   </section>
 
