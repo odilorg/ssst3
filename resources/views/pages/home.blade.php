@@ -314,6 +314,95 @@
         font-size: 1.75rem;
       }
     }
+
+    /* ========================================
+       SINGLE HERO IMAGE LAYOUT (Option B)
+       ======================================== */
+
+    /* Hero Image Container */
+    .why-us__media--hero {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .why-us__hero-image {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .why-us__hero-image:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+
+    .why-us__hero-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+
+    /* Inline Credentials Below Image */
+    .why-us__credentials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+
+    .credential-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    .credential-item i {
+      color: #D2691E;
+      font-size: 1rem;
+    }
+
+    .credential-separator {
+      color: #d1d5db;
+      font-weight: 300;
+      font-size: 1.125rem;
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 767px) {
+      .why-us__credentials {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .credential-separator {
+        display: none;
+      }
+
+      .credential-item {
+        width: 100%;
+      }
+    }
+
+    /* Responsive - Tablet */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .why-us__hero-image img {
+        aspect-ratio: 16 / 10;
+      }
+    }
   </style>
 @endpush
 
@@ -473,41 +562,34 @@
           </ul>
         </div>
 
-        <!-- Right Column: Photos -->
-        <div class="why-us__media">
-          <div class="why-us__photo">
-            <img src="{{ asset('images/guide-tourists.webp') }}"
-                 alt="Jahongir Travel guide with tourists at Registan Square"
-                 width="400"
-                 height="300"
-                 loading="lazy"
-                 decoding="async">
-          </div>
-          <div class="why-us__photo">
+        <!-- Right Column: Single Hero Image -->
+        <div class="why-us__media why-us__media--hero">
+          <div class="why-us__hero-image">
             <img src="{{ asset('images/craft-pottery.webp') }}"
-                 alt="Local craftsman demonstrating traditional pottery making"
-                 width="400"
-                 height="300"
+                 alt="Master artisan demonstrating traditional Uzbek blue pottery glazing technique"
+                 width="800"
+                 height="600"
                  loading="lazy"
-                 decoding="async">
-          </div>
-          <div class="why-us__photo">
-            <img src="{{ asset('images/uzbek-cuisine.webp') }}"
-                 alt="Travelers enjoying authentic Uzbek cuisine"
-                 width="400"
-                 height="300"
-                 loading="lazy"
-                 decoding="async">
+                 decoding="async"
+                 class="hero-image">
           </div>
 
-          <!-- Statistics Cards -->
-          <div class="stat-card">
-            <i class="fas fa-calendar-check" aria-hidden="true"></i>
-            <span>Guiding Travelers Since 2012</span>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-map-marked" aria-hidden="true"></i>
-            <span>Authentic Routes &amp; Workshops</span>
+          <!-- Inline Credentials Below Image -->
+          <div class="why-us__credentials">
+            <div class="credential-item">
+              <i class="fas fa-award" aria-hidden="true"></i>
+              <span>Licensed Tour Operator</span>
+            </div>
+            <span class="credential-separator">•</span>
+            <div class="credential-item">
+              <i class="fas fa-calendar-check" aria-hidden="true"></i>
+              <span>Est. 2012 · 127+ Workshops</span>
+            </div>
+            <span class="credential-separator">•</span>
+            <div class="credential-item">
+              <i class="fas fa-shield-alt" aria-hidden="true"></i>
+              <span>Verified by TripAdvisor</span>
+            </div>
           </div>
         </div>
 
