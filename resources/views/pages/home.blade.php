@@ -488,6 +488,9 @@
           <h1 id="hero-heading" class="hero__title">Live the Craft. Meet the Masters. Preserve the Tradition.</h1>
           <p class="hero__sub">Small-group craft immersion in Uzbekistan (Max 6 travelers)</p>
 
+          {{-- PHASE 1.1: Outcome-based emotional messaging --}}
+          <p class="hero__outcome">Return home with real craft skills, personal connections to master artisans, and stories few travelers ever experience.</p>
+
           <div class="hero__cta">
             <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
               <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
@@ -588,7 +591,8 @@
 
           {{-- CRITICAL FIX #1: Enhanced Pricing with Inclusion Checklist --}}
           <div class="pricing-preview pricing-preview--enhanced">
-            <p class="pricing-preview__label">3-Day Pottery Workshop</p>
+            {{-- PHASE 1.4: Context label added --}}
+            <p class="pricing-preview__label"><span class="pricing-context">Example Package:</span> 3-Day Pottery Workshop</p>
             <p class="pricing-preview__amount">$890 <span class="pricing-preview__duration">per person</span></p>
 
             {{-- What's Included Checklist (CRITICAL for conversion) --}}
@@ -602,8 +606,10 @@
               <li><i class="fas fa-check" aria-hidden="true"></i> Keep your finished pottery pieces</li>
             </ul>
 
+            {{-- PHASE 1.2: Strengthened value anchor --}}
             <p class="pricing-value">
-              <strong>Actual value:</strong> $1,200+ if booked separately
+              <strong>Comparable private cultural experiences:</strong> $1,200–$1,500+<br>
+              <span class="pricing-value-savings">You save $300-600+ with our group format</span>
             </p>
 
             <a href="{{ url('/tours') }}" class="pricing-preview__link">View all workshop packages →</a>
@@ -1028,6 +1034,11 @@
               <p class="card-description">
                 Learn the famous "Gijduvan blue" glaze technique from a 5th-generation UNESCO master.
               </p>
+              {{-- PHASE 1.3: Artisan → Journey linking --}}
+              <p class="master-journey-link">
+                <i class="fas fa-route" aria-hidden="true"></i>
+                Included in Samarkand & Gijduvan journeys
+              </p>
               <span class="city-card__cta">
                 View Pottery Workshops<i class="fas fa-arrow-right" aria-hidden="true"></i>
               </span>
@@ -1059,6 +1070,11 @@
               <p class="card-description">
                 Watch silk being spun from cocoons on 100-year-old machines. Learn traditional ikat dyeing.
               </p>
+              {{-- PHASE 1.3: Artisan → Journey linking --}}
+              <p class="master-journey-link">
+                <i class="fas fa-route" aria-hidden="true"></i>
+                Included in Margilan & Fergana Valley journeys
+              </p>
               <span class="city-card__cta">
                 View Silk Workshops<i class="fas fa-arrow-right" aria-hidden="true"></i>
               </span>
@@ -1089,6 +1105,11 @@
               </p>
               <p class="card-description">
                 Learn chain stitch and satin stitch from families who've passed down patterns for 5 generations.
+              </p>
+              {{-- PHASE 1.3: Artisan → Journey linking --}}
+              <p class="master-journey-link">
+                <i class="fas fa-route" aria-hidden="true"></i>
+                Included in Bukhara & Textile Immersion journeys
               </p>
               <span class="city-card__cta">
                 View Embroidery Classes<i class="fas fa-arrow-right" aria-hidden="true"></i>
