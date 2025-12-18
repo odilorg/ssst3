@@ -346,6 +346,8 @@
   </section>
 
   <!-- Section 3: Trending Activities -->
+  {{-- HIDDEN: Shows "0 tours" - conversion killer. Using "Meet the Masters" section instead --}}
+  @if(false)
   <section class="activities" id="activities">
     <!-- JSON-LD Schema (Dynamic) -->
     @if(!empty($categories) && count($categories) > 0)
@@ -440,6 +442,8 @@
 
     </div>
   </section>
+  @endif
+  {{-- END HIDDEN SECTION --}}
 
   <!-- ========================================
        SECTION 4: EXPLORE POPULAR TOURS
