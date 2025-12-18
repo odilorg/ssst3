@@ -81,7 +81,7 @@
 
     /* Card Description Text */
     .card-description {
-      font-size: 0.875rem;
+      font-size: var(--text-sm);
       color: rgba(255, 255, 255, 0.9);
       margin-top: 12px; /* More breathing room */
       margin-bottom: 0; /* Remove bottom margin - let CTA control spacing */
@@ -93,7 +93,7 @@
       display: inline-block;
       margin-top: 16px; /* Consistent spacing from description */
       color: #fff;
-      font-weight: 600;
+      font-weight: var(--weight-semibold);
       transition: transform 0.2s ease;
     }
 
@@ -142,7 +142,7 @@
       }
 
       .card-description {
-        font-size: 0.9375rem; /* Slightly larger on mobile */
+        font-size: var(--text-base); /* Was 0.9375rem */ /* Slightly larger on mobile */
       }
     }
 
@@ -158,18 +158,19 @@
        HIGH-IMPACT UI/UX FIXES
        ======================================== */
 
-    /* Fix 2: Strengthen Heading Typography */
-    .why-us h2 {
-      font-size: 2.25rem !important; /* Increased from default */
-      font-weight: 700 !important; /* Bolder */
-      line-height: 1.2 !important;
-      color: #1a1a1a !important; /* Darker for better contrast */
-      margin-bottom: 1rem !important;
+    /* Fix 2: Strengthen Heading Typography (Removed !important) */
+    .why-us__intro h2 {
+      font-size: var(--text-4xl); /* 36px mobile */
+      font-weight: var(--weight-bold); /* Bold */
+      line-height: 1.2;
+      color: #1a1a1a; /* Darker for better contrast */
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em; /* Slightly tighter for large headings */
     }
 
     @media (min-width: 768px) {
-      .why-us h2 {
-        font-size: 2.75rem !important; /* Even larger on desktop */
+      .why-us__intro h2 {
+        font-size: var(--text-5xl); /* Was 2.75rem */ /* 44px desktop */
       }
     }
 
@@ -195,43 +196,43 @@
 
     .rating-badge .stars {
       color: #fbbf24;
-      font-size: 1rem;
+      font-size: var(--text-base);
       letter-spacing: 2px;
     }
 
     .rating-badge strong {
-      font-size: 1.125rem;
-      font-weight: 700;
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
       color: #1a1a1a;
     }
 
     .rating-badge .rating-source {
-      font-size: 0.875rem;
+      font-size: var(--text-sm);
       color: #6b7280;
     }
 
     .social-proof-separator {
       color: #d1d5db;
-      font-weight: 300;
+      font-weight: var(--weight-regular); /* Changed from 300 for font optimization */
     }
 
     .social-proof-stat {
-      font-size: 0.9375rem;
+      font-size: var(--text-base); /* Was 0.9375rem */
       color: #4b5563;
-      font-weight: 500;
+      font-weight: var(--weight-medium);
     }
 
     /* Fix 1: Enhanced CTA Button */
     .btn--hero {
       background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
       color: white;
-      font-size: 1.125rem;
+      font-size: var(--text-lg);
       padding: 1rem 2rem;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
       transition: all 0.3s ease;
       border: none;
-      font-weight: 600;
+      font-weight: var(--weight-semibold);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -246,7 +247,7 @@
 
     .cta-subtext {
       margin-top: 12px;
-      font-size: 0.875rem;
+      font-size: var(--text-sm);
       color: #6b7280;
       text-align: center;
     }
@@ -262,34 +263,34 @@
     }
 
     .pricing-preview__label {
-      font-size: 0.8125rem;
+      font-size: var(--text-xs); /* Was 0.8125rem */
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: #92400e;
-      font-weight: 600;
+      font-weight: var(--weight-semibold);
       margin: 0 0 4px 0;
     }
 
     .pricing-preview__amount {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: var(--text-4xl); /* Was 2rem */
+      font-weight: var(--weight-bold);
       color: #1a1a1a;
       margin: 0;
       line-height: 1;
     }
 
     .pricing-preview__duration {
-      font-size: 1rem;
-      font-weight: 400;
+      font-size: var(--text-base);
+      font-weight: var(--weight-regular);
       color: #6b7280;
     }
 
     .pricing-preview__link {
       display: inline-block;
       margin-top: 8px;
-      font-size: 0.9375rem;
+      font-size: var(--text-base); /* Was 0.9375rem */
       color: #D2691E;
-      font-weight: 600;
+      font-weight: var(--weight-semibold);
       text-decoration: none;
       transition: color 0.2s ease;
     }
@@ -311,7 +312,7 @@
       }
 
       .pricing-preview__amount {
-        font-size: 1.75rem;
+        font-size: var(--text-3xl); /* Was 1.75rem */
       }
     }
 
@@ -364,20 +365,20 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.875rem;
+      font-size: var(--text-sm);
       color: #4b5563;
-      font-weight: 500;
+      font-weight: var(--weight-medium);
     }
 
     .credential-item i {
       color: #D2691E;
-      font-size: 1rem;
+      font-size: var(--text-base);
     }
 
     .credential-separator {
       color: #d1d5db;
-      font-weight: 300;
-      font-size: 1.125rem;
+      font-weight: var(--weight-regular); /* Changed from 300 for font optimization */
+      font-size: var(--text-lg);
     }
 
     /* Responsive - Mobile */
@@ -1342,12 +1343,12 @@
   align-items: center;
   gap: 8px;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
 }
 
 .trust-badge-item i {
-  font-size: 1rem;
+  font-size: var(--text-base);
   color: #4ade80;
 }
 
@@ -1357,11 +1358,11 @@
   }
 
   .trust-badge-item {
-    font-size: 0.8125rem;
+    font-size: var(--text-xs); /* Was 0.8125rem */
   }
 
   .trust-badge-item i {
-    font-size: 0.9375rem;
+    font-size: var(--text-base); /* Was 0.9375rem */
   }
 }
 
@@ -1381,8 +1382,8 @@
   transition: all 0.3s ease;
   z-index: 1000;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-base); /* Was 0.9375rem */
 }
 
 .whatsapp-float:hover {
@@ -1397,7 +1398,7 @@
 }
 
 .whatsapp-float i {
-  font-size: 1.5rem;
+  font-size: var(--text-2xl);
 }
 
 .whatsapp-float__text {
@@ -1421,7 +1422,7 @@
   }
 
   .whatsapp-float i {
-    font-size: 1.75rem;
+    font-size: var(--text-3xl); /* Was 1.75rem */
     margin: 0;
   }
 }
