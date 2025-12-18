@@ -894,9 +894,9 @@
 
       <!-- Section Header -->
       <header class="section-header text-center">
-        <p class="section-eyebrow">FROM OUR EXPERTS</p>
-        <h2 id="blog-title" class="section-title">Travel Insights & Tips</h2>
-        <p class="section-subtitle">Insider knowledge to make your Silk Road journey unforgettable</p>
+        <p class="section-eyebrow">WORKSHOP GUIDES & TIPS</p>
+        <h2 id="blog-title" class="section-title">Plan Your Craft Workshop Journey</h2>
+        <p class="section-subtitle">Expert guides on pottery, silk weaving, and traditional crafts — everything you need to know before booking</p>
       </header>
 
       <!-- Blog Grid (DYNAMIC) -->
@@ -970,8 +970,8 @@
 
       <!-- Section Footer CTA -->
       <div class="blog-preview__footer">
-        <a href="{{ url('/blog') }}" class="btn btn--large btn--ghost" aria-label="View all travel articles and guides">
-          View All Articles
+        <a href="{{ url('/blog') }}" class="btn btn--large btn--ghost" aria-label="View all craft workshop guides">
+          Read More Workshop Guides
           <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
       </div>
