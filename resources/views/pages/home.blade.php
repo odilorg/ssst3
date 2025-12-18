@@ -308,14 +308,6 @@
                  loading="lazy"
                  decoding="async">
           </div>
-          <div class="why-us__badge">
-            <div class="trust-badge">
-              <span class="mini-label">Traveler Rating</span>
-              <i class="fas fa-star" aria-hidden="true"></i>
-              <strong>4.8</strong>
-              <span>Hundreds of Happy Travelers</span>
-            </div>
-          </div>
 
           <!-- Statistics Cards -->
           <div class="stat-card">
@@ -961,7 +953,95 @@
 
     </div>
   </section>
+
+  <!-- WhatsApp Floating Widget -->
+  <a href="https://wa.me/998915550808?text=Hi!%20I%27m%20interested%20in%20craft%20workshops%20in%20Uzbekistan.%20Can%20you%20help%20me%20plan%20a%20trip%3F"
+     class="whatsapp-float"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Chat with us on WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <span class="whatsapp-float__text">Chat with us!</span>
+  </a>
 @endsection
+
+@push('styles')
+<style>
+/* WhatsApp Floating Widget */
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #25D366;
+  color: #fff;
+  border-radius: 50px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.whatsapp-float:hover {
+  background: #128C7E;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.whatsapp-float:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.whatsapp-float i {
+  font-size: 1.5rem;
+}
+
+.whatsapp-float__text {
+  white-space: nowrap;
+}
+
+/* Mobile: Icon only */
+@media (max-width: 640px) {
+  .whatsapp-float {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .whatsapp-float__text {
+    display: none;
+  }
+
+  .whatsapp-float i {
+    font-size: 1.75rem;
+    margin: 0;
+  }
+}
+
+/* Tablet: Show text on hover */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .whatsapp-float__text {
+    max-width: 0;
+    overflow: hidden;
+    transition: max-width 0.3s ease;
+  }
+
+  .whatsapp-float:hover .whatsapp-float__text {
+    max-width: 150px;
+  }
+}
+</style>
+@endpush
 
 @push('scripts')
   <!-- HTMX Library -->
