@@ -153,6 +153,167 @@
         gap: 20px;
       }
     }
+
+    /* ========================================
+       HIGH-IMPACT UI/UX FIXES
+       ======================================== */
+
+    /* Fix 2: Strengthen Heading Typography */
+    .why-us h2 {
+      font-size: 2.25rem !important; /* Increased from default */
+      font-weight: 700 !important; /* Bolder */
+      line-height: 1.2 !important;
+      color: #1a1a1a !important; /* Darker for better contrast */
+      margin-bottom: 1rem !important;
+    }
+
+    @media (min-width: 768px) {
+      .why-us h2 {
+        font-size: 2.75rem !important; /* Even larger on desktop */
+      }
+    }
+
+    /* Fix 3: Social Proof Styling */
+    .why-us__social-proof {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 1.5rem 0;
+      padding: 1rem 0;
+    }
+
+    .rating-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8f9fa;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+
+    .rating-badge .stars {
+      color: #fbbf24;
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .rating-badge strong {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .rating-badge .rating-source {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .social-proof-separator {
+      color: #d1d5db;
+      font-weight: 300;
+    }
+
+    .social-proof-stat {
+      font-size: 0.9375rem;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    /* Fix 1: Enhanced CTA Button */
+    .btn--hero {
+      background: linear-gradient(135deg, #D2691E 0%, #A0522D 100%);
+      color: white;
+      font-size: 1.125rem;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(210, 105, 30, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn--hero:hover {
+      background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
+    }
+
+    .cta-subtext {
+      margin-top: 12px;
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    /* Fix 4: Pricing Preview */
+    .pricing-preview {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-left: 4px solid #D2691E;
+      padding: 1.25rem 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .pricing-preview__label {
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #92400e;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+    }
+
+    .pricing-preview__amount {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .pricing-preview__duration {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #6b7280;
+    }
+
+    .pricing-preview__link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.9375rem;
+      color: #D2691E;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .pricing-preview__link:hover {
+      color: #A0522D;
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+      .why-us__social-proof {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .pricing-preview {
+        padding: 1rem 1.25rem;
+      }
+
+      .pricing-preview__amount {
+        font-size: 1.75rem;
+      }
+    }
   </style>
 @endpush
 
@@ -259,22 +420,31 @@
           <span class="eyebrow">WHY CHOOSE US</span>
           <h2>Trusted Local Experts in Uzbekistan</h2>
           <p>For over a decade, Jahongir Travel has been guiding guests beyond postcards — into the living heart of Uzbekistan's culture, cuisine, and craftsmanship.</p>
-          <p class="micro-proof"><i class="fas fa-check-circle" aria-hidden="true"></i> Loved by travelers from all over the world</p>
-
-          <div class="why-us__contacts">
-            <a href="mailto:info@jahongir-travel.uz" class="contact-link" aria-label="Email Jahongir Travel">
-              <i class="fas fa-envelope" aria-hidden="true"></i> Email Us
-            </a>
-            <a href="https://wa.me/998915550808" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Chat with Jahongir Travel on WhatsApp">
-              <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
-            </a>
+          {{-- Social Proof with Specific Data --}}
+          <div class="why-us__social-proof">
+            <div class="rating-badge">
+              <span class="stars">★★★★★</span>
+              <strong>5.0</strong>
+              <span class="rating-source">on TripAdvisor</span>
+            </div>
+            <span class="social-proof-separator">•</span>
+            <span class="social-proof-stat">127+ workshops hosted since 2012</span>
           </div>
 
+          {{-- Single Primary CTA --}}
           <div class="why-us__cta-wrapper">
-            <a href="{{ url('/tours') }}" class="btn btn--primary btn--large">
-              <i class="fas fa-route" aria-hidden="true"></i>
-              Plan My Trip
+            <a href="{{ url('/tours') }}" class="btn btn--primary btn--large btn--hero">
+              View 2025 Craft Workshops
+              <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
+            <p class="cta-subtext">Free consultation • Custom itineraries • Expert guides</p>
+          </div>
+
+          {{-- Pricing Preview --}}
+          <div class="pricing-preview">
+            <p class="pricing-preview__label">Workshop tours from</p>
+            <p class="pricing-preview__amount">$890 <span class="pricing-preview__duration">/ 3 days</span></p>
+            <a href="{{ url('/tours') }}" class="pricing-preview__link">View all packages →</a>
           </div>
 
           <div class="why-us__divider"></div>
