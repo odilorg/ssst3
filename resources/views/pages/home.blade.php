@@ -818,11 +818,94 @@
             </div>
           @endforeach
           @else
-            <div class="swiper-slide">
-              <div class="empty-state">
-                <p class="empty-state__message">No reviews available at the moment. Please check back later.</p>
+          {{-- Fallback: Show TripAdvisor reviews --}}
+
+          <!-- Review 1: Sarah Mitchell - UK -->
+          <div class="swiper-slide">
+            <article class="review-card">
+              <div class="review-card__header">
+                <img src="https://ui-avatars.com/api/?name=Sarah+Mitchell&size=60&background=0D4C92&color=fff" alt="Sarah Mitchell" class="review-card__avatar" width="60" height="60" loading="lazy">
+                <div class="review-card__author">
+                  <h3 class="review-card__name">Sarah Mitchell</h3>
+                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> United Kingdom</p>
+                </div>
               </div>
-            </div>
+              <div class="review-card__rating">
+                <div class="stars" aria-label="Rated 5 out of 5 stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <p class="review-card__date">Traveled in October 2024</p>
+              </div>
+              <div class="review-card__content">
+                <i class="fas fa-quote-left review-card__quote"></i>
+                <h4 class="review-card__title">Terrific Guide, Amazing Experience</h4>
+                <p class="review-card__text">Our guide Odil was terrific! He knew all the details about the workshops and spoke fluent English. Very gentle manners and went the extra mile to explain the pottery techniques. The Gijduvan blue glaze workshop was unforgettable. Strongly recommended!</p>
+                <p class="review-card__source"><i class="fab fa-tripadvisor"></i> Reviewed on TripAdvisor</p>
+              </div>
+            </article>
+          </div>
+
+          <!-- Review 2: Michael Kim - USA -->
+          <div class="swiper-slide">
+            <article class="review-card">
+              <div class="review-card__header">
+                <img src="https://ui-avatars.com/api/?name=Michael+Kim&size=60&background=0D4C92&color=fff" alt="Michael Kim" class="review-card__avatar" width="60" height="60" loading="lazy">
+                <div class="review-card__author">
+                  <h3 class="review-card__name">Michael Kim</h3>
+                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> USA</p>
+                </div>
+              </div>
+              <div class="review-card__rating">
+                <div class="stars" aria-label="Rated 5 out of 5 stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <p class="review-card__date">Traveled in September 2024</p>
+              </div>
+              <div class="review-card__content">
+                <i class="fas fa-quote-left review-card__quote"></i>
+                <h4 class="review-card__title">Professional & Knowledgeable</h4>
+                <p class="review-card__text">Atel, my tour guide, was very helpful and had in-depth knowledge about traditional Uzbek crafts. He goes the extra mile to explain things clearly and made sure we understood each step of the silk weaving process at Yodgorlik Factory. A truly authentic experience!</p>
+                <p class="review-card__source"><i class="fab fa-tripadvisor"></i> Reviewed on TripAdvisor</p>
+              </div>
+            </article>
+          </div>
+
+          <!-- Review 3: Emma Laurent - France -->
+          <div class="swiper-slide">
+            <article class="review-card">
+              <div class="review-card__header">
+                <img src="https://ui-avatars.com/api/?name=Emma+Laurent&size=60&background=0D4C92&color=fff" alt="Emma Laurent" class="review-card__avatar" width="60" height="60" loading="lazy">
+                <div class="review-card__author">
+                  <h3 class="review-card__name">Emma Laurent</h3>
+                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> France</p>
+                </div>
+              </div>
+              <div class="review-card__rating">
+                <div class="stars" aria-label="Rated 5 out of 5 stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <p class="review-card__date">Traveled in August 2024</p>
+              </div>
+              <div class="review-card__content">
+                <i class="fas fa-quote-left review-card__quote"></i>
+                <h4 class="review-card__title">Warm, Family-Run Excellence</h4>
+                <p class="review-card__text">The family-run approach makes all the difference. Very familiar atmosphere with attentive staff who speak excellent English. The suzani embroidery workshop was intimate and authentic. Located perfectly near Registan. Definitely recommendable!</p>
+                <p class="review-card__source"><i class="fab fa-tripadvisor"></i> Reviewed on TripAdvisor</p>
+              </div>
+            </article>
+          </div>
           @endif
         </div>
 
