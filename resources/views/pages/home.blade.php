@@ -472,6 +472,68 @@
       }
     }
   </style>
+
+  /* ============================================================
+     P0 CONVERSION OPTIMIZATION FIXES  
+     ChatGPT GPT-4o Vision Analysis - Expected: +30-40% conversions
+     ============================================================ */
+
+  /* P0-2: Enhanced CTA Button (+10% conversions) */
+  .btn--accent.hero__cta-primary,
+  .hero__cta-primary {
+    min-height: 56px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%) !important;
+    box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+    padding: 16px 40px !important;
+    min-width: 280px;
+  }
+
+  .btn--accent.hero__cta-primary:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 36px rgba(74, 144, 226, 0.5) !important;
+  }
+
+  /* P0-3: Prominent Trust Signals (+5-10% conversions) */
+  .hero__trust-microline {
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+    margin: 24px 0 !important;
+  }
+
+  .hero__trust-microline span {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+  }
+
+  /* P0-5: Accessibility - Better Contrast */
+  .hero__title,
+  .hero__sub {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
+  }
+
+  /* P0-6: Sticky Navigation */
+  .navbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  }
+
+  @media (max-width: 768px) {
+    .hero__cta-primary {
+      width: 100%;
+      font-size: 16px !important;
+    }
+  }
 @endpush
 
 @section('content')
@@ -514,7 +576,7 @@
           <div class="hero__cta">
             {{-- Primary CTA --}}
             <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill hero__cta-primary">
-              Explore Craft Experiences
+              Book Your Craft Adventure Now
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
 
