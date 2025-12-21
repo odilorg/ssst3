@@ -610,10 +610,6 @@
     {{-- Hero Section - Enhanced with trust elements --}}
     <section class="about-hero">
       <div class="container">
-        <div class="about-hero__badge">
-          <i class="fas fa-award" aria-hidden="true"></i>
-          <span>Since 2012 • Craft Tourism Pioneers</span>
-        </div>
         <h1 class="about-hero__title">Preserving Heritage, One Craft at a Time</h1>
         <p class="about-hero__subtitle">
           We're not a typical tour operator. We're a craft preservation initiative disguised as a travel company—supporting local artisans, keeping traditional skills alive, and connecting travelers with the soul of Uzbekistan.
