@@ -35,7 +35,7 @@
         "name": "Do I need prior craft experience to join a workshop?",
         "acceptedAnswer": {
           "@@type": "Answer",
-          "text": "No prior experience required! Our workshops are designed for complete beginners through advanced practitioners. Master artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful. Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries."
+          "text": "No prior experience required! Our workshops are designed for complete beginners through advanced practitioners. Skilled artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful. Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries."
         }
       },
       {
@@ -51,7 +51,7 @@
         "name": "What languages are workshops conducted in?",
         "acceptedAnswer": {
           "@@type": "Answer",
-          "text": "All workshops include English-speaking guides. While master artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time. Russian-speaking travelers can request direct instruction in Russian."
+          "text": "All workshops include English-speaking guides. While artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time. Russian-speaking travelers can request direct instruction in Russian."
         }
       },
       {
@@ -59,7 +59,7 @@
         "name": "Can I book a private workshop journey?",
         "acceptedAnswer": {
           "@@type": "Answer",
-          "text": "Absolutely! Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with master artisans and a fully customized itinerary. Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations."
+          "text": "Absolutely! Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with skilled artisans and a fully customized itinerary. Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations."
         }
       },
       {
@@ -67,7 +67,7 @@
         "name": "What's included in the workshop price?",
         "acceptedAnswer": {
           "@@type": "Answer",
-          "text": "Everything you need for an immersive experience: Hands-on instruction from master artisans (12+ hours), all materials tools and kiln/loom fees, English-speaking expert guides, transportation between workshop locations, artisan homestay accommodation (2 nights), traditional meals with host families, and your finished craft pieces to take home. Not included: International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule."
+          "text": "Everything you need for an immersive experience: Instruction from skilled artisans (12+ hours), all materials tools and kiln/loom fees, English-speaking expert guides, transportation between workshop locations, artisan homestay accommodation (2 nights), traditional meals with host families, and your finished craft pieces to take home. Not included: International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule."
         }
       },
       {
@@ -671,7 +671,7 @@
             <ul class="pricing-includes">
               <li><i class="fas fa-check" aria-hidden="true"></i> 12+ hours hands-on pottery instruction</li>
               <li><i class="fas fa-check" aria-hidden="true"></i> All materials & kiln firing included</li>
-              <li><i class="fas fa-check" aria-hidden="true"></i> English-speaking master artisan guide</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> English-speaking local guide</li>
               <li><i class="fas fa-check" aria-hidden="true"></i> Transport between workshop locations</li>
               <li><i class="fas fa-check" aria-hidden="true"></i> Artisan homestay (2 nights)</li>
               <li><i class="fas fa-check" aria-hidden="true"></i> Traditional meals with host family</li>
@@ -717,7 +717,7 @@
         <div class="why-us__media why-us__media--hero">
           <div class="why-us__hero-image">
             <img src="{{ asset('images/craft-pottery.webp') }}"
-                 alt="Master artisan demonstrating traditional Uzbek blue pottery glazing technique"
+                 alt="Artisan demonstrating traditional Uzbek blue pottery glazing technique"
                  width="800"
                  height="600"
                  loading="lazy"
@@ -777,7 +777,7 @@
 
       <!-- Section Header -->
       <div class="section-header">
-        <p class="section-eyebrow">MASTER THE CRAFTS</p>
+        <p class="section-eyebrow">EXPERIENCE THE CRAFTS</p>
         <h2 class="section-header__title">Learn Traditional Crafts From Local Artisans</h2>
         <p class="section-header__subtitle">Hands-on workshops in pottery, silk weaving, suzani embroidery, and traditional crafts passed down through generations</p>
       </div>
@@ -913,13 +913,13 @@
         {{-- FIX 5: USP (Unique Selling Proposition) --}}
         <p class="section-usp">
           <i class="fas fa-award" aria-hidden="true"></i>
-          The only workshops where you learn from master artisans who supply Uzbekistan's national museums
+          Learn traditional crafts from skilled local artisans in authentic working workshops
         </p>
 
         {{-- FIX 6: Enhanced Description with Specifics --}}
         <p class="section-subtitle">
           From 2-day pottery intensives to 12-day multi-craft odysseys.
-          Learn <strong>Gijduvan blue glazing</strong>, <strong>Margilan silk weaving</strong>, and <strong>Bukhara suzani embroidery</strong> from 3rd-generation masters.
+          Experience <strong>Gijduvan blue glazing</strong>, <strong>Margilan silk weaving</strong>, and <strong>Bukhara suzani embroidery</strong> with local craftspeople.
           Small groups (max 6), 100% hands-on workshops, artisan homestays.
         </p>
 
@@ -942,7 +942,7 @@
           </div>
           <div class="highlight-item">
             <i class="fas fa-certificate" aria-hidden="true"></i>
-            <span>UNESCO Certified</span>
+            <span>Local Experts</span>
           </div>
           <div class="highlight-item">
             <i class="fas fa-hands" aria-hidden="true"></i>
@@ -1000,7 +1000,7 @@
   </section>
 
   <!-- ========================================
-       SECTION 5: MEET THE MASTERS
+       SECTION 5: MEET THE ARTISANS
   ========================================= -->
   <section class="places" id="masters">
 
@@ -1009,15 +1009,15 @@
     {
       "@@context": "https://schema.org",
       "@@type": "ItemList",
-      "name": "Master Artisans of Uzbekistan",
-      "description": "UNESCO-recognized master craftspeople teaching pottery, silk weaving, suzani embroidery, and traditional crafts",
+      "name": "Local Artisans of Uzbekistan",
+      "description": "Skilled local craftspeople teaching pottery, silk weaving, suzani embroidery, and traditional crafts",
       "itemListElement": [
         {
           "@@type": "Person",
           "position": 1,
           "name": "Alisher Nazirov",
-          "jobTitle": "UNESCO Master Potter (5th Generation)",
-          "description": "UNESCO-recognized ceramics master in Gijduvan. 5th-generation potter teaching the famous 'Gijduvan blue' glaze technique.",
+          "jobTitle": "Traditional Potter",
+          "description": "Skilled ceramics artisan in Gijduvan teaching traditional 'Gijduvan blue' glaze technique.",
           "knowsAbout": ["Pottery", "Ceramics", "Traditional Uzbek Glazing"],
           "address": {
             "@@type": "PostalAddress",
@@ -1030,7 +1030,7 @@
           "@@type": "Organization",
           "position": 2,
           "name": "Yodgorlik Silk Factory",
-          "description": "Legendary silk factory in Margilan with 100-year-old machines. Watch silk being spun from cocoons using traditional methods.",
+          "description": "Established silk factory in Margilan with traditional machines. Watch silk being spun from cocoons using traditional methods.",
           "knowsAbout": ["Silk Weaving", "Ikat Dyeing", "Textile Arts"],
           "address": {
             "@@type": "PostalAddress",
@@ -1042,8 +1042,8 @@
         {
           "@@type": "Person",
           "position": 3,
-          "name": "Master Embroiderers of Bukhara",
-          "jobTitle": "Suzani Embroidery Masters",
+          "name": "Embroiderers of Bukhara",
+          "jobTitle": "Suzani Embroidery Artisans",
           "description": "Learn suzani embroidery from families who have passed down designs for 5+ generations. Chain stitch, satin stitch, and traditional patterns.",
           "knowsAbout": ["Suzani Embroidery", "Traditional Textiles", "Chain Stitch"],
           "address": {
@@ -1055,7 +1055,7 @@
         {
           "@@type": "Person",
           "position": 4,
-          "name": "Miniature Painting Masters",
+          "name": "Miniature Painting Artisans",
           "jobTitle": "Persian Miniature Artists",
           "description": "Study Persian miniature painting techniques in Bukhara. Learn pigment preparation, brush techniques, and traditional motifs.",
           "knowsAbout": ["Miniature Painting", "Persian Art", "Traditional Pigments"],
@@ -1088,7 +1088,7 @@
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&h=533&fit=crop&q=80"
-                alt="Master potter shaping clay on pottery wheel in Gijduvan"
+                alt="Potter shaping clay on pottery wheel in Gijduvan"
                 width="400"
                 height="533"
                 loading="lazy"
@@ -1156,11 +1156,11 @@
 
         <!-- Master 3: Suzani Embroidery -->
         <article class="city-card master-card">
-          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn suzani embroidery with master embroiderers">
+          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn suzani embroidery with local artisans">
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=533&fit=crop&q=80"
-                alt="Master embroiderer working on traditional suzani textile in Bukhara"
+                alt="Embroiderer working on traditional suzani textile in Bukhara"
                 width="400"
                 height="533"
                 loading="lazy"
@@ -1741,7 +1741,7 @@
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>No prior experience required!</strong> Our workshops are designed for complete beginners through advanced practitioners. Master artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful.</p>
+              <p><strong>No prior experience required!</strong> Our workshops are designed for complete beginners through advanced practitioners. Skilled artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful.</p>
               <p>Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries.</p>
             </div>
           </div>
@@ -1771,7 +1771,7 @@
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>All workshops include English-speaking guides.</strong> While master artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time.</p>
+              <p><strong>All workshops include English-speaking guides.</strong> While artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time.</p>
               <p>Russian-speaking travelers can request direct instruction in Russian. This creates an even more immersive cultural experience as you learn traditional techniques in the language artisans use.</p>
             </div>
           </div>
@@ -1786,7 +1786,7 @@
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Absolutely!</strong> Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with master artisans and a fully customized itinerary.</p>
+              <p><strong>Absolutely!</strong> Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with skilled artisans and a fully customized itinerary.</p>
               <p>Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations. <a href="{{ url('/contact') }}">Contact us for a custom quote</a>.</p>
             </div>
           </div>
@@ -1803,7 +1803,7 @@
             <div itemprop="text">
               <p><strong>Everything you need for an immersive experience:</strong></p>
               <ul>
-                <li>Hands-on instruction from master artisans (12+ hours)</li>
+                <li>Instruction from skilled artisans (12+ hours)</li>
                 <li>All materials, tools, and kiln/loom fees</li>
                 <li>English-speaking expert guides</li>
                 <li>Transportation between workshop locations</li>
