@@ -258,7 +258,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: relative;
   z-index: 10;
   width: 100%;
-  padding: 4rem 0 2rem;
+  padding: 8rem 0 2rem;
 }
 .hero__text {
   max-width: 100%;
