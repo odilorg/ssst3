@@ -224,10 +224,10 @@
         text-align: center;
     }
 
-    /* Solution Grid - Enhanced cards */
+    /* Solution Grid - Enhanced cards (3x2 grid) */
     .solution-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
         margin-top: 3rem;
     }
@@ -494,6 +494,7 @@
        RESPONSIVE - Mobile First Fixes
        ========================================== */
     @media (max-width: 1024px) {
+        .solution-grid,
         .impact-stats,
         .partnership-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -706,6 +707,22 @@
             </div>
             <h3 class="solution-card__title">Craft-First Itineraries</h3>
             <p class="solution-card__text">Every tour is built around workshops, not landmarks. You'll visit Registan Square—but only after you've learned to create suzani embroidery.</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-language" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">Local Expert Guides</h3>
+            <p class="solution-card__text">English-speaking guides who personally know the artisans and translate not just words, but cultural context and centuries of tradition.</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">Authentic Workshops</h3>
+            <p class="solution-card__text">Real working studios, not tourist shops. You'll see where artisans actually create—the same spaces where their families have worked for generations.</p>
           </div>
         </div>
       </div>
