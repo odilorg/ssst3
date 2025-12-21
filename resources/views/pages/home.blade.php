@@ -501,8 +501,8 @@
 
           {{-- Trust Microline - appears immediately without scrolling --}}
           <p class="hero__trust-microline">
-            <span class="trust-stars">★★★★★</span>
-            <span>4.9/5 rated</span>
+            <span class="trust-stars">★★★★☆</span>
+            <span>4.4/5 on GetYourGuide</span>
             <span class="trust-separator">·</span>
             <span>Local artisans</span>
             <span class="trust-separator">·</span>
@@ -644,9 +644,9 @@
           {{-- Social Proof with Specific Data --}}
           <div class="why-us__social-proof">
             <div class="rating-badge">
-              <span class="stars">★★★★★</span>
-              <strong>5.0</strong>
-              <span class="rating-source">on TripAdvisor</span>
+              <span class="stars">★★★★☆</span>
+              <strong>4.4</strong>
+              <span class="rating-source">on GetYourGuide (31 reviews)</span>
             </div>
             <span class="social-proof-separator">•</span>
             <span class="social-proof-stat">127+ workshops hosted since 2012</span>
