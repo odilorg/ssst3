@@ -47,7 +47,7 @@
 
     /* Hero Section - Enhanced with trust elements */
     .about-hero {
-        background: linear-gradient(135deg, #8B6F47 0%, #A0826D 100%);
+        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
         color: white;
         padding: 140px 0 100px;
         text-align: center;
@@ -127,7 +127,7 @@
 
     .btn--hero {
         background: rgba(255,255,255,0.95);
-        color: #5D4E37;
+        color: #536DFE;
         padding: 1rem 2.5rem;
         font-size: 1.0625rem;
         font-weight: 600;
@@ -161,7 +161,7 @@
     }
 
     .section--gray {
-        background: #F5F1EB;
+        background: #F7F8FA;
         position: relative;
     }
 
@@ -175,9 +175,9 @@
         height: 4px;
         background: linear-gradient(90deg,
             transparent 0%,
-            #8B6F47 25%,
-            #C9A961 50%,
-            #8B6F47 75%,
+            #3F4E65 25%,
+            #FFC107 50%,
+            #3F4E65 75%,
             transparent 100%);
         border-radius: 2px;
     }
@@ -282,7 +282,7 @@
     }
 
     .problem-image__caption {
-        background: #8B6F47;
+        background: #3F4E65;
         color: white;
         padding: 1rem;
         font-size: 0.875rem;
@@ -364,7 +364,7 @@
         width: 50px;
         height: 50px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #FDF6E9 0%, #F5EBCE 100%);
+        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -422,12 +422,12 @@
         width: 56px;
         height: 56px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #FDF6E9 0%, #F5EBCE 100%);
+        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #5D4E37;
+        color: #536DFE;
         font-size: 1.5rem;
     }
 
@@ -449,7 +449,7 @@
         text-align: center;
         margin-top: 3rem;
         padding: 2rem;
-        background: linear-gradient(135deg, #FDF6E9 0%, #F5EBCE 100%);
+        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
         border-radius: 12px;
         max-width: 750px;
         margin-left: auto;
@@ -459,7 +459,7 @@
 
     .ethical-commitment p {
         font-size: 1.0625rem;
-        color: #5D4E37;
+        color: #536DFE;
         margin: 0;
         line-height: 1.7;
     }
@@ -522,14 +522,14 @@
         padding: 2.5rem 2rem;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border-left: 4px solid #8B6F47;
+        border-left: 4px solid #3F4E65;
         position: relative;
     }
 
     .testimonial-card::before {
         content: '"';
         font-size: 4rem;
-        color: rgba(139, 111, 71, 0.1);
+        color: rgba(63, 78, 101, 0.1);
         position: absolute;
         top: 1rem;
         left: 1.5rem;
@@ -558,7 +558,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #8B6F47 0%, #A0826D 100%);
+        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -590,7 +590,7 @@
 
     /* CTA Section */
     .cta-section {
-        background: linear-gradient(135deg, #8B6F47 0%, #A0826D 100%);
+        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
         color: white;
         padding: 100px 0;
         text-align: center;
@@ -625,12 +625,12 @@
 
     .btn--white {
         background: white;
-        color: #5D4E37;
+        color: #536DFE;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     .btn--white:hover {
-        background: #F5F1EB;
+        background: #F7F8FA;
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     }
@@ -999,7 +999,7 @@
     {{-- Artisan Gallery Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #5D4E37;">MEET THE ARTISANS</span>
+        <span class="eyebrow text-center mx-auto" style="color: #536DFE;">MEET THE ARTISANS</span>
         <h2 class="section-heading text-center">The Hands Behind the Crafts</h2>
         <p class="section-tagline text-center mx-auto">
           Real artisans in real workshops. These are the craftspeople you'll meet on our journeys.
@@ -1034,7 +1034,7 @@
     {{-- Testimonials Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #5D4E37;">TESTIMONIALS</span>
+        <span class="eyebrow text-center mx-auto" style="color: #536DFE;">TESTIMONIALS</span>
         <h2 class="section-heading text-center">What Travelers Say</h2>
         <p class="section-tagline text-center mx-auto">
           Real experiences from travelers who've journeyed with us to meet Uzbekistan's master artisans.
