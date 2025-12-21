@@ -134,6 +134,149 @@
 
 @push('styles')
 <style>
+
+/* P0 FIX: Logo accessibility - brighter yellow for better contrast */
+.logo-travel,
+.navbar__logo-travel {
+    color: #FFD700 !important; /* Brighter gold instead of #FFC107 */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Added shadow for legibility */
+}
+
+
+/* P0 FIX: Form labels visibility */
+.form-group label {
+    display: block !important;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-group input:focus + label,
+.form-group textarea:focus + label {
+    color: #1a5490;
+}
+
+/* Ensure placeholders are supplementary, not primary */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #999;
+    opacity: 0.7;
+}
+
+
+/* P0 FIX: Make CTA button prominent */
+.btn--primary.form-submit,
+.form-submit {
+    min-height: 56px !important; /* Larger touch target */
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn--primary.form-submit:hover,
+.form-submit:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 35px rgba(37, 99, 235, 0.5) !important;
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+}
+
+.btn--primary.form-submit:active {
+    transform: translateY(0) !important;
+}
+
+
+/* P0 FIX: Response commitment trust signal */
+.response-commitment {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-left: 4px solid #2563eb;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+
+.response-commitment i {
+    color: #2563eb;
+    font-size: 24px;
+}
+
+.response-commitment span {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1e40af;
+}
+
+.response-commitment strong {
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+
+/* P0 FIX: Consistent section spacing */
+.contact-section,
+.contact-hero,
+.contact-form-section,
+.contact-info-section {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+}
+
+.contact-section + .contact-section {
+    margin-top: 0 !important;
+}
+
+/* Consistent inner spacing */
+.contact-section > .container,
+.contact-form-section > .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+
+/* P0 FIX: Increase heading sizes for better hierarchy */
+.contact-hero__title,
+h1.contact-hero__title {
+    font-size: 48px !important; /* Was smaller, now 48px */
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+}
+
+.contact-section__heading,
+.section__heading,
+h2 {
+    font-size: 32px !important; /* Was smaller, now 32px */
+    line-height: 1.3 !important;
+    font-weight: 700 !important;
+    margin-bottom: 24px !important;
+}
+
+h3 {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+}
+
+/* Mobile responsive heading sizes */
+@media (max-width: 768px) {
+    .contact-hero__title,
+    h1.contact-hero__title {
+        font-size: 36px !important;
+    }
+    
+    .contact-section__heading,
+    .section__heading,
+    h2 {
+        font-size: 28px !important;
+    }
+}
+
 /* Force visibility of animated elements */
 .animate-on-scroll {
     opacity: 1 !important;
@@ -523,7 +666,15 @@
                         </div>
                     </div>
 
-                                        <form class="contact-form" id="contactForm">
+                                        
+                <!-- P0 FIX: Response time commitment -->
+                <div class="response-commitment">
+                    <i class="fas fa-clock"></i>
+                    <span><strong>Quick Response:</strong> We typically respond within 2 hours during business hours</span>
+                </div>
+
+
+                <form class="contact-form" id="contactForm">
                                             @csrf
 
                         <!-- Name Field -->
