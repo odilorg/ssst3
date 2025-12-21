@@ -41,51 +41,97 @@
 
 @push('styles')
 <style>
-    /* Hero Section */
+    /* ==========================================
+       ABOUT PAGE - IMPROVED UI/UX (Dec 2024)
+       ========================================== */
+
+    /* Hero Section - Enhanced with trust elements */
     .about-hero {
         background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
         color: white;
-        padding: 120px 0 80px;
+        padding: 140px 0 100px;
         text-align: center;
+        position: relative;
+    }
+
+    .about-hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .about-hero__badge i {
+        color: #ffd700;
     }
 
     .about-hero__title {
-        font-size: 3rem;
+        font-size: 3.25rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
         font-family: 'Playfair Display', serif;
+        line-height: 1.2;
     }
 
     .about-hero__subtitle {
         font-size: 1.25rem;
-        max-width: 700px;
-        margin: 0 auto;
+        max-width: 720px;
+        margin: 0 auto 2rem;
         line-height: 1.8;
         opacity: 0.95;
     }
 
-    /* Section Styles */
+    .about-hero__trust {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+    }
+
+    .about-hero__trust-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9375rem;
+        opacity: 0.9;
+    }
+
+    .about-hero__trust-item i {
+        color: #ffd700;
+    }
+
+    /* Section Styles - Improved spacing & typography */
     .section {
-        padding: 80px 0;
+        padding: 100px 0;
     }
 
     .section--gray {
-        background: #f9fafb;
+        background: #f8f9fa;
     }
 
     .section-heading {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
         font-weight: 700;
         color: #1a1a1a;
         margin-bottom: 1rem;
         font-family: 'Playfair Display', serif;
+        line-height: 1.2;
     }
 
     .section-tagline {
-        font-size: 1.125rem;
-        color: #666;
+        font-size: 1.1875rem;
+        color: #555;  /* Darker for better accessibility */
         margin-bottom: 3rem;
-        max-width: 700px;
+        max-width: 720px;
+        line-height: 1.7;
     }
 
     .text-center {
@@ -97,37 +143,88 @@
         margin-right: auto;
     }
 
-    /* Problem Section */
-    .problem-box {
-        background: #fff3f3;
-        border-left: 4px solid #e74c3c;
-        padding: 2rem;
-        border-radius: 8px;
-        margin: 2rem 0;
+    .eyebrow {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
     }
 
-    .problem-box__title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #c0392b;
-        margin-bottom: 1rem;
+    /* Problem Section - Enhanced with imagery */
+    .problem-section__content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 3rem;
+        align-items: start;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .problem-box {
+        background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+        border-left: 5px solid #e74c3c;
+        padding: 2.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 4px 20px rgba(231, 76, 60, 0.1);
     }
 
     .problem-box__text {
         font-size: 1.0625rem;
-        line-height: 1.8;
+        line-height: 1.85;
         color: #444;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
     }
 
+    /* Pull-quote style for the stat */
     .problem-box__stat {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #c0392b;
-        margin: 1rem 0 0.5rem;
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(192, 57, 43, 0.15);
     }
 
-    /* Solution Grid */
+    .problem-box__stat::before {
+        content: '"';
+        font-size: 4rem;
+        color: rgba(192, 57, 43, 0.15);
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .problem-image {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .problem-image img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .problem-image__caption {
+        background: #1a5490;
+        color: white;
+        padding: 1rem;
+        font-size: 0.875rem;
+        text-align: center;
+    }
+
+    /* Solution Grid - Enhanced cards */
     .solution-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -137,20 +234,21 @@
 
     .solution-card {
         background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.04);
     }
 
     .solution-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     }
 
     .solution-card__icon {
-        width: 64px;
-        height: 64px;
+        width: 72px;
+        height: 72px;
         margin-bottom: 1.5rem;
         background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
         border-radius: 50%;
@@ -158,66 +256,114 @@
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.75rem;
+        font-size: 1.875rem;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
     }
 
     .solution-card__title {
-        font-size: 1.25rem;
+        font-size: 1.3125rem;
         font-weight: 600;
         color: #1a1a1a;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.875rem;
     }
 
     .solution-card__text {
-        font-size: 0.9375rem;
-        color: #666;
-        line-height: 1.6;
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.7;
     }
 
-    /* Impact Stats */
+    /* Impact Stats - Bolder numbers */
     .impact-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
         margin-top: 3rem;
     }
 
     .impact-stat {
         text-align: center;
-        padding: 2rem;
+        padding: 2.5rem 1.5rem;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.04);
+        transition: transform 0.3s ease;
+    }
+
+    .impact-stat:hover {
+        transform: translateY(-4px);
+    }
+
+    .impact-stat__icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #27ae60;
+        font-size: 1.25rem;
     }
 
     .impact-stat__number {
-        font-size: 3rem;
-        font-weight: 700;
+        font-size: 3.5rem;
+        font-weight: 800;
         color: #27ae60;
         margin-bottom: 0.5rem;
         font-family: 'Playfair Display', serif;
+        line-height: 1;
     }
 
     .impact-stat__label {
         font-size: 1rem;
-        color: #666;
-        line-height: 1.4;
+        color: #555;
+        line-height: 1.5;
     }
 
-    /* Partnerships */
+    .impact-stat__source {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    /* Partnerships - With icons */
     .partnership-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
         margin-top: 3rem;
     }
 
     .partnership-card {
         background: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .partnership-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .partnership-card__icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a5490;
+        font-size: 1.5rem;
     }
 
     .partnership-card__name {
@@ -230,78 +376,261 @@
     .partnership-card__role {
         font-size: 0.9375rem;
         color: #666;
+        line-height: 1.5;
+    }
+
+    /* Ethical commitment box */
+    .ethical-commitment {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 12px;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid rgba(39, 174, 96, 0.2);
+    }
+
+    .ethical-commitment p {
+        font-size: 1.0625rem;
+        color: #2e7d32;
+        margin: 0;
+        line-height: 1.7;
+    }
+
+    .ethical-commitment strong {
+        display: block;
+        font-size: 1.1875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Artisan Gallery Section */
+    .artisan-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .artisan-gallery__item {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .artisan-gallery__item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .artisan-gallery__item:hover img {
+        transform: scale(1.05);
+    }
+
+    .artisan-gallery__caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: white;
+        padding: 2rem 1rem 1rem;
+        font-size: 0.9375rem;
     }
 
     /* CTA Section */
     .cta-section {
         background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
         color: white;
-        padding: 80px 0;
+        padding: 100px 0;
         text-align: center;
     }
 
     .cta-section__heading {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
         font-family: 'Playfair Display', serif;
     }
 
     .cta-section__text {
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
+        font-size: 1.1875rem;
+        margin-bottom: 2.5rem;
         opacity: 0.95;
-        max-width: 600px;
+        max-width: 620px;
         margin-left: auto;
         margin-right: auto;
+        line-height: 1.7;
     }
 
     .btn {
         display: inline-block;
-        padding: 1rem 2rem;
-        font-size: 1rem;
+        padding: 1.125rem 2.5rem;
+        font-size: 1.0625rem;
         font-weight: 600;
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 10px;
         transition: all 0.3s ease;
     }
 
     .btn--white {
         background: white;
         color: #1a5490;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     .btn--white:hover {
         background: #f8f9fa;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    /* ==========================================
+       RESPONSIVE - Mobile First Fixes
+       ========================================== */
+    @media (max-width: 1024px) {
+        .impact-stats,
+        .partnership-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .problem-section__content {
+            grid-template-columns: 1fr;
+        }
+
+        .problem-image {
+            order: -1;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
     }
 
     @media (max-width: 768px) {
+        .about-hero {
+            padding: 120px 0 80px;
+        }
+
         .about-hero__title {
-            font-size: 2rem;
+            font-size: 2.25rem;
+        }
+
+        .about-hero__subtitle {
+            font-size: 1.125rem;
+        }
+
+        .about-hero__trust {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .section {
+            padding: 70px 0;
         }
 
         .section-heading {
-            font-size: 1.75rem;
+            font-size: 2rem;
+        }
+
+        .section-tagline {
+            font-size: 1.0625rem;
         }
 
         .solution-grid,
         .impact-stats,
         .partnership-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .solution-card,
+        .impact-stat,
+        .partnership-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .impact-stat__number {
+            font-size: 2.75rem;
+        }
+
+        .problem-box {
+            padding: 1.75rem;
+        }
+
+        .problem-box__stat {
+            font-size: 1.25rem;
+            padding: 1.25rem;
+        }
+
+        .artisan-gallery {
+            grid-template-columns: 1fr;
+        }
+
+        .artisan-gallery__item img {
+            height: 220px;
+        }
+
+        .cta-section {
+            padding: 70px 0;
+        }
+
+        .cta-section__heading {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .about-hero__title {
+            font-size: 1.875rem;
+        }
+
+        .section-heading {
+            font-size: 1.75rem;
+        }
+
+        .impact-stat__number {
+            font-size: 2.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            width: 100%;
         }
     }
 </style>
 @endpush
 
 @section('content')
-    {{-- Hero Section --}}
+    {{-- Hero Section - Enhanced with trust elements --}}
     <section class="about-hero">
       <div class="container">
+        <div class="about-hero__badge">
+          <i class="fas fa-award" aria-hidden="true"></i>
+          <span>Since 2012 • Craft Tourism Pioneers</span>
+        </div>
         <h1 class="about-hero__title">Preserving Heritage, One Craft at a Time</h1>
         <p class="about-hero__subtitle">
           We're not a typical tour operator. We're a craft preservation initiative disguised as a travel company—supporting local artisans, keeping traditional skills alive, and connecting travelers with the soul of Uzbekistan.
         </p>
+        <div class="about-hero__trust">
+          <div class="about-hero__trust-item">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            <span>4.4/5 on GetYourGuide</span>
+          </div>
+          <div class="about-hero__trust-item">
+            <i class="fas fa-users" aria-hidden="true"></i>
+            <span>500+ Travelers Hosted</span>
+          </div>
+          <div class="about-hero__trust-item">
+            <i class="fas fa-heart" aria-hidden="true"></i>
+            <span>45+ Partner Artisans</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -314,17 +643,25 @@
           Across Central Asia, centuries-old craft traditions are vanishing as artisans struggle to earn a living and young people choose modern careers.
         </p>
 
-        <div class="problem-box" style="max-width: 800px; margin-left: auto; margin-right: auto;">
-          <p class="problem-box__text">
-            <strong>The suzani embroiderer in Bukhara.</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
-          </p>
-          <p class="problem-box__text">
-            But tourism has become transactional. Travelers speed through workshops in 20 minutes, snap photos, and leave. Artisans earn pennies while tour operators take the profit. The crafts survive as museum pieces, not living traditions.
-          </p>
-          <p class="problem-box__stat">Many traditional craft skills are at risk of disappearing within a generation.</p>
-          <p class="problem-box__text" style="margin-bottom: 0;">
-            We believe there's a better way—one that respects artisans, preserves heritage, and creates meaningful connections.
-          </p>
+        <div class="problem-section__content">
+          <div class="problem-box">
+            <p class="problem-box__text">
+              <strong>The suzani embroiderer in Bukhara.</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
+            </p>
+            <p class="problem-box__text">
+              But tourism has become transactional. Travelers speed through workshops in 20 minutes, snap photos, and leave. Artisans earn pennies while tour operators take the profit. The crafts survive as museum pieces, not living traditions.
+            </p>
+            <p class="problem-box__stat">Many traditional craft skills are at risk of disappearing within a generation.</p>
+            <p class="problem-box__text" style="margin-bottom: 0;">
+              We believe there's a better way—one that respects artisans, preserves heritage, and creates meaningful connections.
+            </p>
+          </div>
+          <div class="problem-image">
+            <img src="{{ asset('images/tours/crafts-culture/urgut-bazaar-suzani.webp') }}" alt="Traditional suzani embroidery at Urgut bazaar" loading="lazy">
+            <div class="problem-image__caption">
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Suzani embroidery, Urgut Bazaar
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -385,23 +722,37 @@
 
         <div class="impact-stats">
           <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-user-friends" aria-hidden="true"></i>
+            </div>
             <div class="impact-stat__number">45+</div>
             <div class="impact-stat__label">Artisans in our network</div>
           </div>
 
           <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-palette" aria-hidden="true"></i>
+            </div>
             <div class="impact-stat__number">12</div>
             <div class="impact-stat__label">Traditional craft forms preserved</div>
           </div>
 
           <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+            </div>
             <div class="impact-stat__number">$85K+</div>
-            <div class="impact-stat__label">Paid directly to artisans (2024)</div>
+            <div class="impact-stat__label">Paid directly to artisans</div>
+            <div class="impact-stat__source">2024 estimate</div>
           </div>
 
           <div class="impact-stat">
-            <div class="impact-stat__number">100%</div>
-            <div class="impact-stat__label">Of artisans report stable income</div>
+            <div class="impact-stat__icon">
+              <i class="fas fa-chart-line" aria-hidden="true"></i>
+            </div>
+            <div class="impact-stat__number">13</div>
+            <div class="impact-stat__label">Years supporting artisans</div>
+            <div class="impact-stat__source">Since 2012</div>
           </div>
         </div>
       </div>
@@ -418,31 +769,78 @@
 
         <div class="partnership-grid">
           <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-landmark" aria-hidden="true"></i>
+            </div>
             <h3 class="partnership-card__name">Samarkand Heritage Sites</h3>
             <p class="partnership-card__role">UNESCO World Heritage locations</p>
           </div>
 
           <div class="partnership-card">
-            <h3 class="partnership-card__name">Uzbekistan Craft Guild</h3>
-            <p class="partnership-card__role">Artisan network & certification</p>
+            <div class="partnership-card__icon">
+              <i class="fas fa-hands" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">Local Artisan Network</h3>
+            <p class="partnership-card__role">45+ craftspeople across Uzbekistan</p>
           </div>
 
           <div class="partnership-card">
-            <h3 class="partnership-card__name">Margilan Silk Factory</h3>
-            <p class="partnership-card__role">Traditional silk weaving programs</p>
+            <div class="partnership-card__icon">
+              <i class="fas fa-industry" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">Yodgorlik Silk Factory</h3>
+            <p class="partnership-card__role">Traditional silk weaving, Margilan</p>
           </div>
 
           <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-scroll" aria-hidden="true"></i>
+            </div>
             <h3 class="partnership-card__name">Konigil Paper Workshop</h3>
-            <p class="partnership-card__role">Ancient papermaking preservation</p>
+            <p class="partnership-card__role">Ancient papermaking, Samarkand</p>
           </div>
         </div>
 
-        <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: #e8f5e9; border-radius: 8px; max-width: 700px; margin-left: auto; margin-right: auto;">
-          <p style="font-size: 1rem; color: #2e7d32; margin: 0; line-height: 1.6;">
-            <strong>Our Commitment to Ethical Tourism</strong><br>
-            We strive to ensure fair pay to artisans, cultural respect, and environmental sustainability in all our tours.
+        <div class="ethical-commitment">
+          <p>
+            <strong><i class="fas fa-leaf" aria-hidden="true"></i> Our Commitment to Ethical Tourism</strong>
+            We strive to ensure fair pay to artisans, cultural respect, and environmental sustainability in all our tours. Every journey supports local communities and preserves traditional craftsmanship.
           </p>
+        </div>
+      </div>
+    </section>
+
+    {{-- Artisan Gallery Section --}}
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="color: #1a5490;">MEET THE ARTISANS</span>
+        <h2 class="section-heading text-center">The Hands Behind the Crafts</h2>
+        <p class="section-tagline text-center mx-auto">
+          Real artisans in real workshops. These are the craftspeople you'll meet on our journeys.
+        </p>
+
+        <div class="artisan-gallery">
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/craft-pottery.webp') }}" alt="Potter shaping traditional Uzbek ceramics" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>Gijduvan Pottery</strong><br>
+              Traditional blue ceramics
+            </div>
+          </div>
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/tours/crafts-culture/urgut-bazaar-suzani.webp') }}" alt="Suzani embroidery artisan" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>Suzani Embroidery</strong><br>
+              Bukhara & Urgut
+            </div>
+          </div>
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/tours/arts-crafts/miniature-painting-master-bukhara.webp') }}" alt="Miniature painting artisan in Bukhara" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>Miniature Painting</strong><br>
+              Bukhara tradition
+            </div>
+          </div>
         </div>
       </div>
     </section>
