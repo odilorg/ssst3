@@ -1,14 +1,14 @@
 @extends('layouts.main')
 
 @section('title', 'About Us - Preserving Uzbekistan\'s Craft Heritage | Jahongir Travel')
-@section('meta_description', 'We support master artisans and preserve traditional crafts through small-group immersive journeys. Supporting artisans and traditional crafts since 2012.')
+@section('meta_description', 'We support local artisans and preserve traditional crafts through small-group immersive journeys. Supporting artisans and traditional crafts since 2012.')
 @section('canonical', url('/about'))
 
 {{-- Open Graph --}}
 @section('og_type', 'website')
 @section('og_url', url('/about'))
 @section('og_title', 'About Us - Preserving Uzbekistan\'s Craft Heritage')
-@section('og_description', 'Supporting master artisans and preserving traditional crafts through small-group craft immersion journeys.')
+@section('og_description', 'Supporting local artisans and preserving traditional crafts through small-group craft immersion journeys.')
 @section('og_image', asset('images/og-about-crafts.jpg'))
 
 {{-- Structured Data - Organization --}}
@@ -17,7 +17,7 @@
   "@@context": "https://schema.org",
   "@@type": "TravelAgency",
   "name": "Jahongir Travel",
-  "description": "Craft tourism specialist supporting master artisans and preserving traditional Uzbek crafts since 2012.",
+  "description": "Craft tourism specialist supporting local artisans and preserving traditional Uzbek crafts since 2012.",
   "url": "{{ url('/') }}",
   "logo": "{{ asset('images/logo.png') }}",
   "image": "{{ asset('images/og-about-crafts.jpg') }}",
@@ -300,7 +300,7 @@
       <div class="container">
         <h1 class="about-hero__title">Preserving Heritage, One Craft at a Time</h1>
         <p class="about-hero__subtitle">
-          We're not a typical tour operator. We're a craft preservation initiative disguised as a travel company—supporting master artisans, keeping traditional skills alive, and connecting travelers with the soul of Uzbekistan.
+          We're not a typical tour operator. We're a craft preservation initiative disguised as a travel company—supporting local artisans, keeping traditional skills alive, and connecting travelers with the soul of Uzbekistan.
         </p>
       </div>
     </section>
@@ -316,12 +316,12 @@
 
         <div class="problem-box" style="max-width: 800px; margin-left: auto; margin-right: auto;">
           <p class="problem-box__text">
-            <strong>The master suzani embroiderer in Bukhara.</strong> The fourth-generation potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
+            <strong>The suzani embroiderer in Bukhara.</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
           </p>
           <p class="problem-box__text">
             But tourism has become transactional. Travelers speed through workshops in 20 minutes, snap photos, and leave. Artisans earn pennies while tour operators take the profit. The crafts survive as museum pieces, not living traditions.
           </p>
-          <p class="problem-box__stat">80% of traditional craft skills could disappear within one generation.</p>
+          <p class="problem-box__stat">Many traditional craft skills are at risk of disappearing within a generation.</p>
           <p class="problem-box__text" style="margin-bottom: 0;">
             We believe there's a better way—one that respects artisans, preserves heritage, and creates meaningful connections.
           </p>
@@ -352,7 +352,7 @@
               <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
             </div>
             <h3 class="solution-card__title">Fair Pay to Artisans</h3>
-            <p class="solution-card__text">70% of workshop fees go directly to master craftspeople—triple the industry average—ensuring sustainable income for their families.</p>
+            <p class="solution-card__text">A significant portion of workshop fees goes directly to craftspeople—triple the industry average—ensuring sustainable income for their families.</p>
           </div>
 
           <div class="solution-card">
@@ -360,7 +360,7 @@
               <i class="fas fa-clock" aria-hidden="true"></i>
             </div>
             <h3 class="solution-card__title">Multi-Day Immersion</h3>
-            <p class="solution-card__text">Spend days, not minutes, with artisans. Learn their stories, master their techniques, and understand the cultural context behind each craft.</p>
+            <p class="solution-card__text">Spend days, not minutes, with artisans. Learn their stories, explore their techniques, and understand the cultural context behind each craft.</p>
           </div>
 
           <div class="solution-card">
@@ -386,7 +386,7 @@
         <div class="impact-stats">
           <div class="impact-stat">
             <div class="impact-stat__number">45+</div>
-            <div class="impact-stat__label">Master artisans in our network</div>
+            <div class="impact-stat__label">Artisans in our network</div>
           </div>
 
           <div class="impact-stat">
@@ -418,8 +418,8 @@
 
         <div class="partnership-grid">
           <div class="partnership-card">
-            <h3 class="partnership-card__name">UNESCO Samarkand Office</h3>
-            <p class="partnership-card__role">Cultural heritage consultation</p>
+            <h3 class="partnership-card__name">Samarkand Heritage Sites</h3>
+            <p class="partnership-card__role">UNESCO World Heritage locations</p>
           </div>
 
           <div class="partnership-card">
@@ -440,8 +440,8 @@
 
         <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: #e8f5e9; border-radius: 8px; max-width: 700px; margin-left: auto; margin-right: auto;">
           <p style="font-size: 1rem; color: #2e7d32; margin: 0; line-height: 1.6;">
-            <strong>Ethical Tourism Certified</strong><br>
-            All our tours meet fair trade standards for artisan pay, cultural respect, and environmental sustainability.
+            <strong>Our Commitment to Ethical Tourism</strong><br>
+            We strive to ensure fair pay to artisans, cultural respect, and environmental sustainability in all our tours.
           </p>
         </div>
       </div>
@@ -450,7 +450,7 @@
     {{-- CTA Section --}}
     <section class="cta-section">
       <div class="container">
-        <h2 class="cta-section__heading">Ready to Meet the Masters?</h2>
+        <h2 class="cta-section__heading">Ready to Meet Our Artisans?</h2>
         <p class="cta-section__text">
           Explore our craft immersion journeys and support the artisans keeping Uzbekistan's traditions alive.
         </p>
