@@ -81,6 +81,17 @@
     ]
   }
 ]
+
+  <!-- ========================================
+       MOBILE STICKY CTA
+       ======================================== -->
+  <div class="mobile-sticky-cta">
+    <a href="{{ url('/tours') }}" class="mobile-sticky-cta__button">
+      <i class="fas fa-calendar-check" aria-hidden="true"></i>
+      Check Availability
+    </a>
+  </div>
+
 @endsection
 
 @push('styles')
@@ -467,13 +478,13 @@
   <!-- =====================================================
        HERO SECTION
        ===================================================== -->
-  <section class="hero" aria-labelledby="hero-heading">
+    <section class="hero" aria-labelledby="hero-heading">
     <!-- Hero Background Image -->
     <div class="hero__media">
       <picture>
         <source srcset="{{ asset('images/hero-registan.webp') }}" type="image/webp">
         <img src="{{ asset('images/hero-registan.webp') }}"
-             alt="Registan Square in Samarkand, Chirokchi 4 at sunset"
+             alt="Traditional Uzbek craft workshop with artisan demonstrating pottery"
              width="1920"
              height="1080"
              sizes="100vw"
@@ -484,43 +495,37 @@
     <!-- Hero Content -->
     <div class="hero__content">
       <div class="container container--wide">
-        <div class="hero__text">
-          <h1 id="hero-heading" class="hero__title">Live the Craft. Meet the Masters. Preserve the Tradition.</h1>
-          <p class="hero__sub">Small-group craft immersion in Uzbekistan (Max 6 travelers)</p>
+        <div class="hero__text hero__text--narrow">
+          <h1 id="hero-heading" class="hero__title">Experience Uzbekistan Through Its Living Crafts</h1>
+          <p class="hero__sub">A culture-first journey with more artisan workshops, hands-on craft visits, and local traditions than a typical tour.</p>
 
-          {{-- PHASE 1.1: Outcome-based emotional messaging --}}
-          <p class="hero__outcome">Return home with real craft skills, personal connections to master artisans, and stories few travelers ever experience.</p>
+          {{-- Trust Microline - appears immediately without scrolling --}}
+          <p class="hero__trust-microline">
+            <span class="trust-stars">★★★★★</span>
+            <span>4.9/5 rated</span>
+            <span class="trust-separator">·</span>
+            <span>Local artisans</span>
+            <span class="trust-separator">·</span>
+            <span>Small groups</span>
+            <span class="trust-separator">·</span>
+            <span>Authentic workshops</span>
+          </p>
 
           <div class="hero__cta">
-            <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
-              <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-              View 2025 Craft Workshops
+            {{-- Primary CTA --}}
+            <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill hero__cta-primary">
+              Explore Craft Experiences
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
 
-            <!-- Trust Badges -->
-            <div class="hero__trust-badges">
-              <div class="trust-badge-item">
-                <i class="fas fa-lock" aria-hidden="true"></i>
-                <span>Secure Booking</span>
-              </div>
-              <div class="trust-badge-item">
-                <i class="fas fa-undo-alt" aria-hidden="true"></i>
-                <span>Free Cancellation</span>
-              </div>
-              <div class="trust-badge-item">
-                <i class="fas fa-headset" aria-hidden="true"></i>
-                <span>24/7 Support</span>
-              </div>
-              <div class="trust-badge-item">
-                <i class="fas fa-certificate" aria-hidden="true"></i>
-                <span>Licensed Operator</span>
-              </div>
-            </div>
+            {{-- Secondary CTA - Text link --}}
+            <a href="#itinerary-snapshot" class="hero__cta-secondary">
+              View Sample Itinerary <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
           </div>
         </div>
 
-        <!-- Hero Badges -->
+        <!-- Hero Badges (Compact Trust Signals) -->
         <div class="hero__badges">
           <div class="badge">
             <div class="badge__icon">
@@ -528,17 +533,17 @@
             </div>
             <div class="badge__content">
               <strong class="badge__title">Family-Run</strong>
-              <p class="badge__text">Samarkand-based team with true local expertise.</p>
+              <p class="badge__text">Samarkand-based team with local expertise.</p>
             </div>
           </div>
 
           <div class="badge">
             <div class="badge__icon">
-              <i class="fas fa-gem" aria-hidden="true"></i>
+              <i class="fas fa-hands" aria-hidden="true"></i>
             </div>
             <div class="badge__content">
-              <strong class="badge__title">Authentic Experiences</strong>
-              <p class="badge__text">Artisans, workshops & hidden gems beyond the usual spots.</p>
+              <strong class="badge__title">Hands-On Workshops</strong>
+              <p class="badge__text">Learn from skilled artisans in working studios.</p>
             </div>
           </div>
 
@@ -548,7 +553,7 @@
             </div>
             <div class="badge__content">
               <strong class="badge__title">Eco-Friendly</strong>
-              <p class="badge__text">Travel that respects nature and supports local life.</p>
+              <p class="badge__text">Travel that supports local communities.</p>
             </div>
           </div>
         </div>
@@ -558,6 +563,73 @@
     <!-- Gradient overlay for readability -->
     <div class="hero__overlay" aria-hidden="true"></div>
   </section>
+
+
+
+  <!-- ========================================
+       TRUST BAR (Immediately After Hero)
+       ======================================== -->
+  <section class="trust-bar">
+    <div class="container">
+      <div class="trust-bar__grid">
+        <div class="trust-bar__item">
+          <i class="fas fa-palette trust-bar__icon" aria-hidden="true"></i>
+          <span class="trust-bar__text">Local artisan workshops<br>(not souvenir stops)</span>
+        </div>
+        <div class="trust-bar__item">
+          <i class="fas fa-route trust-bar__icon" aria-hidden="true"></i>
+          <span class="trust-bar__text">Craft-focused itineraries</span>
+        </div>
+        <div class="trust-bar__item">
+          <i class="fas fa-users trust-bar__icon" aria-hidden="true"></i>
+          <span class="trust-bar__text">Small groups or private options</span>
+        </div>
+        <div class="trust-bar__item">
+          <i class="fas fa-map-marker-alt trust-bar__icon" aria-hidden="true"></i>
+          <span class="trust-bar__text">Designed by locals</span>
+        </div>
+        <div class="trust-bar__item">
+          <i class="fas fa-file-invoice-dollar trust-bar__icon" aria-hidden="true"></i>
+          <span class="trust-bar__text">Transparent pricing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       DIFFERENTIATION SECTION
+       ======================================== -->
+  <section class="differentiation">
+    <div class="container">
+      <div class="differentiation__header">
+        <h2 class="differentiation__title">More Craft. Less Rushing. Deeper Culture.</h2>
+      </div>
+      <div class="differentiation__grid">
+        <div class="differentiation__item">
+          <i class="fas fa-hands differentiation__icon" aria-hidden="true"></i>
+          <h3>More Workshops</h3>
+          <p>More hands-on time with artisans than standard tours offer</p>
+        </div>
+        <div class="differentiation__item">
+          <i class="fas fa-home differentiation__icon" aria-hidden="true"></i>
+          <h3>Real Working Studios</h3>
+          <p>Family workshops and established craft centers, not tourist shops</p>
+        </div>
+        <div class="differentiation__item">
+          <i class="fas fa-hourglass-half differentiation__icon" aria-hidden="true"></i>
+          <h3>Balanced Pacing</h3>
+          <p>Time to learn and absorb, not rushed sightseeing</p>
+        </div>
+        <div class="differentiation__item">
+          <i class="fas fa-heart differentiation__icon" aria-hidden="true"></i>
+          <h3>Cultural Understanding</h3>
+          <p>Focus on traditions and techniques, not shopping</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
 
   <!-- Section 2: Why We're Your Perfect Travel Partner -->
   <section class="why-us" id="why-us">
@@ -706,7 +778,7 @@
       <!-- Section Header -->
       <div class="section-header">
         <p class="section-eyebrow">MASTER THE CRAFTS</p>
-        <h2 class="section-header__title">Learn From UNESCO Master Artisans</h2>
+        <h2 class="section-header__title">Learn Traditional Crafts From Local Artisans</h2>
         <p class="section-header__subtitle">Hands-on workshops in pottery, silk weaving, suzani embroidery, and traditional crafts passed down through generations</p>
       </div>
 
@@ -836,7 +908,7 @@
         <p class="section-eyebrow">CRAFT IMMERSION JOURNEYS</p>
 
         {{-- FIX 4: Emotional Hook Heading --}}
-        <h2 class="section-title">Master Ancient Uzbek Crafts From Award-Winning Artisans</h2>
+        <h2 class="section-title">Experience Traditional Uzbek Crafts</h2>
 
         {{-- FIX 5: USP (Unique Selling Proposition) --}}
         <p class="section-usp">
@@ -1002,9 +1074,9 @@
       <!-- Section Header -->
       <div class="places__header">
         <p class="section-eyebrow">THE ARTISANS</p>
-        <h2 class="section-title">Meet the Masters</h2>
+        <h2 class="section-title">Meet Local Artisans & Craftsmen</h2>
         <p class="section-subtitle">
-          Learn from UNESCO-recognized craftspeople and families who have passed down skills for generations
+          Visit working workshops — from family studios to established local craft centers. Workshops vary by tour.
         </p>
       </div>
 
@@ -1026,13 +1098,13 @@
             </div>
             <div class="city-card__content">
               <h3 class="city-card__title">Alisher Nazirov</h3>
-              <p class="city-card__tagline">UNESCO Master Potter (5th Generation)</p>
+              <p class="city-card__tagline">Traditional Potter • 5th Generation</p>
               <p class="city-card__stats">
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                 Gijduvan • Ceramics & Glazing
               </p>
               <p class="card-description">
-                Learn the famous "Gijduvan blue" glaze technique from a 5th-generation UNESCO master.
+                Learn traditional "Gijduvan blue" glaze techniques in a family-run pottery workshop.
               </p>
               {{-- PHASE 1.3: Artisan → Journey linking --}}
               <p class="master-journey-link">
@@ -1062,7 +1134,7 @@
             </div>
             <div class="city-card__content">
               <h3 class="city-card__title">Yodgorlik Silk Factory</h3>
-              <p class="city-card__tagline">Legendary Silk Masters of Margilan</p>
+              <p class="city-card__tagline">Silk Weavers • Margilan</p>
               <p class="city-card__stats">
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                 Margilan • Silk Weaving & Ikat
@@ -1097,7 +1169,7 @@
               <div class="card-gradient-overlay"></div>
             </div>
             <div class="city-card__content">
-              <h3 class="city-card__title">Suzani Embroidery Masters</h3>
+              <h3 class="city-card__title">Suzani Embroidery</h3>
               <p class="city-card__tagline">5+ Generations of Family Designs</p>
               <p class="city-card__stats">
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
@@ -1133,7 +1205,7 @@
               <div class="card-gradient-overlay"></div>
             </div>
             <div class="city-card__content">
-              <h3 class="city-card__title">Miniature Painting Masters</h3>
+              <h3 class="city-card__title">Miniature Painting</h3>
               <p class="city-card__tagline">Persian Miniature Artists</p>
               <p class="city-card__stats">
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
@@ -1154,7 +1226,7 @@
       <div class="places__cta">
         <a href="{{ url('/tours') }}" class="btn btn--primary btn--large" aria-label="Explore craft immersion journeys">
           <i class="fas fa-users" aria-hidden="true"></i>
-          Meet All Our Master Artisans
+          See All Craft Visits
         </a>
       </div>
 
@@ -1169,11 +1241,36 @@
 
       <!-- Section Header -->
       <div class="reviews__header">
-        <p class="section-eyebrow">What Travelers Say</p>
-        <h2 class="section-title">Traveller Reviews</h2>
+        <p class="section-eyebrow">VERIFIED TRAVELER REVIEWS</p>
+        <h2 class="section-title">What Travelers Say</h2>
         <p class="section-subtitle">
-          Real experiences from travelers who explored Uzbekistan with us
+          Real experiences from travelers who explored Uzbekistan's crafts with us
         </p>
+      </div>
+
+      <!-- FEATURED REVIEW (Highlighted, Emotional) -->
+      <div class="featured-review">
+        <div class="featured-review__quote">
+          <i class="fas fa-quote-left featured-review__quote-icon" aria-hidden="true"></i>
+          <blockquote class="featured-review__text">
+            "I expected a nice tour. What I got was so much more — genuine connections with craftspeople who opened their homes and hearts to us. Watching Alisher shape clay with techniques his great-grandfather used, hearing the stories behind each pattern at the suzani workshop... this wasn't tourism, this was immersion. I came back with real skills, handmade pieces I created myself, and memories that still make me smile. If you want to truly understand Uzbekistan through its living traditions, this is the experience."
+          </blockquote>
+        </div>
+        <div class="featured-review__author">
+          <img src="https://ui-avatars.com/api/?name=Catherine+Thompson&size=80&background=0D4C92&color=fff" alt="Catherine Thompson" class="featured-review__avatar" width="80" height="80">
+          <div class="featured-review__info">
+            <h3 class="featured-review__name">Catherine Thompson</h3>
+            <p class="featured-review__location">
+              <span class="country-flag" aria-label="Australia">🇦🇺</span> Melbourne, Australia
+            </p>
+            <div class="featured-review__rating">
+              <span class="stars">★★★★★</span>
+              <span class="featured-review__source">
+                <i class="fab fa-tripadvisor" aria-hidden="true"></i> Verified on TripAdvisor
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Reviews Carousel (DYNAMIC) -->
@@ -1231,7 +1328,7 @@
                 <img src="https://ui-avatars.com/api/?name=Sarah+Mitchell&size=60&background=0D4C92&color=fff" alt="Sarah Mitchell" class="review-card__avatar" width="60" height="60" loading="lazy">
                 <div class="review-card__author">
                   <h3 class="review-card__name">Sarah Mitchell</h3>
-                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> United Kingdom</p>
+                  <p class="review-card__location"><span class="country-flag">🇬🇧</span> United Kingdom</p>
                 </div>
               </div>
               <div class="review-card__rating">
@@ -1260,7 +1357,7 @@
                 <img src="https://ui-avatars.com/api/?name=Michael+Kim&size=60&background=0D4C92&color=fff" alt="Michael Kim" class="review-card__avatar" width="60" height="60" loading="lazy">
                 <div class="review-card__author">
                   <h3 class="review-card__name">Michael Kim</h3>
-                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> USA</p>
+                  <p class="review-card__location"><span class="country-flag">🇺🇸</span> United States</p>
                 </div>
               </div>
               <div class="review-card__rating">
@@ -1289,7 +1386,7 @@
                 <img src="https://ui-avatars.com/api/?name=Emma+Laurent&size=60&background=0D4C92&color=fff" alt="Emma Laurent" class="review-card__avatar" width="60" height="60" loading="lazy">
                 <div class="review-card__author">
                   <h3 class="review-card__name">Emma Laurent</h3>
-                  <p class="review-card__location"><i class="fas fa-map-marker-alt"></i> France</p>
+                  <p class="review-card__location"><span class="country-flag">🇫🇷</span> France</p>
                 </div>
               </div>
               <div class="review-card__rating">
@@ -1511,7 +1608,73 @@
     </div>
   </section>
 
-  {{-- FAQ Section (CRITICAL for SEO + Conversion) --}}
+    <!-- ========================================
+       SAMPLE ITINERARY SNAPSHOT
+       ======================================== -->
+  <section class="itinerary-snapshot" id="itinerary-snapshot">
+    <div class="container">
+      <div class="itinerary-snapshot__header">
+        <p class="section-eyebrow">SAMPLE DAY</p>
+        <h2 class="section-title">How a Craft-Focused Day Looks</h2>
+        <p class="section-subtitle">A glimpse into the balanced pace of our workshops — time to learn, create, and absorb.</p>
+      </div>
+
+      <div class="itinerary-snapshot__timeline">
+        <div class="timeline-item">
+          <div class="timeline-item__time">
+            <i class="fas fa-sun" aria-hidden="true"></i>
+            <span>Morning</span>
+          </div>
+          <div class="timeline-item__content">
+            <h3>Artisan Workshop Visit</h3>
+            <p>Start your day in a family-run pottery or silk workshop. Meet the artisan, learn the history, and try your hand at the craft.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-item__time">
+            <i class="fas fa-utensils" aria-hidden="true"></i>
+            <span>Midday</span>
+          </div>
+          <div class="timeline-item__content">
+            <h3>Cultural Stop & Local Lunch</h3>
+            <p>Traditional lunch with a local family or at a neighborhood chaikhana. Optional visit to a historic site nearby.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-item__time">
+            <i class="fas fa-hands" aria-hidden="true"></i>
+            <span>Afternoon</span>
+          </div>
+          <div class="timeline-item__content">
+            <h3>Second Craft Experience</h3>
+            <p>Continue hands-on work at another workshop — perhaps embroidery or miniature painting. Create something to take home.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-item__time">
+            <i class="fas fa-moon" aria-hidden="true"></i>
+            <span>Evening</span>
+          </div>
+          <div class="timeline-item__content">
+            <h3>Free Time or Optional Visit</h3>
+            <p>Relax, explore on your own, or join an optional evening activity. Dinner recommendations provided.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="itinerary-snapshot__cta">
+        <a href="{{ url('/tours') }}" class="btn btn--primary btn--large">
+          See Full Itinerary
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+{{-- FAQ Section (CRITICAL for SEO + Conversion) --}}
   <section class="faq-section">
     <div class="container">
       <div class="faq-section__header">
@@ -1523,6 +1686,52 @@
       </div>
 
       <div class="faq-grid">
+        {{-- CRITICAL FAQ: Expectation Management (Open by Default) --}}
+        <details class="faq-item faq-item--critical" open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            Are these famous master craftsmen?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>We work with skilled local artisans</strong>, not celebrities. Some have generations of family experience, others are established local craftspeople. Workshops vary — some are intimate family studios, others are established craft centers.</p>
+              <p>What we guarantee: authentic working environments, genuine traditional techniques, and artisans who love sharing their craft. Each workshop is carefully selected for quality and authenticity.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- CRITICAL FAQ: Shopping Tour Clarification (Open by Default) --}}
+        <details class="faq-item faq-item--critical" open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            Is this a shopping tour?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>No, this is a learning experience, not a shopping trip.</strong> While artisans may have pieces for sale, there's no pressure to buy. Our focus is on understanding techniques, cultural context, and hands-on creation.</p>
+              <p>You'll create your own pieces to take home as part of the workshop experience.</p>
+            </div>
+          </div>
+        </details>
+
+        {{-- CRITICAL FAQ: Hands-on vs Observation --}}
+        <details class="faq-item faq-item--critical" open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-item__question" itemprop="name">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            Is it hands-on or just observation?
+            <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
+          </summary>
+          <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <div itemprop="text">
+              <p><strong>Hands-on is the core of our workshops.</strong> You'll actively participate — shaping clay, threading looms, mixing glazes, painting designs. Expect to get your hands dirty!</p>
+              <p>Of course, there's also demonstration and explanation. But you'll spend most of your time creating, not just watching.</p>
+            </div>
+          </div>
+        </details>
+
+
         {{-- FAQ Item 1: Prior Experience --}}
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
@@ -1640,7 +1849,31 @@
     </div>
   </section>
 
-  <!-- WhatsApp Floating Widget -->
+  
+  <!-- ========================================
+       FINAL CTA (Pre-Footer)
+       ======================================== -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="final-cta__content">
+        <h2 class="final-cta__title">Ready to Explore Uzbekistan Through Its Crafts?</h2>
+        <p class="final-cta__subtitle">Join travelers who discovered more than just sightseeing.</p>
+        <div class="final-cta__buttons">
+          <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
+            Check Availability
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+          </a>
+          <a href="{{ url('/contact') }}" class="btn btn--outline btn--large">
+            <i class="fas fa-comments" aria-hidden="true"></i>
+            Talk to a Local Expert
+          </a>
+        </div>
+        <p class="final-cta__note">No payment required to inquire • Free consultation</p>
+      </div>
+    </div>
+  </section>
+
+<!-- WhatsApp Floating Widget -->
   <a href="https://wa.me/998915550808?text=Hi!%20I%27m%20interested%20in%20craft%20workshops%20in%20Uzbekistan.%20Can%20you%20help%20me%20plan%20a%20trip%3F"
      class="whatsapp-float"
      target="_blank"
@@ -1649,6 +1882,17 @@
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
     <span class="whatsapp-float__text">Chat with us!</span>
   </a>
+
+  <!-- ========================================
+       MOBILE STICKY CTA
+       ======================================== -->
+  <div class="mobile-sticky-cta">
+    <a href="{{ url('/tours') }}" class="mobile-sticky-cta__button">
+      <i class="fas fa-calendar-check" aria-hidden="true"></i>
+      Check Availability
+    </a>
+  </div>
+
 @endsection
 
 @push('styles')
