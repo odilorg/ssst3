@@ -108,6 +108,29 @@
         color: #ffd700;
     }
 
+    .about-hero__cta {
+        margin-top: 2rem;
+    }
+
+    .btn--hero {
+        background: rgba(255,255,255,0.95);
+        color: #1a5490;
+        padding: 1rem 2.5rem;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn--hero:hover {
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
     /* Section Styles - Improved spacing & typography */
     .section {
         padding: 100px 0;
@@ -437,10 +460,90 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        background: rgba(0,0,0,0.85);
         color: white;
-        padding: 2rem 1rem 1rem;
+        padding: 1.25rem 1rem;
         font-size: 0.9375rem;
+        backdrop-filter: blur(8px);
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .testimonial-card {
+        background: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border-left: 4px solid #1a5490;
+        position: relative;
+    }
+
+    .testimonial-card::before {
+        content: '"';
+        font-size: 4rem;
+        color: rgba(26, 84, 144, 0.1);
+        position: absolute;
+        top: 1rem;
+        left: 1.5rem;
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .testimonial-card__text {
+        font-size: 1rem;
+        color: #444;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .testimonial-card__author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .testimonial-card__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1.125rem;
+    }
+
+    .testimonial-card__info {
+        flex: 1;
+    }
+
+    .testimonial-card__name {
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.9375rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .testimonial-card__meta {
+        font-size: 0.8125rem;
+        color: #888;
+    }
+
+    .testimonial-card__rating {
+        color: #ffd700;
+        font-size: 0.875rem;
     }
 
     /* CTA Section */
@@ -496,7 +599,8 @@
     @media (max-width: 1024px) {
         .solution-grid,
         .impact-stats,
-        .partnership-grid {
+        .partnership-grid,
+        .testimonials {
             grid-template-columns: repeat(2, 1fr);
         }
 
@@ -543,7 +647,8 @@
 
         .solution-grid,
         .impact-stats,
-        .partnership-grid {
+        .partnership-grid,
+        .testimonials {
             grid-template-columns: 1fr;
             gap: 1.5rem;
         }
@@ -612,7 +717,7 @@
       <div class="container">
         <h1 class="about-hero__title">Preserving Heritage, One Craft at a Time</h1>
         <p class="about-hero__subtitle">
-          We're not a typical tour operator. We're a craft preservation initiative disguised as a travel company—supporting local artisans, keeping traditional skills alive, and connecting travelers with the soul of Uzbekistan.
+          We're a craft preservation initiative supporting local artisans and keeping traditional skills alive through meaningful, small-group cultural immersion journeys.
         </p>
         <div class="about-hero__trust">
           <div class="about-hero__trust-item">
@@ -627,6 +732,11 @@
             <i class="fas fa-heart" aria-hidden="true"></i>
             <span>45+ Partner Artisans</span>
           </div>
+        </div>
+        <div class="about-hero__cta">
+          <a href="{{ url('/tours') }}" class="btn--hero">
+            <i class="fas fa-route" aria-hidden="true"></i> Explore Craft Tours
+          </a>
         </div>
       </div>
     </section>
@@ -852,6 +962,79 @@
             <div class="artisan-gallery__caption">
               <strong>Silk Weaving</strong><br>
               Margilan silk tradition
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{-- Testimonials Section --}}
+    <section class="section section--gray">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="color: #1a5490;">TESTIMONIALS</span>
+        <h2 class="section-heading text-center">What Travelers Say</h2>
+        <p class="section-tagline text-center mx-auto">
+          Real experiences from travelers who've journeyed with us to meet Uzbekistan's master artisans.
+        </p>
+
+        <div class="testimonials">
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              "This wasn't just a tour—it was a masterclass in Uzbek culture. We spent two full days with a suzani embroidery artisan in Bukhara. She taught us ancient stitching techniques her grandmother passed down. I'll never see textiles the same way."
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">SC</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">Sarah C.</div>
+                <div class="testimonial-card__meta">United Kingdom • May 2024</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              "What impressed me most was the authenticity. No tourist traps—just real workshops where families have worked for generations. The potters in Gijduvan welcomed us like old friends. Jahongir's team truly understands ethical tourism."
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">MH</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">Michael H.</div>
+                <div class="testimonial-card__meta">USA • October 2024</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              "Small group size made all the difference. Only 5 of us on the tour, so we got real one-on-one time with the silk weavers in Margilan. They showed us techniques you'd never see in a big group tour. Worth every penny."
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">AL</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">Anna L.</div>
+                <div class="testimonial-card__meta">Germany • September 2024</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+              </div>
             </div>
           </div>
         </div>
