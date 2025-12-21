@@ -47,25 +47,13 @@
 
     /* Hero Section - Enhanced with trust elements */
     .about-hero {
-        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
+        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
         color: white;
         padding: 140px 0 100px;
         text-align: center;
         position: relative;
     }
 
-    .about-hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image:
-            repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.03) 35px, rgba(255,255,255,0.03) 70px),
-            repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,0.02) 35px, rgba(255,255,255,0.02) 70px);
-        pointer-events: none;
-    }
 
     .about-hero__badge {
         display: inline-flex;
@@ -175,9 +163,9 @@
         height: 4px;
         background: linear-gradient(90deg,
             transparent 0%,
-            #3F4E65 25%,
+            #8A4F2E 25%,
             #FFC107 50%,
-            #3F4E65 75%,
+            #8A4F2E 75%,
             transparent 100%);
         border-radius: 2px;
     }
@@ -282,7 +270,7 @@
     }
 
     .problem-image__caption {
-        background: #3F4E65;
+        background: #8A4F2E;
         color: white;
         padding: 1rem;
         font-size: 0.875rem;
@@ -364,7 +352,7 @@
         width: 50px;
         height: 50px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
+        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -422,7 +410,7 @@
         width: 56px;
         height: 56px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
+        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -449,7 +437,7 @@
         text-align: center;
         margin-top: 3rem;
         padding: 2rem;
-        background: linear-gradient(135deg, #E8EAF0 0%, #D4D7E2 100%);
+        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
         border-radius: 12px;
         max-width: 750px;
         margin-left: auto;
@@ -522,14 +510,14 @@
         padding: 2.5rem 2rem;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border-left: 4px solid #3F4E65;
+        border-left: 4px solid #8A4F2E;
         position: relative;
     }
 
     .testimonial-card::before {
         content: '"';
         font-size: 4rem;
-        color: rgba(63, 78, 101, 0.1);
+        color: rgba(138, 79, 46, 0.1);
         position: absolute;
         top: 1rem;
         left: 1.5rem;
@@ -558,7 +546,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
+        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -590,7 +578,7 @@
 
     /* CTA Section */
     .cta-section {
-        background: linear-gradient(135deg, #3F4E65 0%, #2F415A 100%);
+        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
         color: white;
         padding: 100px 0;
         text-align: center;
