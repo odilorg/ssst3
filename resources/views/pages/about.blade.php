@@ -658,9 +658,9 @@
             </p>
           </div>
           <div class="problem-image">
-            <img src="{{ asset('images/tours/crafts-culture/urgut-bazaar-suzani.webp') }}" alt="Traditional suzani embroidery at Urgut bazaar" loading="lazy">
+            <img src="{{ asset('images/traditional-embroidery-display.webp') }}" alt="Traditional Uzbek embroidery textiles" loading="lazy">
             <div class="problem-image__caption">
-              <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Suzani embroidery, Urgut Bazaar
+              <i class="fas fa-palette" aria-hidden="true"></i> Traditional Uzbek embroidery
             </div>
           </div>
         </div>
@@ -838,24 +838,24 @@
 
         <div class="artisan-gallery">
           <div class="artisan-gallery__item">
-            <img src="{{ asset('images/craft-pottery.webp') }}" alt="Potter shaping traditional Uzbek ceramics" loading="lazy">
+            <img src="{{ asset('images/pottery-artisan.webp') }}" alt="Uzbek pottery craftsman at work" loading="lazy">
             <div class="artisan-gallery__caption">
               <strong>Gijduvan Pottery</strong><br>
-              Traditional blue ceramics
+              Traditional ceramics workshop
             </div>
           </div>
           <div class="artisan-gallery__item">
-            <img src="{{ asset('images/tours/crafts-culture/urgut-bazaar-suzani.webp') }}" alt="Suzani embroidery artisan" loading="lazy">
+            <img src="{{ asset('images/embroidery-artisan.webp') }}" alt="Suzani embroidery artisan creating traditional patterns" loading="lazy">
             <div class="artisan-gallery__caption">
               <strong>Suzani Embroidery</strong><br>
-              Bukhara & Urgut
+              Hand-stitched textiles
             </div>
           </div>
           <div class="artisan-gallery__item">
-            <img src="{{ asset('images/tours/arts-crafts/miniature-painting-master-bukhara.webp') }}" alt="Miniature painting artisan in Bukhara" loading="lazy">
+            <img src="{{ asset('images/silk-weaving-artisan.webp') }}" alt="Silk weaving artisans at traditional loom" loading="lazy">
             <div class="artisan-gallery__caption">
-              <strong>Miniature Painting</strong><br>
-              Bukhara tradition
+              <strong>Silk Weaving</strong><br>
+              Margilan silk tradition
             </div>
           </div>
         </div>
