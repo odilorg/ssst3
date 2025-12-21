@@ -1725,8 +1725,8 @@
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Hands-on is the core of our workshops.</strong> You'll actively participate — shaping clay, threading looms, mixing glazes, painting designs. Expect to get your hands dirty!</p>
-              <p>Of course, there's also demonstration and explanation. But you'll spend most of your time creating, not just watching.</p>
+              <p><strong>Primarily observation and demonstration.</strong> You'll watch skilled artisans at work, learn about their techniques, tools, and traditions. Our guides explain the cultural significance and history behind each craft.</p>
+              <p>If you'd like to try your hand at it, artisans are happy to let you have a go — but this is optional, not the main focus. Think of it as a cultural immersion, not a hands-on workshop class.</p>
             </div>
           </div>
         </details>
