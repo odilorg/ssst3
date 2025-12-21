@@ -54,6 +54,19 @@
         position: relative;
     }
 
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.03) 35px, rgba(255,255,255,0.03) 70px),
+            repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(255,255,255,0.02) 35px, rgba(255,255,255,0.02) 70px);
+        pointer-events: none;
+    }
+
     .about-hero__badge {
         display: inline-flex;
         align-items: center;
@@ -68,7 +81,7 @@
     }
 
     .about-hero__badge i {
-        color: #ffd700;
+        color: #ffc107;  /* More vibrant yellow */
     }
 
     .about-hero__title {
@@ -91,7 +104,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 2rem;
+        gap: 3rem;  /* Increased from 2rem → 3rem for better spacing */
         flex-wrap: wrap;
         margin-top: 1.5rem;
     }
@@ -105,7 +118,7 @@
     }
 
     .about-hero__trust-item i {
-        color: #ffd700;
+        color: #ffc107;  /* More vibrant yellow */
     }
 
     .about-hero__cta {
@@ -122,13 +135,20 @@
         text-decoration: none;
         display: inline-block;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);  /* Stronger shadow */
+        border: 2px solid rgba(255,255,255,0.3);
     }
 
     .btn--hero:hover {
         background: white;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        transform: translateY(-4px);  /* More lift */
+        box-shadow: 0 12px 35px rgba(0,0,0,0.35);  /* Much stronger shadow */
+        border-color: white;
+    }
+
+    .btn--hero:active {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     }
 
     /* Section Styles - Improved spacing & typography */
@@ -136,8 +156,30 @@
         padding: 100px 0;
     }
 
+    .section--first {
+        padding-top: 120px;  /* Extra top padding for first section after hero */
+    }
+
     .section--gray {
         background: #f8f9fa;
+        position: relative;
+    }
+
+    .section--gray::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            #1a5490 25%,
+            #ffc107 50%,
+            #1a5490 75%,
+            transparent 100%);
+        border-radius: 2px;
     }
 
     .section-heading {
@@ -168,11 +210,11 @@
 
     .eyebrow {
         display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        letter-spacing: 2px;
+        font-size: 0.9375rem;  /* Increased from 0.875rem */
+        font-weight: 700;  /* Bolder: 600 → 700 */
+        letter-spacing: 2.5px;  /* Wider spacing */
         text-transform: uppercase;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;  /* More space below */
     }
 
     /* Problem Section - Enhanced with imagery */
@@ -542,7 +584,7 @@
     }
 
     .testimonial-card__rating {
-        color: #ffd700;
+        color: #ffc107;  /* More vibrant yellow */
         font-size: 0.875rem;
     }
 
@@ -622,19 +664,40 @@
 
         .about-hero__title {
             font-size: 2.25rem;
+            line-height: 1.3;
         }
 
         .about-hero__subtitle {
             font-size: 1.125rem;
+            line-height: 1.7;
+            padding: 0 1rem;
         }
 
         .about-hero__trust {
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;  /* Increased from 0.75rem */
+        }
+
+        .about-hero__trust-item {
+            font-size: 1rem;  /* Slightly larger on mobile */
+        }
+
+        .about-hero__cta {
+            margin-top: 2rem;
+        }
+
+        .btn--hero {
+            width: 90%;  /* Wider button on mobile */
+            max-width: 320px;
         }
 
         .section {
             padding: 70px 0;
+        }
+
+        .eyebrow {
+            font-size: 0.8125rem;
+            letter-spacing: 2px;
         }
 
         .section-heading {
@@ -742,7 +805,7 @@
     </section>
 
     {{-- The Problem Section --}}
-    <section class="section">
+    <section class="section section--first">
       <div class="container">
         <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #e74c3c; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">THE PROBLEM</span>
         <h2 class="section-heading text-center">Traditional Crafts Are Disappearing</h2>
@@ -835,7 +898,7 @@
     </section>
 
     {{-- Our Impact Section --}}
-    <section class="section">
+    <section class="section section--first">
       <div class="container">
         <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2c7abf; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR IMPACT</span>
         <h2 class="section-heading text-center">Making a Real Difference</h2>
@@ -934,7 +997,7 @@
     </section>
 
     {{-- Artisan Gallery Section --}}
-    <section class="section">
+    <section class="section section--first">
       <div class="container">
         <span class="eyebrow text-center mx-auto" style="color: #1a5490;">MEET THE ARTISANS</span>
         <h2 class="section-heading text-center">The Hands Behind the Crafts</h2>
