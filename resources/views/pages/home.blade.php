@@ -471,7 +471,6 @@
         aspect-ratio: 16 / 10;
       }
     }
-  </style>
 
   /* ============================================================
      P0 CONVERSION OPTIMIZATION FIXES  
@@ -534,7 +533,7 @@
       font-size: 16px !important;
     }
   }
-@endpush
+  </style>
 
 @section('content')
   <!-- =====================================================
