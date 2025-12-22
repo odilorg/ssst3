@@ -47,7 +47,7 @@
 
     /* Hero Section - Enhanced with trust elements */
     .about-hero {
-        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
         padding: 140px 0 100px;
         text-align: center;
@@ -69,7 +69,7 @@
     }
 
     .about-hero__badge i {
-        color: #ffc107;  /* More vibrant yellow */
+        color: #60a5fa;  /* Light blue */
     }
 
     .about-hero__title {
@@ -106,7 +106,7 @@
     }
 
     .about-hero__trust-item i {
-        color: #ffc107;  /* More vibrant yellow */
+        color: #60a5fa;  /* Light blue */
     }
 
     .about-hero__cta {
@@ -163,9 +163,9 @@
         height: 4px;
         background: linear-gradient(90deg,
             transparent 0%,
-            #8A4F2E 25%,
-            #FFC107 50%,
-            #8A4F2E 75%,
+            #2563eb 25%,
+            #60a5fa 50%,
+            #2563eb 75%,
             transparent 100%);
         border-radius: 2px;
     }
@@ -270,7 +270,7 @@
     }
 
     .problem-image__caption {
-        background: #8A4F2E;
+        background: #2563eb;
         color: white;
         padding: 1rem;
         font-size: 0.875rem;
@@ -510,14 +510,14 @@
         padding: 2.5rem 2rem;
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border-left: 4px solid #8A4F2E;
+        border-left: 4px solid #2563eb;
         position: relative;
     }
 
     .testimonial-card::before {
         content: '"';
         font-size: 4rem;
-        color: rgba(138, 79, 46, 0.1);
+        color: rgba(37, 99, 235, 0.1);
         position: absolute;
         top: 1rem;
         left: 1.5rem;
@@ -546,7 +546,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -572,13 +572,13 @@
     }
 
     .testimonial-card__rating {
-        color: #ffc107;  /* More vibrant yellow */
+        color: #60a5fa;  /* Light blue */
         font-size: 0.875rem;
     }
 
     /* CTA Section */
     .cta-section {
-        background: linear-gradient(135deg, #8A4F2E 0%, #F2B482 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
         padding: 100px 0;
         text-align: center;
