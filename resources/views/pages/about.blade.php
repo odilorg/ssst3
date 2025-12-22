@@ -303,14 +303,14 @@
         width: 72px;
         height: 72px;
         margin-bottom: 1.5rem;
-        background: linear-gradient(135deg, #D4A574 0%, #C9A961 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-size: 1.875rem;
-        box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
     }
 
     .solution-card__title {
