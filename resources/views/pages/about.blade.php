@@ -49,7 +49,7 @@
     .about-hero {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        padding: 220px 0 100px; /* Increased top padding for sticky navbar */
+        padding: 220px 0 150px; /* Top for navbar, bottom for button visibility */
         text-align: center;
         position: relative;
     }
@@ -115,7 +115,7 @@
 
     .btn--hero {
         background: rgba(255,255,255,0.95);
-        color: #536DFE;
+        color: #2563eb;
         padding: 1rem 2.5rem;
         font-size: 1.0625rem;
         font-weight: 600;
@@ -352,19 +352,19 @@
         width: 50px;
         height: 50px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #C9A961;
+        color: #2563eb;
         font-size: 1.25rem;
     }
 
     .impact-stat__number {
         font-size: 3.5rem;
         font-weight: 800;
-        color: #C9A961;
+        color: #2563eb;
         margin-bottom: 0.5rem;
         font-family: 'Playfair Display', serif;
         line-height: 1;
@@ -415,7 +415,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #536DFE;
+        color: #2563eb;
         font-size: 1.5rem;
     }
 
@@ -447,7 +447,7 @@
 
     .ethical-commitment p {
         font-size: 1.0625rem;
-        color: #536DFE;
+        color: #2563eb;
         margin: 0;
         line-height: 1.7;
     }
@@ -613,7 +613,7 @@
 
     .btn--white {
         background: white;
-        color: #536DFE;
+        color: #2563eb;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
@@ -827,7 +827,7 @@
     {{-- Our Solution Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #C9A961; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR SOLUTION</span>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR SOLUTION</span>
         <h2 class="section-heading text-center">Small Groups, Deep Impact, Fair Pay</h2>
         <p class="section-tagline text-center mx-auto">
           We design craft-focused journeys that support artisans financially, preserve traditional skills, and give travelers authentic, meaningful experiences.
@@ -888,7 +888,7 @@
     {{-- Our Impact Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2c7abf; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR IMPACT</span>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR IMPACT</span>
         <h2 class="section-heading text-center">Making a Real Difference</h2>
         <p class="section-tagline text-center mx-auto">
           Since pivoting to craft-focused tourism, we've supported artisan communities across Uzbekistan and helped preserve endangered skills.
@@ -935,7 +935,7 @@
     {{-- Partnerships Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2c7abf; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">PARTNERSHIPS</span>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">PARTNERSHIPS</span>
         <h2 class="section-heading text-center">Working with Heritage Organizations</h2>
         <p class="section-tagline text-center mx-auto">
           We collaborate with cultural institutions, craft guilds, and heritage organizations to ensure authentic, ethical craft tourism.
@@ -987,7 +987,7 @@
     {{-- Artisan Gallery Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #536DFE;">MEET THE ARTISANS</span>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">MEET THE ARTISANS</span>
         <h2 class="section-heading text-center">The Hands Behind the Crafts</h2>
         <p class="section-tagline text-center mx-auto">
           Real artisans in real workshops. These are the craftspeople you'll meet on our journeys.
@@ -1022,7 +1022,7 @@
     {{-- Testimonials Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #536DFE;">TESTIMONIALS</span>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">TESTIMONIALS</span>
         <h2 class="section-heading text-center">What Travelers Say</h2>
         <p class="section-tagline text-center mx-auto">
           Real experiences from travelers who've journeyed with us to meet Uzbekistan's master artisans.
