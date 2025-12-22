@@ -49,7 +49,7 @@
     .about-hero {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        padding: 140px 0 100px;
+        padding: 220px 0 100px; /* Increased top padding for sticky navbar */
         text-align: center;
         position: relative;
     }
