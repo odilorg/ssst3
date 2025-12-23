@@ -762,11 +762,11 @@ class TourForm
                                 ->maxValue(100),
 
                             TextInput::make('price_total')
-                                ->label('Общая цена (UZS)')
+                                ->label('Общая цена (USD)')
                                 ->numeric()
                                 ->required()
                                 ->minValue(0)
-                                ->suffix('UZS')
+                                ->suffix('USD')
                                 ->helperText('Общая стоимость за группу')
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, $set, $get) {
@@ -781,7 +781,7 @@ class TourForm
                             TextInput::make('price_per_person')
                                 ->label('Цена за человека')
                                 ->numeric()
-                                ->suffix('UZS')
+                                ->suffix('USD')
                                 ->disabled()
                                 ->dehydrated(true)
                                 ->helperText('Рассчитывается автоматически'),
