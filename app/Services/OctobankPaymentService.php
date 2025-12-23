@@ -105,6 +105,11 @@ class OctobankPaymentService
             $hasPaymentUrl = !empty($responseData['octo_pay_url']) || !empty($responseData['data']['octo_pay_url']);
             $paymentUrl = $responseData['octo_pay_url'] ?? $responseData['data']['octo_pay_url'] ?? null;
 
+            // Fix payment URL format: Octobank returns /pay/{uuid} but correct format is /pay/cards/{uuid}
+            if ($paymentUrl && strpos($paymentUrl, '/pay/cards/') === false) {
+                $paymentUrl = str_replace('/pay/', '/pay/cards/', $paymentUrl);
+            }
+
             if ($response->successful() && $hasPaymentUrl) {
                 // Success - update payment with Octobank data
                 $payment->update([
