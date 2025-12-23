@@ -73,7 +73,6 @@ class TourResource extends Resource
             RelationManagers\TourFaqsRelationManager::class,
             RelationManagers\TourExtrasRelationManager::class,
             RelationManagers\ReviewsRelationManager::class,
-            RelationManagers\PricingTiersRelationManager::class,
         ];
     }
 

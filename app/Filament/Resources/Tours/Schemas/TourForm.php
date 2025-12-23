@@ -733,6 +733,81 @@ class TourForm
                         ->minValue(1)
                         ->default(15)
                         ->helperText('Максимальный размер группы'),
+
+                    // Tiered Pricing Section
+                    Repeater::make('pricingTiers')
+                        ->relationship('pricingTiers')
+                        ->label('Ценовые уровни (Групповые цены)')
+                        ->schema([
+                            TextInput::make('label')
+                                ->label('Название уровня')
+                                ->placeholder('например: Индивидуальный тур, Пара, Группа')
+                                ->maxLength(100)
+                                ->columnSpanFull(),
+
+                            TextInput::make('min_guests')
+                                ->label('Мин. гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(100),
+
+                            TextInput::make('max_guests')
+                                ->label('Макс. гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(100),
+
+                            TextInput::make('price_total')
+                                ->label('Общая цена (UZS)')
+                                ->numeric()
+                                ->required()
+                                ->minValue(0)
+                                ->suffix('UZS')
+                                ->helperText('Общая стоимость за группу')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, $set, $get) {
+                                    $minGuests = (int) $get('min_guests') ?: 1;
+                                    $maxGuests = (int) $get('max_guests') ?: 1;
+                                    $avgGuests = ($minGuests + $maxGuests) / 2;
+                                    if ($state && $avgGuests > 0) {
+                                        $set('price_per_person', round($state / $avgGuests, 2));
+                                    }
+                                }),
+
+                            TextInput::make('price_per_person')
+                                ->label('Цена за человека')
+                                ->numeric()
+                                ->suffix('UZS')
+                                ->disabled()
+                                ->dehydrated(true)
+                                ->helperText('Рассчитывается автоматически'),
+
+                            Toggle::make('is_active')
+                                ->label('Активен')
+                                ->default(true)
+                                ->inline(false),
+
+                            TextInput::make('sort_order')
+                                ->label('Порядок')
+                                ->numeric()
+                                ->default(0)
+                                ->helperText('Меньше = выше'),
+                        ])
+                        ->columns(2)
+                        ->collapsible()
+                        ->collapsed(false)
+                        ->itemLabel(fn (array $state): ?string => 
+                            $state['label'] ?? 
+                            (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
+                        )
+                        ->addActionLabel('Добавить ценовой уровень')
+                        ->reorderable('sort_order')
+                        ->helperText('Настройте разные цены в зависимости от количества гостей. Если не указано, используется Цена за человека выше.')
+                        ->columnSpanFull(),
                 ])
                 ->columns(2),
 
