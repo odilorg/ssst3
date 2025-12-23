@@ -135,7 +135,7 @@ class BookingController extends Controller
                 'special_requests' => $request->special_requests,
                 'status' => 'pending_payment',
                 'payment_method' => $request->payment_method ?? 'request',
-                'payment_status' => 'unpaid',
+                'payment_status' => 'pending',
             ]);
 
             Log::info('Booking Created', [
