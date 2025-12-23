@@ -83,28 +83,36 @@ class PaymentController extends Controller
 
     /**
      * Calculate booking amount based on tiered pricing
+     * Returns amount in UZS (converted from USD if needed)
      */
     protected function calculateBookingAmount(Booking $booking): float
     {
         $tour = $booking->tour;
         $guestCount = $booking->number_of_guests ?? 1;
 
-        // Try to get tiered pricing first
+        $usdAmount = 0;
+
+        // Try to get tiered pricing first (in USD)
         if ($tour->hasTieredPricing()) {
             $price = $tour->getPriceForGuests($guestCount);
             if ($price !== null) {
-                return $price;
+                $usdAmount = $price;
             }
         }
 
-        // Fallback to legacy price_per_person calculation
-        if ($tour->price_per_person) {
-            return $tour->price_per_person * $guestCount;
+        // Fallback to legacy price_per_person calculation (in USD)
+        if ($usdAmount === 0 && $tour->price_per_person) {
+            $usdAmount = $tour->price_per_person * $guestCount;
         }
 
-        // Use total_price if set on booking
-        if ($booking->total_price) {
-            return $booking->total_price;
+        // Use total_price if set on booking (in USD)
+        if ($usdAmount === 0 && $booking->total_price) {
+            $usdAmount = $booking->total_price;
+        }
+
+        // Convert USD to UZS using CBU exchange rate
+        if ($usdAmount > 0) {
+            return $this->paymentService->convertUsdToUzs($usdAmount);
         }
 
         return 0;

@@ -17,6 +17,44 @@ class OctobankPaymentService
     protected bool $autoCapture;
     protected int $ttl;
 
+    /**
+     * Get USD to UZS exchange rate from CBU.uz
+     */
+    protected function getExchangeRate(): float
+    {
+        try {
+            $date = now()->format('Y-m-d');
+            $response = Http::timeout(5)->get("https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/{$date}/");
+
+            if (!$response->successful()) {
+                Log::warning('Failed to fetch CBU exchange rate, using fallback', ['status' => $response->status()]);
+                return 12650.0; // Fallback rate
+            }
+
+            $data = $response->json();
+
+            if (!isset($data[0]['Rate'])) {
+                Log::warning('Exchange rate missing in CBU response');
+                return 12650.0; // Fallback rate
+            }
+
+            return (float) $data[0]['Rate'];
+        } catch (Exception $e) {
+            Log::error('CBU exchange rate fetch failed', ['error' => $e->getMessage()]);
+            return 12650.0; // Fallback rate
+        }
+    }
+
+    /**
+     * Convert USD to UZS using current CBU exchange rate
+     */
+    public function convertUsdToUzs(float $usdAmount): float
+    {
+        $rate = $this->getExchangeRate();
+        return round($usdAmount * $rate);
+    }
+
+
     public function __construct()
     {
         $this->apiUrl = config('services.octobank.api_url');
