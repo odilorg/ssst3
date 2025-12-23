@@ -138,7 +138,7 @@ class OctobankPaymentService
                 ['method' => 'visa'],
                 ['method' => 'mastercard'],
             ],
-            'tsp_id' => 20, // OCTO Platform
+            'tsp_id' => 18, // OCTO Platform
             'ttl' => $this->ttl,
             'language' => $options['language'] ?? 'ru',
             'return_url' => $returnUrl,
