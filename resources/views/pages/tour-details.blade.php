@@ -386,6 +386,7 @@
                 </select>
                 <span id="guests-hint" class="form-hint">Maximum 10 guests per booking</span>
                 <span id="guests-error" class="form-error" role="alert"></span>
+<!-- Price Preview (Dynamic) -->                <div id="price-preview" class="price-preview-container" style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; display: none;">                  <div class="price-preview">                    <div class="price-usd" style="font-size: 1.5rem; font-weight: bold; color: #2c3e50;">Loading...</div>                    <div class="price-uzs" style="font-size: 1rem; color: #7f8c8d; margin-top: 0.25rem;"></div>                    <div class="price-label" style="font-size: 0.875rem; color: #95a5a6; margin-top: 0.5rem;"></div>                  </div>                </div>
               </div>
 
               <!-- Action Buttons: Book or Inquire -->
@@ -770,6 +771,7 @@
       </div>
 
       <div class="modal-footer">
+<button class="btn btn--accent btn--large" id="proceed-to-payment-btn" onclick="initiatePayment(window.currentBookingId)" style="margin-bottom: 1rem; display: none;">          💳 Proceed to Payment        </button>
         <button class="btn btn--primary btn--large" id="continue-browsing">
           Got It, Thanks!
         </button>
@@ -1181,6 +1183,7 @@
 
 @push('scripts')
 <script src="{{ asset('js/htmx.min.js') }}"></script>
+<script src="{{ asset('js/payment-integration.js') }}"></script>
 <script src="{{ asset('tour-details.js') }}"></script>
 <script src="{{ asset('js/booking-form.js') }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>

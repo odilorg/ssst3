@@ -1,4 +1,3 @@
-
     document.addEventListener('DOMContentLoaded', function() {
       const bookingBtn = document.querySelector('[data-action="booking"]');
       const inquiryBtn = document.querySelector('[data-action="inquiry"]');
@@ -13,6 +12,9 @@
       const tourIdField = document.getElementById('tour-id');
       const csrfTokenField = document.getElementById('csrf-token');
 
+      // Global variable to store current booking ID for payment
+      window.currentBookingId = null;
+
       // Fetch CSRF token and populate field
       fetch('/csrf-token')
         .then(response => response.json())
@@ -25,7 +27,7 @@
         .catch(error => console.error('[Booking] Error loading CSRF token:', error));
 
       // Extract tour slug from URL and fetch tour ID
-      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const pathParts = window.location.pathname.split('/'). filter(Boolean);
       if (pathParts[0] === 'tours' && pathParts[1]) {
         const tourSlug = pathParts[1];
         console.log('[Booking] Tour slug:', tourSlug);
@@ -47,6 +49,22 @@
             }
           })
           .catch(error => console.error('[Booking] Error fetching tour ID:', error));
+      }
+
+      // Add guest count change listener for price preview
+      if (tourGuestsField && tourIdField) {
+        tourGuestsField.addEventListener('input', function() {
+          const tourId = tourIdField.value;
+          const guestCount = parseInt(this.value) || 1;
+          
+          if (tourId && guestCount > 0 && typeof window.fetchPricePreview === 'function') {
+            const pricePreview = document.getElementById('price-preview');
+            if (pricePreview) {
+              pricePreview.style.display = 'block';
+            }
+            window.fetchPricePreview(tourId, guestCount);
+          }
+        });
       }
 
       // Handle booking button click - SHOWS FULL BOOKING FORM
@@ -206,10 +224,16 @@
             if (data.success) {
               // Get booking/inquiry data
               const record = data.booking || data.inquiry;
-              const isBooking = !!data.booking;
+              const isBooking = \!\!data.booking;
 
               console.log('[Booking] Success response:', data);
               console.log('[Booking] Record data:', record);
+
+              // Store booking ID globally for payment
+              if (isBooking && record.id) {
+                window.currentBookingId = record.id;
+                console.log('[Payment] Booking ID stored:', record.id);
+              }
 
               // Populate modal with data (with null checks)
               const modalRef = document.getElementById('modal-reference');
@@ -228,14 +252,25 @@
               if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
               if (modalEmailInline) modalEmailInline.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
 
+              // Show/hide payment button based on booking type
+              const paymentBtn = document.getElementById('proceed-to-payment-btn');
+              if (paymentBtn) {
+                if (isBooking && record.total_price && parseFloat(record.total_price) > 0) {
+                  paymentBtn.style.display = 'block';
+                  console.log('[Payment] Payment button shown');
+                } else {
+                  paymentBtn.style.display = 'none';
+                  console.log('[Payment] Payment button hidden (inquiry or no price)');
+                }
+              }
+
               // Update modal title for inquiry
-              // Update modal title for inquiry
-              if (!isBooking) {
+              if (\!isBooking) {
                 const modalTitle = document.querySelector('.modal-title');
                 const modalSubtitle = document.querySelector('.modal-subtitle');
                 const totalItem = document.querySelector('.summary-item--total');
                 
-                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
+                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted\!';
                 if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
                 if (totalItem) totalItem.style.display = 'none';
               }
@@ -247,7 +282,7 @@
                 bookingModal.style.display = 'flex';
                 console.log('[Booking] Modal display set to flex');
               } else {
-                console.error('[Booking] Modal not found in DOM!');
+                console.error('[Booking] Modal not found in DOM\!');
               }
 
               bookingForm.reset();
@@ -404,7 +439,7 @@
         };
 
         // Check if token exists, if not fetch it
-        if (!csrfToken || !csrfToken.value) {
+        if (\!csrfToken || \!csrfToken.value) {
           console.warn('[Inquiry] CSRF token not loaded, fetching now...');
 
           fetch('/csrf-token')
@@ -461,7 +496,7 @@
         closeXBtn.addEventListener('click', closeModal);
       }
 
-      // Close on "Got It, Thanks!" button
+      // Close on "Got It, Thanks\!" button
       if (continueBrowsingBtn) {
         continueBrowsingBtn.addEventListener('click', closeModal);
       }
@@ -512,7 +547,7 @@
         inquiryCloseXBtn.addEventListener('click', closeInquiryModal);
       }
 
-      // Close on "Got It, Thanks!" button
+      // Close on "Got It, Thanks\!" button
       if (closeInquiryModalBtn) {
         closeInquiryModalBtn.addEventListener('click', closeInquiryModal);
       }
@@ -535,4 +570,3 @@
 
       console.log('[Modal] Inquiry modal close handlers initialized');
     });
-
