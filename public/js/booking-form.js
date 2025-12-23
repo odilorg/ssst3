@@ -1,3 +1,4 @@
+
     document.addEventListener('DOMContentLoaded', function() {
       const bookingBtn = document.querySelector('[data-action="booking"]');
       const inquiryBtn = document.querySelector('[data-action="inquiry"]');
@@ -27,7 +28,7 @@
         .catch(error => console.error('[Booking] Error loading CSRF token:', error));
 
       // Extract tour slug from URL and fetch tour ID
-      const pathParts = window.location.pathname.split('/'). filter(Boolean);
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
       if (pathParts[0] === 'tours' && pathParts[1]) {
         const tourSlug = pathParts[1];
         console.log('[Booking] Tour slug:', tourSlug);
@@ -56,7 +57,7 @@
         tourGuestsField.addEventListener('input', function() {
           const tourId = tourIdField.value;
           const guestCount = parseInt(this.value) || 1;
-          
+
           if (tourId && guestCount > 0 && typeof window.fetchPricePreview === 'function') {
             const pricePreview = document.getElementById('price-preview');
             if (pricePreview) {
@@ -224,7 +225,7 @@
             if (data.success) {
               // Get booking/inquiry data
               const record = data.booking || data.inquiry;
-              const isBooking = \!\!data.booking;
+              const isBooking = !!data.booking;
 
               console.log('[Booking] Success response:', data);
               console.log('[Booking] Record data:', record);
@@ -265,12 +266,12 @@
               }
 
               // Update modal title for inquiry
-              if (\!isBooking) {
+              if (!isBooking) {
                 const modalTitle = document.querySelector('.modal-title');
                 const modalSubtitle = document.querySelector('.modal-subtitle');
                 const totalItem = document.querySelector('.summary-item--total');
                 
-                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted\!';
+                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
                 if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
                 if (totalItem) totalItem.style.display = 'none';
               }
@@ -282,7 +283,7 @@
                 bookingModal.style.display = 'flex';
                 console.log('[Booking] Modal display set to flex');
               } else {
-                console.error('[Booking] Modal not found in DOM\!');
+                console.error('[Booking] Modal not found in DOM!');
               }
 
               bookingForm.reset();
@@ -439,7 +440,7 @@
         };
 
         // Check if token exists, if not fetch it
-        if (\!csrfToken || \!csrfToken.value) {
+        if (!csrfToken || !csrfToken.value) {
           console.warn('[Inquiry] CSRF token not loaded, fetching now...');
 
           fetch('/csrf-token')
@@ -496,7 +497,7 @@
         closeXBtn.addEventListener('click', closeModal);
       }
 
-      // Close on "Got It, Thanks\!" button
+      // Close on "Got It, Thanks!" button
       if (continueBrowsingBtn) {
         continueBrowsingBtn.addEventListener('click', closeModal);
       }
@@ -547,7 +548,7 @@
         inquiryCloseXBtn.addEventListener('click', closeInquiryModal);
       }
 
-      // Close on "Got It, Thanks\!" button
+      // Close on "Got It, Thanks!" button
       if (closeInquiryModalBtn) {
         closeInquiryModalBtn.addEventListener('click', closeInquiryModal);
       }
@@ -570,3 +571,4 @@
 
       console.log('[Modal] Inquiry modal close handlers initialized');
     });
+
