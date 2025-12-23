@@ -44,4 +44,16 @@ return [
         'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
     ],
 
+    'octobank' => [
+        'shop_id' => env('OCTOBANK_SHOP_ID'),
+        'secret_key' => env('OCTOBANK_SECRET_KEY'),
+        'api_url' => env('OCTOBANK_API_URL', 'https://secure.octo.uz'),
+        'test_mode' => env('OCTOBANK_TEST_MODE', true),
+        'auto_capture' => env('OCTOBANK_AUTO_CAPTURE', true),
+        'ttl' => env('OCTOBANK_TTL', 15),
+        'webhook_secret' => env('OCTOBANK_WEBHOOK_SECRET'),
+        'return_url' => env('OCTOBANK_RETURN_URL'),
+        'callback_url' => env('OCTOBANK_CALLBACK_URL'),
+    ],
+
 ];

@@ -235,6 +235,75 @@ class Tour extends Model
     }
 
     /**
+     * Get all pricing tiers for this tour
+     */
+    public function pricingTiers()
+    {
+        return $this->hasMany(TourPricingTier::class)->ordered();
+    }
+
+    /**
+     * Get active pricing tiers only
+     */
+    public function activePricingTiers()
+    {
+        return $this->pricingTiers()->active();
+    }
+
+    /**
+     * Get price for a specific number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return float|null Total price for that guest count, or null if no tier matches
+     */
+    public function getPriceForGuests(int $guestCount): ?float
+    {
+        $tier = $this->pricingTiers()
+            ->forGuestCount($guestCount)
+            ->first();
+
+        return $tier?->price_total;
+    }
+
+    /**
+     * Get the pricing tier for a specific number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return TourPricingTier|null
+     */
+    public function getPricingTierForGuests(int $guestCount): ?TourPricingTier
+    {
+        return $this->pricingTiers()
+            ->forGuestCount($guestCount)
+            ->first();
+    }
+
+    /**
+     * Check if tour has tiered pricing configured
+     */
+    public function hasTieredPricing(): bool
+    {
+        return $this->activePricingTiers()->exists();
+    }
+
+    /**
+     * Get starting price (lowest tier price) for display
+     */
+    public function getStartingPrice(): ?float
+    {
+        if ($this->hasTieredPricing()) {
+            return $this->activePricingTiers()
+                ->orderBy(price_total)
+                ->first()
+                ?->price_total;
+        }
+
+        // Fallback to legacy price_per_person
+        return $this->price_per_person;
+    }
+
+
+    /**
      * Get all categories this tour belongs to
      */
     public function categories()

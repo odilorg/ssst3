@@ -101,3 +101,22 @@ Route::get('/categories', function () {
 
     return response()->json($categories);
 })->name('api.categories.index');
+
+// ============================================
+// PAYMENT API ROUTES
+// ============================================
+
+// Initialize payment
+Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('api.payment.initialize');
+
+// Get price preview for booking form
+Route::get('/payment/price-preview', [\App\Http\Controllers\PaymentController::class, 'pricePreview'])->name('api.payment.price-preview');
+
+// Check payment status
+Route::get('/payment/{payment}/status', [\App\Http\Controllers\PaymentController::class, 'status'])->name('api.payment.status');
+
+// Octobank webhook (no auth - verified by signature)
+Route::post('/octobank/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('api.octobank.webhook');
+
+// Refund (admin only - add middleware in production)
+Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])->name('api.payment.refund');

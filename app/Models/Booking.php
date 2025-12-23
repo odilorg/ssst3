@@ -51,6 +51,23 @@ class Booking extends Model
     }
 
     // Relationships
+    // Payment relationship
+    public function payments()
+    {
+        return $this->hasMany(OctobankPayment::class);
+    }
+
+    public function latestPayment()
+    {
+        return $this->hasOne(OctobankPayment::class)->latestOfMany();
+    }
+
+    public function successfulPayment()
+    {
+        return $this->hasOne(OctobankPayment::class)->where("status", "succeeded")->latestOfMany();
+    }
+
+
     public function tour()
     {
         return $this->belongsTo(Tour::class);
@@ -65,6 +82,7 @@ class Booking extends Model
     {
         return $this->hasMany(BookingItineraryItem::class);
     }
+
 
     public function assignments()
     {

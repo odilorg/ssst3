@@ -533,3 +533,10 @@ Route::get('/card-comparison', function () {
     $tours = \App\Models\Tour::with('city')->where('is_active', true)->take(6)->get();
     return view('card-comparison', ['tours' => $tours]);
 })->name('card.comparison');
+
+// ============================================
+// PAYMENT ROUTES
+// ============================================
+
+// Payment result page (user return from Octobank)
+Route::get('/payment/result', [\App\Http\Controllers\PaymentController::class, 'result'])->name('payment.result');
