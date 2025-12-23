@@ -101,18 +101,24 @@ class OctobankPaymentService
             // Save response
             $payment->update(['response_payload' => $responseData]);
 
-            if ($response->successful() && isset($responseData['error']) && $responseData['error'] === 0) {
+            // Check if payment URL was provided (payment created successfully)
+            $hasPaymentUrl = !empty($responseData['octo_pay_url']) || !empty($responseData['data']['octo_pay_url']);
+            $paymentUrl = $responseData['octo_pay_url'] ?? $responseData['data']['octo_pay_url'] ?? null;
+
+            if ($response->successful() && $hasPaymentUrl) {
                 // Success - update payment with Octobank data
                 $payment->update([
-                    'octo_payment_uuid' => $responseData['octo_payment_UUID'] ?? null,
-                    'octo_payment_url' => $responseData['octo_pay_url'] ?? null,
+                    'octo_payment_uuid' => $responseData['octo_payment_UUID'] ?? $responseData['data']['octo_payment_UUID'] ?? null,
+                    'octo_payment_url' => $paymentUrl,
                     'status' => OctobankPayment::STATUS_WAITING,
                 ]);
 
                 Log::info('Octobank payment initialized', [
                     'payment_id' => $payment->id,
                     'booking_id' => $booking->id,
-                    'octo_uuid' => $responseData['octo_payment_UUID'] ?? null,
+                    'octo_uuid' => $responseData['octo_payment_UUID'] ?? $responseData['data']['octo_payment_UUID'] ?? null,
+                    'error_code' => $responseData['error'] ?? 0,
+                    'error_message' => $responseData['errMessage'] ?? null,
                 ]);
             } else {
                 // API returned an error
@@ -153,11 +159,11 @@ class OctobankPaymentService
             'shop_transaction_id' => $payment->octo_shop_transaction_id,
             'auto_capture' => $this->autoCapture,
             'test' => $this->testMode,
-            'init_time' => now()->toIso8601String(),
+            'init_time' => now()->format('Y-m-d\TH:i:s'),
             'user_data' => [
                 'user_id' => $booking->id,
-                'phone' => $booking->phone ?? '',
-                'email' => $booking->email ?? '',
+                'phone' => $booking->customer->phone ?? '',
+                'email' => $booking->customer->email ?? '',
             ],
             'total_sum' => (int) ($payment->amount * 100), // Amount in tiyin
             'currency' => 'UZS',
@@ -166,15 +172,13 @@ class OctobankPaymentService
             'basket' => [
                 [
                     'position_desc' => $booking->tour->title ?? 'Tour',
-                    'count' => $booking->number_of_guests ?? 1,
+                    'count' => $booking->pax_total ?? 1,
                     'price' => (int) ($payment->amount * 100),
                 ],
             ],
             'payment_methods' => [
                 ['method' => 'uzcard'],
                 ['method' => 'humo'],
-                ['method' => 'visa'],
-                ['method' => 'mastercard'],
             ],
             'tsp_id' => 18, // OCTO Platform
             'ttl' => $this->ttl,
