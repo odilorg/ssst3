@@ -172,8 +172,8 @@ class OctobankPaymentService
             'basket' => [
                 [
                     'position_desc' => $booking->tour->title ?? 'Tour',
-                    'count' => $booking->pax_total ?? 1,
-                    'price' => (int) ($payment->amount * 100),
+                    'count' => 1,  // Send as single line item
+                    'price' => (int) ($payment->amount * 100),  // Total price in tiyin
                 ],
             ],
             'payment_methods' => [
