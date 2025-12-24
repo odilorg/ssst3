@@ -160,6 +160,262 @@
   <link rel="preload" href="tour-details.css" as="style">
   <link rel="stylesheet" href="tour-details.css">
 
+  <!-- Modern Minimalistic Button Design -->
+  <style>
+    /* Modern Book Now Button Redesign */
+    .mobile-cta__button {
+      /* Remove old styles */
+      background: none !important;
+      border: none !important;
+
+      /* Modern gradient background */
+      background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%) !important;
+      color: #FFFFFF !important;
+
+      /* Optimized typography for better alignment */
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.02em !important;
+      text-transform: none !important;
+      line-height: 1 !important;
+
+      /* Balanced padding for visual harmony */
+      padding: 13px 22px !important;
+
+      /* Subtle rounded corners */
+      border-radius: 10px !important;
+
+      /* Modern shadow */
+      box-shadow: 0 3px 12px rgba(102, 126, 234, 0.3) !important;
+
+      /* Smooth transitions */
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+      /* Perfect center alignment */
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+      vertical-align: middle !important;
+
+      /* Clean edges */
+      outline: none !important;
+      position: relative !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+
+    /* Hover effect */
+    .mobile-cta__button:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4) !important;
+      background: linear-gradient(135deg, #764BA2 0%, #667EEA 100%) !important;
+    }
+
+    /* Active/pressed state */
+    .mobile-cta__button:active {
+      transform: translateY(0) !important;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    /* Icon styling - perfectly aligned */
+    .mobile-cta__button svg {
+      width: 17px !important;
+      height: 17px !important;
+      fill: currentColor !important;
+      opacity: 0.95 !important;
+      margin-top: -1px !important; /* Fine-tune vertical alignment */
+      flex-shrink: 0 !important;
+    }
+
+    /* Ripple effect on click */
+    .mobile-cta__button::after {
+      content: "" !important;
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      width: 0 !important;
+      height: 0 !important;
+      border-radius: 50% !important;
+      background: rgba(255, 255, 255, 0.4) !important;
+      transform: translate(-50%, -50%) !important;
+      transition: width 0.5s, height 0.5s !important;
+      pointer-events: none !important;
+    }
+
+    .mobile-cta__button:active::after {
+      width: 250px !important;
+      height: 250px !important;
+    }
+
+    /* Modern price styling with better alignment */
+    .mobile-cta__price {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      line-height: 1 !important;
+      gap: 3px !important;
+    }
+
+    .mobile-cta__amount {
+      font-size: 20px !important;
+      font-weight: 700 !important;
+      color: #1A202C !important;
+      line-height: 1 !important;
+      letter-spacing: -0.03em !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif !important;
+    }
+
+    .mobile-cta__unit {
+      font-size: 12px !important;
+      color: #64748B !important;
+      font-weight: 500 !important;
+      line-height: 1.2 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif !important;
+      letter-spacing: 0.01em !important;
+    }
+
+    /* Container styling with improved spacing */
+    .mobile-cta__container {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 14px 18px !important;
+      background: rgba(255, 255, 255, 0.98) !important;
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.04) !important;
+      gap: 20px !important;
+    }
+
+    /* Mobile specific adjustments */
+    @media (max-width: 767px) {
+      .mobile-booking-cta {
+        box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06) !important;
+        z-index: 999 !important;
+      }
+
+      .mobile-cta__button {
+        min-width: 130px !important;
+        height: 44px !important; /* Consistent touch target */
+      }
+
+      /* Ensure proper spacing on small screens */
+      .mobile-cta__container {
+        padding: 12px 16px !important;
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .mobile-cta__button {
+        border: 2px solid #FFFFFF !important;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-cta__button,
+      .mobile-cta__button::after {
+        transition: none !important;
+      }
+    }
+
+    /* Alternative modern color schemes - uncomment to use */
+    /* Purple to Pink Gradient
+    .mobile-cta__button {
+      background: linear-gradient(135deg, #667EEA 0%, #ED64A6 100%) !important;
+    }
+    */
+
+    /* Blue to Teal Gradient
+    .mobile-cta__button {
+      background: linear-gradient(135deg, #0061FF 0%, #60EFFF 100%) !important;
+    }
+    */
+
+    /* Dark Modern
+    .mobile-cta__button {
+      background: linear-gradient(135deg, #1A202C 0%, #2D3748 100%) !important;
+    }
+    */
+  </style>
+
+  <!-- Mobile-specific spacing fix for excessive white space -->
+  <style>
+    /* Hide any potential injected header elements */
+    @media (max-width: 767px) {
+      /* Remove ALL top spacing everywhere */
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* Hide any element that might be the Jahongir Travel logo/banner */
+      body > div:first-child:not(.container):not(.nav):not(.site-header) {
+        display: none !important;
+      }
+
+      /* If there's a banner or logo section before content */
+      body > *:first-child:not(.site-header):not(nav):not(main):not(section) {
+        display: none !important;
+      }
+
+      /* Critical mobile spacing fixes */
+      .tour-header {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      .tour-hero {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      /* Remove space after header */
+      .site-header {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+      }
+
+      /* Navigation should be at absolute top */
+      .nav {
+        margin-top: 0 !important;
+        padding-top: 0.5rem !important;
+      }
+
+      /* Ensure no padding on main content */
+      body > section:first-of-type {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+      }
+
+      /* Fix container spacing */
+      .tour-header .container {
+        padding-top: 0.25rem !important;
+      }
+
+      /* Breadcrumbs tight spacing */
+      .breadcrumbs {
+        padding: 0.25rem 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Force first visible element to start at top */
+      .site-header + * {
+        margin-top: 0 !important;
+        padding-top: 0.5rem !important;
+      }
+
+      /* Remove any spacing from skip link if present */
+      .skip-link:not(:focus) {
+        display: none !important;
+      }
+    }
+  </style>
+
   <!-- Tour reviews stylesheet -->
   <link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
 
@@ -692,15 +948,6 @@
                   <span>24/7 customer support</span>
                 </li>
               </ul>
-            </div>
-
-            <!-- WhatsApp Contact -->
-            <div class="booking-contact">
-              <p class="contact-text">Questions? Contact us directly:</p>
-              <a href="https://wa.me/998901234567" class="btn btn--whatsapp btn--block" target="_blank" rel="noopener noreferrer">
-                <svg class="icon icon--whatsapp" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.05 0C4.5 0 0 4.48 0 10c0 1.77.46 3.43 1.27 4.87L.05 19.1l4.35-1.14A9.95 9.95 0 0010.05 20c5.52 0 10-4.48 10-10s-4.48-10-10-10zm5.89 14.21c-.24.68-1.41 1.28-1.95 1.35-.51.06-1.02.24-3.44-.74-3.11-1.25-5.11-4.39-5.27-4.59-.15-.2-1.24-1.65-1.24-3.15s.78-2.23 1.06-2.53c.28-.3.61-.38.81-.38.2 0 .41.01.59.01.19 0 .44-.07.69.52.25.61.86 2.1.93 2.25.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.31-.13.61.18.3.79 1.31 1.7 2.12 1.17 1.04 2.16 1.37 2.46 1.52.3.15.48.13.66-.08.18-.2.76-.89.96-1.19.2-.3.41-.25.69-.15.28.1 1.78.84 2.08.99.3.15.5.23.58.35.07.13.07.74-.17 1.42z"/></svg>
-                WhatsApp: +998 90 123 45 67
-              </a>
             </div>
 
           </div>

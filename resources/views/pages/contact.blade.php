@@ -724,7 +724,7 @@ h3 {
                                 id="phone"
                                 name="phone"
                                 class="form-input"
-                                placeholder="+998 90 123 4567"
+                                placeholder="+998 91 555 0808"
                                 inputmode="tel"
                                 aria-describedby="phone-error"
                             >

@@ -65,7 +65,7 @@
 
             <!-- Help -->
             <p class="mt-8 text-sm text-gray-500">
-                Нужна помощь? Свяжитесь с нами: <a href="tel:+998901234567" class="text-primary-600 hover:underline">+998 90 123 45 67</a>
+                Нужна помощь? Свяжитесь с нами: <a href="tel:+998915550808" class="text-primary-600 hover:underline">+998 91 555 0808</a>
             </p>
         </div>
     </div>
