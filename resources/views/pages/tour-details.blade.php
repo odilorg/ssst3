@@ -4803,29 +4803,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initial render
   renderCalendar(currentMonth, currentYear);
 
-  // Auto-select first available departure
-  if (departures.length > 0) {
-    const firstAvailable = departures.find(d => {
-      const isPast = new Date(d.startDate) < new Date(new Date().toDateString());
-      const isSoldOut = d.statusBadge.color === 'red';
-      return !isPast && !isSoldOut;
-    });
-
-    if (firstAvailable) {
-      // Auto-select it after a short delay to ensure calendar is rendered
-      setTimeout(() => {
-        const dateStr = firstAvailable.startDate;
-        const day = parseInt(dateStr.split('-')[2]);
-        const cells = document.querySelectorAll('#calendar-days > div');
-
-        cells.forEach(cell => {
-          if (cell.textContent == day && cell.style.cursor !== 'not-allowed') {
-            cell.click();
-          }
-        });
-      }, 100);
-    }
-  }
+  // Calendar starts in neutral state - user must actively select a departure date
+  // No auto-selection to avoid confusion and ensure intentional date selection
 })();
 </script>
 
