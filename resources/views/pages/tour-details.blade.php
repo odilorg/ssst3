@@ -558,57 +558,57 @@
                 </button>
               </div>
 
-              <!-- STEP 2: Full Booking Form (Hidden Initially) -->
-              <div id="step-2-full-form" style="display: none;">
+              <!-- STEP 2: Full Booking Form (Hidden Initially) - Modern Compact Design -->
+              <div id="step-2-full-form" class="modern-form-compact" style="display: none;">
 
                 <!-- Customer Information -->
-                <div class="form-section">
-                  <h3 class="form-section__title">Your Information</h3>
+                <div class="form-section-compact">
+                  <h3 class="form-section-title-modern">YOUR INFORMATION</h3>
 
-                  <div class="form-group">
-                    <label for="customer-name" class="form-label">
-                      Full Name <span class="required">*</span>
+                  <div class="form-group-modern">
+                    <label for="customer-name" class="form-label-modern">
+                      FULL NAME <span class="required-dot">•</span>
                     </label>
                     <input type="text"
                            id="customer-name"
                            name="customer_name"
-                           class="form-input"
+                           class="form-input-modern"
                            placeholder="John Doe"
                            required>
                   </div>
 
-                  <div class="form-group">
-                    <label for="customer-email" class="form-label">
-                      Email <span class="required">*</span>
+                  <div class="form-group-modern">
+                    <label for="customer-email" class="form-label-modern">
+                      EMAIL <span class="required-dot">•</span>
                     </label>
                     <input type="email"
                            id="customer-email"
                            name="customer_email"
-                           class="form-input"
+                           class="form-input-modern"
                            placeholder="john@example.com"
                            required>
                   </div>
 
-                  <div class="form-group">
-                    <label for="customer-phone" class="form-label">
-                      Phone <span class="required">*</span>
+                  <div class="form-group-modern">
+                    <label for="customer-phone" class="form-label-modern">
+                      PHONE <span class="required-dot">•</span>
                     </label>
                     <input type="tel"
                            id="customer-phone"
                            name="customer_phone"
-                           class="form-input"
+                           class="form-input-modern"
                            placeholder="+998 91 123 45 67"
                            required>
                   </div>
 
-                  <div class="form-group">
-                    <label for="customer-country" class="form-label">
-                      Country (Optional)
+                  <div class="form-group-modern">
+                    <label for="customer-country" class="form-label-modern form-label-optional">
+                      COUNTRY
                     </label>
                     <input type="text"
                            id="customer-country"
                            name="customer_country"
-                           class="form-input"
+                           class="form-input-modern"
                            placeholder="United States">
                   </div>
                 </div>
@@ -617,45 +617,44 @@
                 <input type="hidden" name="action_type" id="action-type" value="booking">
 
                 <!-- Message Field (Required for Inquiry, Optional for Booking) -->
-                <div class="form-section" id="message-section" style="display: none;">
-                  <div class="form-group">
-                    <label for="inquiry-message" class="form-label">
-                      Your Message <span class="required" id="message-required">*</span>
+                <div class="form-section-compact" id="message-section" style="display: none;">
+                  <div class="form-group-modern">
+                    <label for="inquiry-message" class="form-label-modern">
+                      YOUR MESSAGE <span class="required-dot" id="message-required">•</span>
                     </label>
                     <textarea id="inquiry-message"
                               name="message"
-                              class="form-input"
-                              rows="4"
-                              placeholder="Please tell us about your questions or any specific requirements..."></textarea>
-                    <span class="form-hint">Let us know what information you need about this tour</span>
+                              class="form-input-modern form-textarea-compact"
+                              rows="3"
+                              placeholder="Tell us about your questions or specific requirements..."></textarea>
                   </div>
                 </div>
 
                 <!-- Special Requests -->
-                <div class="form-section">
-                  <div class="form-group">
-                    <label for="special-requests" class="form-label">
-                      Special Requests (Optional)
+                <div class="form-section-compact">
+                  <div class="form-group-modern">
+                    <label for="special-requests" class="form-label-modern form-label-optional">
+                      SPECIAL REQUESTS
                     </label>
                     <textarea id="special-requests"
                               name="special_requests"
-                              class="form-input"
-                              rows="3"
-                              placeholder="Any special requirements or preferences?"></textarea>
+                              class="form-input-modern form-textarea-compact"
+                              rows="2"
+                              placeholder="Dietary requirements, accessibility needs, etc."></textarea>
                   </div>
                 </div>
 
-                <!-- Terms & Conditions -->
-                <div class="form-section">
-                  <label class="terms-checkbox__label">
+                <!-- Terms & Conditions - Modern Compact -->
+                <div class="form-section-compact">
+                  <label class="terms-modern">
                     <input type="checkbox"
                            name="agree_terms"
                            id="agree-terms"
-                           class="terms-checkbox__input"
+                           class="terms-checkbox-modern"
                            required>
-                    <span class="terms-checkbox__text">
-                      I agree to the <a href="/terms" target="_blank">Terms & Conditions</a>
-                      and <a href="/privacy" target="_blank">Privacy Policy</a>
+                    <span class="terms-checkmark"></span>
+                    <span class="terms-text-modern">
+                      I agree to the <a href="/terms" target="_blank" class="terms-link">Terms</a> and <a href="/privacy" target="_blank" class="terms-link">Privacy Policy</a>
                     </span>
                   </label>
                 </div>
@@ -3856,6 +3855,163 @@
     font-size: 11px !important;
     color: #ef4444 !important;
     margin-top: 2px !important;
+  }
+
+  /* ============================================
+     MODERN MINIMALIST FORM DESIGN (2025)
+     Ultra-compact, trendy, professional
+     ============================================ */
+
+  .modern-form-compact {
+    margin-top: 0 !important;
+  }
+
+  .form-section-compact {
+    margin-bottom: 16px !important;
+    padding-bottom: 0 !important;
+    border: none !important;
+  }
+
+  .form-section-compact:last-of-type {
+    margin-bottom: 12px !important;
+  }
+
+  .form-section-title-modern {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    color: #64748b !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .form-group-modern {
+    margin-bottom: 10px !important;
+  }
+
+  .form-label-modern {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    color: #475569 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .form-label-optional {
+    color: #94a3b8 !important;
+  }
+
+  .required-dot {
+    color: #ef4444 !important;
+    font-weight: 700 !important;
+    margin-left: 2px !important;
+  }
+
+  .form-input-modern {
+    width: 100% !important;
+    height: 38px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #1e293b !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  .form-input-modern::placeholder {
+    color: #cbd5e1 !important;
+    font-weight: 400 !important;
+  }
+
+  .form-input-modern:focus {
+    outline: none !important;
+    border-color: #667EEA !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    background: #ffffff !important;
+  }
+
+  .form-input-modern:hover:not(:focus) {
+    border-color: #cbd5e1 !important;
+  }
+
+  .form-textarea-compact {
+    height: auto !important;
+    padding: 10px 12px !important;
+    min-height: 60px !important;
+    resize: vertical !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Modern Custom Checkbox */
+  .terms-modern {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    position: relative !important;
+  }
+
+  .terms-checkbox-modern {
+    position: absolute !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+  }
+
+  .terms-checkmark {
+    flex-shrink: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    background: #ffffff !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    margin-top: 1px !important;
+  }
+
+  .terms-checkbox-modern:checked ~ .terms-checkmark {
+    background: #667EEA !important;
+    border-color: #667EEA !important;
+  }
+
+  .terms-checkbox-modern:checked ~ .terms-checkmark::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 5px !important;
+    top: 2px !important;
+    width: 5px !important;
+    height: 9px !important;
+    border: solid white !important;
+    border-width: 0 2px 2px 0 !important;
+    transform: rotate(45deg) !important;
+  }
+
+  .terms-checkbox-modern:focus ~ .terms-checkmark {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+  }
+
+  .terms-text-modern {
+    font-size: 12px !important;
+    color: #64748b !important;
+    line-height: 1.5 !important;
+  }
+
+  .terms-link {
+    color: #667EEA !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: color 0.2s ease !important;
+  }
+
+  .terms-link:hover {
+    color: #5568d3 !important;
+    text-decoration: underline !important;
   }
 }
 
