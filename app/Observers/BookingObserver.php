@@ -14,6 +14,9 @@ class BookingObserver
     {
         // Sync itinerary when booking is first created
         BookingItinerarySync::fromTripTemplate($booking);
+
+        // Update departure booked_pax count
+        $this->updateDepartureBookedPax($booking);
     }
 
     /**
@@ -25,6 +28,20 @@ class BookingObserver
         if ($booking->wasChanged(['tour_id', 'start_date'])) {
             BookingItinerarySync::fromTripTemplate($booking);
         }
+
+        // Update departure counts if status, pax_total, or departure_id changed
+        if ($booking->wasChanged(['status', 'pax_total', 'departure_id'])) {
+            // Update old departure if it changed
+            if ($booking->wasChanged('departure_id') && $booking->getOriginal('departure_id')) {
+                $oldDeparture = \App\Models\TourDeparture::find($booking->getOriginal('departure_id'));
+                if ($oldDeparture) {
+                    $oldDeparture->updateBookedPax();
+                }
+            }
+
+            // Update current departure
+            $this->updateDepartureBookedPax($booking);
+        }
     }
 
     /**
@@ -32,7 +49,8 @@ class BookingObserver
      */
     public function deleted(Booking $booking): void
     {
-        //
+        // Update departure count when booking is deleted
+        $this->updateDepartureBookedPax($booking);
     }
 
     /**
@@ -48,6 +66,17 @@ class BookingObserver
      */
     public function forceDeleted(Booking $booking): void
     {
-        //
+        // Update departure count when booking is force deleted
+        $this->updateDepartureBookedPax($booking);
+    }
+
+    /**
+     * Helper method to update departure booked_pax count
+     */
+    protected function updateDepartureBookedPax(Booking $booking): void
+    {
+        if ($booking->departure_id && $booking->departure) {
+            $booking->departure->updateBookedPax();
+        }
     }
 }

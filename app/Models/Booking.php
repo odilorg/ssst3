@@ -94,6 +94,11 @@ class Booking extends Model
         return $this->belongsTo(Tour::class);
     }
 
+    public function departure()
+    {
+        return $this->belongsTo(TourDeparture::class, 'departure_id');
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

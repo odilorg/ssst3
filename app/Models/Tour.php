@@ -187,6 +187,25 @@ class Tour extends Model
     }
 
     /**
+     * Get all departures for this tour
+     */
+    public function departures()
+    {
+        return $this->hasMany(TourDeparture::class);
+    }
+
+    /**
+     * Get upcoming available departures
+     */
+    public function upcomingDepartures()
+    {
+        return $this->departures()
+            ->upcoming()
+            ->available()
+            ->orderBy('start_date');
+    }
+
+    /**
      * Get all FAQs for this tour
      */
     public function faqs()

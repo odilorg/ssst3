@@ -31,17 +31,18 @@ class TourPricingTier extends Model
     ];
 
     /**
-     * Boot method - auto-calculate price_per_person on save
+     * Boot method - auto-calculate price_total on save if not set
      */
     protected static function boot()
     {
         parent::boot();
 
         static::saving(function ($tier) {
-            // Auto-calculate price_per_person based on average guests in tier
-            if ($tier->price_total && $tier->min_guests) {
-                $avgGuests = ($tier->min_guests + $tier->max_guests) / 2;
-                $tier->price_per_person = $tier->price_total / $avgGuests;
+            // Auto-calculate price_total from price_per_person if not explicitly set
+            // This allows flexibility: can set either price_per_person OR price_total
+            if ($tier->price_per_person && !$tier->isDirty('price_total')) {
+                // Use min_guests for total calculation (guaranteed minimum)
+                $tier->price_total = $tier->price_per_person * $tier->min_guests;
             }
         });
     }
