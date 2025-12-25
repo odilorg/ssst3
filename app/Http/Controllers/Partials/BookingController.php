@@ -72,6 +72,7 @@ class BookingController extends Controller
         // Validation - JS is sending start_date and number_of_guests (not tour-date/tour-guests)
         $validator = Validator::make($request->all(), [
             'tour_id' => 'required|exists:tours,id',
+            'departure_id' => 'required|exists:tour_departures,id',
             'start_date' => 'required|date|after_or_equal:today',
             'number_of_guests' => 'required|integer|min:1|max:50',
             'customer_name' => 'required|string|max:255',
@@ -139,6 +140,7 @@ class BookingController extends Controller
             // Create booking
             $booking = Booking::create([
                 'tour_id' => $tour->id,
+                'departure_id' => $request->departure_id,
                 'customer_id' => $customer->id,
                 'start_date' => $request->start_date,
                 'pax_total' => $numberOfGuests,
