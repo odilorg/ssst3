@@ -541,27 +541,20 @@
                   <option value="9">9 guests</option>
                   <option value="10">10 guests</option>
                 </select>
-                <span id="guests-hint" class="form-hint">Maximum 10 guests per booking</span>
                 <span id="guests-error" class="form-error" role="alert"></span>
 <!-- Price Preview (Dynamic) -->                <div id="price-preview" class="price-preview-container" style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; display: none;">                  <div class="price-preview">                    <div class="price-usd" style="font-size: 1.5rem; font-weight: bold; color: #2c3e50;">Loading...</div>                    <div class="price-uzs" style="font-size: 1rem; color: #7f8c8d; margin-top: 0.25rem;"></div>                    <div class="price-label" style="font-size: 0.875rem; color: #95a5a6; margin-top: 0.5rem;"></div>                  </div>                </div>
               </div>
 
-              <!-- Action Buttons: Book or Inquire -->
-              <div class="booking-actions">
-                <button type="button" class="action-btn action-btn--booking" data-action="booking">
+              <!-- Action Buttons: Book or Inquire (Compact) -->
+              <div class="booking-actions compact">
+                <button type="button" class="action-btn action-btn--booking compact" data-action="booking">
                   <i class="fas fa-calendar-check"></i>
-                  <div class="action-btn__content">
-                    <span class="action-btn__title">Book This Tour</span>
-                    <span class="action-btn__subtitle">Confirm your dates & guests</span>
-                  </div>
+                  <span class="action-btn__title">Book This Tour</span>
                 </button>
 
-                <button type="button" class="action-btn action-btn--inquiry" data-action="inquiry">
+                <button type="button" class="action-btn action-btn--inquiry compact" data-action="inquiry">
                   <i class="fas fa-question-circle"></i>
-                  <div class="action-btn__content">
-                    <span class="action-btn__title">Ask a Question</span>
-                    <span class="action-btn__subtitle">Get personalized information</span>
-                  </div>
+                  <span class="action-btn__title">Ask a Question</span>
                 </button>
               </div>
 
@@ -762,39 +755,21 @@
               </div>
             </div>
 
-            <!-- Trust Badges -->
-            <div class="trust-badges">
-              <div class="badge-item">
-                <svg class="icon icon--shield" width="18" height="20" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M9 0L0 3v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V3L9 0zm0 2.18l7 2.09v5.23c0 4.65-3.19 8.98-7 10.05-3.81-1.07-7-5.4-7-10.05V4.27l7-2.09z"/></svg>
-                <span>Secure payments</span>
+            <!-- Trust & Payment Badges (Compact Modern Design) -->
+            <div class="trust-payment-compact">
+              <!-- Single Line Trust Indicators -->
+              <div class="trust-inline">
+                🔒 Secure • 🎧 24/7 • ↻ Flexible
               </div>
-              <div class="badge-item">
-                <svg class="icon icon--headset" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.5 0 0 4.5 0 10v5a3 3 0 003 3h2v-8H2v-2a8 8 0 1116 0v2h-3v8h2a3 3 0 003-3v-5c0-5.5-4.5-10-10-10z"/></svg>
-                <span>24/7 support</span>
-              </div>
-              <div class="badge-item">
-                <svg class="icon icon--undo" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M2 8a6 6 0 1110.89 3.5.5.5 0 10.78.63A7 7 0 103 8h3l-4-4-4 4h3z"/></svg>
-                <span>Flexible cancellation</span>
-              </div>
-            </div>
 
-            <!-- Payment Security Badges -->
-            <div class="payment-security-badges" style="text-align: center; color: #64748b; font-size: 12px; line-height: 1.5;">
-              💳 Secure payments • ⭐ Verified merchant • 🔒 PCI certified
-            </div>
-
-            <!-- SSL Certificate Notice -->
-            <div class="ssl-notice">
-              <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 5h1a1 1 0 011 1v7a1 1 0 01-1 1H1a1 1 0 01-1-1V6a1 1 0 011-1h1V4a4 4 0 118 0v1zm-2 0V4a2 2 0 10-4 0v1h4z" fill="#10B981"/>
-              </svg>
-              <span>SSL encrypted checkout</span>
-            </div>
-
-            <!-- Payment Methods -->
-            <div class="payment-methods">
-              <span class="payment-methods__label">We accept:</span>
-              <div class="payment-methods__logos">
+              <!-- Payment Security & Methods Combined -->
+              <div class="payment-compact">
+                <div class="payment-security-line">
+                  💳 SSL Encrypted • Verified • PCI Certified
+                </div>
+                <div class="payment-methods-inline">
+                  <span class="payment-label">We accept:</span>
+                  <div class="payment-icons-compact">
                 <!-- Visa -->
                 <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect width="32" height="20" rx="2" fill="#F3F4F6"/>
@@ -818,17 +793,15 @@
                   <rect width="32" height="20" rx="2" fill="#F3F4F6"/>
                   <path d="M8 8h16v7H8V8zm1-2l7-3 7 3H9zm1 5h2v4h-2v-4zm7 0h2v4h-2v-4zm5 0h2v4h-2v-4z" fill="#64748B"/>
                 </svg>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Booking Clarification -->
-            <div class="booking-clarification">
-              <p class="clarification-text">
-                <svg class="icon icon--clock" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M9 0a9 9 0 100 18A9 9 0 009 0zm4 10H9a1 1 0 01-1-1V4a1 1 0 112 0v4h3a1 1 0 010 2z"/></svg>
-                <strong>Instant booking confirmation</strong> — secure your spot with a deposit or save 3% by paying in full.
-              </p>
-              <p class="clarification-note">
-                Choose 30% deposit now or pay in full and save 3%.
+            <!-- Booking Clarification (Compact) -->
+            <div class="booking-clarification-compact">
+              <p class="clarification-compact-text">
+                ⚡ <strong>Instant confirmation</strong> — secure your spot with a deposit or save 3% by paying in full.
               </p>
             </div>
 
@@ -1438,6 +1411,176 @@
 .action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
 .action-btn__title{font-size:inherit;font-weight:inherit;color:inherit}
 .action-btn__subtitle{font-size:0.8125rem;opacity:0.9;line-height:1.3}
+
+/* ============================================ */
+/* COMPACT MODERN DESIGN OVERRIDES             */
+/* ============================================ */
+
+/* Compact Action Buttons */
+.action-btn.compact {
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn.compact i {
+  font-size: 16px !important;
+}
+
+.action-btn.compact .action-btn__title {
+  font-size: 14px !important;
+}
+
+.action-btn--booking.compact {
+  padding: 12px 16px !important;
+}
+
+.action-btn--inquiry.compact {
+  padding: 10px 16px !important;
+  text-decoration: none !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.action-btn--inquiry.compact:hover {
+  background: #f3f4f6;
+  border-color: #0D4C92;
+}
+
+/* Compact Guest Selector */
+.form-select {
+  height: 40px !important;
+  font-size: 14px !important;
+}
+
+/* Trust & Payment Compact Section */
+.trust-payment-compact {
+  margin: 16px 0;
+  padding: 12px;
+  background: linear-gradient(to right, #f8fafc, #f1f5f9);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.trust-inline {
+  text-align: center;
+  font-size: 13px;
+  color: #475569;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.payment-compact {
+  text-align: center;
+}
+
+.payment-security-line {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 10px;
+  padding: 6px 0;
+}
+
+.payment-methods-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.payment-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-icons-compact {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.payment-icons-compact svg {
+  width: 28px !important;
+  height: 18px !important;
+}
+
+/* Booking Clarification Compact */
+.booking-clarification-compact {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border-left: 3px solid #0ea5e9;
+}
+
+.clarification-compact-text {
+  font-size: 12px;
+  color: #0c4a6e;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.clarification-compact-text strong {
+  font-weight: 600;
+  color: #075985;
+}
+
+/* Reduce spacing between sections */
+.booking-benefits {
+  margin-top: 12px !important;
+}
+
+.benefits-title {
+  font-size: 14px !important;
+  margin-bottom: 10px !important;
+}
+
+.benefits-list {
+  gap: 8px !important;
+}
+
+.benefit-item {
+  font-size: 13px !important;
+  padding: 8px 0 !important;
+}
+
+.benefit-item svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .trust-inline {
+    font-size: 12px;
+  }
+
+  .payment-security-line {
+    font-size: 10px;
+  }
+
+  .payment-label {
+    font-size: 10px;
+  }
+
+  .payment-icons-compact svg {
+    width: 24px !important;
+    height: 16px !important;
+  }
+
+  .clarification-compact-text {
+    font-size: 11px;
+  }
+}
 
     .modal-overlay {
       position: fixed;
