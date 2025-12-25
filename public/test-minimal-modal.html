@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Modal Test - Jahongir Travel</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f3f4f6;
+      min-height: 100vh;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    h1 {
+      color: #111827;
+      font-size: 28px;
+      margin: 0 0 8px;
+    }
+    p {
+      color: #6B7280;
+      margin: 0 0 32px;
+    }
+    .btn-test {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 12px;
+      transition: all 0.2s ease;
+    }
+    .btn-test:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+    .btn-secondary {
+      background: #F3F4F6;
+      color: #374151;
+    }
+    .btn-secondary:hover {
+      background: #E5E7EB;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Modal CSS from tour-details.blade.php */
+    .modal-overlay--glassmorphic {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-container--minimal {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+      max-width: 420px;
+      width: 100%;
+      padding: 0;
+      animation: slideUp 0.3s ease;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header-minimal {
+      padding: 32px 32px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-close-minimal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #6B7280;
+    }
+
+    .modal-close-minimal:hover {
+      background: rgba(0, 0, 0, 0.08);
+      transform: rotate(90deg);
+    }
+
+    .success-animation {
+      margin: 0 auto 20px;
+      width: 56px;
+      height: 56px;
+    }
+
+    .checkmark-svg {
+      width: 56px;
+      height: 56px;
+      animation: scaleIn 0.3s ease 0.1s both;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .checkmark-circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      animation: strokeCircle 0.6s ease forwards;
+    }
+
+    .checkmark-check {
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: strokeCheck 0.3s ease 0.5s forwards;
+    }
+
+    @keyframes strokeCircle {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes strokeCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .modal-title-minimal {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-reference-minimal {
+      font-size: 13px;
+      color: #6B7280;
+      margin: 0;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+
+    .modal-body-minimal {
+      padding: 0 32px 24px;
+    }
+
+    .booking-info-card {
+      background: rgba(248, 250, 251, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    .info-row--total {
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .info-label {
+      font-size: 13px;
+      color: #6B7280;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      color: #111827;
+      font-weight: 500;
+    }
+
+    .info-value--price {
+      font-size: 18px;
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .next-steps-minimal {
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .next-step-text {
+      font-size: 13px;
+      color: #6B7280;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .next-step-text span {
+      color: #111827;
+      font-weight: 500;
+    }
+
+    .modal-footer-minimal {
+      padding: 24px 32px 32px;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-minimal-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      padding: 14px 24px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-minimal-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-minimal-primary:active {
+      transform: translateY(0);
+    }
+
+    .trust-minimal {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .trust-icons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .trust-text {
+      font-size: 11px;
+      color: #9CA3AF;
+      letter-spacing: 0.3px;
+    }
+
+    .payment-icons-minimal {
+      display: flex;
+      gap: 6px;
+      margin-left: 8px;
+    }
+
+    .payment-icon-minimal {
+      height: 16px;
+      width: auto;
+      opacity: 0.3;
+      filter: grayscale(100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Modern Minimalist Modal Test</h1>
+    <p>Click the button to see the new glassmorphic booking confirmation modal</p>
+
+    <button class="btn-test" onclick="showModal()">Show Minimal Modal</button>
+    <button class="btn-test btn-secondary" onclick="showOldModal()">Show Old Modal (Comparison)</button>
+  </div>
+
+  <!-- New Minimal Modal -->
+  <div id="booking-confirmation-modal" class="modal-overlay modal-overlay--glassmorphic" style="display: flex;">
+    <div class="modal-container modal-container--minimal">
+      <!-- Minimal Header -->
+      <div class="modal-header-minimal">
+        <button class="modal-close-minimal" aria-label="Close" onclick="closeModal()">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 5L5 15M5 5l10 10"/>
+          </svg>
+        </button>
+        <div class="success-animation">
+          <svg class="checkmark-svg" width="56" height="56" viewBox="0 0 56 56">
+            <circle class="checkmark-circle" cx="28" cy="28" r="26" fill="none" stroke="#059669" stroke-width="2"/>
+            <path class="checkmark-check" d="M16 28l8 8 16-16" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="modal-title-minimal">Booking Confirmed</h2>
+        <p class="modal-reference-minimal">
+          <span>BK-2025-001</span>
+        </p>
+      </div>
+
+      <!-- Essential Info Only -->
+      <div class="modal-body-minimal">
+        <div class="booking-info-card">
+          <div class="info-row">
+            <span class="info-label">Tour</span>
+            <span class="info-value">7 Days Silk Road Adventure</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Date</span>
+            <span class="info-value">March 15, 2025</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Guests</span>
+            <span class="info-value">2 Adults</span>
+          </div>
+          <div class="info-row info-row--total">
+            <span class="info-label">Total</span>
+            <span class="info-value info-value--price">$1,299.00</span>
+          </div>
+        </div>
+
+        <!-- Minimal Next Steps -->
+        <div class="next-steps-minimal">
+          <p class="next-step-text">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.5">
+              <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
+            </svg>
+            Confirmation sent to <span>john.doe@email.com</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Single CTA -->
+      <div class="modal-footer-minimal">
+        <button class="btn-minimal-primary">
+          <span>Proceed to Payment</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M9.3 3.3a1 1 0 011.4 0l4 4a1 1 0 010 1.4l-4 4a1 1 0 01-1.4-1.4L11.6 9H2a1 1 0 110-2h9.6L9.3 4.7a1 1 0 010-1.4z"/>
+          </svg>
+        </button>
+
+        <!-- Subtle trust indicators -->
+        <div class="trust-minimal">
+          <div class="trust-icons">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.4">
+              <path d="M8 1C6.3 1 5 2.3 5 4v2H3c-.6 0-1 .4-1 1v6c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V7c0-.6-.4-1-1-1h-2V4c0-1.7-1.3-3-3-3zm0 1.5c.8 0 1.5.7 1.5 1.5v2h-3V4c0-.8.7-1.5 1.5-1.5z"/>
+            </svg>
+            <span class="trust-text">Secure payment</span>
+            <div class="payment-icons-minimal">
+              <img src="/images/payments/visa.svg" alt="Visa" class="payment-icon-minimal">
+              <img src="/images/payments/mastercard.svg" alt="Mastercard" class="payment-icon-minimal">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showModal() {
+      document.getElementById('booking-confirmation-modal').style.display = 'flex';
+      // Reset animations
+      const checkmark = document.querySelector('.checkmark-svg');
+      if (checkmark) {
+        checkmark.style.animation = 'none';
+        setTimeout(() => {
+          checkmark.style.animation = 'scaleIn 0.3s ease 0.1s both';
+        }, 10);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('booking-confirmation-modal').style.display = 'none';
+    }
+
+    // Close on backdrop click
+    document.getElementById('booking-confirmation-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    function showOldModal() {
+      alert('Old modal design has been replaced with the new minimalist version. This is now the default modal on all pages.');
+    }
+  </script>
+</body>
+</html>

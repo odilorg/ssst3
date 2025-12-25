@@ -1,0 +1,10 @@
+<svg width="60" height="40" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="40" rx="4" fill="#8B3A8F"/>
+  <g fill="white">
+    <circle cx="20" cy="20" r="6" fill="white" opacity="0.9"/>
+    <circle cx="25" cy="20" r="6" fill="white" opacity="0.7"/>
+    <path d="M35 16H32V24H34V20.5H35C36.5 20.5 37.5 19.5 37.5 18C37.5 16.5 36.5 16 35 16ZM35 19H34V17.5H35C35.3 17.5 35.5 17.7 35.5 18.2C35.5 18.8 35.3 19 35 19Z" fill="white"/>
+    <path d="M38 16V24H40V20H42V24H44V16H42V18.5H40V16H38Z" fill="white"/>
+    <text x="30" y="27" font-size="4" fill="white" font-family="Arial" font-weight="bold">HUMO</text>
+  </g>
+</svg>

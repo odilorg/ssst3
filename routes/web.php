@@ -540,3 +540,6 @@ Route::get('/card-comparison', function () {
 
 // Payment result page (user return from Octobank)
 Route::get('/payment/result', [\App\Http\Controllers\PaymentController::class, 'result'])->name('payment.result');
+
+// Octobank callback (webhook) - uses web route like working app
+Route::post('/octo/callback', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('octo.callback');

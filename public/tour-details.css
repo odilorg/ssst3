@@ -132,7 +132,7 @@
    ====================================================== */
 
 .tour-hero {
-  margin: 2rem 0;
+  margin: 0.5rem 0; /* Reduced from 2rem to minimize white space */
 }
 
 .tour-hero__gallery {
@@ -244,8 +244,8 @@
    ====================================================== */
 
 .tour-header {
-  margin: 0 0 2rem 0;
-  padding-top: 6rem; /* Space for sticky header to prevent overlap */
+  margin: 0 0 0.5rem 0; /* Reduced bottom margin from 2rem */
+  padding-top: 1rem; /* Further reduced from 1.5rem - minimal space after header */
 }
 
 .tour-header__top {
@@ -342,7 +342,7 @@
 .tour-layout {
   display: block; /* Single column on mobile */
   gap: 2.5rem;
-  margin: 3rem 0;
+  margin: 0.5rem 0; /* Minimal margin for mobile */
   touch-action: pan-y; /* Always allow vertical scroll on mobile */
 }
 
@@ -1489,14 +1489,14 @@
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text, #1E1E1E);
   margin-bottom: 0.5rem;
   font-size: 0.9375rem;
@@ -1849,6 +1849,7 @@
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: 2.5rem;
+    margin: 3rem 0; /* Restore desktop margin */
     align-items: start; /* Align both columns to top */
   }
 
@@ -1904,6 +1905,17 @@
 
 /* Mobile: 767px and below */
 @media (max-width: 767px) {
+  /* Remove excessive spacing on mobile */
+  .tour-header {
+    padding-top: 0.5rem !important; /* Minimal space on mobile */
+    margin-bottom: 0 !important;
+  }
+
+  .tour-hero {
+    margin-top: 0.5rem !important; /* Very tight spacing on mobile */
+    margin-bottom: 0.5rem !important;
+  }
+
   /* Hero gallery stacked */
   .tour-hero__gallery {
     grid-template-columns: 1fr;
@@ -2094,7 +2106,8 @@
 
   /* Title smaller on mobile */
   .tour-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
   }
 }
 
@@ -2430,7 +2443,7 @@
 }
 
 .price-amount {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1E1E1E;
 }
@@ -2474,7 +2487,8 @@
 }
 
 .form-hint {
-  display: none;
+  display: block;
+  margin-top: 0.25rem;
 }
 
 /* Primary CTA - Brand Blue (changed from alarming red) */
@@ -3641,3 +3655,64 @@
   }
 }
 
+
+
+/* ======================================================
+   MOBILE-SPECIFIC WHITE SPACE FIXES
+   Added to eliminate excessive spacing on mobile view
+   ====================================================== */
+@media (max-width: 767px) {
+  /* Remove all excessive top spacing */
+  .tour-header {
+    padding-top: 0.5rem !important; /* Minimal top padding */
+    margin: 0 0 0.25rem 0 !important; /* Tiny bottom margin */
+  }
+
+  .tour-hero {
+    margin: 0.25rem 0 !important; /* Minimal margins */
+  }
+
+  /* Ensure header starts at top */
+  .site-header + .tour-header {
+    margin-top: 0 !important;
+  }
+
+  /* Remove any container top padding that might add space */
+  .tour-header .container {
+    padding-top: 0.5rem !important;
+  }
+
+  /* Tighten breadcrumb spacing */
+  .breadcrumbs {
+    padding: 0.5rem 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Reduce title spacing */
+  .tour-header__title-row {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .tour-title {
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Reduce rating row spacing */
+  .tour-header__rating {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Fix for any phantom spacing after nav header */
+  #main-content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Ensure tour content starts immediately */
+  main > section:first-child,
+  #main-content > section:first-child {
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
+  }
+}

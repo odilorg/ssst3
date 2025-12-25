@@ -93,19 +93,77 @@ class TourPricingTier extends Model
     // ==========================================
 
     /**
-     * Get formatted price total (with currency)
+     * Get formatted price total in USD
      */
     public function getFormattedPriceTotalAttribute(): string
     {
-        return number_format($this->price_total, 0, '.', ' ') . ' UZS';
+        return '$' . number_format($this->price_total, 0) . ' USD';
     }
 
     /**
-     * Get formatted price per person (with currency)
+     * Get formatted price per person in USD
      */
     public function getFormattedPricePerPersonAttribute(): string
     {
-        return number_format($this->price_per_person, 0, '.', ' ') . ' UZS';
+        return '$' . number_format($this->price_per_person, 0) . ' USD';
+    }
+
+    /**
+     * Get price total in UZS (converted from USD)
+     */
+    public function getPriceTotalUzsAttribute(): float
+    {
+        $exchangeRate = $this->getExchangeRate();
+        return round($this->price_total * $exchangeRate);
+    }
+
+    /**
+     * Get formatted price total in UZS
+     */
+    public function getFormattedPriceTotalUzsAttribute(): string
+    {
+        return number_format($this->price_total_uzs, 0, '.', ' ') . ' UZS';
+    }
+
+    /**
+     * Get price per person in UZS (converted from USD)
+     */
+    public function getPricePerPersonUzsAttribute(): float
+    {
+        $exchangeRate = $this->getExchangeRate();
+        return round($this->price_per_person * $exchangeRate);
+    }
+
+    /**
+     * Get formatted price per person in UZS
+     */
+    public function getFormattedPricePerPersonUzsAttribute(): string
+    {
+        return number_format($this->price_per_person_uzs, 0, '.', ' ') . ' UZS';
+    }
+
+    /**
+     * Get current USD to UZS exchange rate from CBU.uz
+     */
+    protected function getExchangeRate(): float
+    {
+        try {
+            $date = now()->format('Y-m-d');
+            $response = \Illuminate\Support\Facades\Http::timeout(5)
+                ->get("https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/{$date}/");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data[0]['Rate'])) {
+                    return (float) $data[0]['Rate'];
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to fetch exchange rate from CBU.uz: ' . $e->getMessage());
+        }
+
+        // Fallback rate
+        return 12650.0;
     }
 
     /**

@@ -1,5 +1,5 @@
 {{-- Tour Overview Partial --}}
-    <h2 class="section-title">Overview</h2>
+    <h2 class="section-title">About This Tour</h2>
 
     <!-- Tour Meta Information -->
     <div class="tour-meta-bar">

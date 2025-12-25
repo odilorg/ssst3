@@ -1,0 +1,9 @@
+<svg width="80" height="40" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="40" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1"/>
+  <g fill="#0369a1">
+    <rect x="12" y="12" width="16" height="16" rx="2" fill="#0ea5e9" opacity="0.2"/>
+    <path d="M20 16c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm1.5 3.5l-2 2c-.1.1-.3.2-.5.2s-.4-.1-.5-.2l-1-1c-.3-.3-.3-.8 0-1.1s.8-.3 1.1 0l.5.5 1.5-1.5c.3-.3.8-.3 1.1 0s.3.8-.2 1.1z" fill="#0369a1"/>
+    <text x="32" y="18" font-size="7" font-weight="bold">PCI DSS</text>
+    <text x="32" y="26" font-size="6">COMPLIANT</text>
+  </g>
+</svg>

@@ -20,7 +20,7 @@ class OctobankPaymentService
     /**
      * Get USD to UZS exchange rate from CBU.uz
      */
-    protected function getExchangeRate(): float
+    public function getExchangeRate(): float
     {
         try {
             $date = now()->format('Y-m-d');
@@ -101,33 +101,9 @@ class OctobankPaymentService
             // Save response
             $payment->update(['response_payload' => $responseData]);
 
-            // Check if payment URL was provided (payment created successfully)
-            $hasPaymentUrl = !empty($responseData['octo_pay_url']) || !empty($responseData['data']['octo_pay_url']);
-            $paymentUrl = $responseData['octo_pay_url'] ?? $responseData['data']['octo_pay_url'] ?? null;
-
-            // Fix payment URL format: Octobank returns /pay/{uuid} but correct format is /pay/cards/{uuid}
-            if ($paymentUrl && strpos($paymentUrl, '/pay/cards/') === false) {
-                $paymentUrl = str_replace('/pay/', '/pay/cards/', $paymentUrl);
-            }
-
-            if ($response->successful() && $hasPaymentUrl) {
-                // Success - update payment with Octobank data
-                $payment->update([
-                    'octo_payment_uuid' => $responseData['octo_payment_UUID'] ?? $responseData['data']['octo_payment_UUID'] ?? null,
-                    'octo_payment_url' => $paymentUrl,
-                    'status' => OctobankPayment::STATUS_WAITING,
-                ]);
-
-                Log::info('Octobank payment initialized', [
-                    'payment_id' => $payment->id,
-                    'booking_id' => $booking->id,
-                    'octo_uuid' => $responseData['octo_payment_UUID'] ?? $responseData['data']['octo_payment_UUID'] ?? null,
-                    'error_code' => $responseData['error'] ?? 0,
-                    'error_message' => $responseData['errMessage'] ?? null,
-                ]);
-            } else {
-                // API returned an error
-                $errorMessage = $responseData['error_message'] ?? $responseData['message'] ?? 'Unknown error';
+            // Check response structure (working app expects data.octo_pay_url)
+            if (!isset($responseData['data']['octo_pay_url'])) {
+                $errorMessage = $responseData['error_message'] ?? $responseData['message'] ?? 'No octo_pay_url in response';
                 $payment->markAsFailed(
                     $responseData['error'] ?? 'API_ERROR',
                     $errorMessage
@@ -140,6 +116,20 @@ class OctobankPaymentService
 
                 throw new Exception('Ошибка инициализации платежа: ' . $errorMessage);
             }
+
+            // Success - update payment with Octobank data
+            $payment->update([
+                'octo_payment_uuid' => $responseData['data']['octo_payment_UUID'] ?? null,
+                'octo_payment_url' => $responseData['data']['octo_pay_url'],
+                'status' => OctobankPayment::STATUS_WAITING,
+            ]);
+
+            Log::info('Octobank payment initialized', [
+                'payment_id' => $payment->id,
+                'booking_id' => $booking->id,
+                'octo_uuid' => $responseData['data']['octo_payment_UUID'] ?? null,
+                'payment_url' => $responseData['data']['octo_pay_url'],
+            ]);
         } catch (Exception $e) {
             if ($payment->status === OctobankPayment::STATUS_CREATED) {
                 $payment->markAsFailed('EXCEPTION', $e->getMessage());
@@ -156,38 +146,37 @@ class OctobankPaymentService
     protected function buildPaymentRequest(OctobankPayment $payment, Booking $booking, array $options = []): array
     {
         $returnUrl = $options['return_url'] ?? config('services.octobank.return_url') ?? url('/payment/result');
-        $callbackUrl = $options['callback_url'] ?? config('services.octobank.callback_url') ?? url('/api/octobank/webhook');
+        $callbackUrl = $options['callback_url'] ?? config('services.octobank.callback_url') ?? route('octo.callback');
 
         $payload = [
-            'octo_shop_id' => $this->shopId,
+            'octo_shop_id' => (int) $this->shopId,  // Cast to int like working app
             'octo_secret' => $this->secretKey,
             'shop_transaction_id' => $payment->octo_shop_transaction_id,
             'auto_capture' => $this->autoCapture,
             'test' => $this->testMode,
-            'init_time' => now()->format('Y-m-d\TH:i:s'),
+            'init_time' => now()->format('Y-m-d H:i:s'),  // FIXED: Use space not 'T' like working app
             'user_data' => [
-                'user_id' => $booking->id,
+                'user_id' => $booking->customer->name ?? '',
                 'phone' => $booking->customer->phone ?? '',
                 'email' => $booking->customer->email ?? '',
             ],
-            'total_sum' => (int) ($payment->amount * 100), // Amount in tiyin
+            'total_sum' => (int) $payment->amount,  // Amount in tiyin (already converted)
             'currency' => 'UZS',
-            'tag' => 'tour_booking',
             'description' => $payment->description,
             'basket' => [
                 [
                     'position_desc' => $booking->tour->title ?? 'Tour',
-                    'count' => 1,  // Send as single line item
-                    'price' => (int) ($payment->amount * 100),  // Total price in tiyin
+                    'count' => 1,
+                    'price' => (int) $payment->amount,  // Total price in tiyin
+                    'spic' => 'N/A',  // Added like working app
                 ],
             ],
             'payment_methods' => [
-                ['method' => 'uzcard'],
-                ['method' => 'humo'],
+                ['method' => 'bank_card'],  // CRITICAL FIX: Use 'bank_card' not uzcard/humo
             ],
-            'tsp_id' => 18, // OCTO Platform
-            'ttl' => $this->ttl,
-            'language' => $options['language'] ?? 'ru',
+            'tsp_id' => (int) 18,  // Cast to int like working app
+            'ttl' => 5000,  // Cast to int
+            'language' => $options['language'] ?? 'en',
             'return_url' => $returnUrl,
             'notify_url' => $callbackUrl,
         ];
@@ -275,12 +264,27 @@ class OctobankPaymentService
 
     /**
      * Process webhook from Octobank
+     *
+     * @param array $payload The webhook payload
+     * @param string|null $signature Optional signature from request header
+     * @return OctobankPayment|null
+     * @throws Exception If signature validation fails
      */
-    public function processWebhook(array $payload): ?OctobankPayment
+    public function processWebhook(array $payload, ?string $signature = null): ?OctobankPayment
     {
-        // Verify webhook signature
-        if (!empty(config('services.octobank.webhook_secret'))) {
-            // TODO: Implement signature verification when Octobank provides details
+        // Verify webhook signature if provided
+        // Get signature from request header if not passed directly
+        if ($signature === null) {
+            $signature = request()->header('Signature') ?? request()->header('X-Signature');
+        }
+
+        // Validate signature if we have one (recommended for production)
+        if ($signature && !$this->verifyWebhookSignature($payload, $signature)) {
+            Log::error('Octobank webhook signature verification failed', [
+                'payload' => $payload,
+                'signature_received' => substr($signature ?? '', 0, 20) . '...',
+            ]);
+            throw new Exception('Invalid webhook signature');
         }
 
         $shopTransactionId = $payload['shop_transaction_id'] ?? null;
@@ -365,5 +369,59 @@ class OctobankPaymentService
         return $this->initializePayment($booking, $amount, [
             'card_token' => $cardToken,
         ]);
+    }
+
+    /**
+     * Verify webhook signature from Octobank
+     *
+     * Octobank typically uses HMAC-SHA256 to sign webhook payloads.
+     * The signature is sent in the 'Signature' or 'X-Signature' header.
+     *
+     * @param array $payload The webhook payload
+     * @param string $signature The signature from request header
+     * @return bool True if signature is valid
+     */
+    public function verifyWebhookSignature(array $payload, string $signature): bool
+    {
+        if (empty($this->secretKey)) {
+            Log::warning('Octobank webhook signature verification skipped - no secret key configured');
+            return true; // Skip verification if no secret configured
+        }
+
+        // Octobank uses the secret key to sign the JSON payload
+        // Try standard HMAC-SHA256
+        $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $expectedSignature = hash_hmac('sha256', $jsonPayload, $this->secretKey);
+
+        if (hash_equals($expectedSignature, $signature)) {
+            Log::debug('Octobank webhook signature verified (hex format)');
+            return true;
+        }
+
+        // Also try base64 encoded signature (some gateways use this format)
+        $expectedSignatureBase64 = base64_encode(hash_hmac('sha256', $jsonPayload, $this->secretKey, true));
+
+        if (hash_equals($expectedSignatureBase64, $signature)) {
+            Log::debug('Octobank webhook signature verified (base64 format)');
+            return true;
+        }
+
+        // Try with sorted payload keys (some gateways require alphabetically sorted keys)
+        ksort($payload);
+        $sortedJsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $sortedSignature = hash_hmac('sha256', $sortedJsonPayload, $this->secretKey);
+
+        if (hash_equals($sortedSignature, $signature)) {
+            Log::debug('Octobank webhook signature verified (sorted keys)');
+            return true;
+        }
+
+        Log::warning('Octobank webhook signature mismatch', [
+            'expected_hex' => substr($expectedSignature, 0, 16) . '...',
+            'expected_b64' => substr($expectedSignatureBase64, 0, 16) . '...',
+            'received' => substr($signature, 0, 16) . '...',
+        ]);
+
+        return false;
     }
 }

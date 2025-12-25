@@ -28,6 +28,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'booking_id' => 'required|exists:bookings,id',
+            'payment_type' => 'required|in:deposit,full',
             'save_card' => 'boolean',
             'card_token' => 'nullable|string',
         ]);
@@ -43,21 +44,50 @@ class PaymentController extends Controller
                 ], 400);
             }
 
-            // Calculate amount based on tiered pricing
-            $amount = $this->calculateBookingAmount($booking);
+            // Calculate base amount
+            $totalAmount = $this->calculateBookingAmount($booking);
 
-            if ($amount <= 0) {
+            if ($totalAmount <= 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Не удалось рассчитать сумму оплаты',
                 ], 400);
             }
 
-            // Initialize payment
-            $payment = $this->paymentService->initializePayment($booking, $amount, [
+            // Calculate payment amount based on type
+            $paymentAmount = $totalAmount;
+            $description = "Оплата тура: {$booking->tour->title}";
+
+            if ($request->payment_type === 'deposit') {
+                // 30% deposit
+                $depositPercentage = 30;
+                $paymentAmount = $totalAmount * 0.30;
+                $description = "Депозит 30% для тура: {$booking->tour->title}";
+
+                // Update booking with deposit info
+                $booking->payment_method = 'deposit';
+                $booking->deposit_amount = $paymentAmount / $this->paymentService->getExchangeRate(); // Store in USD
+                $booking->balance_amount = ($totalAmount - $paymentAmount) / $this->paymentService->getExchangeRate(); // Store in USD
+                $booking->balance_due_date = now()->addDays(30)->format('Y-m-d');
+                $booking->save();
+            } else {
+                // Full payment with 3% discount
+                $paymentAmount = $totalAmount * 0.97;
+                $description = "Полная оплата тура со скидкой 3%: {$booking->tour->title}";
+
+                // Update booking with full payment info
+                $booking->payment_method = 'full_payment';
+                $booking->discount_amount = $totalAmount * 0.03 / $this->paymentService->getExchangeRate(); // Store in USD
+                $booking->discount_reason = 'Full payment discount 3%';
+                $booking->save();
+            }
+
+            // Initialize payment with Octobank
+            $payment = $this->paymentService->initializePayment($booking, $paymentAmount, [
                 'save_card' => $request->boolean('save_card'),
                 'card_token' => $request->card_token,
                 'language' => app()->getLocale(),
+                'description' => $description,
             ]);
 
             return response()->json([
@@ -88,7 +118,7 @@ class PaymentController extends Controller
     protected function calculateBookingAmount(Booking $booking): float
     {
         $tour = $booking->tour;
-        $guestCount = $booking->number_of_guests ?? 1;
+        $guestCount = $booking->pax_total ?? $booking->number_of_guests ?? 1;
 
         $usdAmount = 0;
 
@@ -140,13 +170,14 @@ class PaymentController extends Controller
                 'label' => $tier->label ?: $tier->guest_range_display,
                 'price_total' => $tier->price_total,
                 'price_per_person' => $tier->price_per_person,
-                'formatted_total' => number_format($tier->price_total, 0, '.', ' ') . ' UZS',
+                'price_total_uzs' => $tier->price_total_uzs,
+                'formatted_total' => $tier->formatted_total_uzs,
             ];
         });
 
         // Get specific tier for current guest count
         $matchingTier = $tour->getPricingTierForGuests($guestCount);
-        
+
         if ($matchingTier) {
             return response()->json([
                 'success' => true,
@@ -155,23 +186,27 @@ class PaymentController extends Controller
                     'label' => $matchingTier->label ?: $matchingTier->guest_range_display,
                     'price_total' => $matchingTier->price_total,
                     'price_per_person' => $matchingTier->price_per_person,
-                    'formatted_total' => $matchingTier->formatted_total,
+                    'price_total_uzs' => $matchingTier->price_total_uzs,
+                    'formatted_total' => $matchingTier->formatted_total_uzs,
                 ],
                 'all_tiers' => $allTiers,
             ]);
         }
 
-        // Fallback to legacy pricing
-        $legacyPrice = $tour->price_per_person * $guestCount;
-        
+        // Fallback to legacy pricing (convert USD to UZS)
+        $legacyPriceUsd = $tour->price_per_person * $guestCount;
+        $exchangeRate = $this->paymentService->getExchangeRate();
+        $legacyPriceUzs = round($legacyPriceUsd * $exchangeRate);
+
         return response()->json([
             'success' => true,
             'has_tiered_pricing' => false,
             'current_tier' => [
                 'label' => $guestCount . ' ' . trans_choice('guest|guests', $guestCount),
-                'price_total' => $legacyPrice,
+                'price_total' => $legacyPriceUsd,
                 'price_per_person' => $tour->price_per_person,
-                'formatted_total' => number_format($legacyPrice, 0, '.', ' ') . ' UZS',
+                'price_total_uzs' => $legacyPriceUzs,
+                'formatted_total' => number_format($legacyPriceUzs, 0, '.', ' ') . ' UZS',
             ],
             'all_tiers' => [],
         ]);

@@ -110,14 +110,25 @@ class BookingController extends Controller
                 ]
             );
 
-            // Calculate pricing
-            $pricePerPerson = $tour->price_per_person ?? 0;
+            // Calculate pricing using tiered pricing if available
             $numberOfGuests = $request->number_of_guests;
-            $totalAmount = $pricePerPerson * $numberOfGuests;
+            $pricingTier = $tour->getPricingTierForGuests($numberOfGuests);
+
+            if ($pricingTier) {
+                // Use tiered pricing
+                $totalAmount = $pricingTier->price_total;
+                $pricePerPerson = $pricingTier->price_per_person;
+            } else {
+                // Fallback to base price
+                $pricePerPerson = $tour->price_per_person ?? 0;
+                $totalAmount = $pricePerPerson * $numberOfGuests;
+            }
 
             // Debug logging
             Log::info('Booking Creation Debug', [
                 'tour_id' => $tour->id,
+                'has_tiered_pricing' => $pricingTier ? true : false,
+                'tier_id' => $pricingTier?->id,
                 'price_per_person' => $pricePerPerson,
                 'number_of_guests' => $numberOfGuests,
                 'calculated_total' => $totalAmount,

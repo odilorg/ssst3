@@ -1,6 +1,6 @@
 {{-- Tour Itinerary Partial - Simplified Day Cards --}}
 <div class="itinerary-header">
-    <h2 class="section-title">Tour Itinerary</h2>
+    <h2 class="section-title">Day-by-Day Itinerary</h2>
     @if($tour->topLevelItems && $tour->topLevelItems->isNotEmpty())
     <div class="itinerary-controls" aria-controls="itinerary-list">
         <button type="button" class="btn-expand-all" id="expandAll" onclick="expandAllDays()">Expand all</button>
@@ -15,7 +15,7 @@
             <details class="day-card" {{ $dayIndex < 2 ? 'open' : '' }}>
                 <summary class="day-card-summary">
                     <span class="day-badge">Day {{ $dayIndex + 1 }}</span>
-                    <span class="day-card-title">{{ $day->title }}</span>
+                    <span class="day-card-title">{{ preg_replace('/^Day \d+:\s*/', '', $day->title) }}</span>
                     <i class="fas fa-chevron-down day-card-icon" aria-hidden="true"></i>
                 </summary>
                 <div class="day-card-content">
