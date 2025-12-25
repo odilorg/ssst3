@@ -261,7 +261,30 @@
   'currency' => $tour->currency ?? 'USD',
   'maxGuests' => intval($tour->max_guests ?? 15),
   'minGuests' => intval($tour->min_guests ?? 1),
-  'duration' => $tour->duration_text ?? ($tour->duration_days . ' days')
+  'duration' => $tour->duration_text ?? ($tour->duration_days . ' days'),
+  'pricingTiers' => $tour->pricingTiers->map(function($tier) {
+    return [
+      'id' => $tier->id,
+      'minGuests' => $tier->min_guests,
+      'maxGuests' => $tier->max_guests,
+      'pricePerPerson' => floatval($tier->price_per_person),
+      'priceTotal' => floatval($tier->price_total),
+      'label' => $tier->display_label,
+    ];
+  }),
+  'departures' => $tour->upcomingDepartures->map(function($departure) {
+    return [
+      'id' => $departure->id,
+      'startDate' => $departure->start_date->format('Y-m-d'),
+      'endDate' => $departure->end_date->format('Y-m-d'),
+      'dateRange' => $departure->date_range,
+      'bookedPax' => $departure->booked_pax,
+      'maxPax' => $departure->max_pax,
+      'spotsRemaining' => $departure->spots_remaining,
+      'status' => $departure->status,
+      'statusBadge' => $departure->status_badge,
+    ];
+  }),
 ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
           </script>
 
@@ -277,6 +300,54 @@
 
           <!-- Booking Card -->
           <div class="booking-card">
+
+            <!-- Available Departure Dates -->
+            @if($tour->upcomingDepartures && $tour->upcomingDepartures->count() > 0)
+            <div class="departure-dates-section" style="margin-bottom: 16px;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                </svg>
+                Available Departure Dates
+              </h3>
+              <div class="departure-dates-list" style="display: flex; flex-direction: column; gap: 8px;">
+                @foreach($tour->upcomingDepartures->take(4) as $departure)
+                <label class="departure-date-option" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                  <input type="radio" name="departure_id" value="{{ $departure->id }}" style="margin-right: 10px;" required>
+                  <div style="flex: 1;">
+                    <div style="font-size: 13px; font-weight: 600; color: #111827;">
+                      {{ $departure->start_date->format('M d') }} - {{ $departure->end_date->format('M d, Y') }}
+                    </div>
+                    <div style="font-size: 11px; color: #6b7280; margin-top: 2px;">
+                      {{ $departure->booked_pax }}/{{ $departure->max_pax }} booked
+                      @if($departure->spots_remaining > 0)
+                        • {{ $departure->spots_remaining }} spot{{ $departure->spots_remaining > 1 ? 's' : '' }} left
+                      @endif
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    @php
+                      $badge = $departure->status_badge;
+                    @endphp
+                    <span style="font-size: 16px;">{{ $badge['icon'] }}</span>
+                    <span style="font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 600;
+                      @if($badge['color'] === 'green') background: #d1fae5; color: #065f46;
+                      @elseif($badge['color'] === 'orange') background: #fed7aa; color: #9a3412;
+                      @elseif($badge['color'] === 'red') background: #fecaca; color: #991b1b;
+                      @else background: #dbeafe; color: #1e40af;
+                      @endif
+                    ">{{ $badge['label'] }}</span>
+                  </div>
+                </label>
+                @endforeach
+              </div>
+              @if($tour->upcomingDepartures->count() > 4)
+              <button type="button" onclick="showAllDepartures()" style="margin-top: 8px; padding: 6px 12px; font-size: 12px; color: #667eea; background: none; border: 1px solid #667eea; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                View all {{ $tour->upcomingDepartures->count() }} departures
+              </button>
+              @endif
+            </div>
+            @endif
 
             <!-- Urgency Indicators -->
             <div class="booking-urgency" style="background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); border-left: 3px solid #ff6b35; padding: 10px 12px; margin-bottom: 12px; border-radius: 6px;">
@@ -3296,6 +3367,68 @@
   .btn--submit {
     height: 42px !important;
     font-size: 14px !important;
+  }
+}
+
+/* =====================================================
+   DEPARTURE DATE SELECTOR STYLES
+   ===================================================== */
+
+.departure-date-option {
+  transition: all 0.2s ease;
+}
+
+.departure-date-option:hover {
+  border-color: #667eea !important;
+  background: #f9fafb;
+}
+
+.departure-date-option input[type="radio"]:checked + div {
+  color: #667eea;
+}
+
+.departure-date-option:has(input[type="radio"]:checked) {
+  border-color: #667eea !important;
+  background: #ede9fe !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Hide radio button, use custom selection */
+.departure-date-option input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.departure-date-option input[type="radio"]:checked {
+  border-color: #667eea;
+  background: #667eea;
+}
+
+.departure-date-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+}
+
+@media (max-width: 767px) {
+  .departure-dates-section {
+    margin-bottom: 12px !important;
+  }
+
+  .departure-date-option {
+    padding: 8px 10px !important;
   }
 }
 </style>

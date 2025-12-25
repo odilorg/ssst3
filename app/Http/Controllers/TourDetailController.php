@@ -12,8 +12,17 @@ class TourDetailController extends Controller
      */
     public function show(string $slug): View
     {
-        // Find tour or 404
-        $tour = Tour::where('slug', $slug)->firstOrFail();
+        // Find tour or 404, load relationships
+        $tour = Tour::where('slug', $slug)
+            ->with([
+                'pricingTiers' => function($query) {
+                    $query->active()->ordered();
+                },
+                'upcomingDepartures' => function($query) {
+                    $query->limit(6); // Show next 6 departures
+                }
+            ])
+            ->firstOrFail();
 
         // Prepare SEO-friendly data using Tour model methods
         $pageTitle = $tour->getSeoTitle();
