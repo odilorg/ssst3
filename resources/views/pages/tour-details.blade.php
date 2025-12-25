@@ -3280,63 +3280,97 @@
   }
 }
 
-/* Scroll to Top Button */
+/* Scroll to Top Button - Modern Minimalist Design */
 .scroll-to-top {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-  color: white;
-  border: none;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #1f2937;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(20px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transform: translateY(20px) scale(0.9);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08);
   z-index: 95;
 }
 
 .scroll-to-top.visible {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .scroll-to-top:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-  background: linear-gradient(135deg, #5a67d8 0%, #6b4299 100%);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .scroll-to-top:active {
-  transform: translateY(0);
+  transform: translateY(-2px) scale(1);
+  transition: all 0.15s ease;
 }
 
 .scroll-to-top svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   stroke-width: 2.5;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.scroll-to-top:hover svg {
+  transform: translateY(-2px);
+}
+
+/* Pulse animation when near bottom */
+.scroll-to-top.pulse {
+  animation: scrollPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.1),
+      0 12px 32px rgba(0, 0, 0, 0.12);
+  }
 }
 
 /* Mobile positioning - above mobile CTA bar */
 @media (max-width: 767px) {
   .scroll-to-top {
-    bottom: 100px; /* Above mobile CTA bar which is 60px height */
-    right: 20px;
-    width: 44px;
-    height: 44px;
+    bottom: 90px; /* Above mobile CTA bar */
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
   }
 
   .scroll-to-top svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   /* When WhatsApp button is present, stack vertically */
