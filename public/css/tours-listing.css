@@ -386,7 +386,7 @@
 
 .faq-item {
     background: white;
-    padding: 20px;
+    padding: 18px 20px;
     border-radius: 8px;
     border: 1px solid #e2e8f0;
     box-shadow: none;
@@ -569,7 +569,7 @@
     }
 
     .faq-item {
-        padding: 16px;
+        padding: 16px 18px;
     }
 
     .faq-item__question {
