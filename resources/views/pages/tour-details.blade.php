@@ -303,7 +303,7 @@
 
             <!-- Available Departure Dates - Calendar Style -->
             @if($tour->upcomingDepartures && $tour->upcomingDepartures->count() > 0)
-            <div class="departure-calendar-section" style="margin-bottom: 20px;">
+            <div id="departure-calendar-section" class="departure-calendar-section" style="margin-bottom: 20px;">
               <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
@@ -858,7 +858,7 @@
       @endif
       <!-- Action Buttons Group -->
       <div class="mobile-cta__actions">
-        <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="Scroll to booking form">
+        <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="departure-calendar-section" aria-label="Select departure date">
           <svg class="icon icon--calendar-check" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm1 2h4v2H7V4zM2 9h14v8H2V9zm11.707 1.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
           Book Now
         </button>
@@ -4200,6 +4200,38 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
+})();
+</script>
+
+<!-- Mobile CTA Scroll Handler -->
+<script>
+(function() {
+  'use strict';
+
+  // Handle data-scroll-to attribute on mobile CTA button
+  document.addEventListener('DOMContentLoaded', function() {
+    const scrollButtons = document.querySelectorAll('[data-scroll-to]');
+
+    scrollButtons.forEach(function(button) {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('data-scroll-to');
+        const targetElement = document.getElementById(targetId) || document.querySelector('.' + targetId);
+
+        if (targetElement) {
+          // Scroll to element with offset for fixed headers
+          const offset = 80; // Adjust based on your header height
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  });
 })();
 </script>
 
