@@ -40,7 +40,7 @@ class PaymentController extends Controller
             if ($booking->payment_status === 'paid') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Этот заказ уже оплачен',
+                    'message' => 'This booking has already been paid',
                 ], 400);
             }
 
@@ -50,19 +50,19 @@ class PaymentController extends Controller
             if ($totalAmount <= 0) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Не удалось рассчитать сумму оплаты',
+                    'message' => 'Unable to calculate payment amount',
                 ], 400);
             }
 
             // Calculate payment amount based on type
             $paymentAmount = $totalAmount;
-            $description = "Оплата тура: {$booking->tour->title}";
+            $description = "Tour payment: {$booking->tour->title}";
 
             if ($request->payment_type === 'deposit') {
                 // 30% deposit
                 $depositPercentage = 30;
                 $paymentAmount = $totalAmount * 0.30;
-                $description = "Депозит 30% для тура: {$booking->tour->title}";
+                $description = "30% deposit for tour: {$booking->tour->title}";
 
                 // Update booking with deposit info
                 $booking->payment_method = 'deposit';
@@ -73,7 +73,7 @@ class PaymentController extends Controller
             } else {
                 // Full payment with 3% discount
                 $paymentAmount = $totalAmount * 0.97;
-                $description = "Полная оплата тура со скидкой 3%: {$booking->tour->title}";
+                $description = "Full payment with 3% discount: {$booking->tour->title}";
 
                 // Update booking with full payment info
                 $booking->payment_method = 'full_payment';
@@ -179,15 +179,20 @@ class PaymentController extends Controller
         $matchingTier = $tour->getPricingTierForGuests($guestCount);
 
         if ($matchingTier) {
+            // Calculate actual total for selected guest count
+            $actualPriceTotal = $matchingTier->price_per_person * $guestCount;
+            $exchangeRate = $this->paymentService->getExchangeRate();
+            $actualPriceTotalUzs = round($actualPriceTotal * $exchangeRate);
+
             return response()->json([
                 'success' => true,
                 'has_tiered_pricing' => true,
                 'current_tier' => [
                     'label' => $matchingTier->label ?: $matchingTier->guest_range_display,
-                    'price_total' => $matchingTier->price_total,
+                    'price_total' => $actualPriceTotal,
                     'price_per_person' => $matchingTier->price_per_person,
-                    'price_total_uzs' => $matchingTier->price_total_uzs,
-                    'formatted_total' => $matchingTier->formatted_total_uzs,
+                    'price_total_uzs' => $actualPriceTotalUzs,
+                    'formatted_total' => number_format($actualPriceTotalUzs, 0, '.', ' ') . ' UZS',
                 ],
                 'all_tiers' => $allTiers,
             ]);

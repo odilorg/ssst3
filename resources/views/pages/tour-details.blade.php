@@ -301,51 +301,76 @@
           <!-- Booking Card -->
           <div class="booking-card">
 
-            <!-- Available Departure Dates -->
+            <!-- Available Departure Dates - Calendar Style -->
             @if($tour->upcomingDepartures && $tour->upcomingDepartures->count() > 0)
-            <div class="departure-dates-section" style="margin-bottom: 16px;">
-              <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+            <div class="departure-calendar-section" style="margin-bottom: 20px;">
+              <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                 </svg>
-                Available Departure Dates
+                Select Departure Date
               </h3>
-              <div class="departure-dates-list" style="display: flex; flex-direction: column; gap: 8px;">
-                @foreach($tour->upcomingDepartures->take(4) as $departure)
-                <label class="departure-date-option" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                  <input type="radio" name="departure_id" value="{{ $departure->id }}" style="margin-right: 10px;" required>
-                  <div style="flex: 1;">
-                    <div style="font-size: 13px; font-weight: 600; color: #111827;">
-                      {{ $departure->start_date->format('M d') }} - {{ $departure->end_date->format('M d, Y') }}
-                    </div>
-                    <div style="font-size: 11px; color: #6b7280; margin-top: 2px;">
-                      {{ $departure->booked_pax }}/{{ $departure->max_pax }} booked
-                      @if($departure->spots_remaining > 0)
-                        • {{ $departure->spots_remaining }} spot{{ $departure->spots_remaining > 1 ? 's' : '' }} left
-                      @endif
-                    </div>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    @php
-                      $badge = $departure->status_badge;
-                    @endphp
-                    <span style="font-size: 16px;">{{ $badge['icon'] }}</span>
-                    <span style="font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 600;
-                      @if($badge['color'] === 'green') background: #d1fae5; color: #065f46;
-                      @elseif($badge['color'] === 'orange') background: #fed7aa; color: #9a3412;
-                      @elseif($badge['color'] === 'red') background: #fecaca; color: #991b1b;
-                      @else background: #dbeafe; color: #1e40af;
-                      @endif
-                    ">{{ $badge['label'] }}</span>
-                  </div>
-                </label>
-                @endforeach
+
+              <!-- Calendar Controls -->
+              <div class="calendar-controls" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <button type="button" id="prev-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+
+                <div style="flex: 1; display: flex; gap: 8px;">
+                  <select id="calendar-month" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                  </select>
+                  <select id="calendar-year" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
+                    <!-- Populated by JavaScript -->
+                  </select>
+                </div>
+
+                <button type="button" id="next-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
               </div>
-              @if($tour->upcomingDepartures->count() > 4)
-              <button type="button" onclick="showAllDepartures()" style="margin-top: 8px; padding: 6px 12px; font-size: 12px; color: #667eea; background: none; border: 1px solid #667eea; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
-                View all {{ $tour->upcomingDepartures->count() }} departures
-              </button>
-              @endif
+
+              <!-- Calendar Grid -->
+              <div class="calendar-grid" style="background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
+                <!-- Weekday Headers -->
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px;">
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Su</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mo</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tu</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">We</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Th</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Fr</div>
+                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sa</div>
+                </div>
+
+                <!-- Calendar Days (populated by JavaScript) -->
+                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
+                  <!-- JavaScript will populate this -->
+                </div>
+              </div>
+
+              <!-- Selected Departure Info -->
+              <div id="selected-departure-info" style="margin-top: 12px; padding: 12px; background: #f0f4ff; border-left: 3px solid #667eea; border-radius: 6px; display: none;">
+                <div style="font-size: 11px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Selected Departure:</div>
+                <div id="selected-departure-text" style="font-size: 13px; font-weight: 600; color: #111827;"></div>
+                <div id="selected-departure-status" style="font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px;"></div>
+              </div>
             </div>
             @endif
 
@@ -488,26 +513,8 @@
               @csrf
               <!-- Hidden fields -->
               <input type="hidden" name="tour_id" id="tour-id" value="">
-
-              <!-- Date Picker -->
-              <div class="form-group">
-                <label for="tour-date" class="form-label">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  id="tour-date"
-                  name="tour-date"
-                  class="form-input"
-                  required
-                  aria-required="true"
-                  aria-describedby="date-hint date-error"
-                  autocomplete="off"
-                  min=""
-                  data-min-date-offset="1">
-                <span id="date-hint" class="form-hint">Select your preferred tour date (at least 24 hours in advance)</span>
-                <span id="date-error" class="form-error" role="alert"></span>
-              </div>
+              <input type="hidden" name="departure_id" id="departure_id">
+              <input type="hidden" name="start_date" id="start_date">
 
               <!-- Guest Selector -->
               <div class="form-group">
@@ -772,27 +779,8 @@
             </div>
 
             <!-- Payment Security Badges -->
-            <div class="payment-security-badges">
-              <div class="security-badge">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="5" width="20" height="14" rx="2" stroke="#94A3B8" stroke-width="1.5"/>
-                  <path d="M2 10h20" stroke="#94A3B8" stroke-width="1.5"/>
-                  <path d="M7 15h3" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-                <span>Card payments</span>
-              </div>
-              <div class="security-badge">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7.2L12 16.5 5.7 21.2 8 14l-6-4.6h7.6L12 2z" stroke="#94A3B8" stroke-width="1.5" fill="none"/>
-                </svg>
-                <span>Verified merchant</span>
-              </div>
-              <div class="security-badge">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#94A3B8"/>
-                </svg>
-                <span>PCI compliant</span>
-              </div>
+            <div class="payment-security-badges" style="text-align: center; color: #64748b; font-size: 12px; line-height: 1.5;">
+              💳 Secure payments • ⭐ Verified merchant • 🔒 PCI certified
             </div>
 
             <!-- SSL Certificate Notice -->
@@ -930,116 +918,108 @@
     </svg>
   </button>
 
-  <!-- BOOKING CONFIRMATION MODAL - Modern Minimalist Design -->
+  <!-- BOOKING CONFIRMATION MODAL - Modern Bottom Sheet Design -->
   <div id="booking-confirmation-modal" class="modal-overlay modal-overlay--glassmorphic" style="display: none;">
-    <div class="modal-container modal-container--minimal">
-      <!-- Minimal Header -->
-      <div class="modal-header-minimal">
+    <div class="modal-container modal-container--bottomsheet">
+      <!-- Drag Handle -->
+      <div class="bottomsheet-handle"></div>
+
+      <!-- Compact Header -->
+      <div class="modal-header-compact">
         <button class="modal-close-minimal" aria-label="Close">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M15 5L5 15M5 5l10 10"/>
           </svg>
         </button>
-        <div class="success-animation">
-          <svg class="checkmark-svg" width="56" height="56" viewBox="0 0 56 56">
-            <circle class="checkmark-circle" cx="28" cy="28" r="26" fill="none" stroke="#059669" stroke-width="2"/>
-            <path class="checkmark-check" d="M16 28l8 8 16-16" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h2 class="modal-title-minimal">Booking Confirmed</h2>
-        <p class="modal-reference-minimal">
-          <span id="modal-reference">BK-2025-XXX</span>
-        </p>
-      </div>
-
-      <!-- Essential Info Only -->
-      <div class="modal-body-minimal">
-        <div class="booking-info-card">
-          <div class="info-row">
-            <span class="info-label">Tour</span>
-            <span class="info-value" id="modal-tour-name">...</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Date</span>
-            <span class="info-value" id="modal-date">...</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Guests</span>
-            <span class="info-value" id="modal-guests">...</span>
-          </div>
-          <div class="info-row info-row--total">
-            <span class="info-label">Total</span>
-            <span class="info-value info-value--price" id="modal-total">$200.00</span>
-          </div>
-        </div>
-
-        <!-- Minimal Next Steps -->
-        <div class="next-steps-minimal">
-          <p class="next-step-text">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.5">
-              <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
+        <div class="header-content-compact">
+          <div class="success-checkmark-compact">
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <circle cx="10" cy="10" r="9" fill="none" stroke="#059669" stroke-width="1.5"/>
+              <path d="M6 10l3 3 5-5" fill="none" stroke="#059669" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            Confirmation sent to <span id="modal-customer-email">your email</span>
-          </p>
+          </div>
+          <div class="header-text-compact">
+            <h2 class="modal-title-compact">Booking Confirmed</h2>
+            <p class="modal-reference-compact" id="modal-reference">BK-2025-XXX</p>
+          </div>
         </div>
       </div>
 
-      <!-- Payment Options -->
-      <div class="modal-payment-options" id="payment-options-section">
-        <h4 class="payment-options-title">Choose Payment Option</h4>
-
-        <!-- Deposit Option -->
-        <label class="payment-option-minimal recommended">
-          <input type="radio" name="payment_type" value="deposit" checked>
-          <div class="option-content-minimal">
-            <div class="option-header-minimal">
-              <span class="recommended-badge-minimal">RECOMMENDED</span>
-              <strong>Pay 30% Deposit</strong>
-            </div>
-            <div class="option-details-minimal">
-              <span class="deposit-amount" id="deposit-amount">$60</span>
-              <span class="deposit-text">now, balance later</span>
-            </div>
+      <!-- Scrollable Body -->
+      <div class="modal-body-scrollable">
+        <div class="booking-info-card-compact">
+          <div class="info-row-compact">
+            <span class="info-label-compact">TOUR</span>
+            <span class="info-value-compact" id="modal-tour-name">...</span>
           </div>
-        </label>
-
-        <!-- Full Payment Option -->
-        <label class="payment-option-minimal">
-          <input type="radio" name="payment_type" value="full">
-          <div class="option-content-minimal">
-            <div class="option-header-minimal">
-              <span class="discount-badge-minimal">SAVE 3%</span>
-              <strong>Pay in Full</strong>
-            </div>
-            <div class="option-details-minimal">
-              <span class="full-amount" id="full-amount">$194</span>
-              <span class="full-text">with 3% discount</span>
-            </div>
+          <div class="info-row-compact">
+            <span class="info-label-compact">DATE</span>
+            <span class="info-value-compact" id="modal-date">...</span>
           </div>
-        </label>
+          <div class="info-row-compact">
+            <span class="info-label-compact">GUESTS</span>
+            <span class="info-value-compact" id="modal-guests">...</span>
+          </div>
+          <div class="info-row-compact info-row--total">
+            <span class="info-label-compact">TOTAL</span>
+            <span class="info-value--price-compact" id="modal-total">$200.00</span>
+          </div>
+        </div>
+
+        <!-- Compact Confirmation Notice -->
+        <div class="confirmation-notice-compact">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" opacity="0.4">
+            <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
+          </svg>
+          <span>Sent to <span id="modal-customer-email">your email</span></span>
+        </div>
+
+        <!-- Payment Options Compact -->
+        <div class="payment-options-compact">
+          <h4 class="payment-title-compact">Choose Payment</h4>
+
+          <!-- Deposit Option -->
+          <label class="payment-card-compact recommended">
+            <input type="radio" name="payment_type" value="deposit" checked>
+            <div class="payment-content-compact">
+              <div class="payment-header-compact">
+                <span class="badge-recommended">RECOMMENDED</span>
+                <strong class="payment-name-compact">Pay 30% Deposit</strong>
+              </div>
+              <div class="payment-price-compact">
+                <span class="price-amount" id="deposit-amount">$60</span>
+                <span class="price-desc">now, balance later</span>
+              </div>
+            </div>
+          </label>
+
+          <!-- Full Payment Option -->
+          <label class="payment-card-compact">
+            <input type="radio" name="payment_type" value="full">
+            <div class="payment-content-compact">
+              <div class="payment-header-compact">
+                <span class="badge-discount">SAVE 3%</span>
+                <strong class="payment-name-compact">Pay in Full</strong>
+              </div>
+              <div class="payment-price-compact">
+                <span class="price-amount" id="full-amount">$194</span>
+                <span class="price-desc">with 3% discount</span>
+              </div>
+            </div>
+          </label>
+        </div>
       </div>
 
-      <!-- Single CTA -->
-      <div class="modal-footer-minimal">
-        <button class="btn-minimal-primary" id="proceed-to-payment-btn">
+      <!-- Sticky Footer -->
+      <div class="modal-footer-sticky">
+        <button class="btn-payment-primary" id="proceed-to-payment-btn" type="button">
           <span id="payment-btn-text">Pay $60 Now</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M9.3 3.3a1 1 0 011.4 0l4 4a1 1 0 010 1.4l-4 4a1 1 0 01-1.4-1.4L11.6 9H2a1 1 0 110-2h9.6L9.3 4.7a1 1 0 010-1.4z"/>
           </svg>
         </button>
-
-        <!-- Subtle trust indicators -->
-        <div class="trust-minimal">
-          <div class="trust-icons">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.4">
-              <path d="M8 1C6.3 1 5 2.3 5 4v2H3c-.6 0-1 .4-1 1v6c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V7c0-.6-.4-1-1-1h-2V4c0-1.7-1.3-3-3-3zm0 1.5c.8 0 1.5.7 1.5 1.5v2h-3V4c0-.8.7-1.5 1.5-1.5z"/>
-            </svg>
-            <span class="trust-text">Secure payment</span>
-            <div class="payment-icons-minimal">
-              <img src="/images/payments/visa.svg" alt="Visa" class="payment-icon-minimal">
-              <img src="/images/payments/mastercard.svg" alt="Mastercard" class="payment-icon-minimal">
-            </div>
-          </div>
+        <div class="trust-footer-compact">
+          🔒 Secure payment • 💳 Visa/Mastercard
         </div>
       </div>
     </div>
@@ -2169,6 +2149,46 @@
   to { transform: scale(1); }
 }
 
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes checkmarkFadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes highlightFlash {
+  0% {
+    background: #eff6ff;
+    transform: scale(1);
+  }
+  50% {
+    background: #dbeafe;
+    transform: scale(1.02);
+  }
+  100% {
+    background: #eff6ff;
+    transform: scale(1);
+  }
+}
+
 .checkmark-circle {
   stroke-dasharray: 166;
   stroke-dashoffset: 166;
@@ -2445,8 +2465,335 @@
   filter: grayscale(100%);
 }
 
+/* ============================================ */
+/* COMPACT BOTTOM SHEET MODAL (NEW DESIGN)    */
+/* ============================================ */
+
+/* Bottom Sheet Container */
+.modal-container--bottomsheet {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  max-width: 500px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUpBottomSheet 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUpBottomSheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Drag Handle */
+.bottomsheet-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  margin: 10px auto 8px;
+  flex-shrink: 0;
+}
+
+/* Compact Header */
+.modal-header-compact {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.header-content-compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.success-checkmark-compact {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.header-text-compact {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-title-compact {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.modal-reference-compact {
+  font-size: 11px;
+  color: #6B7280;
+  margin: 2px 0 0;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+/* Scrollable Body */
+.modal-body-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Compact Info Card */
+.booking-info-card-compact {
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.info-row-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 0;
+  gap: 12px;
+}
+
+.info-row-compact:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.info-row--total {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+.info-label-compact {
+  font-size: 10px;
+  color: #6B7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.info-value-compact {
+  font-size: 13px;
+  color: #111827;
+  font-weight: 500;
+  text-align: right;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.info-value--price-compact {
+  font-size: 20px;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Compact Confirmation Notice */
+.confirmation-notice-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #F0F9FF;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: #6B7280;
+}
+
+.confirmation-notice-compact svg {
+  flex-shrink: 0;
+}
+
+/* Payment Options Compact */
+.payment-options-compact {
+  margin-bottom: 12px;
+}
+
+.payment-title-compact {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px;
+}
+
+.payment-card-compact {
+  display: block;
+  position: relative;
+  padding: 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.payment-card-compact input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.payment-card-compact input[type="radio"]:checked ~ .payment-content-compact {
+  border-color: #059669;
+}
+
+.payment-card-compact.recommended {
+  border-color: #059669;
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+}
+
+.payment-content-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-header-compact {
+  flex: 1;
+  min-width: 0;
+}
+
+.badge-recommended,
+.badge-discount {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.badge-recommended {
+  background: #059669;
+  color: white;
+}
+
+.badge-discount {
+  background: #DC2626;
+  color: white;
+}
+
+.payment-name-compact {
+  display: block;
+  font-size: 13px;
+  color: #111827;
+  margin-top: 2px;
+}
+
+.payment-price-compact {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.price-amount {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.price-desc {
+  display: block;
+  font-size: 10px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+/* Sticky Footer */
+.modal-footer-sticky {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.btn-payment-primary {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.btn-payment-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+}
+
+.btn-payment-primary:active {
+  transform: translateY(0);
+}
+
+.trust-footer-compact {
+  text-align: center;
+  font-size: 11px;
+  color: #6B7280;
+  margin-top: 10px;
+}
+
 /* Mobile Optimizations */
 @media (max-width: 640px) {
+  .modal-container--bottomsheet {
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modal-body-scrollable {
+    padding: 14px 16px;
+  }
+
+  .modal-header-compact {
+    padding: 0 16px 14px;
+  }
+
+  .modal-footer-sticky {
+    padding: 14px 16px;
+  }
+
+  .info-value-compact {
+    font-size: 12px;
+  }
+
+  .info-value--price-compact {
+    font-size: 18px;
+  }
+
   .modal-container--minimal {
     border-radius: 16px;
     margin: 10px;
@@ -2642,8 +2989,6 @@
 
 /* Payment Security Badges */
 .payment-security-badges {
-  display: flex;
-  gap: 12px;
   margin: 16px 0;
   padding: 12px;
   background: linear-gradient(to right, #f8fafc, #f1f5f9);
@@ -2651,24 +2996,6 @@
   border: 1px solid #e2e8f0;
 }
 
-.security-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-}
-
-.security-badge svg {
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-
-.security-badge span {
-  font-size: 11px;
-  color: #64748b;
-  font-weight: 500;
-  white-space: nowrap;
-}
 
 /* SSL Notice */
 .ssl-notice {
@@ -2800,13 +3127,10 @@
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .payment-security-badges {
-    flex-direction: column;
-    gap: 8px;
+    font-size: 11px;
+    padding: 10px;
   }
-
-  .security-badge {
-    width: 100%;
-  }
+}
 
   .payment-methods__logos {
     justify-content: center;
@@ -3194,28 +3518,9 @@
 
   /* Compact Payment Security Badges */
   .payment-security-badges {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 6px !important;
+    font-size: 10px !important;
     padding: 8px !important;
     margin: 8px 0 !important;
-  }
-
-  .security-badge {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-
-  .security-badge svg {
-    width: 20px !important;
-    height: 20px !important;
-    margin-bottom: 2px !important;
-  }
-
-  .security-badge span {
-    font-size: 9px !important;
-    line-height: 1.1 !important;
   }
 
   /* Inline SSL Notice */
@@ -3639,61 +3944,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Recently Booked Notification
-(function() {
-  const bookingNotifications = [
-    { name: "Sarah", location: "London", time: "2 hours ago" },
-    { name: "Marco", location: "Rome", time: "3 hours ago" },
-    { name: "Emma", location: "New York", time: "5 hours ago" },
-    { name: "Hans", location: "Berlin", time: "1 day ago" },
-    { name: "Yuki", location: "Tokyo", time: "1 day ago" }
-  ];
-
-  function showBookingNotification() {
-    const randomBooking = bookingNotifications[Math.floor(Math.random() * bookingNotifications.length)];
-
-    const notification = document.createElement('div');
-    notification.className = 'booking-notification';
-    notification.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="#10b981">
-          <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
-        </svg>
-        <div>
-          <strong>${randomBooking.name} from ${randomBooking.location}</strong><br>
-          <span style="font-size: 12px; opacity: 0.9;">Booked this tour ${randomBooking.time}</span>
-        </div>
-      </div>
-    `;
-
-    notification.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: white;
-      padding: 12px 16px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1000;
-      animation: slideInLeft 0.5s ease;
-      max-width: 280px;
-      border-left: 3px solid #10b981;
-    `;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.style.animation = 'slideOutLeft 0.5s ease';
-      setTimeout(() => document.body.removeChild(notification), 500);
-    }, 5000);
-  }
-
-  // Show first notification after 8 seconds
-  setTimeout(showBookingNotification, 8000);
-
-  // Show subsequent notifications every 45 seconds
-  setInterval(showBookingNotification, 45000);
-})();
+// Recently Booked Notification - DISABLED
 
 // Dynamic Viewers Count
 (function() {
@@ -3808,5 +4059,486 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 })();
 </script>
+
+<!-- Departure Calendar Script -->
+<script>
+(function() {
+  'use strict';
+
+  // Get tour data from JSON
+  const tourDataEl = document.getElementById('tour-data');
+  if (!tourDataEl) return;
+
+  const tourData = JSON.parse(tourDataEl.textContent);
+  const departures = tourData.departures || [];
+
+  if (departures.length === 0) return;
+
+  // Calendar elements
+  const monthSelect = document.getElementById('calendar-month');
+  const yearSelect = document.getElementById('calendar-year');
+  const calendarDays = document.getElementById('calendar-days');
+  const departureIdInput = document.getElementById('departure_id');
+  const startDateInput = document.getElementById('start_date');
+  const selectedInfo = document.getElementById('selected-departure-info');
+  const selectedText = document.getElementById('selected-departure-text');
+  const selectedStatus = document.getElementById('selected-departure-status');
+
+  if (!monthSelect || !yearSelect || !calendarDays) return;
+
+  // Create a map of dates to departures for fast lookup
+  const departuresByDate = {};
+  departures.forEach(dep => {
+    const date = dep.startDate; // Format: YYYY-MM-DD
+    if (!departuresByDate[date]) {
+      departuresByDate[date] = [];
+    }
+    departuresByDate[date].push(dep);
+  });
+
+  // Get year range from departures
+  const years = new Set();
+  departures.forEach(dep => {
+    const year = parseInt(dep.startDate.split('-')[0]);
+    years.add(year);
+  });
+  const yearArray = Array.from(years).sort();
+
+  // Populate year dropdown
+  yearArray.forEach(year => {
+    const option = document.createElement('option');
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+
+  // Find first month with departures
+  let currentMonth = new Date().getMonth();
+  let currentYear = yearArray[0] || new Date().getFullYear();
+
+  // Set to first departure's month if available
+  if (departures.length > 0) {
+    const firstDep = departures[0].startDate.split('-');
+    currentMonth = parseInt(firstDep[1]) - 1;
+    currentYear = parseInt(firstDep[0]);
+  }
+
+  monthSelect.value = currentMonth;
+  yearSelect.value = currentYear;
+
+  // Render calendar
+  function renderCalendar(month, year) {
+    calendarDays.innerHTML = '';
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday
+
+    // Add empty cells for days before month starts
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      const emptyCell = document.createElement('div');
+      emptyCell.style.cssText = 'padding: 8px; min-height: 36px;';
+      calendarDays.appendChild(emptyCell);
+    }
+
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const hasDeparture = departuresByDate[dateStr];
+      const isPast = new Date(dateStr) < new Date(new Date().toDateString());
+
+      const dayCell = document.createElement('div');
+      dayCell.textContent = day;
+
+      if (hasDeparture && !isPast) {
+        // Available date with departure - MODERN DESIGN
+        const departure = hasDeparture[0];
+        const isSoldOut = departure.statusBadge.color === 'red';
+
+        if (isSoldOut) {
+          // Sold Out - minimalistic with strikethrough
+          dayCell.style.cssText = `
+            padding: 12px 8px;
+            min-height: 44px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: not-allowed;
+            transition: all 0.2s ease;
+            background: white;
+            color: #d1d5db;
+            position: relative;
+            text-decoration: line-through;
+            text-decoration-color: #ef4444;
+            text-decoration-thickness: 1.5px;
+          `;
+          dayCell.title = 'Sold Out';
+        } else {
+          // Available - clean green design
+          dayCell.style.cssText = `
+            padding: 12px 8px;
+            min-height: 44px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #10b981;
+            color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          `;
+
+          dayCell.addEventListener('mouseenter', function() {
+            this.style.background = '#059669';
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 6px rgba(16, 185, 129, 0.2)';
+          });
+
+          dayCell.addEventListener('mouseleave', function() {
+            const isSelected = departureIdInput.value === String(departure.id);
+            if (!isSelected) {
+              this.style.background = '#10b981';
+              this.style.transform = 'translateY(0)';
+              this.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
+            }
+          });
+
+          dayCell.addEventListener('click', function() {
+            toggleDeparture(departure, this);
+          });
+        }
+      } else {
+        // Unavailable - subtle strikethrough
+        dayCell.style.cssText = `
+          padding: 12px 8px;
+          min-height: 44px;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 400;
+          border-radius: 8px;
+          cursor: default;
+          background: white;
+          color: #e5e7eb;
+          text-decoration: line-through;
+          text-decoration-color: #d1d5db;
+          text-decoration-thickness: 1px;
+        `;
+      }
+
+      calendarDays.appendChild(dayCell);
+    }
+  }
+
+  // Toggle departure selection (check/uncheck)
+  function toggleDeparture(departure, cellEl) {
+    const isCurrentlySelected = departureIdInput.value === String(departure.id);
+
+    if (isCurrentlySelected) {
+      // Uncheck - deselect the date
+      unselectDeparture(cellEl);
+    } else {
+      // Check - select the date
+      selectDeparture(departure, cellEl);
+    }
+  }
+
+  // Unselect departure
+  function unselectDeparture(cellEl) {
+    // Reset the cell to default available state
+    cellEl.style.background = '#10b981';
+    cellEl.style.color = 'white';
+    cellEl.style.transform = 'translateY(0)';
+    cellEl.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
+
+    // Remove checkmark
+    const checkmark = cellEl.querySelector('.checkmark-icon');
+    if (checkmark) {
+      checkmark.style.animation = 'checkmarkFadeOut 0.2s ease forwards';
+      setTimeout(() => checkmark.remove(), 200);
+    }
+
+    // Clear hidden inputs
+    departureIdInput.value = '';
+    if (startDateInput) {
+      startDateInput.value = '';
+    }
+
+    // Hide selected departure info with fade-out
+    selectedInfo.style.opacity = '0';
+    selectedInfo.style.transform = 'translateY(-10px)';
+    selectedInfo.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    setTimeout(() => {
+      selectedInfo.style.display = 'none';
+      selectedInfo.style.opacity = '1';
+      selectedInfo.style.transform = 'translateY(0)';
+    }, 300);
+  }
+
+  // Select departure
+  function selectDeparture(departure, cellEl) {
+    // Remove selection from all cells (including checkmarks)
+    document.querySelectorAll('#calendar-days > div').forEach(cell => {
+      // Reset only green available cells
+      if (cell.style.background === 'rgb(16, 185, 129)' || cell.style.background === 'rgb(102, 126, 234)') {
+        cell.style.background = '#10b981';
+        cell.style.color = 'white';
+        cell.style.transform = 'translateY(0)';
+        cell.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
+        cell.style.position = 'relative';
+        // Remove checkmark if exists
+        const checkmark = cell.querySelector('.checkmark-icon');
+        if (checkmark) checkmark.remove();
+      }
+    });
+
+    // Highlight selected cell with animations
+    cellEl.style.position = 'relative';
+    cellEl.style.background = '#667eea';
+    cellEl.style.color = 'white';
+    cellEl.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+    // Scale up animation with bounce
+    cellEl.style.transform = 'scale(1.05) translateY(-2px)';
+
+    // Glow effect
+    cellEl.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.2), 0 4px 12px rgba(102, 126, 234, 0.4)';
+
+    // Add checkmark icon in top-right corner
+    const checkmark = document.createElement('span');
+    checkmark.className = 'checkmark-icon';
+    checkmark.innerHTML = '✓';
+    checkmark.style.cssText = `
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #10b981;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: checkmarkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    `;
+    cellEl.appendChild(checkmark);
+
+    // Reset scale after animation
+    setTimeout(() => {
+      cellEl.style.transform = 'scale(1) translateY(-2px)';
+    }, 300);
+
+    // Update hidden inputs
+    departureIdInput.value = departure.id;
+    if (startDateInput) {
+      startDateInput.value = departure.startDate; // YYYY-MM-DD format
+    }
+
+    // Show selected departure info with highlight flash
+    selectedText.textContent = departure.dateRange;
+
+    const badge = departure.statusBadge;
+    const badgeColors = {
+      green: { bg: '#d1fae5', text: '#065f46' },
+      orange: { bg: '#fed7aa', text: '#9a3412' },
+      red: { bg: '#fecaca', text: '#991b1b' },
+      blue: { bg: '#dbeafe', text: '#1e40af' }
+    };
+    const colors = badgeColors[badge.color] || badgeColors.blue;
+
+    selectedStatus.innerHTML = `
+      <span style="font-size: 14px;">${badge.icon}</span>
+      <span style="padding: 2px 8px; border-radius: 12px; font-weight: 600; font-size: 10px; background: ${colors.bg}; color: ${colors.text};">
+        ${badge.label}
+      </span>
+      <span style="color: #6b7280;">•</span>
+      <span style="color: #6b7280;">
+        ${departure.bookedPax}/${departure.maxPax} booked • ${departure.spotsRemaining} spot${departure.spotsRemaining !== 1 ? 's' : ''} left
+      </span>
+    `;
+
+    selectedInfo.style.display = 'block';
+
+    // Add highlight flash animation to selected info box
+    selectedInfo.style.animation = 'none';
+    setTimeout(() => {
+      selectedInfo.style.animation = 'highlightFlash 0.6s ease-out';
+    }, 10);
+
+    // Remove required validation error if shown
+    departureIdInput.setCustomValidity('');
+  }
+
+  // Month/Year change handlers
+  monthSelect.addEventListener('change', function() {
+    currentMonth = parseInt(this.value);
+    renderCalendar(currentMonth, currentYear);
+  });
+
+  yearSelect.addEventListener('change', function() {
+    currentYear = parseInt(this.value);
+    renderCalendar(currentMonth, currentYear);
+  });
+
+  // Arrow navigation
+  const prevMonthBtn = document.getElementById('prev-month');
+  const nextMonthBtn = document.getElementById('next-month');
+
+  if (prevMonthBtn) {
+    prevMonthBtn.addEventListener('click', function() {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      monthSelect.value = currentMonth;
+      yearSelect.value = currentYear;
+      renderCalendar(currentMonth, currentYear);
+    });
+
+    prevMonthBtn.addEventListener('mouseenter', function() {
+      this.style.background = '#e5e7eb';
+    });
+
+    prevMonthBtn.addEventListener('mouseleave', function() {
+      this.style.background = '#f3f4f6';
+    });
+  }
+
+  if (nextMonthBtn) {
+    nextMonthBtn.addEventListener('click', function() {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      monthSelect.value = currentMonth;
+      yearSelect.value = currentYear;
+      renderCalendar(currentMonth, currentYear);
+    });
+
+    nextMonthBtn.addEventListener('mouseenter', function() {
+      this.style.background = '#e5e7eb';
+    });
+
+    nextMonthBtn.addEventListener('mouseleave', function() {
+      this.style.background = '#f3f4f6';
+    });
+  }
+
+  // Initial render
+  renderCalendar(currentMonth, currentYear);
+
+  // Auto-select first available departure
+  if (departures.length > 0) {
+    const firstAvailable = departures.find(d => {
+      const isPast = new Date(d.startDate) < new Date(new Date().toDateString());
+      const isSoldOut = d.statusBadge.color === 'red';
+      return !isPast && !isSoldOut;
+    });
+
+    if (firstAvailable) {
+      // Auto-select it after a short delay to ensure calendar is rendered
+      setTimeout(() => {
+        const dateStr = firstAvailable.startDate;
+        const day = parseInt(dateStr.split('-')[2]);
+        const cells = document.querySelectorAll('#calendar-days > div');
+
+        cells.forEach(cell => {
+          if (cell.textContent == day && cell.style.cursor !== 'not-allowed') {
+            cell.click();
+          }
+        });
+      }, 100);
+    }
+  }
+})();
+</script>
+
+<!-- Payment Modal Script -->
+<script>
+(function() {
+  'use strict';
+
+  // Payment option selection handler
+  const paymentOptions = document.querySelectorAll('input[name="payment_type"]');
+  const paymentBtnText = document.getElementById('payment-btn-text');
+
+  paymentOptions.forEach(option => {
+    option.addEventListener('change', function() {
+      const depositAmount = document.getElementById('deposit-amount')?.textContent || '$60';
+      const fullAmount = document.getElementById('full-amount')?.textContent || '$194';
+
+      if (this.value === 'deposit') {
+        paymentBtnText.textContent = `Pay ${depositAmount} Now`;
+      } else if (this.value === 'full') {
+        paymentBtnText.textContent = `Pay ${fullAmount} Now`;
+      }
+    });
+  });
+
+  // Proceed to payment button handler
+  const proceedBtn = document.getElementById('proceed-to-payment-btn');
+  if (proceedBtn) {
+    proceedBtn.addEventListener('click', function() {
+      const selectedPayment = document.querySelector('input[name="payment_type"]:checked');
+
+      if (!selectedPayment) {
+        alert('Please select a payment option');
+        return;
+      }
+
+      // Get booking ID from global variable (set by booking-form.js)
+      const bookingId = window.currentBookingId;
+
+      if (!bookingId) {
+        console.error('[Payment] No booking ID found');
+        alert('Error: Booking ID not found. Please try again.');
+        return;
+      }
+
+      const bookingRef = document.getElementById('modal-reference')?.textContent || '';
+
+      console.log('[Payment] Processing payment:', {
+        bookingId: bookingId,
+        type: selectedPayment.value,
+        bookingRef: bookingRef
+      });
+
+      // Call Octobank payment integration
+      if (typeof initiatePayment === 'function') {
+        initiatePayment(bookingId, selectedPayment.value);
+      } else {
+        console.error('[Payment] initiatePayment function not found');
+        alert('Payment system error. Please refresh the page and try again.');
+      }
+    });
+  }
+
+  // Close modal handler
+  const closeBtn = document.querySelector('.modal-close-minimal');
+  const modal = document.getElementById('booking-confirmation-modal');
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close on overlay click
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  }
+})();
+</script>
+
 <script src="{{ asset('js/tour-reviews.js') }}"></script>
 @endpush

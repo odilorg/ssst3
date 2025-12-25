@@ -243,7 +243,7 @@
           if (messageField) messageField.required = false;
 
           // Update submit button text
-          if (submitText) submitText.textContent = 'Send Booking Request';
+          if (submitText) submitText.textContent = 'Confirm Booking';
 
           // Show step 2 form
           if (step2Form) {
@@ -356,6 +356,24 @@
 
           const submitButton = document.getElementById('submit-button');
           const formData = new FormData(bookingForm);
+
+          // Validate departure selection
+          const departureId = formData.get('departure_id');
+          if (!departureId || departureId === '') {
+            alert('Please select a departure date from the calendar above.');
+            console.error('[Booking] No departure selected');
+            return;
+          }
+
+          // Validate start date
+          const startDate = formData.get('start_date');
+          if (!startDate || startDate === '') {
+            alert('Please select a departure date from the calendar above.');
+            console.error('[Booking] No start date set');
+            return;
+          }
+
+          console.log('[Booking] Submitting with departure_id:', departureId, 'start_date:', startDate);
 
           // Disable submit button
           if (submitButton) {
