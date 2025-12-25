@@ -414,18 +414,20 @@
                   <span class="price-unit">/person</span>
                 </div>
                 <!-- Social Proof Near Price -->
-                <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-                  <div style="display: flex;">
-                    @for($i = 0; $i < 5; $i++)
-                      <svg width="14" height="14" viewBox="0 0 20 20" fill="#ffc107">
-                        <path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/>
-                      </svg>
-                    @endfor
+                @if($tour->review_count > 0)
+                  <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+                    <div style="display: flex;">
+                      @for($i = 0; $i < 5; $i++)
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="#ffc107">
+                          <path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/>
+                        </svg>
+                      @endfor
+                    </div>
+                    <span style="font-size: 12px; color: #666;">
+                      <strong>{{ number_format($tour->rating, 1) }}</strong> ({{ $tour->review_count }} {{ Str::plural('review', $tour->review_count) }})
+                    </span>
                   </div>
-                  <span style="font-size: 12px; color: #666;">
-                    <strong>{{ number_format($tour->rating ?? 4.8, 1) }}</strong> ({{ $tour->review_count ?? 234 }} reviews)
-                  </span>
-                </div>
+                @endif
               @else
                 <div class="booking-price-hidden">
                   <span class="price-contact-label">Price on request</span>
