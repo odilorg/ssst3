@@ -3858,163 +3858,164 @@
     color: #ef4444 !important;
     margin-top: 2px !important;
   }
+}
 
-  /* ============================================
-     MODERN MINIMALIST FORM DESIGN (2025)
-     Ultra-compact, trendy, professional
-     ============================================ */
+/* ============================================
+   MODERN MINIMALIST FORM DESIGN (2025)
+   Ultra-compact, trendy, professional
+   Applied to all screen sizes
+   ============================================ */
 
-  .modern-form-compact {
-    margin-top: 0 !important;
-  }
+.modern-form-compact {
+  margin-top: 0 !important;
+}
 
-  .form-section-compact {
-    margin-bottom: 16px !important;
-    padding-bottom: 0 !important;
-    border: none !important;
-  }
+.form-section-compact {
+  margin-bottom: 16px !important;
+  padding-bottom: 0 !important;
+  border: none !important;
+}
 
-  .form-section-compact:last-of-type {
-    margin-bottom: 12px !important;
-  }
+.form-section-compact:last-of-type {
+  margin-bottom: 12px !important;
+}
 
-  .form-section-title-modern {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.8px !important;
-    text-transform: uppercase !important;
-    color: #64748b !important;
-    margin-bottom: 12px !important;
-    padding-bottom: 0 !important;
-  }
+.form-section-title-modern {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: #64748b !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 0 !important;
+}
 
-  .form-group-modern {
-    margin-bottom: 10px !important;
-  }
+.form-group-modern {
+  margin-bottom: 10px !important;
+}
 
-  .form-label-modern {
-    display: block !important;
-    font-size: 10px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
-    text-transform: uppercase !important;
-    color: #475569 !important;
-    margin-bottom: 6px !important;
-  }
+.form-label-modern {
+  display: block !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  color: #475569 !important;
+  margin-bottom: 6px !important;
+}
 
-  .form-label-optional {
-    color: #94a3b8 !important;
-  }
+.form-label-optional {
+  color: #94a3b8 !important;
+}
 
-  .required-dot {
-    color: #ef4444 !important;
-    font-weight: 700 !important;
-    margin-left: 2px !important;
-  }
+.required-dot {
+  color: #ef4444 !important;
+  font-weight: 700 !important;
+  margin-left: 2px !important;
+}
 
-  .form-input-modern {
-    width: 100% !important;
-    height: 38px !important;
-    padding: 0 12px !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    color: #1e293b !important;
-    background: #ffffff !important;
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-  }
+.form-input-modern {
+  width: 100% !important;
+  height: 38px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: #1e293b !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+}
 
-  .form-input-modern::placeholder {
-    color: #cbd5e1 !important;
-    font-weight: 400 !important;
-  }
+.form-input-modern::placeholder {
+  color: #cbd5e1 !important;
+  font-weight: 400 !important;
+}
 
-  .form-input-modern:focus {
-    outline: none !important;
-    border-color: #667EEA !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
-    background: #ffffff !important;
-  }
+.form-input-modern:focus {
+  outline: none !important;
+  border-color: #667EEA !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff !important;
+}
 
-  .form-input-modern:hover:not(:focus) {
-    border-color: #cbd5e1 !important;
-  }
+.form-input-modern:hover:not(:focus) {
+  border-color: #cbd5e1 !important;
+}
 
-  .form-textarea-compact {
-    height: auto !important;
-    padding: 10px 12px !important;
-    min-height: 60px !important;
-    resize: vertical !important;
-    line-height: 1.5 !important;
-  }
+.form-textarea-compact {
+  height: auto !important;
+  padding: 10px 12px !important;
+  min-height: 60px !important;
+  resize: vertical !important;
+  line-height: 1.5 !important;
+}
 
-  /* Modern Custom Checkbox */
-  .terms-modern {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 10px !important;
-    cursor: pointer !important;
-    position: relative !important;
-  }
+/* Modern Custom Checkbox */
+.terms-modern {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
 
-  .terms-checkbox-modern {
-    position: absolute !important;
-    opacity: 0 !important;
-    cursor: pointer !important;
-  }
+.terms-checkbox-modern {
+  position: absolute !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+}
 
-  .terms-checkmark {
-    flex-shrink: 0 !important;
-    width: 18px !important;
-    height: 18px !important;
-    border: 1.5px solid #cbd5e1 !important;
-    border-radius: 4px !important;
-    background: #ffffff !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
-    margin-top: 1px !important;
-  }
+.terms-checkmark {
+  flex-shrink: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  background: #ffffff !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  margin-top: 1px !important;
+}
 
-  .terms-checkbox-modern:checked ~ .terms-checkmark {
-    background: #667EEA !important;
-    border-color: #667EEA !important;
-  }
+.terms-checkbox-modern:checked ~ .terms-checkmark {
+  background: #667EEA !important;
+  border-color: #667EEA !important;
+}
 
-  .terms-checkbox-modern:checked ~ .terms-checkmark::after {
-    content: '' !important;
-    position: absolute !important;
-    left: 5px !important;
-    top: 2px !important;
-    width: 5px !important;
-    height: 9px !important;
-    border: solid white !important;
-    border-width: 0 2px 2px 0 !important;
-    transform: rotate(45deg) !important;
-  }
+.terms-checkbox-modern:checked ~ .terms-checkmark::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 5px !important;
+  top: 2px !important;
+  width: 5px !important;
+  height: 9px !important;
+  border: solid white !important;
+  border-width: 0 2px 2px 0 !important;
+  transform: rotate(45deg) !important;
+}
 
-  .terms-checkbox-modern:focus ~ .terms-checkmark {
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-  }
+.terms-checkbox-modern:focus ~ .terms-checkmark {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
 
-  .terms-text-modern {
-    font-size: 12px !important;
-    color: #64748b !important;
-    line-height: 1.5 !important;
-  }
+.terms-text-modern {
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.5 !important;
+}
 
-  .terms-link {
-    color: #667EEA !important;
-    text-decoration: none !important;
-    font-weight: 500 !important;
-    transition: color 0.2s ease !important;
-  }
+.terms-link {
+  color: #667EEA !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: color 0.2s ease !important;
+}
 
-  .terms-link:hover {
-    color: #5568d3 !important;
-    text-decoration: underline !important;
-  }
+.terms-link:hover {
+  color: #5568d3 !important;
+  text-decoration: underline !important;
 }
 
 /* Additional Ultra-Compact Mode for Small Screens < 360px */
