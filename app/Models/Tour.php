@@ -28,6 +28,7 @@ class Tour extends Model
         // Duration
         'duration_days',
         'duration_text',
+        'minimum_advance_days',
 
         // Pricing
         'price_per_person',
@@ -89,6 +90,7 @@ class Tour extends Model
 
         // Integers
         'duration_days' => 'integer',
+        'minimum_advance_days' => 'integer',
         'max_guests' => 'integer',
         'min_guests' => 'integer',
         'review_count' => 'integer',

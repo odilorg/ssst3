@@ -262,6 +262,7 @@
   'maxGuests' => intval($tour->max_guests ?? 15),
   'minGuests' => intval($tour->min_guests ?? 1),
   'duration' => $tour->duration_text ?? ($tour->duration_days . ' days'),
+  'minimumAdvanceDays' => intval($tour->minimum_advance_days ?? 45),
   'pricingTiers' => $tour->pricingTiers->map(function($tier) {
     return [
       'id' => $tier->id,
@@ -671,7 +672,7 @@
                     <svg width="12" height="12" viewBox="0 0 20 20" fill="#10b981" style="vertical-align: middle; margin-right: 4px;">
                       <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
                     </svg>
-                    Instant confirmation • No payment fees
+                    Booking confirmed within 24-48h • No payment fees
                   </p>
                 </div>
 
@@ -802,7 +803,7 @@
             <!-- Booking Clarification (Compact) -->
             <div class="booking-clarification-compact">
               <p class="clarification-compact-text">
-                ⚡ <strong>Instant confirmation</strong> — secure your spot with a deposit or save 3% by paying in full.
+                ⏱️ <strong>Two-step booking</strong> — We'll confirm hotel availability within 24-48h, then you can pay the deposit or full amount.
               </p>
             </div>
 
@@ -4439,6 +4440,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const tourData = JSON.parse(tourDataEl.textContent);
   const departures = tourData.departures || [];
+  const minimumAdvanceDays = tourData.minimumAdvanceDays || 45; // Default 45 days if not set
 
   if (departures.length === 0) return;
 
@@ -4514,12 +4516,20 @@ document.addEventListener('DOMContentLoaded', function() {
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const hasDeparture = departuresByDate[dateStr];
-      const isPast = new Date(dateStr) < new Date(new Date().toDateString());
+      const departureDate = new Date(dateStr);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to compare dates only
+
+      // Calculate if date is within minimum advance window
+      const minimumDate = new Date(today);
+      minimumDate.setDate(minimumDate.getDate() + minimumAdvanceDays);
+      const isTooSoon = departureDate < minimumDate;
+      const isPast = departureDate < today;
 
       const dayCell = document.createElement('div');
       dayCell.textContent = day;
 
-      if (hasDeparture && !isPast) {
+      if (hasDeparture && !isPast && !isTooSoon) {
         // Available date with departure - MODERN DESIGN
         const departure = hasDeparture[0];
         const isSoldOut = departure.statusBadge.color === 'red';
@@ -4578,6 +4588,22 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleDeparture(departure, this);
           });
         }
+      } else if (hasDeparture && !isPast && isTooSoon) {
+        // Too soon to book - show as unavailable with explanation
+        const daysUntil = Math.ceil((departureDate - today) / (1000 * 60 * 60 * 24));
+        dayCell.style.cssText = `
+          padding: 12px 8px;
+          min-height: 44px;
+          text-align: center;
+          font-size: 14px;
+          font-weight: 500;
+          border-radius: 8px;
+          cursor: not-allowed;
+          background: #fef3c7;
+          color: #92400e;
+          border: 1px solid #fcd34d;
+        `;
+        dayCell.title = `Too soon to book. This tour requires booking at least ${minimumAdvanceDays} days in advance. This departure is in ${daysUntil} days.`;
       } else {
         // Unavailable - subtle strikethrough
         dayCell.style.cssText = `

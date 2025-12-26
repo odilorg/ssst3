@@ -52,6 +52,16 @@ class TourForm
                             ->helperText('Например: "4 hours" или "5 Days / 4 Nights"')
                             ->columnSpanFull(),
 
+                        TextInput::make('minimum_advance_days')
+                            ->label('Минимальное количество дней для бронирования')
+                            ->numeric()
+                            ->default(45)
+                            ->minValue(1)
+                            ->maxValue(365)
+                            ->suffix('дней')
+                            ->helperText('За сколько дней до отправления нужно забронировать тур (рекомендуется: короткие туры 30-45 дней, длинные 60-90 дней)')
+                            ->columnSpanFull(),
+
                         Select::make('tour_type')
                             ->label('Тип тура')
                             ->options([
