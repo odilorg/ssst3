@@ -8,7 +8,8 @@
 
             <ul class="nav__menu" id="navMenu">
                 <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
-                <li><a href="{{ url('/tours') }}" class="{{ request()->is('tours*') ? 'active' : '' }}">Craft Journeys</a></li>
+                <li><a href="{{ url('/mini-journeys') }}" class="{{ request()->is('mini-journeys*') ? 'active' : '' }}">Mini Journeys</a></li>
+                <li><a href="{{ url('/craft-journeys') }}" class="{{ request()->is('craft-journeys*') || request()->is('tours*') ? 'active' : '' }}">Craft Journeys</a></li>
                 <li><a href="{{ url('/destinations') }}" class="{{ request()->is('destinations*') ? 'active' : '' }}">Destinations</a></li>
                 <li><a href="{{ route('blog.index') }}" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li>
                 <li><a href="{{ url('/about') }}" class="{{ request()->is('about') ? 'active' : '' }}">About Us</a></li>

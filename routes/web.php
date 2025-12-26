@@ -17,8 +17,16 @@ Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'ind
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
-Route::get('/tours', [\App\Http\Controllers\TourListingController::class, 'index'])->name('tours.index');
+// Mini Journeys - 1-2 day experiences including overnight camping
+Route::get('/mini-journeys', [\App\Http\Controllers\TourListingController::class, 'miniJourneys'])->name('mini-journeys.index');
+
+// Craft Journeys - 3+ day multi-day boutique tours
+Route::get('/craft-journeys', [\App\Http\Controllers\TourListingController::class, 'craftJourneys'])->name('craft-journeys.index');
+
+// Legacy /tours route - 301 redirect to /craft-journeys
+Route::get('/tours', function() {
+    return redirect()->route('craft-journeys.index', [], 301);
+})->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])->name('tours.category');
@@ -28,7 +36,7 @@ Route::get('/tours/compare', function () {
     return view('pages.tour-comparison');
 })->name('tours.compare');
 
-// Tour details page - SEO-friendly URL with Blade template
+// Tour details page - SEO-friendly URL with Blade template (must be LAST to avoid conflicts)
 Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show');
 
 // About page
