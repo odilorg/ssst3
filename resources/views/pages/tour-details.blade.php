@@ -520,7 +520,10 @@
               <input type="hidden" name="start_date" id="start_date">
 
               <!-- Tour Type Selector (Private vs Group) -->
-              @include('partials.booking.tour-type-selector', ['tour' => $tour])
+              @include('partials.booking.tour-type-selector', [
+                'tour' => $tour,
+                'selectedType' => $tour->getDefaultBookingType()
+              ])
 
               <!-- Dynamic Booking Form Container (Private or Group Form) -->
               <div id="booking-form-container">
