@@ -35,6 +35,15 @@ class Tour extends Model
         'currency',
         'show_price',
 
+        // Tour Type Support
+        'supports_private',
+        'supports_group',
+
+        // Private Tour Pricing
+        'private_base_price',
+        'private_min_guests',
+        'private_max_guests',
+
         // Capacity
         'max_guests',
         'min_guests',
@@ -84,6 +93,8 @@ class Tour extends Model
         // Booleans
         'show_price' => 'boolean',
         'is_active' => 'boolean',
+        'supports_private' => 'boolean',
+        'supports_group' => 'boolean',
         'include_global_requirements' => 'boolean',
         'include_global_faqs' => 'boolean',
         'has_hotel_pickup' => 'boolean',
@@ -93,6 +104,8 @@ class Tour extends Model
         'minimum_advance_days' => 'integer',
         'max_guests' => 'integer',
         'min_guests' => 'integer',
+        'private_min_guests' => 'integer',
+        'private_max_guests' => 'integer',
         'review_count' => 'integer',
         'min_booking_hours' => 'integer',
         'pickup_radius_km' => 'integer',
@@ -100,6 +113,7 @@ class Tour extends Model
 
         // Decimals
         'price_per_person' => 'decimal:2',
+        'private_base_price' => 'decimal:2',
         'rating' => 'decimal:2',
         'meeting_lat' => 'decimal:8',
         'meeting_lng' => 'decimal:8',
@@ -579,6 +593,119 @@ class Tour extends Model
             'rating' => round($approved->avg('rating'), 2) ?? 0,
             'review_count' => $approved->count(),
         ]);
+    }
+
+    // ==========================================
+    // PRIVATE VS GROUP TOUR HELPERS
+    // ==========================================
+
+    /**
+     * Check if tour supports private bookings
+     */
+    public function supportsPrivate(): bool
+    {
+        return $this->supports_private === true;
+    }
+
+    /**
+     * Check if tour supports group bookings
+     */
+    public function supportsGroup(): bool
+    {
+        return $this->supports_group === true;
+    }
+
+    /**
+     * Check if tour supports both private and group bookings
+     */
+    public function isMixedType(): bool
+    {
+        return $this->supportsPrivate() && $this->supportsGroup();
+    }
+
+    /**
+     * Check if tour is private-only
+     */
+    public function isPrivateOnly(): bool
+    {
+        return $this->supportsPrivate() && !$this->supportsGroup();
+    }
+
+    /**
+     * Check if tour is group-only
+     */
+    public function isGroupOnly(): bool
+    {
+        return $this->supportsGroup() && !$this->supportsPrivate();
+    }
+
+    /**
+     * Get private tour price for given number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return array|null ['total' => float, 'per_person' => float] or null if invalid
+     */
+    public function getPrivateTourPrice(int $guestCount): ?array
+    {
+        if (!$this->supportsPrivate() || !$this->private_base_price) {
+            return null;
+        }
+
+        // Validate guest count
+        if ($guestCount < $this->private_min_guests) {
+            return null;
+        }
+
+        if ($this->private_max_guests && $guestCount > $this->private_max_guests) {
+            return null;
+        }
+
+        $total = $this->private_base_price * $guestCount;
+
+        return [
+            'total' => $total,
+            'per_person' => $this->private_base_price,
+            'guests_count' => $guestCount,
+        ];
+    }
+
+    /**
+     * Get available group departures for this tour
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAvailableGroupDepartures()
+    {
+        if (!$this->supportsGroup()) {
+            return collect();
+        }
+
+        return $this->departures()
+            ->where('departure_type', TourDeparture::TYPE_GROUP)
+            ->upcoming()
+            ->available()
+            ->orderBy('start_date')
+            ->get();
+    }
+
+    /**
+     * Get the default booking type for this tour
+     * Used when tour supports both types
+     *
+     * @return string 'private' or 'group'
+     */
+    public function getDefaultBookingType(): string
+    {
+        if ($this->isPrivateOnly()) {
+            return 'private';
+        }
+
+        if ($this->isGroupOnly()) {
+            return 'group';
+        }
+
+        // Mixed: default to private
+        return 'private';
     }
 
     /**

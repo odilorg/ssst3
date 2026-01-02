@@ -14,14 +14,18 @@ class Booking extends Model
         'reference',
         'customer_id',
         'tour_id',
+        'type',
+        'group_departure_id',
         'start_date',
         'end_date',
         'pax_total',
+        'guests_count',
         'status',
         'payment_status',
         'payment_method',
         'currency',
         'total_price',
+        'price_per_person',
         'notes',
         'special_requests',
         // Passenger details tracking
@@ -47,7 +51,9 @@ class Booking extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'pax_total' => 'integer',
+        'guests_count' => 'integer',
         'total_price' => 'decimal:2',
+        'price_per_person' => 'decimal:2',
         'passenger_details_submitted_at' => 'datetime',
         'last_reminder_sent_at' => 'datetime',
         'payment_reminder_sent_at' => 'datetime',
@@ -97,6 +103,11 @@ class Booking extends Model
     public function departure()
     {
         return $this->belongsTo(TourDeparture::class, 'departure_id');
+    }
+
+    public function groupDeparture()
+    {
+        return $this->belongsTo(TourDeparture::class, 'group_departure_id');
     }
 
     public function customer()
@@ -367,5 +378,46 @@ class Booking extends Model
         }
 
         return route('balance-payment.show', ['reference' => $this->reference]);
+    }
+
+    // ============================================
+    // BOOKING TYPE HELPER METHODS
+    // ============================================
+
+    /**
+     * Check if this is a private tour booking
+     */
+    public function isPrivateTour(): bool
+    {
+        return $this->type === 'private';
+    }
+
+    /**
+     * Check if this is a group tour booking
+     */
+    public function isGroupTour(): bool
+    {
+        return $this->type === 'group';
+    }
+
+    /**
+     * Get the effective guest count
+     * Fallback to pax_total if guests_count not set
+     */
+    public function getGuestCount(): int
+    {
+        return $this->guests_count ?? $this->pax_total ?? 1;
+    }
+
+    /**
+     * Get booking type label for display
+     */
+    public function getTypeLabel(): string
+    {
+        return match($this->type) {
+            'private' => 'Private Tour',
+            'group' => 'Group Tour',
+            default => 'Unknown',
+        };
     }
 }
