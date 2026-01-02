@@ -162,37 +162,95 @@ class TourForm
                     ->collapsible()
                     ->collapsed(),
 
-                Section::make('Цены и вместимость')
-                    ->description('Информация о ценах и количестве гостей')
+                Section::make('Тип тура и поддержка')
+                    ->description('Какие типы бронирования поддерживает этот тур')
                     ->schema([
-                        TextInput::make('price_per_person')
-                            ->label('Цена за человека')
+                        Toggle::make('supports_private')
+                            ->label('Поддерживает частные туры')
+                            ->helperText('Разрешить бронирование как частный тур')
+                            ->default(true)
+                            ->inline(false)
+                            ->live()
+                            ->columnSpan(2),
+
+                        Toggle::make('supports_group')
+                            ->label('Поддерживает групповые туры')
+                            ->helperText('Разрешить бронирование через групповые отправления')
+                            ->default(false)
+                            ->inline(false)
+                            ->live()
+                            ->columnSpan(2),
+                    ])
+                    ->columns(4),
+
+                Section::make('Цены для частных туров')
+                    ->description('Настройки цен для частных туров (когда supports_private включено)')
+                    ->schema([
+                        TextInput::make('private_base_price')
+                            ->label('Базовая цена за человека')
                             ->numeric()
-                            ->required()
                             ->minValue(0)
-                            ->prefix('$'),
+                            ->prefix('$')
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private'))
+                            ->helperText('Цена за одного гостя в частном туре'),
 
                         TextInput::make('currency')
                             ->label('Валюта')
                             ->required()
                             ->default('USD')
                             ->maxLength(3),
-                        Toggle::make('show_price')                            ->label('Показывать цену на сайте')                            ->helperText('Если выключено, вместо цены будет "Price on request"')                            ->default(true)                            ->inline(false)                            ->columnSpan(2),
 
-                        TextInput::make('max_guests')
+                        TextInput::make('private_min_guests')
+                            ->label('Минимум гостей')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private')),
+
+                        TextInput::make('private_max_guests')
                             ->label('Максимум гостей')
                             ->numeric()
-                            ->required()
+                            ->default(15)
+                            ->minValue(1)
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private')),
+
+                        Toggle::make('show_price')
+                            ->label('Показывать цену на сайте')
+                            ->helperText('Если выключено, вместо цены будет "Price on request"')
+                            ->default(true)
+                            ->inline(false)
+                            ->columnSpan(4),
+                    ])
+                    ->columns(4)
+                    ->visible(fn (callable $get) => $get('supports_private')),
+
+                Section::make('Легаси: Старые поля цен')
+                    ->description('Эти поля сохранены для обратной совместимости')
+                    ->schema([
+                        TextInput::make('price_per_person')
+                            ->label('Цена за человека (легаси)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->prefix('$')
+                            ->helperText('Используется для старых туров без частного/группового разделения'),
+
+                        TextInput::make('max_guests')
+                            ->label('Максимум гостей (легаси)')
+                            ->numeric()
                             ->minValue(1),
 
                         TextInput::make('min_guests')
-                            ->label('Минимум гостей')
+                            ->label('Минимум гостей (легаси)')
                             ->numeric()
-                            ->required()
                             ->default(1)
                             ->minValue(1),
                     ])
-                    ->columns(4),
+                    ->columns(3)
+                    ->collapsible()
+                    ->collapsed(),
 
                 Section::make('Изображения')
                     ->description('Главное изображение и галерея')

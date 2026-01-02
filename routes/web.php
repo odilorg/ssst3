@@ -478,6 +478,10 @@ Route::prefix('partials')->name('partials.')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])
         ->name('bookings.store');
 
+    // Booking preview with server-side pricing calculation
+    Route::post('/bookings/preview', [\App\Http\Controllers\BookingPreviewController::class, 'preview'])
+        ->name('bookings.preview');
+
     // Simple inquiry submission (3 fields only: name, email, message)
     Route::post('/inquiries', [BookingController::class, 'store'])
         ->name('inquiries.store');
