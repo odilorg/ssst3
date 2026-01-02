@@ -526,13 +526,27 @@
               <div id="booking-form-container">
                 @if($tour->supportsPrivate() && !$tour->supportsGroup())
                   <!-- Private-only tour: show private form by default -->
-                  @include('partials.booking.private-tour-form', ['tour' => $tour])
+                  @include('partials.booking.private-tour-form', [
+                    'tour' => $tour,
+                    'guestsCount' => $tour->private_min_guests ?? 1,
+                    'priceData' => null
+                  ])
                 @elseif($tour->supportsGroup() && !$tour->supportsPrivate())
                   <!-- Group-only tour: show group form by default -->
-                  @include('partials.booking.group-tour-form', ['tour' => $tour])
+                  @include('partials.booking.group-tour-form', [
+                    'tour' => $tour,
+                    'departures' => $tour->getAvailableGroupDepartures(),
+                    'selectedDepartureId' => null,
+                    'guestsCount' => 1,
+                    'priceData' => null
+                  ])
                 @else
                   <!-- Mixed tour: show private form by default (user can toggle) -->
-                  @include('partials.booking.private-tour-form', ['tour' => $tour])
+                  @include('partials.booking.private-tour-form', [
+                    'tour' => $tour,
+                    'guestsCount' => $tour->private_min_guests ?? 1,
+                    'priceData' => null
+                  ])
                 @endif
               </div>
 
