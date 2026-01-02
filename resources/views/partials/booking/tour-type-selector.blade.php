@@ -20,7 +20,7 @@
                 data-tour-type="private"
                 class="tour-type-btn px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
                     {{ $selectedType === 'private' ? 'bg-orange-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50' }}"
-                hx-post="{{ route('bookings.preview') }}"
+                hx-post="/bookings/preview"
                 hx-vals='{"tour_id": {{ $tour->id }}, "type": "private", "guests_count": 1}'
                 hx-target="#booking-form-container"
                 hx-swap="innerHTML"
@@ -40,7 +40,7 @@
                 data-tour-type="group"
                 class="tour-type-btn px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
                     {{ $selectedType === 'group' ? 'bg-orange-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50' }}"
-                hx-post="{{ route('bookings.preview') }}"
+                hx-post="/bookings/preview"
                 hx-vals='{"tour_id": {{ $tour->id }}, "type": "group", "guests_count": 1}'
                 hx-target="#booking-form-container"
                 hx-swap="innerHTML"

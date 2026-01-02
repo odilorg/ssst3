@@ -40,7 +40,7 @@
                             value="{{ $departure->id }}"
                             class="hidden peer"
                             {{ $selectedDepartureId == $departure->id ? 'checked' : '' }}
-                            hx-post="{{ route('bookings.preview') }}"
+                            hx-post="/bookings/preview"
                             hx-vals='{"tour_id": {{ $tour->id }}, "type": "group", "group_departure_id": {{ $departure->id }}, "guests_count": {{ $guestsCount }}}'
                             hx-target="#booking-form-container"
                             hx-swap="innerHTML"
@@ -230,7 +230,7 @@
             input.value = currentValue;
 
             // Update pricing via HTMX
-            htmx.ajax('POST', '{{ route("bookings.preview") }}', {
+            htmx.ajax('POST', '/bookings/preview', {
                 target: '#booking-form-container',
                 swap: 'innerHTML',
                 values: {

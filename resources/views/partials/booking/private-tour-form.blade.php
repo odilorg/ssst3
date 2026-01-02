@@ -128,7 +128,7 @@
             input.value = currentValue;
 
             // Update pricing via HTMX
-            htmx.ajax('POST', '{{ route("bookings.preview") }}', {
+            htmx.ajax('POST', '/bookings/preview', {
                 target: '#booking-form-container',
                 swap: 'innerHTML',
                 values: {
