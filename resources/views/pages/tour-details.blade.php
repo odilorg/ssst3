@@ -4113,6 +4113,12 @@
 
 @push('scripts')
 <script src="{{ asset('js/htmx.min.js') }}"></script>
+<script>
+// Configure HTMX to send CSRF token with all requests
+document.body.addEventListener('htmx:configRequest', function(event) {
+    event.detail.headers['X-CSRF-TOKEN'] = '{{ csrf_token() }}';
+});
+</script>
 <script src="{{ asset('js/payment-integration.js') }}"></script>
 <script src="{{ asset('tour-details.js') }}"></script>
 <script src="{{ asset('js/booking-form.js') }}"></script>
