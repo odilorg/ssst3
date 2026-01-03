@@ -1,7 +1,8 @@
 {{--
-    Mobile Section Navigation Tabs
+    Mobile Section Navigation Tabs (Fixed Position)
 
-    Displays a sticky horizontal scrollable tab bar on mobile devices only.
+    Displays a FIXED horizontal scrollable tab bar on mobile devices only.
+    Always visible at the top of the viewport while scrolling.
     Each tab scrolls to its corresponding section on the page.
     Active tab is highlighted based on scroll position.
 
@@ -58,23 +59,34 @@
 </nav>
 
 <style>
-/* Mobile Section Tabs - Only visible on mobile */
+/* CSS Variable for bar height */
+:root {
+    --mobile-tabs-height: 52px;
+}
+
+/* Mobile Section Tabs - FIXED position, always visible on mobile */
 .mobile-section-tabs {
-    display: none; /* Hidden by default */
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    padding: 0;
-    margin: 0;
+    display: none; /* Hidden by default (desktop) */
 }
 
 /* Show only on mobile (less than 768px) */
 @media (max-width: 767px) {
     .mobile-section-tabs {
         display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: var(--mobile-tabs-height);
+    }
+
+    /* Add padding to body/main content to prevent overlap */
+    body {
+        padding-top: var(--mobile-tabs-height);
     }
 
     /* Add scroll margin to sections for proper anchor scrolling */
@@ -87,7 +99,13 @@
     #know-before,
     #faq,
     #reviews {
-        scroll-margin-top: 60px;
+        scroll-margin-top: calc(var(--mobile-tabs-height) + 16px);
+    }
+
+    /* Ensure tour header sections also have proper offset */
+    .tour-header,
+    .tour-hero {
+        scroll-margin-top: var(--mobile-tabs-height);
     }
 }
 
@@ -98,8 +116,10 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
-    gap: 4px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 10px 12px;
+    height: 100%;
+    align-items: center;
 }
 
 /* Hide scrollbar for Chrome/Safari */
@@ -124,7 +144,8 @@
     border: 1px solid transparent;
 }
 
-.mobile-section-tabs__tab:hover {
+.mobile-section-tabs__tab:hover,
+.mobile-section-tabs__tab:active {
     color: #0D4C92;
     background: #EBF5FF;
 }
@@ -136,10 +157,29 @@
     border-color: #0D4C92;
 }
 
-/* Safe area padding for iOS devices */
+/* iOS safe area support */
 @supports (padding-top: env(safe-area-inset-top)) {
-    .mobile-section-tabs {
-        padding-top: env(safe-area-inset-top);
+    @media (max-width: 767px) {
+        .mobile-section-tabs {
+            padding-top: env(safe-area-inset-top);
+            height: calc(var(--mobile-tabs-height) + env(safe-area-inset-top));
+        }
+
+        body {
+            padding-top: calc(var(--mobile-tabs-height) + env(safe-area-inset-top));
+        }
+
+        #overview,
+        #highlights,
+        #itinerary,
+        #includes,
+        #cancellation,
+        #meeting-point,
+        #know-before,
+        #faq,
+        #reviews {
+            scroll-margin-top: calc(var(--mobile-tabs-height) + env(safe-area-inset-top) + 16px);
+        }
     }
 }
 </style>
@@ -150,6 +190,9 @@
 
     var tabsNav = document.getElementById('mobile-section-tabs');
     if (!tabsNav) return;
+
+    // Get bar height from CSS variable
+    var barHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-tabs-height')) || 52;
 
     var tabs = tabsNav.querySelectorAll('.mobile-section-tabs__tab');
     var sections = [];
@@ -184,10 +227,14 @@
                 // Update active tab immediately
                 setActiveTab(this);
 
-                // Scroll to section
-                targetSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                // Calculate scroll position accounting for fixed header
+                var sectionTop = targetSection.getBoundingClientRect().top + window.pageYOffset;
+                var offsetPosition = sectionTop - barHeight - 16; // 16px extra padding
+
+                // Smooth scroll to calculated position
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
                 });
 
                 // Reset flag after scroll completes
@@ -230,9 +277,12 @@
 
     // IntersectionObserver to update active tab on scroll
     if ('IntersectionObserver' in window && sections.length > 0) {
+        // Calculate rootMargin to account for fixed bar height
+        var topMargin = '-' + (barHeight + 20) + 'px';
+
         var observerOptions = {
             root: null,
-            rootMargin: '-70px 0px -60% 0px', // Account for sticky header
+            rootMargin: topMargin + ' 0px -55% 0px', // Account for fixed header
             threshold: 0
         };
 
