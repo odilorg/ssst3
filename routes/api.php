@@ -118,5 +118,7 @@ Route::get('/payment/{payment}/status', [\App\Http\Controllers\PaymentController
 // Octobank webhook (no auth - verified by signature)
 Route::post('/octobank/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('api.octobank.webhook');
 
-// Refund (admin only - add middleware in production)
-Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])->name('api.payment.refund');
+// Refund (admin only - requires authentication and authorization)
+Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])
+    ->middleware(['web', 'auth'])
+    ->name('api.payment.refund');

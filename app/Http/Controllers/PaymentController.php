@@ -8,6 +8,7 @@ use App\Models\Tour;
 use App\Services\OctobankPaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -284,8 +285,8 @@ class PaymentController extends Controller
     public function webhook(Request $request): JsonResponse
     {
         Log::info('Octobank webhook received', [
-            'payload' => $request->all(),
-            'headers' => $request->headers->all(),
+            'shop_transaction_id' => $request->input('shop_transaction_id'),
+            'status' => $request->input('status'),
         ]);
 
         try {
@@ -302,14 +303,28 @@ class PaymentController extends Controller
             ]);
 
         } catch (Exception $e) {
+            // Return 401 for signature-related errors
+            $message = $e->getMessage();
+            if (str_contains($message, 'signature')) {
+                Log::warning('Octobank webhook signature error', [
+                    'error' => $message,
+                    'ip' => $request->ip(),
+                ]);
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $message,
+                ], 401);
+            }
+
             Log::error('Octobank webhook processing failed', [
-                'error' => $e->getMessage(),
-                'payload' => $request->all(),
+                'error' => $message,
+                'shop_transaction_id' => $request->input('shop_transaction_id'),
             ]);
 
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $message,
             ], 500);
         }
     }
@@ -320,6 +335,9 @@ class PaymentController extends Controller
      */
     public function refund(Request $request, OctobankPayment $payment): JsonResponse
     {
+        // Authorization check - only admins can refund
+        Gate::authorize('refund', $payment);
+
         $request->validate([
             'amount' => 'nullable|numeric|min:1',
             'reason' => 'nullable|string|max:255',
