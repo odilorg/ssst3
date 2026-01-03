@@ -12,13 +12,13 @@
             @foreach($tour->faqs as $faq)
                 <details class="faq-item">
                     <summary class="faq-question">
-                        <span>{{ $faq->question }}</span>
+                        <span>{{ $faq->question_text }}</span>
                         <svg class="icon icon--chevron-down" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                             <path d="M3.646 5.646a.5.5 0 01.708 0L8 9.293l3.646-3.647a.5.5 0 01.708.708l-4 4a.5.5 0 01-.708 0l-4-4a.5.5 0 010-.708z"/>
                         </svg>
                     </summary>
                     <div class="faq-answer">
-                        <p>{!! nl2br(e($faq->answer)) !!}</p>
+                        <p>{!! nl2br(e($faq->answer_text)) !!}</p>
                     </div>
                 </details>
             @endforeach
