@@ -69,6 +69,11 @@
   </section>
 
   <!-- =====================================================
+       MOBILE SECTION NAVIGATION TABS (Mobile Only)
+       ===================================================== -->
+  @include('partials.mobile-section-tabs', ['tour' => $tour])
+
+  <!-- =====================================================
        TWO-COLUMN LAYOUT: MAIN CONTENT + BOOKING SIDEBAR
        ===================================================== -->
   <div class="tour-content-wrapper">
