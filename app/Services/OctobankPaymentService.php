@@ -266,23 +266,32 @@ class OctobankPaymentService
      * Process webhook from Octobank
      *
      * @param array $payload The webhook payload
-     * @param string|null $signature Optional signature from request header
+     * @param string|null $signature Signature from request header (required)
      * @return OctobankPayment|null
-     * @throws Exception If signature validation fails
+     * @throws Exception If signature is missing or invalid
      */
     public function processWebhook(array $payload, ?string $signature = null): ?OctobankPayment
     {
-        // Verify webhook signature if provided
         // Get signature from request header if not passed directly
         if ($signature === null) {
             $signature = request()->header('Signature') ?? request()->header('X-Signature');
         }
 
-        // Validate signature if we have one (recommended for production)
-        if ($signature && !$this->verifyWebhookSignature($payload, $signature)) {
-            Log::error('Octobank webhook signature verification failed', [
-                'payload' => $payload,
-                'signature_received' => substr($signature ?? '', 0, 20) . '...',
+        // SECURITY: Signature is MANDATORY - reject if missing
+        if (empty($signature)) {
+            Log::warning('Octobank webhook rejected: missing signature header', [
+                'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+                'ip' => request()->ip(),
+            ]);
+            throw new Exception('Missing webhook signature');
+        }
+
+        // Validate signature - reject if invalid
+        if (!$this->verifyWebhookSignature($payload, $signature)) {
+            Log::error('Octobank webhook rejected: invalid signature', [
+                'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+                'signature_received' => substr($signature, 0, 20) . '...',
+                'ip' => request()->ip(),
             ]);
             throw new Exception('Invalid webhook signature');
         }
