@@ -6,6 +6,15 @@ use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 use App\Models\Tour;
 
+// ============================================
+// LOCALIZED ROUTES (Phase 1 - Parallel Routes)
+// ============================================
+// Only load when multilang is enabled AND routes phase is active
+// These routes run IN PARALLEL with existing routes - nothing breaks
+if (config('multilang.enabled') && config('multilang.phases.routes')) {
+    require __DIR__ . '/web_localized.php';
+}
+
 // CSRF Token endpoint for frontend
 Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);

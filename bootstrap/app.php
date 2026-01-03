@@ -17,7 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\HandleCors::class,
             \App\Http\Middleware\SecurityHeaders::class,
         ]);
-        
+
+        // Register middleware aliases
+        $middleware->alias([
+            'locale' => \App\Http\Middleware\SetLocaleFromRoute::class,
+        ]);
+
         // Exclude Octobank webhook from CSRF verification
         $middleware->validateCsrfTokens(except: [
             '/octo/callback',

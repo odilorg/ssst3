@@ -83,24 +83,83 @@ Verify all existing pages work before any multilingual features are enabled.
 
 ## Phase 1: Locale Routing & UI Translations
 
-### Additional Checks (after Phase 1 is enabled)
+### Enable Phase 1
+
+Set these environment variables or config overrides:
+```bash
+MULTILANG_ENABLED=true
+MULTILANG_PHASE_ROUTES=true
+MULTILANG_PHASE_UI_STRINGS=true
+MULTILANG_LANGUAGE_SWITCHER=true
+```
+
+### Run Automated Tests
+
+```bash
+# Run Phase 1 tests with config override
+php artisan test --filter=Phase1MultilangTest
+
+# Quick localized URL checks
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/en/
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/ru/
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/fr/
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/ru/mini-journeys
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/fr/about
+```
+
+### Manual Checklist
 
 #### Localized URLs (New Routes)
-- [ ] `/en/` loads (mirrors homepage)
-- [ ] `/ru/` loads (if translations exist)
-- [ ] `/fr/` loads (if translations exist)
-- [ ] Original `/` still works (not broken)
+- [ ] `/en/` loads successfully (HTTP 200)
+- [ ] `/ru/` loads successfully (HTTP 200)
+- [ ] `/fr/` loads successfully (HTTP 200)
+- [ ] `/en/mini-journeys` loads
+- [ ] `/ru/craft-journeys` loads
+- [ ] `/fr/tours/{slug}` loads
+- [ ] `/en/blog` loads
+- [ ] `/ru/destinations` loads
+- [ ] `/fr/about` loads
+- [ ] `/fr/contact` loads
+- [ ] Original `/` still works (not broken!)
+- [ ] Original `/mini-journeys` still works
+- [ ] Original `/tours/{slug}` still works
+- [ ] Invalid locale `/xx/` returns 404
+- [ ] Unsupported locale `/de/` returns 404
 
-#### Language Switcher
-- [ ] Switcher visible in header/footer
-- [ ] Clicking locale changes URL
-- [ ] Locale persists in cookie/session
+#### Language Switcher Component
+- [ ] `<x-lang-switcher />` renders when enabled
+- [ ] Dropdown shows all 3 locales (EN, RU, FR)
+- [ ] Flag emojis display correctly
+- [ ] Native names display (English, Русский, Français)
+- [ ] Clicking locale changes URL to /{locale}/...
+- [ ] Current locale is highlighted/checked
+- [ ] Query strings preserved when switching (?page=2)
+- [ ] Inline style `<x-lang-switcher :dropdown="false" />` works
+
+#### App Locale Set Correctly
+- [ ] After visiting `/ru/`, `app()->getLocale()` returns 'ru'
+- [ ] After visiting `/fr/`, `app()->getLocale()` returns 'fr'
+- [ ] Translation helper `__('ui.nav.home')` returns localized string
 
 #### UI Translations
-- [ ] Navigation labels translate
-- [ ] Footer text translates
-- [ ] Button labels translate
-- [ ] Form labels translate
+- [ ] `__('ui.nav.home')` = "Home" (EN), "Главная" (RU), "Accueil" (FR)
+- [ ] `__('ui.nav.tours')` = "Tours" (EN), "Туры" (RU), "Circuits" (FR)
+- [ ] `__('ui.buttons.book_now')` = "Book Now" (EN), "Забронировать" (RU), "Réserver" (FR)
+- [ ] `__('ui.sections.overview')` = "Overview" (EN), "Обзор" (RU), "Aperçu" (FR)
+- [ ] `__('ui.common.loading')` = "Loading..." (EN), "Загрузка..." (RU), "Chargement..." (FR)
+- [ ] `__('ui.footer.copyright')` = "All rights reserved." / "Все права защищены." / "Tous droits réservés."
+
+#### Translation Files Consistency
+- [ ] `lang/en/ui.php` exists with all keys
+- [ ] `lang/ru/ui.php` exists with matching keys
+- [ ] `lang/fr/ui.php` exists with matching keys
+- [ ] No missing keys between language files
+
+### What NOT to Test Yet (Phase 2+)
+- Database content translations (tours, cities, blog posts)
+- Localized slugs (/ru/tours/shahrisabz-odnodnevniy-tur)
+- hreflang SEO tags
+- Localized sitemaps
 
 ---
 

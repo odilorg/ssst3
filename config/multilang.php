@@ -103,6 +103,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Phase Flags for Controlled Rollout
+    |--------------------------------------------------------------------------
+    |
+    | These flags control which phases of multilingual support are active.
+    | Use these in route registration and view conditionals.
+    |
+    */
+
+    'phases' => [
+        // Phase 1: Locale routing and UI strings
+        'routes' => env('MULTILANG_PHASE_ROUTES', false),
+        'ui_strings' => env('MULTILANG_PHASE_UI_STRINGS', false),
+
+        // Phase 2: Database content translations
+        'db_translations' => env('MULTILANG_PHASE_DB_TRANSLATIONS', false),
+
+        // Phase 3: SEO features
+        'seo' => env('MULTILANG_PHASE_SEO', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Feature Flags for Phased Rollout
     |--------------------------------------------------------------------------
     |
