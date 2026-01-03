@@ -1,9 +1,9 @@
 {{--
-    Mobile Section Navigation Tabs (Fixed Position)
+    Mobile Section Navigation Tabs (Fixed Position) - HYBRID Icon + Label
 
     Displays a FIXED horizontal scrollable tab bar on mobile devices only.
     Always visible at the top of the viewport while scrolling.
-    Each tab scrolls to its corresponding section on the page.
+    Each tab shows an icon + label for better UX.
     Active tab is highlighted based on scroll position.
 
     Props:
@@ -11,34 +11,34 @@
 --}}
 
 @php
-    // Build tabs array based on available sections
+    // Build tabs array with icons
     $tabs = [];
 
     // Overview - always present
-    $tabs[] = ['id' => 'overview', 'label' => 'Overview'];
+    $tabs[] = ['id' => 'overview', 'label' => 'Overview', 'icon' => 'info'];
 
     // Highlights - always present
-    $tabs[] = ['id' => 'highlights', 'label' => 'Highlights'];
+    $tabs[] = ['id' => 'highlights', 'label' => 'Highlights', 'icon' => 'star'];
 
     // Itinerary - check if tour has itinerary
     if ($tour->itinerary && count($tour->itinerary) > 0) {
-        $tabs[] = ['id' => 'itinerary', 'label' => 'Itinerary'];
+        $tabs[] = ['id' => 'itinerary', 'label' => 'Itinerary', 'icon' => 'route'];
     }
 
     // Included/Excluded - always present
-    $tabs[] = ['id' => 'includes', 'label' => 'Included'];
+    $tabs[] = ['id' => 'includes', 'label' => 'Included', 'icon' => 'check'];
 
     // Meeting Point - always present
-    $tabs[] = ['id' => 'meeting-point', 'label' => 'Meeting'];
+    $tabs[] = ['id' => 'meeting-point', 'label' => 'Meeting', 'icon' => 'map-pin'];
 
     // FAQ - check if tour has FAQs
     if ($tour->faqs && count($tour->faqs) > 0) {
-        $tabs[] = ['id' => 'faq', 'label' => 'FAQ'];
+        $tabs[] = ['id' => 'faq', 'label' => 'FAQ', 'icon' => 'question'];
     }
 
     // Reviews - check if tour has reviews
     if ($tour->review_count > 0) {
-        $tabs[] = ['id' => 'reviews', 'label' => 'Reviews'];
+        $tabs[] = ['id' => 'reviews', 'label' => 'Reviews', 'icon' => 'chat'];
     }
 @endphp
 
@@ -51,8 +51,60 @@
                class="mobile-section-tabs__tab{{ $index === 0 ? ' is-active' : '' }}"
                data-section-id="{{ $tab['id'] }}"
                role="tab"
-               aria-selected="{{ $index === 0 ? 'true' : 'false' }}">
-                {{ $tab['label'] }}
+               aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
+               aria-label="{{ $tab['label'] }}">
+                <span class="mobile-section-tabs__icon">
+                    @switch($tab['icon'])
+                        @case('info')
+                            {{-- Info/Document icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('star')
+                            {{-- Star icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('route')
+                            {{-- Route/List icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 4.75A.75.75 0 016.75 4h10.5a.75.75 0 010 1.5H6.75A.75.75 0 016 4.75zM6 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75A.75.75 0 016 10zm0 5.25a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM1.99 4.75a1 1 0 011-1h.01a1 1 0 010 2h-.01a1 1 0 01-1-1zm1 5.25a1 1 0 100 2h.01a1 1 0 100-2h-.01zm0 5.25a1 1 0 100 2h.01a1 1 0 100-2h-.01z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('check')
+                            {{-- Check circle icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('map-pin')
+                            {{-- Map pin icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('question')
+                            {{-- Question mark icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 11-1.061-1.061 3 3 0 112.871 5.026v.345a.75.75 0 01-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 108.94 6.94zM10 15a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @case('chat')
+                            {{-- Chat bubble icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.67 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 001.28.53l3.58-3.579a.78.78 0 01.527-.224 41.202 41.202 0 005.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0010 2zm0 7a1 1 0 100-2 1 1 0 000 2zM8 8a1 1 0 11-2 0 1 1 0 012 0zm5 1a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            @break
+                        @default
+                            {{-- Default circle icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16z" clip-rule="evenodd" />
+                            </svg>
+                    @endswitch
+                </span>
+                <span class="mobile-section-tabs__label">{{ $tab['label'] }}</span>
             </a>
         @endforeach
     </div>
@@ -132,22 +184,45 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 14px;
-    font-size: 13px;
+    gap: 5px;
+    padding: 6px 12px;
+    font-size: 12px;
     font-weight: 500;
-    color: #6b7280;
-    background: #f3f4f6;
-    border-radius: 20px;
+    color: #64748b;
+    background: #f1f5f9;
+    border-radius: 18px;
     text-decoration: none;
     white-space: nowrap;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    min-height: 32px;
+}
+
+.mobile-section-tabs__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mobile-section-tabs__icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.mobile-section-tabs__label {
+    line-height: 1;
 }
 
 .mobile-section-tabs__tab:hover,
 .mobile-section-tabs__tab:active {
     color: #0D4C92;
-    background: #EBF5FF;
+    background: #e0f2fe;
+}
+
+.mobile-section-tabs__tab:focus {
+    outline: 2px solid #0D4C92;
+    outline-offset: 2px;
 }
 
 .mobile-section-tabs__tab.is-active {
@@ -155,6 +230,10 @@
     background: #0D4C92;
     font-weight: 600;
     border-color: #0D4C92;
+}
+
+.mobile-section-tabs__tab.is-active .mobile-section-tabs__icon svg {
+    color: #ffffff;
 }
 
 /* iOS safe area support */
@@ -254,9 +333,11 @@
         tabs.forEach(function(tab) {
             tab.classList.remove('is-active');
             tab.setAttribute('aria-selected', 'false');
+            tab.removeAttribute('aria-current');
         });
         activeTab.classList.add('is-active');
         activeTab.setAttribute('aria-selected', 'true');
+        activeTab.setAttribute('aria-current', 'true');
     }
 
     // Scroll tab into view within horizontal container
