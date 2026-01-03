@@ -108,6 +108,8 @@
             </a>
         @endforeach
     </div>
+    {{-- Right-edge fade gradient to indicate scrollable content --}}
+    <div class="mobile-section-tabs__scroll-hint" aria-hidden="true"></div>
 </nav>
 
 <style>
@@ -261,6 +263,48 @@
         }
     }
 }
+
+/* Scroll hint - right-edge fade gradient */
+.mobile-section-tabs__scroll-hint {
+    display: none; /* Hidden by default (desktop) */
+}
+
+@media (max-width: 767px) {
+    .mobile-section-tabs__scroll-hint {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 32px;
+        background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.9) 60%, #ffffff 100%);
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+        z-index: 2;
+    }
+
+    /* Hide scroll hint when scrolled to end */
+    .mobile-section-tabs__scroll-hint.is-hidden {
+        opacity: 0;
+    }
+
+    /* Ensure nav has relative positioning for the absolute overlay */
+    .mobile-section-tabs {
+        position: fixed; /* Already fixed, just ensure it */
+    }
+}
+
+/* First-load nudge animation */
+@keyframes scrollNudge {
+    0% { transform: translateX(0); }
+    40% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.mobile-section-tabs__container.nudge-animate {
+    animation: scrollNudge 0.4s ease-out;
+}
 </style>
 
 <script>
@@ -274,9 +318,58 @@
     var barHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-tabs-height')) || 52;
 
     var tabs = tabsNav.querySelectorAll('.mobile-section-tabs__tab');
+    var container = tabsNav.querySelector('.mobile-section-tabs__container');
+    var scrollHint = tabsNav.querySelector('.mobile-section-tabs__scroll-hint');
     var sections = [];
     var isScrolling = false;
     var scrollTimeout;
+
+    // ============================================
+    // SCROLL HINT: Show/hide right-edge fade
+    // ============================================
+    function updateScrollHint() {
+        if (!container || !scrollHint) return;
+
+        // Check if container is scrolled to the end (with small tolerance)
+        var isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 5;
+
+        // Check if container actually overflows
+        var hasOverflow = container.scrollWidth > container.clientWidth;
+
+        if (!hasOverflow || isAtEnd) {
+            scrollHint.classList.add('is-hidden');
+        } else {
+            scrollHint.classList.remove('is-hidden');
+        }
+    }
+
+    // Update hint on container horizontal scroll
+    if (container) {
+        container.addEventListener('scroll', updateScrollHint, { passive: true });
+        // Initial check
+        updateScrollHint();
+    }
+
+    // ============================================
+    // FIRST-LOAD NUDGE: Subtle animation on load
+    // ============================================
+    function playNudgeAnimation() {
+        if (!container) return;
+
+        // Only play if container has overflow (scrollable)
+        if (container.scrollWidth <= container.clientWidth) return;
+
+        // Add animation class
+        container.classList.add('nudge-animate');
+
+        // Remove class after animation completes
+        setTimeout(function() {
+            container.classList.remove('nudge-animate');
+        }, 450);
+    }
+
+    // Play nudge after short delay (allows page to settle)
+    setTimeout(playNudgeAnimation, 600);
 
     // Collect section elements
     tabs.forEach(function(tab) {
