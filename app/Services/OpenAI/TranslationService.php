@@ -95,12 +95,25 @@ class TranslationService
             if (empty($sourceValue)) {
                 if ($field === 'requirements_json' && !empty($tour->requirements)) {
                     $sourceValue = $tour->requirements;
-                } elseif ($field === 'faq_json' && !empty($tour->faqs)) {
-                    $sourceValue = $tour->faqs;
+                } elseif ($field === 'faq_json' && $tour->faqs && $tour->faqs->isNotEmpty()) {
+                    // Convert Eloquent Collection to array of arrays for translation
+                    $sourceValue = $tour->faqs->map(function($item) {
+                        return [
+                            'question' => $item->question_text ?? $item->question ?? '',
+                            'answer' => $item->answer_text ?? $item->answer ?? '',
+                        ];
+                    })->toArray();
                 } elseif ($field === 'highlights_json' && !empty($tour->highlights)) {
                     $sourceValue = $tour->highlights;
-                } elseif ($field === 'itinerary_json' && !empty($tour->itinerary)) {
-                    $sourceValue = $tour->itinerary;
+                } elseif ($field === 'itinerary_json' && $tour->topLevelItems && $tour->topLevelItems->isNotEmpty()) {
+                    // Convert Eloquent Collection to array of arrays for translation
+                    $sourceValue = $tour->topLevelItems->map(function($item) {
+                        return [
+                            'title' => $item->title ?? '',
+                            'description' => $item->description ?? '',
+                            'duration_minutes' => $item->duration_minutes ?? null,
+                        ];
+                    })->toArray();
                 } elseif ($field === 'included_json' && !empty($tour->included_items)) {
                     $sourceValue = $tour->included_items;
                 } elseif ($field === 'excluded_json' && !empty($tour->excluded_items)) {
