@@ -399,9 +399,10 @@ class TourTranslationsRelationManager extends RelationManager
 
                             // Show starting notification
                             Notification::make()
-                                ->title('Translation Started')
-                                ->body("Translating tour to {$targetLocale}... This may take 30-60 seconds.")
+                                ->title('🔄 Translation Started')
+                                ->body("Translating tour to {$targetLocale}... This may take 30-60 seconds. Please wait...")
                                 ->info()
+                                ->duration(60000) // Show for 60 seconds (entire translation duration)
                                 ->send();
 
                             // Create translation log
@@ -438,10 +439,14 @@ class TourTranslationsRelationManager extends RelationManager
 
                             Notification::make()
                                 ->title('✅ Translation Complete!')
-                                ->body("Translated {$tour->title} to {$targetLocale} in {$duration}s. Cost: $" . number_format($cost, 4) . " USD")
+                                ->body("Translated {$tour->title} to {$targetLocale} in {$duration}s. Cost: $" . number_format($cost, 4) . " USD. Sections: " . count($result['translations']))
                                 ->success()
-                                ->duration(10000)
+                                ->duration(15000) // 15 seconds to ensure user sees it
+                                ->persistent() // Make it persistent so user must dismiss
                                 ->send();
+
+                            // Refresh the table to show updated data
+                            $this->refreshFormData();
                         } catch (\Exception $e) {
                             if (isset($log)) {
                                 $log->update([
@@ -452,9 +457,9 @@ class TourTranslationsRelationManager extends RelationManager
 
                             Notification::make()
                                 ->title('❌ Translation Failed')
-                                ->body($e->getMessage())
+                                ->body('Error: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')')
                                 ->danger()
-                                ->duration(10000)
+                                ->persistent() // Make error persistent so user must dismiss
                                 ->send();
                         }
                     }),
