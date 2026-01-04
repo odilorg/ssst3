@@ -91,12 +91,20 @@ class TranslationService
 
             $sourceValue = $sourceTranslation->{$field};
 
-            // Fallback to Tour model for requirements/FAQs if translation doesn't have them
+            // Fallback to Tour model for JSON fields if translation doesn't have them
             if (empty($sourceValue)) {
                 if ($field === 'requirements_json' && !empty($tour->requirements)) {
                     $sourceValue = $tour->requirements;
                 } elseif ($field === 'faq_json' && !empty($tour->faqs)) {
                     $sourceValue = $tour->faqs;
+                } elseif ($field === 'highlights_json' && !empty($tour->highlights)) {
+                    $sourceValue = $tour->highlights;
+                } elseif ($field === 'itinerary_json' && !empty($tour->itinerary)) {
+                    $sourceValue = $tour->itinerary;
+                } elseif ($field === 'included_json' && !empty($tour->included)) {
+                    $sourceValue = $tour->included;
+                } elseif ($field === 'excluded_json' && !empty($tour->excluded)) {
+                    $sourceValue = $tour->excluded;
                 }
             }
 

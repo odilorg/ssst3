@@ -164,7 +164,15 @@ class TourController extends Controller
             return $tour->faqs()->orderBy('sort_order')->get();
         });
 
-        $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+        // Get global FAQs based on current locale
+        $locale = app()->getLocale();
+        $settingKey = $locale === 'en' ? 'global_faqs' : "global_faqs_{$locale}";
+        $globalFaqs = \App\Models\Setting::get($settingKey, []);
+
+        // Fallback to English if translation doesn't exist
+        if (empty($globalFaqs) && $locale !== 'en') {
+            $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+        }
 
         return view('partials.tours.show.faqs', compact('tour', 'translation', 'faqs', 'globalFaqs'));
     }
