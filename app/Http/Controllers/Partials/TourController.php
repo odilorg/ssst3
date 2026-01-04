@@ -278,7 +278,16 @@ class TourController extends Controller
         $data = $this->getCachedTourWithTranslation($slug);
         $tour = $data['tour'];
         $translation = $data['translation'];
-        $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+
+        // Get global requirements based on current locale
+        $locale = app()->getLocale();
+        $settingKey = $locale === 'en' ? 'global_requirements' : "global_requirements_{$locale}";
+        $globalRequirements = \App\Models\Setting::get($settingKey, []);
+
+        // Fallback to English if translation doesn't exist
+        if (empty($globalRequirements) && $locale !== 'en') {
+            $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+        }
 
         return view('partials.tours.show.requirements', compact('tour', 'translation', 'globalRequirements'));
     }
