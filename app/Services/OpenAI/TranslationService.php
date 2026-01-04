@@ -91,7 +91,16 @@ class TranslationService
 
             $sourceValue = $sourceTranslation->{$field};
 
-            // Skip empty fields
+            // Fallback to Tour model for requirements/FAQs if translation doesn't have them
+            if (empty($sourceValue)) {
+                if ($field === 'requirements_json' && !empty($tour->requirements)) {
+                    $sourceValue = $tour->requirements;
+                } elseif ($field === 'faq_json' && !empty($tour->faqs)) {
+                    $sourceValue = $tour->faqs;
+                }
+            }
+
+            // Skip if still empty after fallback
             if (empty($sourceValue)) {
                 continue;
             }
