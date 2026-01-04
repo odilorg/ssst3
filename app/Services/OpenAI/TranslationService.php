@@ -145,6 +145,7 @@ class TranslationService
 
         foreach ($jsonData as $item) {
             if (is_array($item)) {
+                // Handle structured arrays (FAQs, itinerary, etc.)
                 $translatedItem = [];
                 foreach ($item as $key => $value) {
                     if (is_string($value) && !empty($value)) {
@@ -155,8 +156,9 @@ class TranslationService
                 }
                 $translated[] = $translatedItem;
             } elseif (is_string($item)) {
-                $translatedText = $this->translateField($item, $targetLocale, $sourceLocale, $fieldName);
-                $translated[] = ['text' => $translatedText];
+                // Handle simple string arrays (highlights, included, excluded)
+                // Keep as simple strings, not wrapped in ['text' => ...]
+                $translated[] = $this->translateField($item, $targetLocale, $sourceLocale, $fieldName);
             }
         }
 
