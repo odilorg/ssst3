@@ -441,12 +441,9 @@ class TourTranslationsRelationManager extends RelationManager
                                 ->title('✅ Translation Complete!')
                                 ->body("Translated {$tour->title} to {$targetLocale} in {$duration}s. Cost: $" . number_format($cost, 4) . " USD. Sections: " . count($result['translations']))
                                 ->success()
-                                ->duration(15000) // 15 seconds to ensure user sees it
-                                ->persistent() // Make it persistent so user must dismiss
+                                ->duration(15000)
+                                ->persistent()
                                 ->send();
-
-                            // Refresh the table to show updated data
-                            $this->refreshFormData();
                         } catch (\Exception $e) {
                             if (isset($log)) {
                                 $log->update([
