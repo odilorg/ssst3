@@ -387,10 +387,22 @@ class TourTranslationsRelationManager extends RelationManager
                     ->icon('heroicon-o-language')
                     ->color('info')
                     ->visible(fn ($record): bool => config('ai-translation.enabled', true))
+                    ->requiresConfirmation()
+                    ->modalHeading('AI Translation')
+                    ->modalDescription(fn ($record) => 'Translate this tour to ' . strtoupper($record->locale) . ' using AI? This will cost approximately $0.16 USD.')
+                    ->modalSubmitActionLabel('Translate')
                     ->action(function ($record) {
                         try {
                             $service = new TranslationService();
                             $tour = $this->ownerRecord;
+                            $targetLocale = strtoupper($record->locale);
+
+                            // Show starting notification
+                            Notification::make()
+                                ->title('Translation Started')
+                                ->body("Translating tour to {$targetLocale}... This may take 30-60 seconds.")
+                                ->info()
+                                ->send();
 
                             // Create translation log
                             $log = TranslationLog::create([
@@ -405,24 +417,30 @@ class TourTranslationsRelationManager extends RelationManager
                                 'status' => 'processing',
                             ]);
 
-                            // Translate tour
+                            // Translate tour with progress updates
+                            $startTime = microtime(true);
                             $result = $service->translateTour($tour, $record->locale);
+                            $duration = round(microtime(true) - $startTime, 1);
 
                             // Update translation record
                             $record->update($result['translations']);
+
+                            // Calculate cost
+                            $cost = $service->estimateCost($result['tokens_used'], $result['tokens_used']);
 
                             // Update log
                             $log->update([
                                 'sections_translated' => array_keys($result['translations']),
                                 'tokens_used' => $result['tokens_used'],
-                                'cost_usd' => $service->estimateCost($result['tokens_used'], $result['tokens_used']),
+                                'cost_usd' => $cost,
                                 'status' => 'completed',
                             ]);
 
                             Notification::make()
-                                ->title('Translation Complete')
-                                ->body('Tour has been translated to ' . strtoupper($record->locale) . ' successfully!')
+                                ->title('✅ Translation Complete!')
+                                ->body("Translated {$tour->title} to {$targetLocale} in {$duration}s. Cost: $" . number_format($cost, 4) . " USD")
                                 ->success()
+                                ->duration(10000)
                                 ->send();
                         } catch (\Exception $e) {
                             if (isset($log)) {
@@ -433,9 +451,10 @@ class TourTranslationsRelationManager extends RelationManager
                             }
 
                             Notification::make()
-                                ->title('Translation Failed')
+                                ->title('❌ Translation Failed')
                                 ->body($e->getMessage())
                                 ->danger()
+                                ->duration(10000)
                                 ->send();
                         }
                     }),
