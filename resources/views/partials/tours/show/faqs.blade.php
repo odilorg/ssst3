@@ -1,7 +1,9 @@
 {{-- Tour FAQs Partial --}}
 @php
     // Use translated FAQ if available, otherwise fall back to tour FAQ
-    $translatedFaqs = $translation->faq_json ?? null;
+    // Ensure faq_json is always an array (handle string JSON edge case)
+    $rawFaqs = $translation->faq_json ?? null;
+    $translatedFaqs = is_array($rawFaqs) ? $rawFaqs : (is_string($rawFaqs) ? json_decode($rawFaqs, true) : null);
     $hasCustomFaqs = $tour->faqs && $tour->faqs->isNotEmpty();
     $shouldShowGlobal = (!$translatedFaqs && !$hasCustomFaqs) || $tour->include_global_faqs;
 
@@ -44,7 +46,7 @@
             @endforeach
         @endif
 
-        @if($shouldShowGlobal && isset($globalFaqs) && count($globalFaqs) > 0)
+        @if($shouldShowGlobal && isset($globalFaqs) && is_array($globalFaqs) && count($globalFaqs) > 0)
             {{-- Global FAQs --}}
             @foreach($globalFaqs as $faq)
                 <details class="faq-item">
