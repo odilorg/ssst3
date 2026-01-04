@@ -30,7 +30,7 @@ class TranslationService
     }
 
     /**
-     * Translate a single field
+     * Translate a single field with retry logic for rate limits
      */
     public function translateField(string $text, string $targetLocale, string $sourceLocale = 'en', string $section = 'content'): string
     {
@@ -41,25 +41,49 @@ class TranslationService
         $systemPrompt = $this->getSystemPrompt($targetLocale);
         $userPrompt = $this->getUserPrompt($text, $targetLocale, $sourceLocale, $section);
 
-        try {
-            $response = $this->client->chat()->create([
-                'model' => $this->model,
-                'messages' => [
-                    ['role' => 'system', 'content' => $systemPrompt],
-                    ['role' => 'user', 'content' => $userPrompt],
-                ],
-                'temperature' => $this->temperature,
-            ]);
+        $maxRetries = 3;
+        $retryDelay = 2; // seconds
 
-            return trim($response->choices[0]->message->content);
-        } catch (\Exception $e) {
-            Log::error('AI Translation failed for field', [
-                'section' => $section,
-                'target_locale' => $targetLocale,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $response = $this->client->chat()->create([
+                    'model' => $this->model,
+                    'messages' => [
+                        ['role' => 'system', 'content' => $systemPrompt],
+                        ['role' => 'user', 'content' => $userPrompt],
+                    ],
+                    'temperature' => $this->temperature,
+                ]);
+
+                // Add small delay between API calls to avoid rate limits
+                usleep(300000); // 300ms delay
+
+                return trim($response->choices[0]->message->content);
+            } catch (\Exception $e) {
+                $isRateLimit = str_contains($e->getMessage(), 'rate limit') ||
+                               str_contains($e->getMessage(), 'Rate limit') ||
+                               str_contains($e->getMessage(), '429');
+
+                if ($isRateLimit && $attempt < $maxRetries) {
+                    Log::warning('AI Translation rate limit hit, retrying...', [
+                        'attempt' => $attempt,
+                        'delay' => $retryDelay * $attempt,
+                    ]);
+                    sleep($retryDelay * $attempt); // Exponential backoff
+                    continue;
+                }
+
+                Log::error('AI Translation failed for field', [
+                    'section' => $section,
+                    'target_locale' => $targetLocale,
+                    'error' => $e->getMessage(),
+                    'attempt' => $attempt,
+                ]);
+                throw $e;
+            }
         }
+
+        throw new \Exception('Translation failed after ' . $maxRetries . ' attempts');
     }
 
     /**
