@@ -232,14 +232,92 @@ Use --force to overwrite existing translations.
 MULTILANG_PHASE_TOUR_TRANSLATIONS=true
 ```
 
-### Additional Checks
+### Run Automated Tests
 
-#### Tour Pages with Translations
-- [ ] `/en/tours/{slug}` shows English content
-- [ ] `/ru/tours/{slug}` shows Russian content (if translated)
-- [ ] `/fr/tours/{slug}` shows French content (if translated)
-- [ ] Untranslated content falls back to English
-- [ ] Localized slugs work (if enabled)
+```bash
+# Run Phase 2 tests
+php artisan test --filter=Phase2TourContentTranslationsTest
+
+# Quick tour translation checks
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/en/tours/{en-slug}
+curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/ru/tours/{ru-slug}
+```
+
+### Manual Checklist
+
+#### Localized Tour Pages
+- [ ] `/en/tours/{en-slug}` loads successfully (HTTP 200)
+- [ ] `/ru/tours/{ru-slug}` loads successfully (HTTP 200)
+- [ ] Page title shows translated title
+- [ ] Content sections use translated content
+- [ ] Trying to access `/ru/tours/{en-slug}` returns 404 or fallback (expected behavior)
+- [ ] Trying to access `/en/tours/{ru-slug}` returns 404 or fallback (expected behavior)
+
+#### Tour Content Translations (Layer 2)
+
+**Create a test tour in Filament with RU translation:**
+1. Go to Filament Admin → Tours
+2. Create/Edit a tour
+3. Add Russian translation with:
+   - Different highlights
+   - Different itinerary days
+   - Different FAQ questions/answers
+   - Different included/excluded items
+   - Different requirements
+   - Custom cancellation policy text
+
+**Then verify on frontend:**
+
+##### Highlights Section
+- [ ] `/en/tours/{slug}` shows English highlights
+- [ ] `/ru/tours/{slug}` shows Russian highlights (different content)
+- [ ] HTMX partial: `/partials/tours/{slug}/highlights?locale=ru` returns Russian content
+- [ ] HTMX partial: `/partials/tours/{slug}/highlights?locale=en` returns English content
+- [ ] If translation missing, falls back to base tour highlights
+
+##### Itinerary Section
+- [ ] `/en/tours/{slug}` shows English itinerary
+- [ ] `/ru/tours/{slug}` shows Russian itinerary with Russian day titles/descriptions
+- [ ] Day numbers auto-increment correctly
+- [ ] Duration displays (if provided in JSON)
+- [ ] HTMX partial: `/partials/tours/{slug}/itinerary?locale=ru` returns Russian days
+- [ ] If translation missing, falls back to base tour itinerary_items
+
+##### Included/Excluded Section
+- [ ] `/en/tours/{slug}` shows English included/excluded items
+- [ ] `/ru/tours/{slug}` shows Russian included/excluded items
+- [ ] Check marks (✓) display correctly for included
+- [ ] X marks (✗) display correctly for excluded
+- [ ] HTMX partial: `/partials/tours/{slug}/included-excluded?locale=ru` returns Russian content
+- [ ] If translation missing, falls back to base tour included_items/excluded_items
+
+##### FAQ Section
+- [ ] `/en/tours/{slug}` shows English FAQ
+- [ ] `/ru/tours/{slug}` shows Russian FAQ with different questions/answers
+- [ ] Accordion works (click to expand/collapse)
+- [ ] HTMX partial: `/partials/tours/{slug}/faqs?locale=ru` returns Russian FAQ
+- [ ] If translation missing, falls back to base tour FAQs or global FAQs
+
+##### Requirements Section
+- [ ] `/en/tours/{slug}` shows English requirements
+- [ ] `/ru/tours/{slug}` shows Russian requirements
+- [ ] Icons display correctly
+- [ ] HTMX partial: `/partials/tours/{slug}/requirements?locale=ru` returns Russian requirements
+- [ ] If translation missing, falls back to base tour requirements or global requirements
+
+##### Cancellation Policy
+- [ ] `/en/tours/{slug}` shows English cancellation policy
+- [ ] `/ru/tours/{slug}` shows Russian custom cancellation policy (if set)
+- [ ] Dynamic hours substitute correctly ("24 hours")
+- [ ] HTMX partial: `/partials/tours/{slug}/cancellation?locale=ru` returns Russian policy
+- [ ] If custom policy not set, shows default rules with hours
+
+#### Fallback Behavior Verification
+- [ ] Tour with NO Russian translation still loads on `/ru/tours/{slug}` (uses fallback)
+- [ ] Missing highlights_json falls back to tour.highlights
+- [ ] Missing itinerary_json falls back to tour.topLevelItems
+- [ ] Missing faq_json falls back to tour.faqs + global FAQs
+- [ ] No fatal errors when JSON fields are null
 
 ---
 

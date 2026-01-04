@@ -21,22 +21,53 @@
 @section('structured_data')
 {!! $structuredData ?? '{}' !!}
 @endsection
+
+@php
+    // Build partial URL with locale parameter for translated content
+    $partialBase = '/partials/tours/' . $tour->slug;
+    $localeParam = isset($translation) ? '?locale=' . app()->getLocale() : '';
+@endphp
+
 @section('content')
   <!-- =====================================================
        SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
        ===================================================== -->
   <section class="tour-header"
-           hx-get="{{ url('/partials/tours/' . $tour->slug . '/hero') }}"
+           @if(!isset($translation))
+           hx-get="{{ url($partialBase . '/hero' . $localeParam) }}"
            hx-trigger="load"
            hx-swap="innerHTML"
+           @endif
            data-tour-slug="{{ $tour->slug }}">
 
-    <!-- Loading Skeleton -->
-    <div class="container">
-      <div class="skeleton skeleton--text" style="width: 40%; height: 16px; margin-bottom: 1rem;"></div>
-      <div class="skeleton skeleton--title" style="height: 40px; width: 80%; margin-bottom: 1rem;"></div>
-      <div class="skeleton skeleton--text" style="width: 30%; height: 20px;"></div>
-    </div>
+    @if(isset($translation))
+      <!-- Translated Content -->
+      <div class="container">
+        <div class="tour-header__breadcrumb">
+          <a href="{{ url(app()->getLocale()) }}">{{ __('ui.home') }}</a>
+          <span class="tour-header__breadcrumb-separator">/</span>
+          <a href="{{ url(app()->getLocale() . '/craft-journeys') }}">{{ __('ui.tours') }}</a>
+          <span class="tour-header__breadcrumb-separator">/</span>
+          <span>{{ $translation->title }}</span>
+        </div>
+        <h1 class="tour-header__title">{{ $translation->title }}</h1>
+        <div class="tour-header__meta">
+          <span class="tour-header__duration">
+            <i class="far fa-clock"></i> {{ $tour->duration_days }} {{ __('ui.days') }}
+          </span>
+          <span class="tour-header__city">
+            <i class="fas fa-map-marker-alt"></i> {{ $tour->city->name ?? '' }}
+          </span>
+        </div>
+      </div>
+    @else
+      <!-- Loading Skeleton -->
+      <div class="container">
+        <div class="skeleton skeleton--text" style="width: 40%; height: 16px; margin-bottom: 1rem;"></div>
+        <div class="skeleton skeleton--title" style="height: 40px; width: 80%; margin-bottom: 1rem;"></div>
+        <div class="skeleton skeleton--text" style="width: 30%; height: 20px;"></div>
+      </div>
+    @endif
 
   </section>
 
@@ -60,7 +91,7 @@
       <!-- Actual Gallery -->
       <!-- Actual Gallery - Loaded via HTMX -->
       <div class="tour-hero__gallery is-hidden"
-           hx-get="{{ url('/partials/tours/' . $tour->slug . '/gallery') }}"
+           hx-get="{{ url($partialBase . '/gallery' . $localeParam) }}"
            hx-trigger="load"
            hx-swap="innerHTML"
            data-tour-slug="{{ $tour->slug }}">
@@ -85,29 +116,71 @@
 
           <!-- Overview Section -->
           <section class="tour-overview" id="overview"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/overview') }}"
+                   @if(!isset($translation))
+                   hx-get="{{ url($partialBase . '/overview' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">Overview</h2>
-            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @if(isset($translation))
+              <!-- Translated Overview -->
+              <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
+
+              @if($translation->excerpt)
+                <p class="tour-overview__excerpt">{{ $translation->excerpt }}</p>
+              @endif
+
+              @if($translation->content)
+                <div class="tour-overview__content">
+                  {!! $translation->content !!}
+                </div>
+              @endif
+
+              <!-- Quick Info Grid (from tour model) -->
+              <div class="tour-quick-info">
+                <div class="tour-quick-info__item">
+                  <i class="far fa-clock"></i>
+                  <div>
+                    <strong>{{ __('ui.duration') }}</strong>
+                    <span>{{ $tour->duration_days }} {{ __('ui.days') }}</span>
+                  </div>
+                </div>
+                <div class="tour-quick-info__item">
+                  <i class="fas fa-users"></i>
+                  <div>
+                    <strong>{{ __('ui.group_size') }}</strong>
+                    <span>{{ __('ui.up_to') }} {{ $tour->max_group_size ?? 15 }} {{ __('ui.people') }}</span>
+                  </div>
+                </div>
+                <div class="tour-quick-info__item">
+                  <i class="fas fa-language"></i>
+                  <div>
+                    <strong>{{ __('ui.languages') }}</strong>
+                    <span>{{ __('ui.english_russian') }}</span>
+                  </div>
+                </div>
+              </div>
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
+              <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @endif
 
           </section>
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/highlights') }}"
+                   hx-get="{{ url($partialBase . '/highlights' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
-            <h2 class="section-title">Highlights</h2>
+            <h2 class="section-title">{{ __('ui.sections.highlights') }}</h2>
             <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 0.5rem;"></div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
             <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
@@ -116,13 +189,13 @@
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/included-excluded') }}"
+                   hx-get="{{ url($partialBase . '/included-excluded' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
-            <h2 class="section-title">What's Included & Excluded</h2>
+            <h2 class="section-title">{{ __('ui.sections.included_excluded') }}</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
               <div>
                 <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
@@ -141,7 +214,7 @@
           <!-- Cancellation Policy Section -->
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="{{ $tour->slug }}"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/cancellation') }}"
+                   hx-get="{{ url($partialBase . '/cancellation' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML">
             <div class="loading-spinner">Loading cancellation policy...</div>
@@ -149,7 +222,7 @@
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/itinerary') }}"
+                   hx-get="{{ url($partialBase . '/itinerary' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    aria-label="Tour itinerary"
@@ -157,7 +230,7 @@
 
             <!-- Loading Skeleton -->
             <div class="itinerary-header">
-              <h2 class="section-title">Tour Itinerary</h2>
+              <h2 class="section-title">{{ __('ui.itinerary.day_by_day') }}</h2>
             </div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
             <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
@@ -168,13 +241,13 @@
 
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/meeting-point') }}"
+                   hx-get="{{ url($partialBase . '/meeting-point' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
-            <h2 class="section-title">Meeting Point & Pickup</h2>
+            <h2 class="section-title">{{ __('ui.sections.meeting_point') }}</h2>
             <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
             {{-- Map skeleton removed --}}
@@ -182,13 +255,13 @@
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/requirements') }}"
+                   hx-get="{{ url($partialBase . '/requirements' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
-            <h2 class="section-title">Know Before You Go</h2>
+            <h2 class="section-title">{{ __('ui.sections.know_before') }}</h2>
             <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
@@ -198,13 +271,13 @@
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/faqs') }}"
+                   hx-get="{{ url($partialBase . '/faqs' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
-            <h2 class="section-title">Frequently Asked Questions</h2>
+            <h2 class="section-title">{{ __('ui.sections.frequently_asked') }}</h2>
             <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
@@ -215,7 +288,7 @@
           {{-- Extra Services Section - DISABLED --}}
           {{--
           <section class="tour-extras" id="extras"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/extras') }}"
+                   hx-get="{{ url($partialBase . '/extras' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
@@ -235,14 +308,14 @@
           <!-- Customer Reviews Section -->
           @if($tour->review_count > 0)
           <section class="tour-reviews" id="reviews"
-                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/reviews') }}"
+                   hx-get="{{ url($partialBase . '/reviews' . $localeParam) }}"
                    hx-trigger="revealed"
                    hx-swap="innerHTML"
                    data-tour-slug="{{ $tour->slug }}">
 
             <!-- Loading Skeleton -->
             <div class="reviews-header">
-              <h2 class="section-title">Customer Reviews</h2>
+              <h2 class="section-title">{{ __('ui.sections.customer_reviews') }}</h2>
             </div>
             <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
             <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
@@ -870,15 +943,15 @@
       @endif
       <!-- Action Buttons Group -->
       <div class="mobile-cta__actions">
-        <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="Book this tour">
+        <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="{{ __('ui.book_this_tour') }}">
           <svg class="icon icon--calendar-check" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm1 2h4v2H7V4zM2 9h14v8H2V9zm11.707 1.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-          Book Now
+          {{ __('ui.book_now') }}
         </button>
         <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20the%20{{ urlencode($tour->title) }}%20tour."
            class="mobile-cta__whatsapp"
            target="_blank"
            rel="noopener noreferrer"
-           aria-label="Contact us on WhatsApp">
+           aria-label="{{ __('ui.contact_us_on_whatsapp') }}">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347z" fill="currentColor"/>
             <path d="M20.52 3.449C18.24 1.245 15.24 0 11.997 0 5.433 0 .104 5.334.101 11.906c0 2.096.546 4.142 1.587 5.945L0 24l6.304-1.654a11.882 11.882 0 005.684 1.448h.005c6.561 0 11.892-5.335 11.895-11.906 0-3.176-1.237-6.16-3.469-8.439zM11.997 21.709h-.004a9.859 9.859 0 01-5.031-1.378l-.361-.214-3.741.981.997-3.646-.235-.374a9.863 9.863 0 01-1.511-5.26c.002-5.45 4.436-9.883 9.889-9.883 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.892 6.993c-.002 5.45-4.436 9.883-9.884 9.883z" fill="currentColor"/>
@@ -891,13 +964,13 @@
         <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 5h1a1 1 0 011 1v7a1 1 0 01-1 1H1a1 1 0 01-1-1V6a1 1 0 011-1h1V4a4 4 0 118 0v1zm-2 0V4a2 2 0 10-4 0v1h4z" fill="#10B981"/>
         </svg>
-        <span>Secure • SSL encrypted</span>
+        <span>{{ __('ui.secure_ssl_encrypted') }}</span>
       </div>
     </div>
   </div>
 
   <!-- Scroll to Top Button -->
-  <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top" title="Back to top">
+  <button id="scroll-to-top" class="scroll-to-top" aria-label="{{ __('ui.scroll_to_top') }}" title="{{ __('ui.back_to_top') }}">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M7 14l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -4110,6 +4183,70 @@
 
   .departure-date-option {
     padding: 8px 10px !important;
+  }
+}
+
+/* =====================================================
+   TOUR QUICK INFO GRID - LAYOUT FIX
+   ===================================================== */
+.tour-quick-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.tour-quick-info__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.tour-quick-info__item i {
+  font-size: 20px;
+  color: var(--color-primary, #0D4C92);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tour-quick-info__item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0; /* Allow text to wrap properly */
+  flex: 1;
+}
+
+.tour-quick-info__item strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.tour-quick-info__item span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1F2937;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .tour-quick-info {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tour-quick-info__item {
+    padding: 14px;
   }
 }
 </style>

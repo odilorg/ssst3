@@ -1,13 +1,33 @@
 {{-- Tour FAQs Partial --}}
 @php
+    // Use translated FAQ if available, otherwise fall back to tour FAQ
+    $translatedFaqs = $translation->faq_json ?? null;
     $hasCustomFaqs = $tour->faqs && $tour->faqs->isNotEmpty();
-    $shouldShowGlobal = !$hasCustomFaqs || $tour->include_global_faqs;
+    $shouldShowGlobal = (!$translatedFaqs && !$hasCustomFaqs) || $tour->include_global_faqs;
+
+    // Determine which FAQs to show (prioritize translation JSON)
+    $faqsToShow = $translatedFaqs ?? ($hasCustomFaqs ? $tour->faqs : null);
 @endphp
 
-<h2 class="section-title">Frequently Asked Questions</h2>
+<h2 class="section-title">{{ __('ui.sections.frequently_asked') }}</h2>
 
 <div class="faq-accordion">
-        @if($hasCustomFaqs)
+        @if($translatedFaqs && count($translatedFaqs) > 0)
+            {{-- Translated FAQs from JSON --}}
+            @foreach($translatedFaqs as $faq)
+                <details class="faq-item">
+                    <summary class="faq-question">
+                        <span>{{ $faq['question'] ?? '' }}</span>
+                        <svg class="icon icon--chevron-down" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M3.646 5.646a.5.5 0 01.708 0L8 9.293l3.646-3.647a.5.5 0 01.708.708l-4 4a.5.5 0 01-.708 0l-4-4a.5.5 0 010-.708z"/>
+                        </svg>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{!! nl2br(e($faq['answer'] ?? '')) !!}</p>
+                    </div>
+                </details>
+            @endforeach
+        @elseif($hasCustomFaqs)
             {{-- Tour-specific FAQs --}}
             @foreach($tour->faqs as $faq)
                 <details class="faq-item">
@@ -39,7 +59,7 @@
                     </div>
                 </details>
             @endforeach
-        @elseif(!$hasCustomFaqs)
+        @elseif(!$translatedFaqs && !$hasCustomFaqs)
             {{-- Fallback: Default FAQs if none in database --}}
             <details class="faq-item">
                 <summary class="faq-question">

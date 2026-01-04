@@ -76,7 +76,10 @@
 
     {{-- Page-specific CSS --}}
     @stack('styles')
-    
+
+    {{-- AlpineJS for language switcher and other interactive components --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     {{-- JSON-LD Structured Data --}}
     @hasSection('structured_data')
         <script type="application/ld+json">

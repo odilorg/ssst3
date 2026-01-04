@@ -15,30 +15,30 @@
     $tabs = [];
 
     // Overview - always present
-    $tabs[] = ['id' => 'overview', 'label' => 'Overview', 'icon' => 'info'];
+    $tabs[] = ['id' => 'overview', 'label' => __('ui.tabs.overview'), 'icon' => 'info'];
 
     // Highlights - always present
-    $tabs[] = ['id' => 'highlights', 'label' => 'Highlights', 'icon' => 'star'];
+    $tabs[] = ['id' => 'highlights', 'label' => __('ui.tabs.highlights'), 'icon' => 'star'];
 
     // Itinerary - check if tour has itinerary
     if ($tour->itinerary && count($tour->itinerary) > 0) {
-        $tabs[] = ['id' => 'itinerary', 'label' => 'Itinerary', 'icon' => 'route'];
+        $tabs[] = ['id' => 'itinerary', 'label' => __('ui.tabs.itinerary'), 'icon' => 'route'];
     }
 
     // Included/Excluded - always present
-    $tabs[] = ['id' => 'includes', 'label' => 'Included', 'icon' => 'check'];
+    $tabs[] = ['id' => 'includes', 'label' => __('ui.tabs.included'), 'icon' => 'check'];
 
     // Meeting Point - always present
-    $tabs[] = ['id' => 'meeting-point', 'label' => 'Meeting', 'icon' => 'map-pin'];
+    $tabs[] = ['id' => 'meeting-point', 'label' => __('ui.tabs.meeting'), 'icon' => 'map-pin'];
 
     // FAQ - check if tour has FAQs
     if ($tour->faqs && count($tour->faqs) > 0) {
-        $tabs[] = ['id' => 'faq', 'label' => 'FAQ', 'icon' => 'question'];
+        $tabs[] = ['id' => 'faq', 'label' => __('ui.tabs.faq'), 'icon' => 'question'];
     }
 
     // Reviews - check if tour has reviews
     if ($tour->review_count > 0) {
-        $tabs[] = ['id' => 'reviews', 'label' => 'Reviews', 'icon' => 'chat'];
+        $tabs[] = ['id' => 'reviews', 'label' => __('ui.tabs.reviews'), 'icon' => 'chat'];
     }
 @endphp
 

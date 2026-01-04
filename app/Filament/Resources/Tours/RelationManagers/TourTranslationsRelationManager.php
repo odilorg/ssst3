@@ -2,12 +2,23 @@
 
 namespace App\Filament\Resources\Tours\RelationManagers;
 
+use App\Models\TranslationLog;
+use App\Services\OpenAI\TranslationService;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -29,10 +40,10 @@ class TourTranslationsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Forms\Components\Section::make('Основные данные')
+                Section::make('Основные данные')
                     ->description('Язык и базовая информация перевода')
                     ->schema([
-                        Forms\Components\Select::make('locale')
+                        Select::make('locale')
                             ->label('Язык')
                             ->options([
                                 'en' => '🇬🇧 English',
@@ -54,19 +65,19 @@ class TourTranslationsRelationManager extends RelationManager
                             ])
                             ->columnSpan(1),
 
-                        Forms\Components\TextInput::make('title')
+                        TextInput::make('title')
                             ->label('Заголовок')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                            ->afterStateUpdated(function (string $operation, $state, Set $set) {
                                 if ($operation === 'create') {
                                     $set('slug', Str::slug($state));
                                 }
                             })
                             ->columnSpan(1),
 
-                        Forms\Components\TextInput::make('slug')
+                        TextInput::make('slug')
                             ->label('URL-адрес (slug)')
                             ->required()
                             ->maxLength(255)
@@ -74,7 +85,7 @@ class TourTranslationsRelationManager extends RelationManager
                                 table: 'tour_translations',
                                 column: 'slug',
                                 ignoreRecord: true,
-                                modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                modifyRuleUsing: function (Unique $rule, Get $get) {
                                     return $rule->where('locale', $get('locale'));
                                 }
                             )
@@ -86,17 +97,17 @@ class TourTranslationsRelationManager extends RelationManager
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Контент')
+                Section::make('Контент')
                     ->description('Содержимое перевода')
                     ->schema([
-                        Forms\Components\Textarea::make('excerpt')
+                        Textarea::make('excerpt')
                             ->label('Краткое описание')
                             ->rows(3)
                             ->maxLength(500)
                             ->helperText('Краткое описание для карточек туров (до 500 символов)')
                             ->columnSpanFull(),
 
-                        Forms\Components\RichEditor::make('content')
+                        RichEditor::make('content')
                             ->label('Полное описание')
                             ->toolbarButtons([
                                 'bold',
@@ -114,16 +125,186 @@ class TourTranslationsRelationManager extends RelationManager
                             ->columnSpanFull(),
                     ]),
 
-                Forms\Components\Section::make('SEO')
+                Section::make('Highlights (Основные моменты)')
+                    ->description('Ключевые особенности тура')
+                    ->collapsed()
+                    ->schema([
+                        Repeater::make('highlights_json')
+                            ->label('Highlights')
+                            ->schema([
+                                Textarea::make('text')
+                                    ->label('Текст')
+                                    ->required()
+                                    ->rows(2)
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить highlight')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['text'] ? Str::limit($state['text'], 50) : null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будут использованы highlights из основной модели Tour'),
+                    ]),
+
+                Section::make('Itinerary (Маршрут по дням)')
+                    ->description('Подробный план тура по дням')
+                    ->collapsed()
+                    ->schema([
+                        Repeater::make('itinerary_json')
+                            ->label('Дни маршрута')
+                            ->schema([
+                                TextInput::make('day')
+                                    ->label('День')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(fn ($get) => count($get('../../itinerary_json') ?? []) + 1),
+
+                                TextInput::make('title')
+                                    ->label('Название дня')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+
+                                RichEditor::make('description')
+                                    ->label('Описание')
+                                    ->required()
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                        'bulletList',
+                                        'orderedList',
+                                    ])
+                                    ->columnSpanFull(),
+
+                                TextInput::make('duration_minutes')
+                                    ->label('Продолжительность (минуты)')
+                                    ->numeric()
+                                    ->helperText('Например: 480 = 8 часов'),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить день')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => isset($state['day']) ? "День {$state['day']}: " . ($state['title'] ?? '') : null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будет использован itinerary из основной модели Tour'),
+                    ]),
+
+                Section::make('Included / Excluded (Включено / Не включено)')
+                    ->description('Что включено и не включено в стоимость тура')
+                    ->collapsed()
+                    ->schema([
+                        Repeater::make('included_json')
+                            ->label('Включено в стоимость')
+                            ->schema([
+                                TextInput::make('text')
+                                    ->label('Текст')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить пункт')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['text'] ?? null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будут использованы included из основной модели Tour'),
+
+                        Repeater::make('excluded_json')
+                            ->label('Не включено в стоимость')
+                            ->schema([
+                                TextInput::make('text')
+                                    ->label('Текст')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить пункт')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['text'] ?? null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будут использованы excluded из основной модели Tour'),
+                    ]),
+
+                Section::make('FAQ (Часто задаваемые вопросы)')
+                    ->description('Вопросы и ответы о туре')
+                    ->collapsed()
+                    ->schema([
+                        Repeater::make('faq_json')
+                            ->label('FAQ')
+                            ->schema([
+                                TextInput::make('question')
+                                    ->label('Вопрос')
+                                    ->required()
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+
+                                Textarea::make('answer')
+                                    ->label('Ответ')
+                                    ->required()
+                                    ->rows(3)
+                                    ->maxLength(1000)
+                                    ->columnSpanFull(),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить вопрос')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будут использованы FAQ из основной модели Tour'),
+                    ]),
+
+                Section::make('Requirements (Что нужно знать)')
+                    ->description('Важная информация и требования перед поездкой')
+                    ->collapsed()
+                    ->schema([
+                        Repeater::make('requirements_json')
+                            ->label('Требования')
+                            ->schema([
+                                TextInput::make('text')
+                                    ->label('Текст')
+                                    ->required()
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+                            ])
+                            ->defaultItems(0)
+                            ->addActionLabel('Добавить требование')
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['text'] ? Str::limit($state['text'], 50) : null)
+                            ->columnSpanFull()
+                            ->helperText('Если пусто, будут использованы requirements из основной модели Tour'),
+                    ]),
+
+                Section::make('Additional Content (Дополнительный контент)')
+                    ->description('Политика отмены и инструкции по встрече')
+                    ->collapsed()
+                    ->schema([
+                        Textarea::make('cancellation_policy')
+                            ->label('Политика отмены')
+                            ->rows(4)
+                            ->maxLength(2000)
+                            ->helperText('Если пусто, будет использована политика отмены из основной модели Tour')
+                            ->columnSpanFull(),
+
+                        Textarea::make('meeting_instructions')
+                            ->label('Инструкции по встрече')
+                            ->rows(4)
+                            ->maxLength(2000)
+                            ->helperText('Если пусто, будут использованы инструкции из основной модели Tour')
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('SEO')
                     ->description('Метаданные для поисковых систем')
                     ->collapsed()
                     ->schema([
-                        Forms\Components\TextInput::make('seo_title')
+                        TextInput::make('seo_title')
                             ->label('SEO заголовок')
                             ->maxLength(70)
                             ->helperText('Рекомендуется до 70 символов. Если пусто, используется заголовок тура.'),
 
-                        Forms\Components\Textarea::make('seo_description')
+                        Textarea::make('seo_description')
                             ->label('SEO описание')
                             ->rows(3)
                             ->maxLength(160)
@@ -202,6 +383,63 @@ class TourTranslationsRelationManager extends RelationManager
                     ->label('Добавить перевод'),
             ])
             ->actions([
+                Action::make('ai_translate')
+                    ->label('🤖 AI Translate')
+                    ->icon('heroicon-o-language')
+                    ->color('info')
+                    ->visible(fn ($record): bool => config('ai-translation.enabled', true))
+                    ->action(function ($record) {
+                        try {
+                            $service = new TranslationService();
+                            $tour = $this->ownerRecord;
+
+                            // Create translation log
+                            $log = TranslationLog::create([
+                                'tour_id' => $tour->id,
+                                'user_id' => auth()->id(),
+                                'source_locale' => 'en',
+                                'target_locale' => $record->locale,
+                                'sections_translated' => [],
+                                'tokens_used' => 0,
+                                'cost_usd' => 0,
+                                'model' => config('ai-translation.openai.model'),
+                                'status' => 'processing',
+                            ]);
+
+                            // Translate tour
+                            $result = $service->translateTour($tour, $record->locale);
+
+                            // Update translation record
+                            $record->update($result['translations']);
+
+                            // Update log
+                            $log->update([
+                                'sections_translated' => array_keys($result['translations']),
+                                'tokens_used' => $result['tokens_used'],
+                                'cost_usd' => $service->estimateCost($result['tokens_used'], $result['tokens_used']),
+                                'status' => 'completed',
+                            ]);
+
+                            Notification::make()
+                                ->title('Translation Complete')
+                                ->body('Tour has been translated to ' . strtoupper($record->locale) . ' successfully!')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            if (isset($log)) {
+                                $log->update([
+                                    'status' => 'failed',
+                                    'error_message' => $e->getMessage(),
+                                ]);
+                            }
+
+                            Notification::make()
+                                ->title('Translation Failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

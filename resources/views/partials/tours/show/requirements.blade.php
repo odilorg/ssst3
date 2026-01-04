@@ -1,5 +1,5 @@
 {{-- Tour Requirements / Know Before You Go Partial --}}
-<h2 class="section-title">Know Before You Go</h2>
+<h2 class="section-title">{{ __('ui.sections.know_before') }}</h2>
 
 @php
     // Icon SVG mapping
@@ -16,13 +16,30 @@
         'bag' => '<svg class="icon icon--bag" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a5 5 0 00-5 5v1H2l-1 1v12l1 1h16l1-1V7l-1-1h-3V5a5 5 0 00-5-5zm0 2a3 3 0 013 3v1H7V5a3 3 0 013-3zM3 8h14v10H3V8z"/></svg>',
     ];
 
+    // Use translated requirements if available, otherwise fall back to tour requirements
+    $translatedRequirements = $translation->requirements_json ?? null;
     $hasCustomRequirements = $tour->requirements && count($tour->requirements) > 0;
-    $shouldShowGlobal = !$hasCustomRequirements || $tour->include_global_requirements;
+    $shouldShowGlobal = (!$translatedRequirements && !$hasCustomRequirements) || $tour->include_global_requirements;
+
+    // Determine which requirements to show (prioritize translation JSON)
+    $requirementsToShow = $translatedRequirements ?? ($hasCustomRequirements ? $tour->requirements : null);
 @endphp
 
 <div class="know-before-content">
     <ul class="know-before-list">
-        @if($hasCustomRequirements)
+        @if($translatedRequirements && count($translatedRequirements) > 0)
+            {{-- Translated requirements from JSON --}}
+            @foreach($translatedRequirements as $requirement)
+                <li>
+                    <svg class="icon icon--info" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9V9h2v6zm0-8H9V5h2v2z"/>
+                    </svg>
+                    <div>
+                        <span>{{ $requirement['text'] ?? $requirement }}</span>
+                    </div>
+                </li>
+            @endforeach
+        @elseif($hasCustomRequirements)
             {{-- Tour-specific requirements --}}
             @foreach($tour->requirements as $requirement)
                 <li>
@@ -64,7 +81,7 @@
                     <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9V9h2v6zm0-8H9V5h2v2z"/>
                 </svg>
                 <div>
-                    <span>Please contact us for specific requirements for this tour.</span>
+                    <span>{{ __('ui.requirements.fallback_message') }}</span>
                 </div>
             </li>
         @endif

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TourTranslation extends Model
 {
+    use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,6 +42,29 @@ class TourTranslation extends Model
         'content',
         'seo_title',
         'seo_description',
+        // Content sections (JSON)
+        'highlights_json',
+        'itinerary_json',
+        'included_json',
+        'excluded_json',
+        'faq_json',
+        'requirements_json',
+        'cancellation_policy',
+        'meeting_instructions',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'highlights_json' => 'array',
+        'itinerary_json' => 'array',
+        'included_json' => 'array',
+        'excluded_json' => 'array',
+        'faq_json' => 'array',
+        'requirements_json' => 'array',
     ];
 
     /**

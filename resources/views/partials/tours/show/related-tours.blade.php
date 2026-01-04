@@ -2,8 +2,8 @@
 @if($relatedTours && $relatedTours->isNotEmpty())
 <section class="related-tours-section">
     <div class="related-tours-header">
-        <h2 class="related-tours-title">You Might Also Like</h2>
-        <p class="related-tours-subtitle">Discover more amazing experiences</p>
+        <h2 class="related-tours-title">{{ __('ui.tour.you_might_also_like') }}</h2>
+        <p class="related-tours-subtitle">{{ __('ui.tour.discover_more') }}</p>
     </div>
 
     <div class="related-tours-grid">
@@ -26,7 +26,7 @@
                     {{-- Duration Badge --}}
                     <div class="related-tour-duration-badge">
                         <i class="far fa-clock" aria-hidden="true"></i>
-                        {{ $relatedTour->duration_days }} {{ $relatedTour->duration_days > 1 ? 'days' : 'day' }}
+                        {{ $relatedTour->duration_days }} {{ $relatedTour->duration_days > 1 ? __('ui.tour.days') : __('ui.tour.day') }}
                     </div>
                 </div>
 
@@ -58,14 +58,14 @@
                     <div class="related-tour-footer">
                         @if($relatedTour->price_per_person)
                             <div class="related-tour-price">
-                                <span class="price-label">From</span>
+                                <span class="price-label">{{ __('ui.tour.from_price') }}</span>
                                 <span class="price-amount">${{ number_format($relatedTour->price_per_person, 0) }}</span>
-                                <span class="price-per">/ person</span>
+                                <span class="price-per">/ {{ __('ui.tour.per_person') }}</span>
                             </div>
                         @endif
 
                         <span class="related-tour-cta">
-                            View Details
+                            {{ __('ui.tour.view_details') }}
                             <i class="fas fa-arrow-right" aria-hidden="true"></i>
                         </span>
                     </div>
