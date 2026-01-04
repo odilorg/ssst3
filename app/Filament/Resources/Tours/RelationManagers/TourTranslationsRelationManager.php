@@ -67,7 +67,6 @@ class TourTranslationsRelationManager extends RelationManager
 
                         TextInput::make('title')
                             ->label('Заголовок')
-                            ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (string $operation, $state, Set $set) {
@@ -75,11 +74,11 @@ class TourTranslationsRelationManager extends RelationManager
                                     $set('slug', Str::slug($state));
                                 }
                             })
+                            ->helperText('Оставьте пустым для автоматического заполнения AI переводом')
                             ->columnSpan(1),
 
                         TextInput::make('slug')
                             ->label('URL-адрес (slug)')
-                            ->required()
                             ->maxLength(255)
                             ->unique(
                                 table: 'tour_translations',
