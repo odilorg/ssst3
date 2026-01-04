@@ -101,10 +101,10 @@ class TranslationService
                     $sourceValue = $tour->highlights;
                 } elseif ($field === 'itinerary_json' && !empty($tour->itinerary)) {
                     $sourceValue = $tour->itinerary;
-                } elseif ($field === 'included_json' && !empty($tour->included)) {
-                    $sourceValue = $tour->included;
-                } elseif ($field === 'excluded_json' && !empty($tour->excluded)) {
-                    $sourceValue = $tour->excluded;
+                } elseif ($field === 'included_json' && !empty($tour->included_items)) {
+                    $sourceValue = $tour->included_items;
+                } elseif ($field === 'excluded_json' && !empty($tour->excluded_items)) {
+                    $sourceValue = $tour->excluded_items;
                 }
             }
 
