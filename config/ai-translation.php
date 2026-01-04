@@ -43,13 +43,20 @@ return [
 - Preserve list structures and formatting
 - Use culturally appropriate expressions for the target language
 
-CRITICAL: Return ONLY the translated text without any explanations, notes, or additional commentary.',
+CRITICAL RULES:
+- Return ONLY the translated text without any explanations, notes, or additional commentary
+- Do NOT add markdown formatting (no **, *, _, etc.)
+- Do NOT add new HTML tags that were not in the original
+- Do NOT expand or elaborate on the content - translate only what is given
+- For FAQ questions: translate the question ONLY, do not include the answer
+- For FAQ answers: translate the answer ONLY, do not repeat the question
+- Keep translations concise and direct - same length as original',
 
         'user_template' => 'Translate this tour {section} from {source_language} to {target_language}:
 
 {content}
 
-Remember: Preserve ALL HTML tags, use natural tourism language, maintain formatting.',
+IMPORTANT: Return ONLY the direct translation. No markdown, no extra formatting, no elaboration.',
     ],
 
     /*
