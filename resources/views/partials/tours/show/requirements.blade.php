@@ -17,12 +17,17 @@
     ];
 
     // Use translated requirements if available, otherwise fall back to tour requirements
-    $translatedRequirements = $translation->requirements_json ?? null;
-    $hasCustomRequirements = $tour->requirements && count($tour->requirements) > 0;
+    // Ensure requirements_json is always an array (handle string JSON edge case)
+    $rawReqs = $translation->requirements_json ?? null;
+    $translatedRequirements = is_array($rawReqs) ? $rawReqs : (is_string($rawReqs) ? json_decode($rawReqs, true) : null);
+
+    $tourReqs = $tour->requirements ?? [];
+    $tourReqs = is_array($tourReqs) ? $tourReqs : (is_string($tourReqs) ? json_decode($tourReqs, true) : []);
+    $hasCustomRequirements = !empty($tourReqs);
     $shouldShowGlobal = (!$translatedRequirements && !$hasCustomRequirements) || $tour->include_global_requirements;
 
     // Determine which requirements to show (prioritize translation JSON)
-    $requirementsToShow = $translatedRequirements ?? ($hasCustomRequirements ? $tour->requirements : null);
+    $requirementsToShow = $translatedRequirements ?? ($hasCustomRequirements ? $tourReqs : null);
 @endphp
 
 <div class="know-before-content">
@@ -41,7 +46,7 @@
             @endforeach
         @elseif($hasCustomRequirements)
             {{-- Tour-specific requirements --}}
-            @foreach($tour->requirements as $requirement)
+            @foreach($tourReqs as $requirement)
                 <li>
                     @if(is_array($requirement) && isset($requirement['icon']))
                         {{-- New structured format with icon, title, text --}}
@@ -62,7 +67,7 @@
             @endforeach
         @endif
 
-        @if($shouldShowGlobal && isset($globalRequirements) && count($globalRequirements) > 0)
+        @if($shouldShowGlobal && isset($globalRequirements) && is_array($globalRequirements) && count($globalRequirements) > 0)
             {{-- Global requirements from database --}}
             @foreach($globalRequirements as $requirement)
                 <li>
@@ -74,7 +79,7 @@
             @endforeach
         @endif
 
-        @if(!$hasCustomRequirements && (!isset($globalRequirements) || count($globalRequirements) === 0))
+        @if(!$hasCustomRequirements && (!isset($globalRequirements) || !is_array($globalRequirements) || count($globalRequirements) === 0))
             {{-- Fallback if no requirements at all --}}
             <li>
                 <svg class="icon icon--info" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
