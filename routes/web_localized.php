@@ -44,9 +44,14 @@ Route::prefix('{locale}')
         Route::get('/craft-journeys', [\App\Http\Controllers\TourListingController::class, 'craftJourneys'])
             ->name('localized.craft-journeys.index');
 
-        // Tour detail page
-        Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])
-            ->name('localized.tours.show');
+        // Tour detail page - uses LocalizedTourController when tour_translations phase enabled
+        if (config('multilang.phases.tour_translations')) {
+            Route::get('/tours/{slug}', [\App\Http\Controllers\LocalizedTourController::class, 'show'])
+                ->name('localized.tours.show');
+        } else {
+            Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])
+                ->name('localized.tours.show');
+        }
 
         // Category landing page
         Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])
@@ -62,9 +67,16 @@ Route::prefix('{locale}')
             ->name('localized.blog.tag')
             ->where('slug', '[a-z0-9-]+');
 
-        Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
-            ->name('localized.blog.show')
-            ->where('slug', '[a-z0-9-]+');
+        // Blog detail page - uses LocalizedBlogController when blog_translations phase enabled
+        if (config('multilang.phases.blog_translations')) {
+            Route::get('/blog/{slug}', [\App\Http\Controllers\LocalizedBlogController::class, 'show'])
+                ->name('localized.blog.show')
+                ->where('slug', '[a-z0-9-]+');
+        } else {
+            Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])
+                ->name('localized.blog.show')
+                ->where('slug', '[a-z0-9-]+');
+        }
 
         // ============================================
         // LOCALIZED DESTINATIONS
@@ -72,8 +84,14 @@ Route::prefix('{locale}')
         Route::get('/destinations', [\App\Http\Controllers\DestinationController::class, 'index'])
             ->name('localized.destinations.index');
 
-        Route::get('/destinations/{slug}', [\App\Http\Controllers\DestinationController::class, 'show'])
-            ->name('localized.city.show');
+        // City detail page - uses LocalizedCityController when city_translations phase enabled
+        if (config('multilang.phases.city_translations')) {
+            Route::get('/destinations/{slug}', [\App\Http\Controllers\LocalizedCityController::class, 'show'])
+                ->name('localized.city.show');
+        } else {
+            Route::get('/destinations/{slug}', [\App\Http\Controllers\DestinationController::class, 'show'])
+                ->name('localized.city.show');
+        }
 
         // ============================================
         // LOCALIZED STATIC PAGES

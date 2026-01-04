@@ -1,4 +1,13 @@
 {{-- Tour Overview Partial --}}
+@php
+    // Get translation for current locale if tour_translations phase is enabled
+    $translation = null;
+    if (config('multilang.phases.tour_translations')) {
+        $translation = $tour->translationOrDefault();
+    }
+    // Use translated content or fallback to tour fields
+    $displayContent = $translation->content ?? $tour->long_description ?? nl2br(e($tour->short_description));
+@endphp
     <h2 class="section-title">About This Tour</h2>
 
     <!-- Tour Meta Information -->
@@ -51,5 +60,5 @@
 
     <!-- Tour Description Content -->
     <div class="tour-overview__content">
-        {!! $tour->long_description ?? nl2br(e($tour->short_description)) !!}
+        {!! $displayContent !!}
     </div>

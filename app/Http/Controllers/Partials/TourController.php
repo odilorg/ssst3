@@ -188,14 +188,25 @@ class TourController extends Controller
     /**
      * Helper: Get cached tour
      * Caches tour for 1 hour to reduce database queries
+     * Includes translations when tour_translations phase is enabled
      */
     protected function getCachedTour(string $slug): Tour
     {
-        return Cache::remember("tour.{$slug}", 3600, function () use ($slug) {
-            return Tour::where('slug', $slug)
+        // Include locale in cache key when translations are enabled
+        $locale = config('multilang.phases.tour_translations') ? app()->getLocale() : 'default';
+        $cacheKey = "tour.{$slug}.{$locale}";
+
+        return Cache::remember($cacheKey, 3600, function () use ($slug) {
+            $query = Tour::where('slug', $slug)
                 ->where('is_active', true)
-                ->with('city')
-                ->firstOrFail();
+                ->with('city');
+
+            // Eager load translations when phase is enabled
+            if (config('multilang.phases.tour_translations')) {
+                $query->with('translations');
+            }
+
+            return $query->firstOrFail();
         });
     }
 

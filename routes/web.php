@@ -23,6 +23,11 @@ Route::get('/csrf-token', function () {
 // Sitemap XML for SEO
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Locale-specific sitemaps (only when SEO phase enabled)
+Route::get('/sitemap-{locale}.xml', [\App\Http\Controllers\SitemapController::class, 'locale'])
+    ->name('sitemap.locale')
+    ->where('locale', '[a-z]{2}');
+
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 

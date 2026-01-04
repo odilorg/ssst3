@@ -10,7 +10,14 @@
     <title>@yield('title', 'Jahongir Travel - Discover the Magic of Uzbekistan | Silk Road Tours')</title>
     
     {{-- Canonical URL --}}
-    <link rel="canonical" href="@yield('canonical', url()->current())">
+    @hasSection('canonical')
+        <link rel="canonical" href="@yield('canonical')">
+    @else
+        <x-seo.canonical />
+    @endif
+
+    {{-- Hreflang Tags (for multilingual SEO) --}}
+    @stack('hreflang')
     
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="@yield('og_type', 'website')">

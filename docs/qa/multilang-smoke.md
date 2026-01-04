@@ -165,6 +165,73 @@ curl -s -o /dev/null -w "%{http_code}" https://staging.jahongir-travel.uz/fr/abo
 
 ## Phase 2: Tours DB Translations
 
+### Step 2.1: Run Backfill Command
+
+Before enabling tour translation routes, backfill existing tours into the translations table.
+
+**Command to run (once after deploy):**
+
+```bash
+# First run: creates translations for all tours
+php artisan multilang:seed-tour-translations
+
+# If re-running to update existing translations (careful!)
+php artisan multilang:seed-tour-translations --force
+
+# Verbose mode (shows all warnings)
+php artisan multilang:seed-tour-translations -v
+```
+
+**When to run:**
+- Once after initial deploy (before enabling `MULTILANG_PHASE_TOUR_TRANSLATIONS=true`)
+- After adding new tours if you want them seeded automatically
+- With `--force` only if you need to re-sync from tours table
+
+**Expected output:**
+
+```
+Backfilling tour translations for default locale: en
+
+Found 25 tours to process.
+
+ 25/25 [============================] 100%
+
+Backfill complete!
++-------------------+-------+
+| Status            | Count |
++-------------------+-------+
+| Created           | 25    |
+| Updated           | 0     |
+| Skipped           | 0     |
+| Warnings          | 0     |
+| Errors            | 0     |
+| Total Processed   | 25    |
++-------------------+-------+
+```
+
+**If run again (without --force):**
+
+```
++-------------------+-------+
+| Status            | Count |
++-------------------+-------+
+| Created           | 0     |
+| Updated           | 0     |
+| Skipped           | 25    |
+| Warnings          | 0     |
+| Errors            | 0     |
+| Total Processed   | 25    |
++-------------------+-------+
+
+Use --force to overwrite existing translations.
+```
+
+### Step 2.2: Enable Phase 2
+
+```bash
+MULTILANG_PHASE_TOUR_TRANSLATIONS=true
+```
+
 ### Additional Checks
 
 #### Tour Pages with Translations

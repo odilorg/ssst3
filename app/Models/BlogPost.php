@@ -97,6 +97,52 @@ class BlogPost extends Model
     }
 
     /**
+     * Get all translations for this blog post.
+     */
+    public function translations(): HasMany
+    {
+        return $this->hasMany(BlogPostTranslation::class);
+    }
+
+    /**
+     * Get translation for a specific locale.
+     *
+     * @param string|null $locale Locale code (defaults to current app locale)
+     * @return BlogPostTranslation|null
+     */
+    public function translation(?string $locale = null): ?BlogPostTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->translations->first(fn ($t) => $t->locale === $locale);
+    }
+
+    /**
+     * Get translation for locale, falling back to default locale.
+     *
+     * @param string|null $locale Locale code (defaults to current app locale)
+     * @return BlogPostTranslation|null
+     */
+    public function translationOrDefault(?string $locale = null): ?BlogPostTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+        $defaultLocale = config('multilang.default_locale', 'en');
+
+        // Try requested locale first
+        $translation = $this->translation($locale);
+        if ($translation) {
+            return $translation;
+        }
+
+        // Fall back to default locale if different
+        if ($locale !== $defaultLocale) {
+            return $this->translation($defaultLocale);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the category for this post
      */
     public function category(): BelongsTo

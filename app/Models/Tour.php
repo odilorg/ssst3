@@ -171,6 +171,53 @@ class Tour extends Model
     // ==========================================
 
     /**
+     * Get all translations for this tour.
+     */
+    public function translations()
+    {
+        return $this->hasMany(TourTranslation::class);
+    }
+
+    /**
+     * Get translation for a specific locale (query-safe, returns null if not found).
+     *
+     * @param string|null $locale Locale code (e.g., 'en', 'ru', 'fr'). Defaults to current app locale.
+     * @return TourTranslation|null
+     */
+    public function translation(?string $locale = null): ?TourTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->translations->first(fn ($t) => $t->locale === $locale);
+    }
+
+    /**
+     * Get translation for a specific locale with fallback to default locale.
+     *
+     * @param string|null $locale Locale code (e.g., 'en', 'ru', 'fr'). Defaults to current app locale.
+     * @return TourTranslation|null
+     */
+    public function translationOrDefault(?string $locale = null): ?TourTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+        $defaultLocale = config('multilang.default_locale', 'en');
+
+        // First try requested locale
+        $translation = $this->translation($locale);
+
+        if ($translation) {
+            return $translation;
+        }
+
+        // Fallback to default locale if different
+        if ($locale !== $defaultLocale) {
+            return $this->translation($defaultLocale);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the city this tour belongs to
      */
     public function city()

@@ -118,8 +118,13 @@ return [
 
         // Phase 2: Database content translations
         'db_translations' => env('MULTILANG_PHASE_DB_TRANSLATIONS', false),
+        'tour_translations' => env('MULTILANG_PHASE_TOUR_TRANSLATIONS', false),
 
-        // Phase 3: SEO features
+        // Phase 3: Cities and Blog translations
+        'city_translations' => env('MULTILANG_PHASE_CITY_TRANSLATIONS', false),
+        'blog_translations' => env('MULTILANG_PHASE_BLOG_TRANSLATIONS', false),
+
+        // Phase 4: SEO features
         'seo' => env('MULTILANG_PHASE_SEO', false),
     ],
 
