@@ -84,7 +84,7 @@ class TourTranslationsRelationManager extends RelationManager
                                 table: 'tour_translations',
                                 column: 'slug',
                                 ignoreRecord: true,
-                                modifyRuleUsing: function (Unique $rule, Get $get) {
+                                modifyRuleUsing: function (Unique $rule, $get) {
                                     return $rule->where('locale', $get('locale'));
                                 }
                             )
