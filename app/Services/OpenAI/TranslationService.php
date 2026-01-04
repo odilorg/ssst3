@@ -15,17 +15,29 @@ class TranslationService
     protected $client;
     protected $model;
     protected $temperature;
+    protected $provider;
 
     public function __construct()
     {
         $apiKey = Setting::get('ai_translation_api_key');
+        $this->provider = Setting::get('ai_translation_provider', 'openai');
 
         if (!$apiKey) {
-            throw new \Exception('OpenAI API key not configured. Please set it in AI Translation Settings.');
+            throw new \Exception('API key not configured. Please set it in AI Translation Settings.');
         }
 
-        $this->client = OpenAI::client($apiKey);
-        $this->model = config('ai-translation.openai.model', 'gpt-4-turbo');
+        // Support different AI providers (OpenAI, DeepSeek, etc.)
+        if ($this->provider === 'deepseek') {
+            $this->client = OpenAI::factory()
+                ->withApiKey($apiKey)
+                ->withBaseUri('https://api.deepseek.com')
+                ->make();
+            $this->model = config('ai-translation.deepseek.model', 'deepseek-chat');
+        } else {
+            $this->client = OpenAI::client($apiKey);
+            $this->model = config('ai-translation.openai.model', 'gpt-4-turbo');
+        }
+
         $this->temperature = config('ai-translation.openai.temperature', 0.3);
     }
 

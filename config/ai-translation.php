@@ -28,6 +28,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | DeepSeek Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for DeepSeek API integration (OpenAI-compatible).
+    | Much cheaper than OpenAI with comparable quality.
+    |
+    */
+    'deepseek' => [
+        'model' => env('DEEPSEEK_MODEL', 'deepseek-chat'),
+        'base_uri' => 'https://api.deepseek.com',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Translation Prompts
     |--------------------------------------------------------------------------
     |
@@ -159,6 +173,10 @@ IMPORTANT: Return ONLY the direct translation. No markdown, no extra formatting,
         'gpt-3.5-turbo' => [
             'input' => 0.0005,
             'output' => 0.0015,
+        ],
+        'deepseek-chat' => [
+            'input' => 0.00014,  // $0.14 per 1M tokens
+            'output' => 0.00028, // $0.28 per 1M tokens
         ],
     ],
 
