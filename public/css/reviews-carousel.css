@@ -35,7 +35,7 @@
 
 .reviews-swiper .review-card {
   width: 100%;
-  height: 100%;
+  height: auto; /* Changed from 100% to fix excessive card height */
   display: flex;
   flex-direction: column;
 }
@@ -218,4 +218,35 @@
   visibility: visible;
   opacity: 1;
   transition: opacity 0.4s ease-in;
+}
+
+/* FIX: Prevent review cards from stretching to fill swiper slide height */
+.reviews-swiper .swiper-slide {
+  align-items: flex-start !important;
+}
+
+/* FIX: Position arrows relative to actual card content height (~458px), not full container */
+.reviews-swiper-prev,
+.reviews-swiper-next {
+  top: 230px !important; /* Half of ~458px card height to center on cards */
+}
+
+/* FIX: Remove empty space below cards by constraining wrapper height */
+.reviews-swiper .swiper-wrapper {
+  height: auto !important;
+  align-items: flex-start !important;
+}
+
+.reviews-swiper .swiper-slide {
+  height: auto !important;
+}
+
+/* FIX: Reduce excessive padding below review cards */
+.reviews-swiper {
+  padding-bottom: 20px !important;
+}
+
+/* FIX: Reduce section bottom padding */
+.reviews {
+  padding-bottom: 40px !important;
 }
