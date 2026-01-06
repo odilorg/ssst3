@@ -165,6 +165,11 @@ class Booking extends Model
         return $this->hasMany(PassengerReminderLog::class);
     }
 
+    public function tourOperatorReminders()
+    {
+        return $this->hasMany(TourOperatorReminder::class);
+    }
+
     public function paymentReminders()
     {
         return $this->hasMany(PaymentReminder::class);

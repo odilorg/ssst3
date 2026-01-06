@@ -42,6 +42,7 @@ return [
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
+        'tour_operator_chat_id' => env('TELEGRAM_TOUR_OPERATOR_CHAT_ID', env('TELEGRAM_ADMIN_CHAT_ID')),
     ],
 
     'octobank' => [
