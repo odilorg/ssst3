@@ -73,14 +73,11 @@ class TourForm
                             ->default('private_only'),
 
                         Select::make('city_id')
-                            ->label('Город')
+                            ->label('Город (устаревшее)')
                             ->relationship('city', 'name')
                             ->searchable()
                             ->preload()
-                            ->createOptionForm([
-                                TextInput::make('name')->required(),
-                                Textarea::make('description'),
-                            ]),
+                            ->helperText('⚠️ Устанавливается автоматически из маршрута'),
 
                         Select::make('categories')
                             ->label('Категории')
@@ -676,12 +673,11 @@ class TourForm
                 ->completedIcon('heroicon-s-check-circle')
                 ->schema([
                     Select::make('city_id')
-                        ->label('Город')
+                        ->label('Город (устаревшее)')
                         ->relationship('city', 'name')
                         ->searchable()
                         ->preload()
-                        ->required()
-                        ->helperText('Основной город тура')
+                        ->helperText('⚠️ Будет определяться автоматически из маршрута. Установите город в разделе "Элементы маршрута".')
                         ->createOptionForm([
                             TextInput::make('name')->required(),
                             Textarea::make('description'),

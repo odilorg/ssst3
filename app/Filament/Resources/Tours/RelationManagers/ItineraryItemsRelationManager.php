@@ -56,6 +56,13 @@ class ItineraryItemsRelationManager extends RelationManager
                         // Auto-set duration based on type
                         $set('duration_minutes', $state === 'day' ? 480 : 120); // 8hrs for day, 2hrs for stop
                     }),
+                Forms\Components\Select::make('city_id')
+                    ->label('Город')
+                    ->relationship('city', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(fn (callable $get) => $get('type') === 'day')
+                    ->helperText('Основной город для этого дня маршрута'),
                 Forms\Components\Select::make('parent_id')
                     ->label('Родительский день')
                     ->options(function () {
@@ -134,6 +141,10 @@ class ItineraryItemsRelationManager extends RelationManager
                         return $indent . $icon . ' ' . $state;
                     })
                     ->html(),
+                Tables\Columns\TextColumn::make('city.name')
+                    ->label('Город')
+                    ->placeholder('—')
+                    ->searchable(),
                 Tables\Columns\BadgeColumn::make('type')
                     ->label('Тип')
                     ->colors([
@@ -263,6 +274,13 @@ class ItineraryItemsRelationManager extends RelationManager
                         Forms\Components\TimePicker::make('default_start_time')
                             ->label('Время начала')
                             ->default('09:00'),
+                        Forms\Components\Select::make('city_id')
+                            ->label('Город')
+                            ->relationship('city', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->helperText('Город для этого дня'),
                     ])
                     ->action(function (array $data): void {
                         $lastDay = $this->ownerRecord->itineraryItems()
@@ -272,6 +290,7 @@ class ItineraryItemsRelationManager extends RelationManager
                         
                         ItineraryItem::create([
                             'tour_id' => $this->ownerRecord->id,
+                            'city_id' => $data['city_id'],
                             'title' => $data['title'],
                             'type' => 'day',
                             'description' => $data['description'],

@@ -1122,6 +1122,72 @@ class Tour extends Model
     }
 
     /**
+     * Get starting city from first itinerary day
+     * Falls back to tour's direct city_id if no itinerary city
+     */
+    public function getStartingCityAttribute(): ?City
+    {
+        // Try to get from first itinerary item
+        $firstItem = $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->first();
+        
+        if ($firstItem && $firstItem->city) {
+            return $firstItem->city;
+        }
+
+        // Fallback to tour's direct city relationship (for backward compatibility)
+        return $this->city;
+    }
+
+    /**
+     * Get ending city from last itinerary day
+     */
+    public function getEndingCityAttribute(): ?City
+    {
+        $lastItem = $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->orderByDesc('sort_order')
+            ->first();
+        
+        return $lastItem?->city;
+    }
+
+    /**
+     * Get all unique cities visited in order from itinerary
+     * Uses the new single city_id field on itinerary_items
+     */
+    public function getVisitedCitiesAttribute()
+    {
+        return $this->topLevelItems()
+            ->with('city')
+            ->whereNotNull('city_id')
+            ->get()
+            ->pluck('city')
+            ->filter()
+            ->unique('id')
+            ->values();
+    }
+
+    /**
+     * Get route from itinerary cities as string (e.g., Tashkent → Samarkand → Bukhara)
+     */
+    public function getItineraryRouteAttribute(): string
+    {
+        return $this->visited_cities->pluck('name')->join(' → ') ?: 'Uzbekistan';
+    }
+
+    /**
+     * Check if tour has itinerary with cities defined
+     */
+    public function hasItineraryCities(): bool
+    {
+        return $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->exists();
+    }
+
+    /**
      * Accessor for gallery_images - Return array with 'path' and 'alt' keys for Filament Repeater
      */
     public function getGalleryImagesAttribute($value)

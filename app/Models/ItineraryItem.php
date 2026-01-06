@@ -11,6 +11,7 @@ class ItineraryItem extends Model
 
     protected $fillable = [
         'tour_id',
+        'city_id',
         'parent_id',
         'type',
         'sort_order',
@@ -31,6 +32,11 @@ class ItineraryItem extends Model
     public function tour()
     {
         return $this->belongsTo(Tour::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function parent()
