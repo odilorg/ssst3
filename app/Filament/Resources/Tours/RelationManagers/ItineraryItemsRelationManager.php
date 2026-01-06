@@ -102,11 +102,6 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->searchable()
                     ->columnSpanFull()
                     ->helperText('Выберите города, которые посещаются в этом дне/остановке (в порядке посещения)'),
-                Forms\Components\KeyValue::make('meta')
-                    ->label('Дополнительные данные')
-                    ->keyLabel('Ключ')
-                    ->valueLabel('Значение')
-                    ->columnSpanFull(),
             ]);
     }
 
