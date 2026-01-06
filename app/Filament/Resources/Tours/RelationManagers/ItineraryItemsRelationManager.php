@@ -56,13 +56,6 @@ class ItineraryItemsRelationManager extends RelationManager
                         // Auto-set duration based on type
                         $set('duration_minutes', $state === 'day' ? 480 : 120); // 8hrs for day, 2hrs for stop
                     }),
-                Forms\Components\Select::make('city_id')
-                    ->label('Город')
-                    ->relationship('city', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(fn (callable $get) => $get('type') === 'day')
-                    ->helperText('Основной город для этого дня маршрута'),
                 Forms\Components\Select::make('parent_id')
                     ->label('Родит.')
                     ->options(function () {
