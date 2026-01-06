@@ -1537,7 +1537,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 /* Review Card Content */
 .review-card__content {
   position: relative;
-  flex-grow: 1;
+  /* flex-grow: 1; -- Removed to fix excessive card height */
 }
 
 .review-card__quote {
