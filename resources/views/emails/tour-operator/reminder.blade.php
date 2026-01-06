@@ -67,8 +67,8 @@ This tour departs tomorrow. Please verify all arrangements are finalized.
 | :--- | :--- |
 | **Passenger Details** | @if($passengerDetailsComplete) ✅ Complete @else ⚠️ **MISSING - Follow up with customer!** @endif |
 | **Payment** | @if($paymentComplete) ✅ Fully Paid @else ⚠️ **{{ ucfirst($booking->payment_status ?? 'Pending') }}** @endif |
-| **Driver Assigned** | ⏳ Not tracked in system yet |
-| **Guide Assigned** | ⏳ Not tracked in system yet |
+| **Driver Assigned** | @if($booking->driver_name) ✅ {{ $booking->driver_name }} @if($booking->driver_phone)({{ $booking->driver_phone }})@endif @else ⚠️ **NOT ASSIGNED** @endif |
+| **Guide Assigned** | @if($booking->guide_name) ✅ {{ $booking->guide_name }} @if($booking->guide_phone)({{ $booking->guide_phone }})@endif @else ⚠️ **NOT ASSIGNED** @endif |
 | **Hotel Bookings** | ⏳ Verify manually |
 | **Train/Flight Tickets** | ⏳ Verify manually |
 </x-mail::table>
