@@ -97,7 +97,8 @@ class ItineraryItemsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Порядок сортировки')
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->hidden(),
                 Forms\Components\Select::make('cities')
                     ->label('Города маршрута')
                     ->relationship('cities', 'name')
