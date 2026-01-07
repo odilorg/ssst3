@@ -122,3 +122,18 @@ Route::post('/octobank/webhook', [\App\Http\Controllers\PaymentController::class
 Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])
     ->middleware(['web', 'auth'])
     ->name('api.payment.refund');
+
+
+// OTA Booking Integration (called by Gmail Watcher)
+Route::prefix('ota')->group(function () {
+    Route::post('/bookings', [\App\Http\Controllers\Api\OtaBookingController::class, 'store'])
+        ->name('api.ota.bookings.store');
+    Route::post('/bookings/update', [\App\Http\Controllers\Api\OtaBookingController::class, 'update'])
+        ->name('api.ota.bookings.update');
+    Route::post('/bookings/cancel', [\App\Http\Controllers\Api\OtaBookingController::class, 'cancel'])
+        ->name('api.ota.bookings.cancel');
+    Route::get('/bookings/unmapped', [\App\Http\Controllers\Api\OtaBookingController::class, 'unmapped'])
+        ->name('api.ota.bookings.unmapped');
+    Route::post('/test-match', [\App\Http\Controllers\Api\OtaBookingController::class, 'testMatch'])
+        ->name('api.ota.test-match');
+});

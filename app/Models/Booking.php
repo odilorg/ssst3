@@ -43,6 +43,12 @@ class Booking extends Model
         'payment_type',
         'deposit_percentage',
         'payment_uuid',
+        // OTA integration
+        'source',
+        'external_reference',
+        'external_platform_data',
+        'imported_at',
+        'imported_from_email_id',
         // Removed: customer_name, customer_email, customer_phone, customer_country
         // Using normalized approach - access via $booking->customer relationship
     ];
@@ -60,6 +66,8 @@ class Booking extends Model
         'deposit_paid_at' => 'datetime',
         'balance_paid_at' => 'datetime',
         'balance_due_date' => 'date',
+        'external_platform_data' => 'array',
+        'imported_at' => 'datetime',
     ];
 
     protected static function booted()
