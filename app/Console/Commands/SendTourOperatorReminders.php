@@ -191,8 +191,8 @@ class SendTourOperatorReminders extends Command
         $message .= "📋 <b>Status:</b>\n";
         $message .= "• Passenger details: {$passengerStatus}\n";
         $message .= "• Payment: {$paymentStatus}\n";
-        $message .= "• Driver: ⏳ Not tracked yet\n";
-        $message .= "• Guide: ⏳ Not tracked yet\n";
+        $message .= "• Driver: " . ($booking->driver_name ?: "⚠️ NOT ASSIGNED") . "\n";
+        $message .= "• Guide: " . ($booking->guide_name ?: "⚠️ NOT ASSIGNED") . "\n";
 
         if ($booking->special_requests) {
             $message .= "\n📝 <b>Special requests:</b>\n{$booking->special_requests}\n";
