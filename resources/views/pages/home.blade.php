@@ -580,13 +580,13 @@
           <div class="hero__cta">
             {{-- Primary CTA --}}
             <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill hero__cta-primary">
-              Book Your Craft Adventure Now
+              {{ __('ui.hero.cta_button') }}
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
 
             {{-- Secondary CTA - Text link --}}
             <a href="#itinerary-snapshot" class="hero__cta-secondary">
-              View Sample Itinerary <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              {{ __('ui.hero.view_itinerary') }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </a>
           </div>
         </div>

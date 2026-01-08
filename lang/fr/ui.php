@@ -28,6 +28,8 @@ return [
     'hero' => [
         'title' => 'Découvrez l\'Ouzbékistan à Travers Ses Métiers Vivants',
         'subtitle' => 'Un voyage axé sur la culture avec plus d\'ateliers artisanaux, de visites de métiers d\'art et de traditions locales qu\'un circuit typique.',
+        'cta_button' => 'Réservez Votre Aventure Artisanale Maintenant',
+        'view_itinerary' => 'Voir l\'Itinéraire Type',
         'rating_local_artisans' => 'Artisans locaux',
         'rating_small_groups' => 'Petits groupes',
         'rating_authentic_workshops' => 'Ateliers authentiques',
