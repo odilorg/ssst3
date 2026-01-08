@@ -766,27 +766,27 @@
     {{-- Hero Section - Enhanced with trust elements --}}
     <section class="about-hero">
       <div class="container">
-        <h1 class="about-hero__title">Preserving Heritage, One Craft at a Time</h1>
+        <h1 class="about-hero__title">{{ __('ui.about_page.hero_title') }}</h1>
         <p class="about-hero__subtitle">
-          We're a craft preservation initiative supporting local artisans and keeping traditional skills alive through meaningful, small-group cultural immersion journeys.
+          {{ __('ui.about_page.hero_subtitle') }}
         </p>
         <div class="about-hero__trust">
           <div class="about-hero__trust-item">
             <i class="fas fa-star" aria-hidden="true"></i>
-            <span>4.4/5 on GetYourGuide</span>
+            <span>{{ __('ui.about_page.trust_reviews') }}</span>
           </div>
           <div class="about-hero__trust-item">
             <i class="fas fa-users" aria-hidden="true"></i>
-            <span>500+ Travelers Hosted</span>
+            <span>{{ __('ui.about_page.trust_travelers') }}</span>
           </div>
           <div class="about-hero__trust-item">
             <i class="fas fa-heart" aria-hidden="true"></i>
-            <span>45+ Partner Artisans</span>
+            <span>{{ __('ui.about_page.trust_artisans') }}</span>
           </div>
         </div>
         <div class="about-hero__cta">
           <a href="{{ url('/tours') }}" class="btn--hero">
-            <i class="fas fa-route" aria-hidden="true"></i> Explore Craft Tours
+            <i class="fas fa-route" aria-hidden="true"></i> {{ __('ui.about_page.cta_explore') }}
           </a>
         </div>
       </div>
@@ -795,29 +795,29 @@
     {{-- The Problem Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #e74c3c; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">THE PROBLEM</span>
-        <h2 class="section-heading text-center">Traditional Crafts Are Disappearing</h2>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #e74c3c; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.problem_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.problem_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          Across Central Asia, centuries-old craft traditions are vanishing as artisans struggle to earn a living and young people choose modern careers.
+          {{ __('ui.about_page.problem_subtitle') }}
         </p>
 
         <div class="problem-section__content">
           <div class="problem-box">
             <p class="problem-box__text">
-              <strong>The suzani embroiderer in Bukhara.</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
+              <strong>{{ __('ui.about_page.problem_text1') }}</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
             </p>
             <p class="problem-box__text">
-              But tourism has become transactional. Travelers speed through workshops in 20 minutes, snap photos, and leave. Artisans earn pennies while tour operators take the profit. The crafts survive as museum pieces, not living traditions.
+              {{ __('ui.about_page.problem_text2') }}
             </p>
-            <p class="problem-box__stat">Many traditional craft skills are at risk of disappearing within a generation.</p>
+            <p class="problem-box__stat">{{ __('ui.about_page.problem_stat') }}</p>
             <p class="problem-box__text" style="margin-bottom: 0;">
-              We believe there's a better way—one that respects artisans, preserves heritage, and creates meaningful connections.
+              {{ __('ui.about_page.problem_text3') }}
             </p>
           </div>
           <div class="problem-image">
             <img src="{{ asset('images/traditional-embroidery-display.webp') }}" alt="Traditional Uzbek embroidery textiles" loading="lazy">
             <div class="problem-image__caption">
-              <i class="fas fa-palette" aria-hidden="true"></i> Traditional Uzbek embroidery
+              <i class="fas fa-palette" aria-hidden="true"></i> {{ __('ui.about_page.problem_image_caption') }}
             </div>
           </div>
         </div>
@@ -827,10 +827,10 @@
     {{-- Our Solution Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR SOLUTION</span>
-        <h2 class="section-heading text-center">Small Groups, Deep Impact, Fair Pay</h2>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.solution_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.solution_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          We design craft-focused journeys that support artisans financially, preserve traditional skills, and give travelers authentic, meaningful experiences.
+          {{ __('ui.about_page.solution_subtitle') }}
         </p>
 
         <div class="solution-grid">
@@ -838,48 +838,48 @@
             <div class="solution-card__icon">
               <i class="fas fa-users" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Maximum 6 Travelers</h3>
-            <p class="solution-card__text">Intimate group sizes mean quality time with artisans, hands-on learning, and genuine cultural exchange—not rushed factory tours.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution1_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution1_text') }}</p>
           </div>
 
           <div class="solution-card">
             <div class="solution-card__icon">
               <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Fair Pay to Artisans</h3>
-            <p class="solution-card__text">A significant portion of workshop fees goes directly to craftspeople—triple the industry average—ensuring sustainable income for their families.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution2_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution2_text') }}</p>
           </div>
 
           <div class="solution-card">
             <div class="solution-card__icon">
               <i class="fas fa-clock" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Multi-Day Immersion</h3>
-            <p class="solution-card__text">Spend days, not minutes, with artisans. Learn their stories, explore their techniques, and understand the cultural context behind each craft.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution3_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution3_text') }}</p>
           </div>
 
           <div class="solution-card">
             <div class="solution-card__icon">
               <i class="fas fa-heart" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Craft-First Itineraries</h3>
-            <p class="solution-card__text">Every tour is built around workshops, not landmarks. You'll visit Registan Square—but only after you've learned to create suzani embroidery.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution4_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution4_text') }}</p>
           </div>
 
           <div class="solution-card">
             <div class="solution-card__icon">
               <i class="fas fa-language" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Local Expert Guides</h3>
-            <p class="solution-card__text">English-speaking guides who personally know the artisans and translate not just words, but cultural context and centuries of tradition.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution5_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution5_text') }}</p>
           </div>
 
           <div class="solution-card">
             <div class="solution-card__icon">
               <i class="fas fa-home" aria-hidden="true"></i>
             </div>
-            <h3 class="solution-card__title">Authentic Workshops</h3>
-            <p class="solution-card__text">Real working studios, not tourist shops. You'll see where artisans actually create—the same spaces where their families have worked for generations.</p>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution6_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution6_text') }}</p>
           </div>
         </div>
       </div>
@@ -888,10 +888,10 @@
     {{-- Our Impact Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">OUR IMPACT</span>
-        <h2 class="section-heading text-center">Making a Real Difference</h2>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.impact_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.impact_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          Since pivoting to craft-focused tourism, we've supported artisan communities across Uzbekistan and helped preserve endangered skills.
+          {{ __('ui.about_page.impact_subtitle') }}
         </p>
 
         <div class="impact-stats">
@@ -900,7 +900,7 @@
               <i class="fas fa-user-friends" aria-hidden="true"></i>
             </div>
             <div class="impact-stat__number">45+</div>
-            <div class="impact-stat__label">Artisans in our network</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat1_label') }}</div>
           </div>
 
           <div class="impact-stat">
@@ -908,7 +908,7 @@
               <i class="fas fa-palette" aria-hidden="true"></i>
             </div>
             <div class="impact-stat__number">12</div>
-            <div class="impact-stat__label">Traditional craft forms preserved</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat2_label') }}</div>
           </div>
 
           <div class="impact-stat">
@@ -916,8 +916,8 @@
               <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
             </div>
             <div class="impact-stat__number">$85K+</div>
-            <div class="impact-stat__label">Paid directly to artisans</div>
-            <div class="impact-stat__source">2024 estimate</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat3_label') }}</div>
+            <div class="impact-stat__source">{{ __('ui.about_page.impact_stat3_source') }}</div>
           </div>
 
           <div class="impact-stat">
@@ -925,8 +925,8 @@
               <i class="fas fa-chart-line" aria-hidden="true"></i>
             </div>
             <div class="impact-stat__number">13</div>
-            <div class="impact-stat__label">Years supporting artisans</div>
-            <div class="impact-stat__source">Since 2012</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat4_label') }}</div>
+            <div class="impact-stat__source">{{ __('ui.about_page.impact_stat4_source') }}</div>
           </div>
         </div>
       </div>
@@ -935,10 +935,10 @@
     {{-- Partnerships Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">PARTNERSHIPS</span>
-        <h2 class="section-heading text-center">Working with Heritage Organizations</h2>
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.partnerships_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.partnerships_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          We collaborate with cultural institutions, craft guilds, and heritage organizations to ensure authentic, ethical craft tourism.
+          {{ __('ui.about_page.partnerships_subtitle') }}
         </p>
 
         <div class="partnership-grid">
@@ -946,39 +946,39 @@
             <div class="partnership-card__icon">
               <i class="fas fa-landmark" aria-hidden="true"></i>
             </div>
-            <h3 class="partnership-card__name">Samarkand Heritage Sites</h3>
-            <p class="partnership-card__role">UNESCO World Heritage locations</p>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner1_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner1_role') }}</p>
           </div>
 
           <div class="partnership-card">
             <div class="partnership-card__icon">
               <i class="fas fa-hands" aria-hidden="true"></i>
             </div>
-            <h3 class="partnership-card__name">Local Artisan Network</h3>
-            <p class="partnership-card__role">45+ craftspeople across Uzbekistan</p>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner2_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner2_role') }}</p>
           </div>
 
           <div class="partnership-card">
             <div class="partnership-card__icon">
               <i class="fas fa-industry" aria-hidden="true"></i>
             </div>
-            <h3 class="partnership-card__name">Yodgorlik Silk Factory</h3>
-            <p class="partnership-card__role">Traditional silk weaving, Margilan</p>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner3_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner3_role') }}</p>
           </div>
 
           <div class="partnership-card">
             <div class="partnership-card__icon">
               <i class="fas fa-scroll" aria-hidden="true"></i>
             </div>
-            <h3 class="partnership-card__name">Konigil Paper Workshop</h3>
-            <p class="partnership-card__role">Ancient papermaking, Samarkand</p>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner4_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner4_role') }}</p>
           </div>
         </div>
 
         <div class="ethical-commitment">
           <p>
-            <strong><i class="fas fa-leaf" aria-hidden="true"></i> Our Commitment to Ethical Tourism</strong>
-            We strive to ensure fair pay to artisans, cultural respect, and environmental sustainability in all our tours. Every journey supports local communities and preserves traditional craftsmanship.
+            <strong><i class="fas fa-leaf" aria-hidden="true"></i> {{ __('ui.about_page.ethical_commitment_title') }}</strong>
+            {{ __('ui.about_page.ethical_commitment_text') }}
           </p>
         </div>
       </div>
@@ -987,10 +987,10 @@
     {{-- Artisan Gallery Section --}}
     <section class="section section--first">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">MEET THE ARTISANS</span>
-        <h2 class="section-heading text-center">The Hands Behind the Crafts</h2>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">{{ __('ui.about_page.artisans_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.artisans_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          Real artisans in real workshops. These are the craftspeople you'll meet on our journeys.
+          {{ __('ui.about_page.artisans_subtitle') }}
         </p>
 
         <div class="artisan-gallery">
@@ -1022,22 +1022,22 @@
     {{-- Testimonials Section --}}
     <section class="section section--gray">
       <div class="container">
-        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">TESTIMONIALS</span>
-        <h2 class="section-heading text-center">What Travelers Say</h2>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">{{ __('ui.about_page.testimonials_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.testimonials_title') }}</h2>
         <p class="section-tagline text-center mx-auto">
-          Real experiences from travelers who've journeyed with us to meet Uzbekistan's master artisans.
+          {{ __('ui.about_page.testimonials_subtitle') }}
         </p>
 
         <div class="testimonials">
           <div class="testimonial-card">
             <p class="testimonial-card__text">
-              "This wasn't just a tour—it was a masterclass in Uzbek culture. We spent two full days with a suzani embroidery artisan in Bukhara. She taught us ancient stitching techniques her grandmother passed down. I'll never see textiles the same way."
+              {{ __('ui.about_page.testimonial1_text') }}
             </p>
             <div class="testimonial-card__author">
               <div class="testimonial-card__avatar">SC</div>
               <div class="testimonial-card__info">
-                <div class="testimonial-card__name">Sarah C.</div>
-                <div class="testimonial-card__meta">United Kingdom • May 2024</div>
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial1_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial1_meta') }}</div>
                 <div class="testimonial-card__rating">
                   <i class="fas fa-star" aria-hidden="true"></i>
                   <i class="fas fa-star" aria-hidden="true"></i>
@@ -1051,13 +1051,13 @@
 
           <div class="testimonial-card">
             <p class="testimonial-card__text">
-              "What impressed me most was the authenticity. No tourist traps—just real workshops where families have worked for generations. The potters in Gijduvan welcomed us like old friends. Jahongir's team truly understands ethical tourism."
+              {{ __('ui.about_page.testimonial2_text') }}
             </p>
             <div class="testimonial-card__author">
               <div class="testimonial-card__avatar">MH</div>
               <div class="testimonial-card__info">
-                <div class="testimonial-card__name">Michael H.</div>
-                <div class="testimonial-card__meta">USA • October 2024</div>
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial2_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial2_meta') }}</div>
                 <div class="testimonial-card__rating">
                   <i class="fas fa-star" aria-hidden="true"></i>
                   <i class="fas fa-star" aria-hidden="true"></i>
@@ -1071,13 +1071,13 @@
 
           <div class="testimonial-card">
             <p class="testimonial-card__text">
-              "Small group size made all the difference. Only 5 of us on the tour, so we got real one-on-one time with the silk weavers in Margilan. They showed us techniques you'd never see in a big group tour. Worth every penny."
+              {{ __('ui.about_page.testimonial3_text') }}
             </p>
             <div class="testimonial-card__author">
               <div class="testimonial-card__avatar">AL</div>
               <div class="testimonial-card__info">
-                <div class="testimonial-card__name">Anna L.</div>
-                <div class="testimonial-card__meta">Germany • September 2024</div>
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial3_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial3_meta') }}</div>
                 <div class="testimonial-card__rating">
                   <i class="fas fa-star" aria-hidden="true"></i>
                   <i class="fas fa-star" aria-hidden="true"></i>
@@ -1095,11 +1095,11 @@
     {{-- CTA Section --}}
     <section class="cta-section">
       <div class="container">
-        <h2 class="cta-section__heading">Ready to Meet Our Artisans?</h2>
+        <h2 class="cta-section__heading">{{ __('ui.about_page.cta_title') }}</h2>
         <p class="cta-section__text">
-          Explore our craft immersion journeys and support the artisans keeping Uzbekistan's traditions alive.
+          {{ __('ui.about_page.cta_text') }}
         </p>
-        <a href="{{ url('/tours') }}" class="btn btn--white">Explore Craft Journeys</a>
+        <a href="{{ url('/tours') }}" class="btn btn--white">{{ __('ui.about_page.cta_button') }}</a>
       </div>
     </section>
 @endsection

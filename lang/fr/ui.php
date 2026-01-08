@@ -650,4 +650,109 @@ return [
         'faq_4_answer' => 'Oui, notre siège social est situé au cœur de Tachkent. Contactez-nous à l\'avance pour organiser une visite, et nous serons ravis de discuter de vos projets de voyage autour d\'\'un thé.',
     ],
 
+
+    'about_page' => [
+        // Hero section
+        'hero_title' => 'Préserver l\'Héritage, Un Artisanat à la Fois',
+        'hero_subtitle' => 'Nous sommes une initiative de préservation artisanale soutenant les artisans locaux et maintenant vivantes les compétences traditionnelles à travers des voyages d\'immersion culturelle significatifs en petits groupes.',
+        'trust_reviews' => '4,4/5 sur GetYourGuide',
+        'trust_travelers' => '500+ Voyageurs Accueillis',
+        'trust_artisans' => '45+ Artisans Partenaires',
+        'cta_explore' => 'Explorer les Circuits Artisanaux',
+        
+        // Problem section
+        'problem_eyebrow' => 'LE PROBLÈME',
+        'problem_title' => 'Les Artisanats Traditionnels Disparaissent',
+        'problem_subtitle' => 'À travers l\'Asie centrale, des traditions artisanales centenaires disparaissent alors que les artisans peinent à gagner leur vie et que les jeunes choisissent des carrières modernes.',
+        'problem_text1' => 'La brodeuse de suzani à Boukhara. Le potier de Gijduvan. La tisserande de soie de Margilan qui a appris de sa grand-mère. Ils ne créent pas seulement de beaux objets—ce sont des liens vivants avec mille ans d\'histoire.',
+        'problem_text2' => 'Mais le tourisme est devenu transactionnel. Les voyageurs traversent les ateliers en 20 minutes, prennent des photos et repartent. Les artisans gagnent des centimes tandis que les voyagistes empochent les profits. Les artisanats survivent comme pièces de musée, pas comme traditions vivantes.',
+        'problem_stat' => 'De nombreuses compétences artisanales traditionnelles risquent de disparaître en une génération.',
+        'problem_text3' => 'Nous croyons qu\'il existe une meilleure façon—une qui respecte les artisans, préserve l\'héritage et crée des connexions significatives.',
+        'problem_image_caption' => 'Broderie traditionnelle ouzbèke',
+        
+        // Solution section
+        'solution_eyebrow' => 'NOTRE SOLUTION',
+        'solution_title' => 'Petits Groupes, Impact Profond, Rémunération Équitable',
+        'solution_subtitle' => 'Nous concevons des voyages axés sur l\'artisanat qui soutiennent financièrement les artisans, préservent les compétences traditionnelles et offrent aux voyageurs des expériences authentiques et significatives.',
+        
+        'solution1_title' => 'Maximum 6 Voyageurs',
+        'solution1_text' => 'Des groupes intimes signifient du temps de qualité avec les artisans, un apprentissage pratique et un véritable échange culturel—pas des visites d\'usine précipitées.',
+        
+        'solution2_title' => 'Rémunération Équitable aux Artisans',
+        'solution2_text' => 'Une part significative des frais d\'atelier va directement aux artisans—le triple de la moyenne du secteur—garantissant un revenu durable pour leurs familles.',
+        
+        'solution3_title' => 'Immersion de Plusieurs Jours',
+        'solution3_text' => 'Passez des jours, pas des minutes, avec les artisans. Apprenez leurs histoires, explorez leurs techniques et comprenez le contexte culturel derrière chaque artisanat.',
+        
+        'solution4_title' => 'Itinéraires Axés sur l\'Artisanat',
+        'solution4_text' => 'Chaque circuit est construit autour d\'ateliers, pas de monuments. Vous visiterez la place du Régistan—mais seulement après avoir appris à créer de la broderie suzani.',
+        
+        'solution5_title' => 'Guides Experts Locaux',
+        'solution5_text' => 'Des guides anglophones qui connaissent personnellement les artisans et traduisent non seulement les mots, mais le contexte culturel et des siècles de tradition.',
+        
+        'solution6_title' => 'Ateliers Authentiques',
+        'solution6_text' => 'De vrais studios de travail, pas des boutiques touristiques. Vous verrez où les artisans créent réellement—les mêmes espaces où leurs familles ont travaillé pendant des générations.',
+        
+        // Impact section
+        'impact_eyebrow' => 'NOTRE IMPACT',
+        'impact_title' => 'Faire une Vraie Différence',
+        'impact_subtitle' => 'Depuis notre pivot vers le tourisme axé sur l\'artisanat, nous avons soutenu les communautés artisanales à travers l\'Ouzbékistan et aidé à préserver des compétences menacées.',
+        'impact_stat1_number' => '45+',
+        'impact_stat1_label' => 'Artisans dans notre réseau',
+        'impact_stat2_number' => '12',
+        'impact_stat2_label' => 'Formes d\'artisanat traditionnel préservées',
+        'impact_stat3_number' => '85K+',
+        'impact_stat3_label' => 'Versés directement aux artisans',
+        'impact_stat3_source' => 'Estimation 2024',
+        'impact_stat4_number' => '13',
+        'impact_stat4_label' => 'Années de soutien aux artisans',
+        'impact_stat4_source' => 'Depuis 2012',
+        
+        // Partnerships section
+        'partnerships_eyebrow' => 'PARTENARIATS',
+        'partnerships_title' => 'Travailler avec les Organisations du Patrimoine',
+        'partnerships_subtitle' => 'Nous collaborons avec des institutions culturelles, des guildes artisanales et des organisations du patrimoine pour garantir un tourisme artisanal authentique et éthique.',
+        
+        'partner1_name' => 'Sites du Patrimoine de Samarcande',
+        'partner1_role' => 'Lieux du patrimoine mondial de l\'UNESCO',
+        'partner2_name' => 'Réseau d\'Artisans Locaux',
+        'partner2_role' => '45+ artisans à travers l\'Ouzbékistan',
+        'partner3_name' => 'Usine de Soie Yodgorlik',
+        'partner3_role' => 'Tissage traditionnel de soie, Margilan',
+        'partner4_name' => 'Atelier de Papier Konigil',
+        'partner4_role' => 'Fabrication ancienne de papier, Samarcande',
+        
+        'ethical_commitment_title' => 'Notre Engagement envers le Tourisme Éthique',
+        'ethical_commitment_text' => 'Nous nous efforçons d\'assurer une rémunération équitable aux artisans, le respect culturel et la durabilité environnementale dans tous nos circuits. Chaque voyage soutient les communautés locales et préserve l\'artisanat traditionnel.',
+        
+        // Artisan Gallery section
+        'artisans_eyebrow' => 'RENCONTREZ LES ARTISANS',
+        'artisans_title' => 'Les Mains Derrière les Artisanats',
+        'artisans_subtitle' => 'De vrais artisans dans de vrais ateliers. Voici les artisans que vous rencontrerez lors de nos voyages.',
+        'artisan_gallery_pottery' => 'Poterie de Gijduvan',
+        'artisan_gallery_pottery_caption' => 'Techniques vieilles de 7 générations',
+        
+        // Testimonials section
+        'testimonials_eyebrow' => 'TÉMOIGNAGES',
+        'testimonials_title' => 'Ce que Disent les Voyageurs',
+        'testimonials_subtitle' => 'Expériences réelles de voyageurs qui ont voyagé avec nous pour rencontrer les maîtres artisans d\'Ouzbékistan.',
+        
+        'testimonial1_text' => 'Ce n\'était pas seulement un circuit—c\'était un cours magistral sur la culture ouzbèke. Nous avons passé deux jours entiers avec une artisane de broderie suzani à Boukhara. Elle nous a enseigné des techniques de couture anciennes que sa grand-mère lui a transmises. Je ne verrai plus jamais les textiles de la même façon.',
+        'testimonial1_name' => 'Sarah C.',
+        'testimonial1_meta' => 'Royaume-Uni • Mai 2024',
+        
+        'testimonial2_text' => 'Ce qui m\'a le plus impressionné, c\'est l\'authenticité. Pas de pièges à touristes—juste de vrais ateliers où les familles travaillent depuis des générations. Les potiers de Gijduvan nous ont accueillis comme de vieux amis. L\'équipe de Jahongir comprend vraiment le tourisme éthique.',
+        'testimonial2_name' => 'Michael H.',
+        'testimonial2_meta' => 'États-Unis • Octobre 2024',
+        
+        'testimonial3_text' => 'La petite taille du groupe a fait toute la différence. Seulement 5 d\'entre nous sur le circuit, donc nous avons eu un vrai temps en tête-à-tête avec les tisserands de soie à Margilan. Ils nous ont montré des techniques que vous ne verriez jamais dans un grand groupe. Ça valait chaque centime.',
+        'testimonial3_name' => 'Anna L.',
+        'testimonial3_meta' => 'Allemagne • Septembre 2024',
+        
+        // CTA section
+        'cta_title' => 'Prêt à Rencontrer Nos Artisans ?',
+        'cta_text' => 'Explorez nos voyages d\'immersion artisanale et soutenez les artisans qui maintiennent vivantes les traditions de l\'Ouzbékistan.',
+        'cta_button' => 'Explorer les Voyages Artisanaux',
+    ],
+
 ];
