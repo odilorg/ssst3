@@ -33,7 +33,7 @@ return [
     |
     */
 
-    'locales' => ['en', 'ru', 'fr'],
+    'locales' => ['en', 'ru', 'fr', 'de'],
 
     /*
     |--------------------------------------------------------------------------
@@ -98,6 +98,11 @@ return [
             'name' => 'French',
             'native' => 'Français',
             'flag' => '🇫🇷',
+        ],
+        'de' => [
+            'name' => 'German',
+            'native' => 'Deutsch',
+            'flag' => '🇩🇪',
         ],
     ],
 
