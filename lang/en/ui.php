@@ -271,12 +271,12 @@ return [
     // ============================================
     'about_page' => [
         // Hero Section
-        'hero_title' => 'Preserving Uzbekistan\'s Craft Heritage Through Travel',
-        'hero_subtitle' => 'Small-group immersive journeys supporting local artisans and traditional crafts since 2012',
-        'trust_reviews' => '50+ 5-star reviews',
-        'trust_travelers' => '500+ happy travelers',
-        'trust_artisans' => 'Supporting 45+ artisans',
-        'cta_explore' => 'Explore Our Tours',
+        'hero_title' => 'Discover Uzbekistan\'s Living Craft Heritage',
+        'hero_subtitle' => 'Small-group journeys connecting you directly with master artisans keeping centuries-old traditions alive',
+        'trust_reviews' => '4.5★ rating on GetYourGuide',
+        'trust_travelers' => 'Groups of 8 or fewer',
+        'trust_artisans' => 'Supporting 45+ local artisans',
+        'cta_explore' => 'Explore Craft Journeys',
 
         // Problem Section
         'problem_eyebrow' => 'The Challenge',
