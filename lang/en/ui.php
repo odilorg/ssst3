@@ -635,6 +635,12 @@ return [
         'artisans_eyebrow' => 'Meet the Artisans',
         'artisans_title' => 'The Master Craftspeople You\'ll Meet',
         'artisans_subtitle' => 'Every tour brings you face-to-face with artisans who have dedicated their lives to preserving Uzbekistan\'s craft heritage.',
+        'gallery_pottery_title' => 'Gijduvan Pottery',
+        'gallery_pottery_desc' => 'Traditional ceramics workshop',
+        'gallery_embroidery_title' => 'Suzani Embroidery',
+        'gallery_embroidery_desc' => 'Hand-stitched textiles',
+        'gallery_silk_title' => 'Silk Weaving',
+        'gallery_silk_desc' => 'Margilan silk tradition',
 
         // Testimonials Section
         'testimonials_eyebrow' => 'Traveler Stories',

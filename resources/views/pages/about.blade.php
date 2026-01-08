@@ -959,22 +959,22 @@
           <div class="artisan-gallery__item">
             <img src="{{ asset('images/pottery-artisan.webp') }}" alt="Uzbek pottery craftsman at work" loading="lazy">
             <div class="artisan-gallery__caption">
-              <strong>Gijduvan Pottery</strong><br>
-              Traditional ceramics workshop
+              <strong>{{ __('ui.about_page.gallery_pottery_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_pottery_desc') }}
             </div>
           </div>
           <div class="artisan-gallery__item">
             <img src="{{ asset('images/embroidery-artisan.webp') }}" alt="Suzani embroidery artisan creating traditional patterns" loading="lazy">
             <div class="artisan-gallery__caption">
-              <strong>Suzani Embroidery</strong><br>
-              Hand-stitched textiles
+              <strong>{{ __('ui.about_page.gallery_embroidery_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_embroidery_desc') }}
             </div>
           </div>
           <div class="artisan-gallery__item">
             <img src="{{ asset('images/silk-weaving-artisan.webp') }}" alt="Silk weaving artisans at traditional loom" loading="lazy">
             <div class="artisan-gallery__caption">
-              <strong>Silk Weaving</strong><br>
-              Margilan silk tradition
+              <strong>{{ __('ui.about_page.gallery_silk_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_silk_desc') }}
             </div>
           </div>
         </div>

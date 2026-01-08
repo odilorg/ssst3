@@ -740,6 +740,12 @@ return [
         'artisans_subtitle' => 'De vrais artisans dans de vrais ateliers. Voici les artisans que vous rencontrerez lors de nos voyages.',
         'artisan_gallery_pottery' => 'Poterie de Gijduvan',
         'artisan_gallery_pottery_caption' => 'Techniques vieilles de 7 générations',
+        'gallery_pottery_title' => 'Poterie de Gijduvan',
+        'gallery_pottery_desc' => 'Atelier de céramique traditionnelle',
+        'gallery_embroidery_title' => 'Broderie Suzani',
+        'gallery_embroidery_desc' => 'Textiles brodés à la main',
+        'gallery_silk_title' => 'Tissage de Soie',
+        'gallery_silk_desc' => 'Tradition de la soie de Margilan',
         
         // Testimonials section
         'testimonials_eyebrow' => 'TÉMOIGNAGES',
