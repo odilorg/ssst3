@@ -30,7 +30,6 @@ class ContractForm
                     ->schema([
                         TextInput::make('contract_number')
                             ->label('Contract Number')
-                            ->required()
                             ->unique(ignoreRecord: true)
                             ->placeholder('Auto-generated: CON-2025-001, CON-2025-002...')
                             ->disabled()
