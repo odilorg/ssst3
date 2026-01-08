@@ -49,7 +49,8 @@
     .about-hero {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        padding: 220px 0 150px; /* Top for navbar, bottom for button visibility */
+        padding: 180px 0 120px; /* Top for navbar (increased), bottom for button visibility */
+        padding-top: max(180px, calc(80px + 100px)); /* Ensure minimum 80px navbar + 100px spacing */
         text-align: center;
         position: relative;
     }
@@ -647,7 +648,8 @@
 
     @media (max-width: 768px) {
         .about-hero {
-            padding: 120px 0 80px;
+            padding: 140px 0 80px;
+            padding-top: max(140px, calc(60px + 80px)); /* Mobile navbar is smaller */
         }
 
         .about-hero__title {
