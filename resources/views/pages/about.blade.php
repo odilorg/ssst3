@@ -53,7 +53,6 @@
         padding-top: max(180px, calc(80px + 100px)); /* Ensure minimum 80px navbar + 100px spacing */
         text-align: center;
         position: relative;
-        min-height: 100vh; /* Ensure full viewport height */
     }
 
 
