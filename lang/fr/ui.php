@@ -348,17 +348,23 @@ return [
     // FOOTER
     // ============================================
     'footer' => [
+        'tagline' => 'Soutenir les artisans et préserver les métiers traditionnels depuis 2012.',
+        'get_in_touch' => 'Entrer en Contact',
         'about_us' => 'À Propos',
+        'contact' => 'Contact',
+        'blog' => 'Blog',
+        'faqs' => 'FAQs',
         'quick_links' => 'Liens Rapides',
+        'destinations' => 'Destinations',
         'contact_us' => 'Nous Contacter',
         'follow_us' => 'Suivez-nous',
         'newsletter' => 'Newsletter',
         'subscribe' => 'S\'abonner',
         'email_placeholder' => 'Entrez votre e-mail',
         'copyright' => 'Tous droits réservés.',
-        'privacy_policy' => 'Politique de Confidentialité',
-        'terms_of_service' => 'Conditions d\'Utilisation',
-        'cookie_policy' => 'Politique des Cookies',
+        'privacy_policy' => 'Confidentialité',
+        'terms_of_service' => 'Conditions',
+        'cookie_policy' => 'Cookies',
     ],
 
     // ============================================
@@ -393,19 +399,19 @@ return [
     // ============================================
     'sample_day' => [
         'eyebrow' => 'JOURNÉE TYPE',
-        'title' => 'À Quoi Ressemble Une Journée Axée Sur L'Artisanat',
+        'title' => 'À Quoi Ressemble Une Journée Axée Sur L\'Artisanat',
         'subtitle' => 'Un aperçu du rythme équilibré de nos ateliers — du temps pour apprendre, créer et absorber.',
         
         'morning' => [
             'label' => 'MATIN',
-            'title' => 'Visite d'Atelier d'Artisan',
-            'description' => 'Commencez votre journée dans un atelier familial de poterie ou de soie. Rencontrez l'artisan, apprenez l'histoire et essayez-vous à l'artisanat.',
+            'title' => 'Visite d\'Atelier d\'Artisan',
+            'description' => 'Commencez votre journée dans un atelier familial de poterie ou de soie. Rencontrez l\'artisan, apprenez l\'histoire et essayez-vous à l\'artisanat.',
         ],
         
         'midday' => [
             'label' => 'MIDI',
             'title' => 'Arrêt Culturel & Déjeuner Local',
-            'description' => 'Déjeuner traditionnel avec une famille locale ou dans une tchaïkhana de quartier. Visite optionnelle d'un site historique à proximité.',
+            'description' => 'Déjeuner traditionnel avec une famille locale ou dans une tchaïkhana de quartier. Visite optionnelle d\'un site historique à proximité.',
         ],
         
         'afternoon' => [
@@ -426,7 +432,7 @@ return [
     // ITINERARY CTA
     // ============================================
     'itinerary' => [
-        'see_full' => 'Voir l'Itinéraire Complet',
+        'see_full' => 'Voir l\'Itinéraire Complet',
     ],
 
     // ============================================
@@ -438,22 +444,126 @@ return [
         'subtitle' => 'Vous planifiez votre premier atelier artisanal en Ouzbékistan ? Voici les réponses aux questions les plus courantes des voyageurs comme vous.',
         
         'famous_masters' => [
-            'question' => 'S'agit-il de maîtres artisans célèbres ?',
-            'answer_1' => 'Nous travaillons avec des artisans locaux qualifiés, pas des célébrités. Certains ont des générations d'expérience familiale, d'autres sont des artisans locaux établis. Les ateliers varient — certains sont des studios familiaux intimes, d'autres sont des centres artisanaux établis.',
+            'question' => 'S\'agit-il de maîtres artisans célèbres ?',
+            'answer_1' => 'Nous travaillons avec des artisans locaux qualifiés, pas des célébrités. Certains ont des générations d\'expérience familiale, d\'autres sont des artisans locaux établis. Les ateliers varient — certains sont des studios familiaux intimes, d\'autres sont des centres artisanaux établis.',
             'answer_2' => 'Ce que nous garantissons : des environnements de travail authentiques, de véritables techniques traditionnelles et des artisans qui aiment partager leur savoir-faire. Chaque atelier est soigneusement sélectionné pour sa qualité et son authenticité.',
         ],
         
         'shopping_tour' => [
             'question' => 'Est-ce un circuit shopping ?',
-            'answer_1' => 'Non, c'est une expérience d'apprentissage, pas un voyage shopping. Bien que les artisans puissent avoir des pièces à vendre, il n'y a aucune pression pour acheter. Notre objectif est de comprendre les techniques, le contexte culturel et la création pratique.',
-            'answer_2' => 'Vous créerez vos propres pièces à emporter chez vous dans le cadre de l'expérience d'atelier.',
+            'answer_1' => 'Non, c\'est une expérience d\'apprentissage, pas un voyage shopping. Bien que les artisans puissent avoir des pièces à vendre, il n\'y a aucune pression pour acheter. Notre objectif est de comprendre les techniques, le contexte culturel et la création pratique.',
+            'answer_2' => 'Vous créerez vos propres pièces à emporter chez vous dans le cadre de l\'expérience d\'atelier.',
         ],
         
         'hands_on' => [
-            'question' => 'Est-ce pratique ou juste de l'observation ?',
-            'answer_1' => 'Principalement observation et démonstration. Vous regarderez des artisans qualifiés au travail, apprendrez leurs techniques, outils et traditions. Nos guides expliquent l'importance culturelle et l'histoire derrière chaque métier.',
-            'answer_2' => 'Si vous souhaitez l'essayer, les artisans sont heureux de vous laisser faire — mais c'est optionnel, pas l'objectif principal. Considérez cela comme une immersion culturelle, pas un cours d'atelier pratique.',
+            'question' => 'Est-ce pratique ou juste de l\'observation ?',
+            'answer_1' => 'Principalement observation et démonstration. Vous regarderez des artisans qualifiés au travail, apprendrez leurs techniques, outils et traditions. Nos guides expliquent l\'importance culturelle et l\'histoire derrière chaque métier.',
+            'answer_2' => 'Si vous souhaitez l\'essayer, les artisans sont heureux de vous laisser faire — mais c\'est optionnel, pas l\'objectif principal. Considérez cela comme une immersion culturelle, pas un cours d\'atelier pratique.',
         ],
+    ],
+
+
+    // ============================================
+    // AUDIENCE FILTER (Extended)
+    // ============================================
+    'audience_extended' => [
+        'not_ideal_title' => 'Peut Ne Pas Convenir Si...',
+        'not_ideal' => [
+            'many_attractions' => 'Vous voulez voir plus de 10 attractions par jour',
+            'large_tours' => 'Vous préférez les circuits en bus avec plus de 30 personnes',
+            'luxury_hotels' => 'Vous recherchez des hôtels de luxe 5 étoiles',
+            'pre_planned' => 'Vous voulez un itinéraire entièrement pré-planifié sans flexibilité',
+            'homestays' => 'Vous n\'êtes pas à l\'aise avec les séjours chez l\'artisan',
+        ],
+        'footer' => 'Encore incertain ?',
+        'footer_link' => 'Discutez avec notre équipe',
+        'footer_text' => 'pour trouver l\'atelier parfait pour votre style de voyage.',
+    ],
+
+    // ============================================
+    // FAQ ITEMS (Standard Questions)
+    // ============================================
+    'faq_items' => [
+        'prior_experience' => [
+            'question' => 'Ai-je besoin d\'une expérience préalable en artisanat pour rejoindre un atelier ?',
+            'answer_1' => 'Aucune expérience préalable requise !',
+            'answer_2' => 'Nos ateliers sont conçus pour les débutants complets jusqu\'aux praticiens avancés. Les artisans qualifiés adaptent leur enseignement à votre niveau de compétence, garantissant que chacun crée quelque chose de significatif.',
+            'answer_3' => 'Que vous n\'ayez jamais touché d\'argile ou que vous soyez un potier pratiquant, vous apprendrez des techniques ouzbèkes traditionnelles qui remontent à des siècles.',
+        ],
+        
+        'children' => [
+            'question' => 'Les ateliers conviennent-ils aux enfants ?',
+            'answer_1' => 'Oui, pour les 12 ans et plus.',
+            'answer_2' => 'Les ateliers d\'artisanat sont pratiques et engageants pour les adolescents et les adultes. Les enfants de 12-17 ans doivent être accompagnés d\'un adulte participant.',
+            'answer_3' => 'Pour les familles avec de jeunes enfants (moins de 12 ans), nous proposons des ateliers privés personnalisés où les artisans peuvent adapter les activités pour tous les âges. Contactez-nous pour organiser une expérience familiale.',
+        ],
+        
+        'languages' => [
+            'question' => 'Dans quelles langues les ateliers sont-ils dispensés ?',
+            'answer_1' => 'Tous les ateliers incluent des guides anglophones.',
+            'answer_2' => 'Bien que les artisans parlent généralement ouzbek ou russe, nos guides experts traduisent l\'instruction technique et le contexte culturel en temps réel.',
+            'answer_3' => 'Les voyageurs russophones peuvent demander une instruction directe en russe. Cela crée une expérience culturelle encore plus immersive car vous apprenez les techniques traditionnelles dans la langue que les artisans utilisent.',
+        ],
+        
+        'private' => [
+            'question' => 'Puis-je réserver un voyage d\'atelier privé ?',
+            'answer_1' => 'Absolument !',
+            'answer_2' => 'Des ateliers privés sont disponibles pour les individus, couples ou petits groupes (jusqu\'à 6 personnes). Vous bénéficiez d\'un temps individuel avec des artisans qualifiés et d\'un itinéraire entièrement personnalisé.',
+            'answer_3' => 'Les voyages privés commencent à 1 290 $ par personne (2-3 participants) et incluent une instruction personnalisée, une planification flexible et des combinaisons d\'artisanat personnalisées.',
+            'contact_link' => 'Contactez-nous pour un devis personnalisé',
+        ],
+        
+        'whats_included' => [
+            'question' => 'Qu\'est-ce qui est inclus dans le prix de l\'atelier ?',
+            'answer_intro' => 'Tout ce dont vous avez besoin pour une expérience immersive :',
+            'includes' => [
+                'instruction' => 'Instruction d\'artisans qualifiés (12+ heures)',
+                'materials' => 'Tous les matériaux, outils et frais de four/métier à tisser',
+                'guides' => 'Guides experts anglophones',
+                'transport' => 'Transport entre les lieux d\'atelier',
+                'accommodation' => 'Hébergement chez l\'artisan (2 nuits)',
+                'meals' => 'Repas traditionnels avec les familles d\'accueil',
+                'keep_pieces' => 'Vos pièces d\'artisanat finies à emporter chez vous',
+            ],
+            'not_included' => 'Non inclus :',
+            'not_included_text' => 'Vols internationaux, assurance voyage, dépenses personnelles et activités optionnelles en dehors du programme d\'atelier.',
+        ],
+        
+        'cancellation' => [
+            'question' => 'Quelle est votre politique d\'annulation ?',
+            'answer_1' => 'Annulation gratuite jusqu\'à 14 jours avant le départ',
+            'answer_2' => 'avec remboursement complet moins les frais de traitement de paiement (3%).',
+            'answer_3' => 'Annulations 7-14 jours avant : remboursement de 50%',
+            'answer_4' => 'Annulations moins de 7 jours : Aucun remboursement (mais vous pouvez transférer à une date d\'atelier future dans les 12 mois)',
+            'answer_5' => 'Nous recommandons fortement l\'achat d\'une assurance voyage pour protéger votre investissement contre les circonstances imprévues.',
+        ],
+    ],
+
+    // ============================================
+    // FAQ FOOTER CTA
+    // ============================================
+    'faq_footer' => [
+        'text' => 'Vous avez encore des questions ? Nous sommes là pour vous aider !',
+        'button' => 'Contacter Notre Équipe',
+        'response_time' => 'Nous répondons généralement dans les 24 heures',
+    ],
+
+    // ============================================
+    // FINAL CTA (Pre-Footer)
+    // ============================================
+    'final_cta' => [
+        'title' => 'Prêt à Découvrir l\'Ouzbékistan à Travers Ses Métiers ?',
+        'subtitle' => 'Rejoignez les voyageurs qui ont découvert plus qu\'une simple visite touristique.',
+        'button_tours' => 'Vérifier la Disponibilité',
+        'button_contact' => 'Parler à un Expert Local',
+        'note' => 'Aucun paiement requis pour demander • Consultation gratuite',
+    ],
+
+    // ============================================
+    // WHATSAPP WIDGET
+    // ============================================
+    'whatsapp' => [
+        'text' => 'Chattez avec nous !',
     ],
 
 ];

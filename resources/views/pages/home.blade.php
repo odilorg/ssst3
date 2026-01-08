@@ -32,7 +32,7 @@
     "mainEntity": [
       {
         "@@type": "Question",
-        "name": "Do I need prior craft experience to join a workshop?",
+        "name": "{{ __('ui.faq_items.prior_experience.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "No prior experience required! Our workshops are designed for complete beginners through advanced practitioners. Skilled artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful. Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries."
@@ -40,7 +40,7 @@
       },
       {
         "@@type": "Question",
-        "name": "Are workshops suitable for children?",
+        "name": "{{ __('ui.faq_items.children.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "Yes, for ages 12 and up. Craft workshops are hands-on and engaging for teens and adults. Children aged 12-17 must be accompanied by a participating adult. For families with younger children (under 12), we offer customized private workshops where artisans can adapt activities to suit all ages."
@@ -48,7 +48,7 @@
       },
       {
         "@@type": "Question",
-        "name": "What languages are workshops conducted in?",
+        "name": "{{ __('ui.faq_items.languages.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "All workshops include English-speaking guides. While artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time. Russian-speaking travelers can request direct instruction in Russian."
@@ -56,7 +56,7 @@
       },
       {
         "@@type": "Question",
-        "name": "Can I book a private workshop journey?",
+        "name": "{{ __('ui.faq_items.private.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "Absolutely! Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with skilled artisans and a fully customized itinerary. Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations."
@@ -64,7 +64,7 @@
       },
       {
         "@@type": "Question",
-        "name": "What's included in the workshop price?",
+        "name": "{{ __('ui.faq_items.whats_included.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "Everything you need for an immersive experience: Instruction from skilled artisans (12+ hours), all materials tools and kiln/loom fees, English-speaking expert guides, transportation between workshop locations, artisan homestay accommodation (2 nights), traditional meals with host families, and your finished craft pieces to take home. Not included: International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule."
@@ -72,7 +72,7 @@
       },
       {
         "@@type": "Question",
-        "name": "What is your cancellation policy?",
+        "name": "{{ __('ui.faq_items.cancellation.question') }}",
         "acceptedAnswer": {
           "@@type": "Answer",
           "text": "Free cancellation up to 14 days before departure with a full refund minus payment processing fees (3%). Cancellations 7-14 days before: 50% refund. Cancellations less than 7 days: No refund (but you can transfer to a future workshop date within 12 months). We strongly recommend purchasing travel insurance to protect your investment against unforeseen circumstances."
@@ -1656,19 +1656,19 @@
             <div class="audience-filter__icon">
               <i class="fas fa-info-circle" aria-hidden="true"></i>
             </div>
-            <h3 class="audience-filter__heading">Not Ideal If...</h3>
+            <h3 class="audience-filter__heading">{{ __('ui.audience_extended.not_ideal_title') }}</h3>
             <ul class="audience-filter__list">
-              <li><i class="fas fa-times" aria-hidden="true"></i> You want to see 10+ attractions per day</li>
-              <li><i class="fas fa-times" aria-hidden="true"></i> You prefer large bus tours with 30+ people</li>
-              <li><i class="fas fa-times" aria-hidden="true"></i> You're looking for luxury 5-star hotels</li>
-              <li><i class="fas fa-times" aria-hidden="true"></i> You want a fully pre-planned itinerary with no flexibility</li>
-              <li><i class="fas fa-times" aria-hidden="true"></i> You're uncomfortable with artisan homestays</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> {{ __('ui.audience_extended.not_ideal.many_attractions') }}</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> {{ __('ui.audience_extended.not_ideal.large_tours') }}</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> {{ __('ui.audience_extended.not_ideal.luxury_hotels') }}</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> {{ __('ui.audience_extended.not_ideal.pre_planned') }}</li>
+              <li><i class="fas fa-times" aria-hidden="true"></i> {{ __('ui.audience_extended.not_ideal.homestays') }}</li>
             </ul>
           </div>
         </div>
 
         <p class="audience-filter__footer">
-          <strong>Still unsure?</strong> <a href="{{ url('/contact') }}">Chat with our team</a> to find the perfect workshop for your travel style.
+          <strong>{{ __('ui.audience_extended.footer') }}</strong> <a href="{{ url('/contact') }}">{{ __('ui.audience_extended.footer_link') }}</a> {{ __('ui.audience_extended.footer_text') }}
         </p>
       </div>
     </div>
@@ -1800,13 +1800,13 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            Do I need prior craft experience to join a workshop?
+            {{ __('ui.faq_items.prior_experience.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>No prior experience required!</strong> Our workshops are designed for complete beginners through advanced practitioners. Skilled artisans adapt their teaching to your skill level, ensuring everyone creates something meaningful.</p>
-              <p>Whether you've never touched clay or you're a practicing potter, you'll learn traditional Uzbek techniques that date back centuries.</p>
+              <p><strong>{{ __('ui.faq_items.prior_experience.answer_1') }}</strong> {{ __('ui.faq_items.prior_experience.answer_2') }}</p>
+              <p>{{ __('ui.faq_items.prior_experience.answer_3') }}</p>
             </div>
           </div>
         </details>
@@ -1815,13 +1815,13 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            Are workshops suitable for children?
+            {{ __('ui.faq_items.children.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Yes, for ages 12 and up.</strong> Craft workshops are hands-on and engaging for teens and adults. Children aged 12-17 must be accompanied by a participating adult.</p>
-              <p>For families with younger children (under 12), we offer customized private workshops where artisans can adapt activities to suit all ages. Contact us to arrange a family-friendly experience.</p>
+              <p><strong>{{ __('ui.faq_items.children.answer_1') }}</strong> {{ __('ui.faq_items.children.answer_2') }}</p>
+              <p>{{ __('ui.faq_items.children.answer_3') }}</p>
             </div>
           </div>
         </details>
@@ -1830,13 +1830,13 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            What languages are workshops conducted in?
+            {{ __('ui.faq_items.languages.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>All workshops include English-speaking guides.</strong> While artisans typically speak Uzbek or Russian, our expert guides translate technical instruction and cultural context in real-time.</p>
-              <p>Russian-speaking travelers can request direct instruction in Russian. This creates an even more immersive cultural experience as you learn traditional techniques in the language artisans use.</p>
+              <p><strong>{{ __('ui.faq_items.languages.answer_1') }}</strong> {{ __('ui.faq_items.languages.answer_2') }}</p>
+              <p>{{ __('ui.faq_items.languages.answer_3') }}</p>
             </div>
           </div>
         </details>
@@ -1845,13 +1845,13 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            Can I book a private workshop journey?
+            {{ __('ui.faq_items.private.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Absolutely!</strong> Private workshops are available for individuals, couples, or small groups (up to 6 people). You get one-on-one time with skilled artisans and a fully customized itinerary.</p>
-              <p>Private journeys start at $1,290 per person (2-3 participants) and include personalized instruction, flexible scheduling, and custom craft combinations. <a href="{{ url('/contact') }}">Contact us for a custom quote</a>.</p>
+              <p><strong>{{ __('ui.faq_items.private.answer_1') }}</strong> {{ __('ui.faq_items.private.answer_2') }}</p>
+              <p>{{ __('ui.faq_items.private.answer_3') }} <a href="{{ url('/contact') }}">{{ __('ui.faq_items.private.contact_link') }}</a>.</p>
             </div>
           </div>
         </details>
@@ -1860,22 +1860,22 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            What's included in the workshop price?
+            {{ __('ui.faq_items.whats_included.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Everything you need for an immersive experience:</strong></p>
+              <p><strong>{{ __('ui.faq_items.whats_included.answer_intro') }}</strong></p>
               <ul>
-                <li>Instruction from skilled artisans (12+ hours)</li>
-                <li>All materials, tools, and kiln/loom fees</li>
-                <li>English-speaking expert guides</li>
-                <li>Transportation between workshop locations</li>
-                <li>Artisan homestay accommodation (2 nights)</li>
-                <li>Traditional meals with host families</li>
-                <li>Your finished craft pieces to take home</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.instruction') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.materials') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.guides') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.transport') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.accommodation') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.meals') }}</li>
+                <li>{{ __('ui.faq_items.whats_included.includes.keep_pieces') }}</li>
               </ul>
-              <p><strong>Not included:</strong> International flights, travel insurance, personal expenses, and optional activities outside the workshop schedule.</p>
+              <p><strong>{{ __('ui.faq_items.whats_included.not_included') }}</strong> {{ __('ui.faq_items.whats_included.not_included_text') }}</p>
             </div>
           </div>
         </details>
@@ -1884,15 +1884,14 @@
         <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
           <summary class="faq-item__question" itemprop="name">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
-            What is your cancellation policy?
+            {{ __('ui.faq_items.cancellation.question') }}
             <i class="fas fa-chevron-down faq-item__icon" aria-hidden="true"></i>
           </summary>
           <div class="faq-item__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
             <div itemprop="text">
-              <p><strong>Free cancellation up to 14 days before departure</strong> with a full refund minus payment processing fees (3%).</p>
-              <p>Cancellations 7-14 days before: 50% refund<br>
-              Cancellations less than 7 days: No refund (but you can transfer to a future workshop date within 12 months)</p>
-              <p>We strongly recommend purchasing travel insurance to protect your investment against unforeseen circumstances.</p>
+              <p><strong>{{ __('ui.faq_items.cancellation.answer_1') }}</strong> {{ __('ui.faq_items.cancellation.answer_2') }}</p>
+              <p>{{ __('ui.faq_items.cancellation.answer_3') }}<br>{{ __('ui.faq_items.cancellation.answer_4') }}</p>
+              <p>{{ __('ui.faq_items.cancellation.answer_5') }}</p>
             </div>
           </div>
         </details>
@@ -1900,14 +1899,12 @@
 
       {{-- FAQ Footer CTA --}}
       <div class="faq-section__footer">
-        <p class="faq-section__footer-text">Still have questions? We're here to help!</p>
+        <p class="faq-section__footer-text">{{ __('ui.faq_footer.text') }}</p>
         <a href="{{ url('/contact') }}" class="btn btn--primary btn--large">
-          <i class="fas fa-envelope" aria-hidden="true"></i>
-          Contact Our Team
+          <i class="fas fa-envelope" aria-hidden="true"></i> {{ __('ui.faq_footer.button') }}
         </a>
         <p class="faq-section__response-time">
-          <i class="fas fa-clock" aria-hidden="true"></i>
-          We typically respond within 24 hours
+          <i class="fas fa-clock" aria-hidden="true"></i> {{ __('ui.faq_footer.response_time') }}
         </p>
       </div>
     </div>
@@ -1920,19 +1917,18 @@
   <section class="final-cta">
     <div class="container">
       <div class="final-cta__content">
-        <h2 class="final-cta__title">Ready to Explore Uzbekistan Through Its Crafts?</h2>
-        <p class="final-cta__subtitle">Join travelers who discovered more than just sightseeing.</p>
+        <h2 class="final-cta__title">{{ __('ui.final_cta.title') }}</h2>
+        <p class="final-cta__subtitle">{{ __('ui.final_cta.subtitle') }}</p>
         <div class="final-cta__buttons">
           <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
       {{ __('ui.mobile_cta.check_availability') }}
             <i class="fas fa-calendar-check" aria-hidden="true"></i>
           </a>
           <a href="{{ url('/contact') }}" class="btn btn--outline btn--large">
-            <i class="fas fa-comments" aria-hidden="true"></i>
-            Talk to a Local Expert
+            <i class="fas fa-comments" aria-hidden="true"></i> {{ __('ui.final_cta.button_contact') }}
           </a>
         </div>
-        <p class="final-cta__note">No payment required to inquire • Free consultation</p>
+        <p class="final-cta__note">{{ __('ui.final_cta.note') }}</p>
       </div>
     </div>
   </section>
@@ -1944,7 +1940,7 @@
      rel="noopener noreferrer"
      aria-label="Chat with us on WhatsApp">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
-    <span class="whatsapp-float__text">Chat with us!</span>
+    <span class="whatsapp-float__text">{{ __('ui.whatsapp.text') }}</span>
   </a>
 
   <!-- ========================================
