@@ -785,7 +785,6 @@
         </p>
         <div class="about-hero__trust">
           <div class="about-hero__trust-item">
-            <i class="fas fa-star" aria-hidden="true"></i>
             <span>{{ __('ui.about_page.trust_reviews') }}</span>
           </div>
           <div class="about-hero__trust-item">
