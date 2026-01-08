@@ -92,11 +92,14 @@ return [
     'pricing' => [
         'label' => 'Exemple de Forfait',
         'package_name' => 'Atelier de Poterie de 3 Jours',
+        'amount' => '890 $',
+        'per_person' => 'par personne',
         'comparable_private' => 'Expériences culturelles privées comparables :',
         'price_range' => '1 200-1 500 $+',
         'savings' => 'Vous économisez 300-600 $+ avec notre format de groupe',
         'view_all_packages' => 'Voir tous les forfaits d\'ateliers →',
         'includes' => [
+            'pottery_instruction' => '12+ heures d\'instruction pratique en poterie',
             'materials' => 'Tous les matériaux et cuisson au four inclus',
             'guide' => 'Guide local anglophone',
             'transport' => 'Transport entre les lieux d\'atelier',

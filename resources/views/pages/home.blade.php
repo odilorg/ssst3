@@ -731,11 +731,11 @@
           <div class="pricing-preview pricing-preview--enhanced">
             {{-- PHASE 1.4: Context label added --}}
             <p class='pricing-preview__label'><span class='pricing-context'>{{ __('ui.pricing.label') }}:</span> {{ __('ui.pricing.package_name') }}</p>
-            <p class="pricing-preview__amount">$890 <span class="pricing-preview__duration">per person</span></p>
+            <p class="pricing-preview__amount">{{ __('ui.pricing.amount') }} <span class="pricing-preview__duration">{{ __('ui.pricing.per_person') }}</span></p>
 
             {{-- What's Included Checklist (CRITICAL for conversion) --}}
             <ul class="pricing-includes">
-              <li><i class="fas fa-check" aria-hidden="true"></i> 12+ hours hands-on pottery instruction</li>
+              <li><i class="fas fa-check" aria-hidden="true"></i> {{ __('ui.pricing.includes.pottery_instruction') }}</li>
               <li><i class='fas fa-check' aria-hidden='true'></i> {{ __('ui.pricing.includes.materials') }}</li>
               <li><i class='fas fa-check' aria-hidden='true'></i> {{ __('ui.pricing.includes.guide') }}</li>
               <li><i class='fas fa-check' aria-hidden='true'></i> {{ __('ui.pricing.includes.transport') }}</li>
