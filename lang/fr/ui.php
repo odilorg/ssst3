@@ -92,6 +92,10 @@ return [
     'pricing' => [
         'label' => 'Exemple de Forfait',
         'package_name' => 'Atelier de Poterie de 3 Jours',
+        'comparable_private' => 'Expériences culturelles privées comparables :',
+        'price_range' => '1 200-1 500 $+',
+        'savings' => 'Vous économisez 300-600 $+ avec notre format de groupe',
+        'view_all_packages' => 'Voir tous les forfaits d\'ateliers →',
         'includes' => [
             'materials' => 'Tous les matériaux et cuisson au four inclus',
             'guide' => 'Guide local anglophone',
@@ -101,8 +105,6 @@ return [
             'keep_pottery' => 'Gardez vos pièces de poterie finies',
         ],
         'comparison' => 'Expériences culturelles privées comparables',
-        'price_range' => '1 200-1 500 $+',
-        'savings' => 'Vous économisez 300-600 $+ avec notre format de groupe',
         'view_all' => 'Voir tous les forfaits d\'ateliers →',
     ],
 

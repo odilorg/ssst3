@@ -746,11 +746,11 @@
 
             {{-- PHASE 1.2: Strengthened value anchor --}}
             <p class="pricing-value">
-              <strong>Comparable private cultural experiences:</strong> $1,200–$1,500+<br>
-              <span class="pricing-value-savings">You save $300-600+ with our group format</span>
+              <strong>{{ __('ui.pricing.comparable_private') }}</strong> {{ __('ui.pricing.price_range') }}<br>
+              <span class="pricing-value-savings">{{ __('ui.pricing.savings') }}</span>
             </p>
 
-            <a href="{{ url('/tours') }}" class="pricing-preview__link">View all workshop packages →</a>
+            <a href="{{ url('/tours') }}" class="pricing-preview__link">{{ __('ui.pricing.view_all_packages') }}</a>
           </div>
 
           <div class="why-us__divider"></div>

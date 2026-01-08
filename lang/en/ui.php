@@ -361,6 +361,10 @@ return [
     'pricing' => [
         'label' => 'From',
         'package_name' => '3-Day Pottery & Silk Tour',
+        'comparable_private' => 'Comparable private cultural experiences:',
+        'price_range' => '$1,200–$1,500+',
+        'savings' => 'You save $300-600+ with our group format',
+        'view_all_packages' => 'View all workshop packages →',
         'includes' => [
             'materials' => 'All craft materials included',
             'guide' => 'Expert local guide',
