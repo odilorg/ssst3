@@ -433,4 +433,35 @@ class Booking extends Model
             default => 'Unknown',
         };
     }
+
+    /**
+     * Calculate total cost from all itinerary item assignments.
+     * Uses effective cost (override if set, otherwise derived price).
+     */
+    public function calculateTotalFromAssignments(): float
+    {
+        $total = 0.0;
+
+        foreach ($this->itineraryItems as $item) {
+            foreach ($item->assignments as $assignment) {
+                $cost = $assignment->getEffectiveCost();
+                if ($cost !== null) {
+                    $total += $cost;
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    /**
+     * Recalculate and update total_price from assignments.
+     */
+    public function recalculateTotalPrice(): self
+    {
+        $this->total_price = $this->calculateTotalFromAssignments();
+        $this->save();
+
+        return $this;
+    }
 }
