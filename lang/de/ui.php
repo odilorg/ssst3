@@ -132,6 +132,26 @@ return [
         'eyebrow' => 'Bewertungen',
         'title' => 'Was Reisende sagen',
         'verified_tripadvisor' => 'Verifiziert auf TripAdvisor',
+
+        // Review Form
+        'write_review' => 'Bewertung schreiben',
+        'share_experience' => 'Teilen Sie Ihre Erfahrung mit dieser Tour',
+        'rate_experience' => 'Bewerten Sie Ihre Erfahrung',
+        'summarize_experience' => 'Fassen Sie Ihre Erfahrung zusammen',
+        'summarize_placeholder' => 'Fassen Sie Ihre Erfahrung in wenigen Worten zusammen',
+        'share_feedback' => 'Teilen Sie Ihr Feedback',
+        'share_placeholder' => 'Teilen Sie Ihre Gedanken über diese Tour...',
+        'your_name' => 'Name',
+        'your_email' => 'E-Mail',
+        'location' => 'Standort',
+        'location_placeholder' => 'Stadt, Land (optional)',
+        'booking_reference' => 'Buchungsreferenz (zur Verifizierung)',
+        'booking_reference_hint' => 'Geben Sie Ihre Buchungsreferenz ein, um Ihre Bewertung zu verifizieren',
+        'submit_review' => 'Bewertung absenden',
+        'submitting' => 'Wird gesendet...',
+        'select_rating' => 'Wählen Sie eine Bewertung',
+        'required' => '*',
+        'verified_guest' => 'Verifizierter Gast',
     ],
 
     'blog' => [

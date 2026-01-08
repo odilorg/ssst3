@@ -191,6 +191,26 @@ return [
         'verified_tripadvisor' => 'Vérifié sur TripAdvisor',
         'traveled_in' => 'Voyagé en :month',
         'reviewed_on' => 'Évalué sur :source',
+
+        // Review Form
+        'write_review' => 'Écrire un Avis',
+        'share_experience' => 'Partagez votre expérience avec cette visite',
+        'rate_experience' => 'Évaluez votre expérience',
+        'summarize_experience' => 'Résumez votre expérience',
+        'summarize_placeholder' => 'Résumez votre expérience en quelques mots',
+        'share_feedback' => 'Partagez vos commentaires',
+        'share_placeholder' => 'Partagez vos impressions sur cette visite...',
+        'your_name' => 'Nom',
+        'your_email' => 'Email',
+        'location' => 'Lieu',
+        'location_placeholder' => 'Ville, Pays (optionnel)',
+        'booking_reference' => 'Référence de Réservation (pour vérification)',
+        'booking_reference_hint' => 'Entrez votre référence de réservation pour vérifier votre avis',
+        'submit_review' => 'Soumettre l\'Avis',
+        'submitting' => 'Envoi en cours...',
+        'select_rating' => 'Sélectionnez une note',
+        'required' => '*',
+        'verified_guest' => 'Voyageur Vérifié',
     ],
 
     // ============================================
