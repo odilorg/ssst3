@@ -266,4 +266,94 @@ return [
         'reviews' => 'Reviews',
     ],
 
+    // ============================================
+    // ABOUT PAGE
+    // ============================================
+    'about_page' => [
+        // Hero Section
+        'hero_title' => 'Preserving Uzbekistan\'s Craft Heritage Through Travel',
+        'hero_subtitle' => 'Small-group immersive journeys supporting local artisans and traditional crafts since 2012',
+        'trust_reviews' => '50+ 5-star reviews',
+        'trust_travelers' => '500+ happy travelers',
+        'trust_artisans' => 'Supporting 45+ artisans',
+        'cta_explore' => 'Explore Our Tours',
+
+        // Problem Section
+        'problem_eyebrow' => 'The Challenge',
+        'problem_title' => 'Traditional Crafts Are Disappearing',
+        'problem_subtitle' => 'Behind every handcrafted textile and ceramic piece is a master artisan whose livelihood depends on preserving ancient techniques.',
+        'problem_text1' => 'Meet the artisans keeping traditions alive.',
+        'problem_text2' => 'But as mass production dominates markets and tourism brings only superficial encounters, these craftspeople struggle to earn sustainable incomes. Their children see no future in learning these time-intensive skills.',
+        'problem_stat' => '"Without consistent income from their craft, 70% of artisans under 40 are considering leaving their trade." — Uzbekistan Handicraft Center, 2023',
+        'problem_text3' => 'Every year, fewer young Uzbeks choose to learn these crafts. And when a master artisan retires without passing on their knowledge, centuries of tradition disappear forever.',
+        'problem_image_caption' => 'Traditional crafts at risk of being lost',
+
+        // Solution Section
+        'solution_eyebrow' => 'Our Solution',
+        'solution_title' => 'Supporting Artisans Through Craft Tourism',
+        'solution_subtitle' => 'We connect travelers directly with master craftspeople through authentic, hands-on experiences that provide sustainable income.',
+        'solution1_title' => 'Small Groups',
+        'solution1_text' => 'Maximum 8 travelers per tour ensures intimate, authentic experiences with artisans.',
+        'solution2_title' => 'Direct Income',
+        'solution2_text' => '60% of tour fees go directly to artisan workshops and local guides.',
+        'solution3_title' => 'Extended Time',
+        'solution3_text' => '3+ hours with each artisan allows for deep cultural exchange and hands-on learning.',
+        'solution4_title' => 'Fair Compensation',
+        'solution4_text' => 'Workshop fees 3x higher than typical tourist visits ensure artisans earn sustainable income.',
+        'solution5_title' => 'Cultural Context',
+        'solution5_text' => 'Expert local guides provide historical and cultural context that mass tourism misses.',
+        'solution6_title' => 'Local Partnerships',
+        'solution6_text' => 'We work with artisan cooperatives and family workshops, not middlemen or factories.',
+
+        // Impact Section
+        'impact_eyebrow' => 'Our Impact',
+        'impact_title' => 'Real Results for Real People',
+        'impact_subtitle' => 'Since 2012, our craft-focused tourism model has created measurable positive change for Uzbekistan\'s artisan communities.',
+        'impact_stat1_label' => 'Artisan Partners',
+        'impact_stat2_label' => 'Traditional Craft Forms Supported',
+        'impact_stat3_label' => 'Direct Income to Artisans',
+        'impact_stat3_source' => '2023 estimate',
+        'impact_stat4_label' => 'Years in Operation',
+        'impact_stat4_source' => 'Since 2012',
+
+        // Partnerships Section
+        'partnerships_eyebrow' => 'Our Partners',
+        'partnerships_title' => 'Collaborating for Cultural Preservation',
+        'partnerships_subtitle' => 'We work with local organizations, government agencies, and cultural institutions to ensure our tourism supports authentic craft preservation.',
+        'partner1_name' => 'Uzbekistan Handicraft Center',
+        'partner1_role' => 'Official partner for artisan training and certification programs',
+        'partner2_name' => 'UNESCO Craft Villages',
+        'partner2_role' => 'Supporting UNESCO-designated craft communities in Gijduvan, Margilan, and Bukhara',
+        'partner3_name' => 'Margilan Silk Factory',
+        'partner3_role' => 'Traditional silk weaving demonstrations and workshops',
+        'partner4_name' => 'Bukhara Artisan Guild',
+        'partner4_role' => 'Network of master craftspeople specializing in miniature painting and calligraphy',
+        'ethical_commitment_title' => 'Our Ethical Commitment',
+        'ethical_commitment_text' => 'We never pressure artisans to perform or rush their work. All workshop visits are scheduled in advance with fair compensation. Cultural authenticity always comes before tourist convenience.',
+
+        // Artisans Section
+        'artisans_eyebrow' => 'Meet the Artisans',
+        'artisans_title' => 'The Master Craftspeople You\'ll Meet',
+        'artisans_subtitle' => 'Every tour brings you face-to-face with artisans who have dedicated their lives to preserving Uzbekistan\'s craft heritage.',
+
+        // Testimonials Section
+        'testimonials_eyebrow' => 'Traveler Stories',
+        'testimonials_title' => 'What Our Guests Say',
+        'testimonials_subtitle' => 'Real experiences from travelers who joined our craft immersion journeys.',
+        'testimonial1_text' => 'Spending an afternoon with a ceramic master in Gijduvan was the highlight of my entire Central Asia trip. Jahongir\'s team arranged everything perfectly, and the artisan\'s patience teaching us was incredible.',
+        'testimonial1_name' => 'Sarah Chen',
+        'testimonial1_meta' => 'San Francisco, USA • Pottery Workshop Tour',
+        'testimonial2_text' => 'This wasn\'t just tourism—it felt like we were supporting something important. The silk weaving workshop in Margilan was beautiful, and knowing our visit directly helps these families continue their craft made it even more meaningful.',
+        'testimonial2_name' => 'Marco Hartmann',
+        'testimonial2_meta' => 'Berlin, Germany • Silk Road Craft Journey',
+        'testimonial3_text' => 'I\'ve done cultural tours in many countries, but Jahongir Travel\'s approach is different. The time spent with each artisan, the small groups, the authentic workshops—everything was thoughtfully arranged to maximize cultural exchange.',
+        'testimonial3_name' => 'Amélie Laurent',
+        'testimonial3_meta' => 'Paris, France • Full-Day Artisan Tour',
+
+        // CTA Section
+        'cta_title' => 'Ready to Support Uzbekistan\'s Artisans?',
+        'cta_text' => 'Join a small-group craft immersion journey and experience traditional Uzbek crafts firsthand while supporting master artisans.',
+        'cta_button' => 'View Craft Tours',
+    ],
+
 ];

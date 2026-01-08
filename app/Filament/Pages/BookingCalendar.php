@@ -27,8 +27,5 @@ class BookingCalendar extends Page
         return 'Booking Calendar';
     }
 
-    public function getSubheading(): ?string
-    {
-        return 'View and manage all bookings in calendar view';
-    }
+    // Subheading removed for compact UI
 }
