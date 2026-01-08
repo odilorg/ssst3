@@ -11,27 +11,28 @@ class BookingItineraryItemAssignment extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'booking_itinerary_item_id',
-        'assignable_type',
-        'assignable_id',
-        'room_id',
-        'meal_type_id',
-        'transport_price_type_id',
-        'transport_instance_price_id',
-        'guide_service_cost',
-        'role',
-        'quantity',
-        'cost',
-        'currency',
-        'status',
-        'start_time',
-        'end_time',
-        'notes',
+        "booking_itinerary_item_id",
+        "assignable_type",
+        "assignable_id",
+        "contract_service_id",
+        "room_id",
+        "meal_type_id",
+        "transport_price_type_id",
+        "transport_instance_price_id",
+        "guide_service_cost",
+        "role",
+        "quantity",
+        "cost",
+        "currency",
+        "status",
+        "start_time",
+        "end_time",
+        "notes",
     ];
 
     protected $casts = [
-        'quantity' => 'integer',
-        'cost' => 'decimal:2',
+        "quantity" => "integer",
+        "cost" => "decimal:2",
     ];
 
     // Relationships
@@ -45,14 +46,19 @@ class BookingItineraryItemAssignment extends Model
         return $this->morphTo();
     }
 
+    public function contractService()
+    {
+        return $this->belongsTo(ContractService::class);
+    }
+
     public function transportPrice()
     {
-        return $this->belongsTo(TransportPrice::class, 'transport_price_type_id');
+        return $this->belongsTo(TransportPrice::class, "transport_price_type_id");
     }
 
     public function transportInstancePrice()
     {
-        return $this->belongsTo(TransportInstancePrice::class, 'transport_instance_price_id');
+        return $this->belongsTo(TransportInstancePrice::class, "transport_instance_price_id");
     }
 
     public function room()
@@ -67,17 +73,16 @@ class BookingItineraryItemAssignment extends Model
 
     /**
      * Get the effective cost for this assignment.
-     * If cost is manually set (override), use it.
-     * Otherwise, derive from the service type.
+     * Priority: Manual override > Contract price > Individual price
      */
     public function getEffectiveCost(): ?float
     {
-        // If user has set a manual override cost, use it
+        // Level 1: Manual override
         if ($this->cost !== null && (float) $this->cost > 0) {
             return (float) $this->cost;
         }
 
-        // Otherwise, derive from service type
+        // Level 2 & 3: Derive from contract or individual
         return $this->getDerivedCost();
     }
 
@@ -108,9 +113,68 @@ class BookingItineraryItemAssignment extends Model
     }
 
     /**
-     * Get guide cost from selected price type.
+     * Get guide cost - checks contract first, then individual pricing.
      */
     protected function getGuideCost(): ?float
+    {
+        // Level 2: Check contract price first
+        if ($this->contract_service_id) {
+            $contractPrice = $this->getContractPrice();
+            if ($contractPrice !== null) {
+                return $contractPrice;
+            }
+        }
+
+        // Level 3: Fall back to individual pricing
+        return $this->getGuideIndividualCost();
+    }
+
+    /**
+     * Get price from contract service.
+     */
+    protected function getContractPrice(): ?float
+    {
+        $contractService = $this->contractService;
+        if (!$contractService) {
+            return null;
+        }
+
+        // Get the booking date to find correct price version
+        $bookingDate = $this->bookingItineraryItem?->date;
+        
+        // Get price version active on booking date
+        $priceVersion = $contractService->getPriceVersion($bookingDate);
+        if (!$priceVersion) {
+            return null;
+        }
+
+        // For guides, check for direct_price or daily_rate in price_data
+        $priceData = $priceVersion->price_data ?? [];
+        
+        // Try different price keys
+        if (isset($priceData["direct_price"])) {
+            return (float) $priceData["direct_price"];
+        }
+        
+        if (isset($priceData["daily_rate"])) {
+            return (float) $priceData["daily_rate"];
+        }
+
+        // If guide_service_cost index is set, try to find matching price
+        if ($this->guide_service_cost !== null && isset($priceData["price_types"])) {
+            $index = (int) $this->guide_service_cost;
+            if (isset($priceData["price_types"][$index]["price"])) {
+                return (float) $priceData["price_types"][$index]["price"];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get guide cost from individual price_types (no contract).
+     */
+    protected function getGuideIndividualCost(): ?float
     {
         if ($this->guide_service_cost === null) {
             return null;
@@ -126,8 +190,8 @@ class BookingItineraryItemAssignment extends Model
             : json_decode($guide->price_types, true);
 
         $index = (int) $this->guide_service_cost;
-        if (isset($priceTypes[$index]['price'])) {
-            return (float) $priceTypes[$index]['price'];
+        if (isset($priceTypes[$index]["price"])) {
+            return (float) $priceTypes[$index]["price"];
         }
 
         return null;
@@ -138,6 +202,15 @@ class BookingItineraryItemAssignment extends Model
      */
     protected function getRestaurantCost(): ?float
     {
+        // Check contract first
+        if ($this->contract_service_id) {
+            $contractPrice = $this->getRestaurantContractPrice();
+            if ($contractPrice !== null) {
+                return $contractPrice;
+            }
+        }
+
+        // Fall back to individual pricing
         if (!$this->meal_type_id) {
             return null;
         }
@@ -154,10 +227,44 @@ class BookingItineraryItemAssignment extends Model
     }
 
     /**
+     * Get restaurant price from contract.
+     */
+    protected function getRestaurantContractPrice(): ?float
+    {
+        if (!$this->meal_type_id) {
+            return null;
+        }
+
+        $contractService = $this->contractService;
+        if (!$contractService) {
+            return null;
+        }
+
+        $bookingDate = $this->bookingItineraryItem?->date;
+        $price = $contractService->getPriceForMealType($this->meal_type_id, $bookingDate);
+        
+        if ($price !== null) {
+            $quantity = $this->quantity ?? 1;
+            return $price * $quantity;
+        }
+
+        return null;
+    }
+
+    /**
      * Get hotel cost from room.
      */
     protected function getHotelCost(): ?float
     {
+        // Check contract first
+        if ($this->contract_service_id) {
+            $contractPrice = $this->getHotelContractPrice();
+            if ($contractPrice !== null) {
+                return $contractPrice;
+            }
+        }
+
+        // Fall back to individual pricing
         if (!$this->room_id) {
             return null;
         }
@@ -171,6 +278,31 @@ class BookingItineraryItemAssignment extends Model
         $quantity = $this->quantity ?? 1;
 
         return $price * $quantity;
+    }
+
+    /**
+     * Get hotel price from contract.
+     */
+    protected function getHotelContractPrice(): ?float
+    {
+        if (!$this->room_id) {
+            return null;
+        }
+
+        $contractService = $this->contractService;
+        if (!$contractService) {
+            return null;
+        }
+
+        $bookingDate = $this->bookingItineraryItem?->date;
+        $price = $contractService->getPriceForRoom($this->room_id, $bookingDate);
+        
+        if ($price !== null) {
+            $quantity = $this->quantity ?? 1;
+            return $price * $quantity;
+        }
+
+        return null;
     }
 
     /**
@@ -212,5 +344,76 @@ class BookingItineraryItemAssignment extends Model
     public function hasManualCost(): bool
     {
         return $this->cost !== null && (float) $this->cost > 0;
+    }
+
+    /**
+     * Check if this assignment uses contract pricing.
+     */
+    public function usesContractPricing(): bool
+    {
+        return $this->contract_service_id !== null;
+    }
+
+    /**
+     * Get cost source description for display.
+     */
+    public function getCostSourceLabel(): string
+    {
+        if ($this->hasManualCost()) {
+            return "Ручной ввод";
+        }
+        
+        if ($this->usesContractPricing()) {
+            $contract = $this->contractService?->contract;
+            return "Контракт: " . ($contract?->contract_number ?? "N/A");
+        }
+        
+        return "Индивидуальная цена";
+    }
+
+    /**
+     * Find and set active contract for this assignable (if exists).
+     * Called automatically when saving.
+     */
+    public function resolveContractService(): void
+    {
+        // Skip if contract already set manually or assignable not set
+        if ($this->contract_service_id || !$this->assignable_type || !$this->assignable_id) {
+            return;
+        }
+
+        // Find active contract for this supplier
+        $activeContract = Contract::query()
+            ->active()
+            ->where("supplier_type", $this->assignable_type)
+            ->where("supplier_id", $this->assignable_id)
+            ->first();
+
+        if (!$activeContract) {
+            return;
+        }
+
+        // Find the contract service for this supplier
+        $contractService = $activeContract->contractServices()
+            ->active()
+            ->where("serviceable_type", $this->assignable_type)
+            ->where("serviceable_id", $this->assignable_id)
+            ->first();
+
+        if ($contractService) {
+            $this->contract_service_id = $contractService->id;
+        }
+    }
+
+    /**
+     * Boot method to auto-resolve contract on create.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($assignment) {
+            $assignment->resolveContractService();
+        });
     }
 }
