@@ -82,6 +82,8 @@ return [
         'title' => 'Experts Locaux de Confiance en Ouzbékistan',
         'intro' => 'Depuis plus d\'une décennie, Jahongir Travel guide ses hôtes au-delà des cartes postales — vers le cœur vivant de la culture, de la cuisine et de l\'artisanat ouzbeks.',
         'cta_subtext' => 'Consultation gratuite • Itinéraires personnalisés • Guides experts',
+        'workshops_hosted' => '127+ ateliers organisés depuis 2012',
+        'cta_button' => 'Voir les Ateliers d\'Artisanat 2025',
     ],
 
     // ============================================

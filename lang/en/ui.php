@@ -354,6 +354,8 @@ return [
         'title' => 'Authentic Craft Experiences with Real Artisans',
         'intro' => 'We connect you with master craftspeople in their working studios for hands-on experiences that support traditional crafts.',
         'cta_subtext' => 'Limited availability for small-group craft experiences',
+        'workshops_hosted' => '127+ workshops hosted since 2012',
+        'cta_button' => 'View 2025 Craft Workshops',
     ],
 
     'pricing' => [

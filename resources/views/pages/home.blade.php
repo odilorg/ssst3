@@ -715,13 +715,13 @@
               <span class="rating-source">on GetYourGuide (31 reviews)</span>
             </div>
             <span class="social-proof-separator">•</span>
-            <span class="social-proof-stat">127+ workshops hosted since 2012</span>
+            <span class="social-proof-stat">{{ __('ui.why_choose_us.workshops_hosted') }}</span>
           </div>
 
           {{-- Single Primary CTA --}}
           <div class="why-us__cta-wrapper">
             <a href="{{ url('/tours') }}" class="btn btn--primary btn--large btn--hero">
-              View 2025 Craft Workshops
+              {{ __('ui.why_choose_us.cta_button') }}
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
             <p class='cta-subtext'>{{ __('ui.why_choose_us.cta_subtext') }}</p>
@@ -997,7 +997,7 @@
             <span class="rating-source">on TripAdvisor</span>
           </span>
           <span class="separator">•</span>
-          <span class="stat">127+ workshops hosted since 2012</span>
+          <span class="stat">{{ __('ui.why_choose_us.workshops_hosted') }}</span>
         </div>
 
         {{-- FIX 7: Icon Highlights --}}
