@@ -49,10 +49,11 @@
     .about-hero {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        padding: 180px 0 120px; /* Top for navbar (increased), bottom for button visibility */
+        padding: 180px 0 140px; /* Increased bottom padding for CTA visibility */
         padding-top: max(180px, calc(80px + 100px)); /* Ensure minimum 80px navbar + 100px spacing */
         text-align: center;
         position: relative;
+        min-height: 100vh; /* Ensure full viewport height */
     }
 
 
@@ -79,12 +80,15 @@
         margin-bottom: 1.5rem;
         font-family: 'Playfair Display', serif;
         line-height: 1.2;
+        max-width: 900px; /* Prevent overly long lines */
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .about-hero__subtitle {
         font-size: 1.25rem;
         max-width: 720px;
-        margin: 0 auto 2rem;
+        margin: 0 auto 2.5rem; /* Increased from 2rem for better rhythm */
         line-height: 1.8;
         opacity: 0.95;
     }
@@ -93,9 +97,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 3rem;  /* Increased from 2rem → 3rem for better spacing */
+        gap: 3rem;
         flex-wrap: wrap;
-        margin-top: 1.5rem;
+        margin: 2.5rem 0; /* Changed from margin-top to symmetric margin */
     }
 
     .about-hero__trust-item {
@@ -111,7 +115,8 @@
     }
 
     .about-hero__cta {
-        margin-top: 2rem;
+        margin-top: 3rem; /* Increased from 2rem for more breathing room */
+        margin-bottom: 1rem; /* Added explicit bottom margin */
     }
 
     .btn--hero {
@@ -648,24 +653,29 @@
 
     @media (max-width: 768px) {
         .about-hero {
-            padding: 140px 0 80px;
+            padding: 140px 0 100px; /* Adjusted bottom padding for mobile */
             padding-top: max(140px, calc(60px + 80px)); /* Mobile navbar is smaller */
+            min-height: auto; /* Remove fixed height on mobile */
         }
 
         .about-hero__title {
             font-size: 2.25rem;
             line-height: 1.3;
+            max-width: 100%;
+            padding: 0 1rem;
         }
 
         .about-hero__subtitle {
             font-size: 1.125rem;
             line-height: 1.7;
             padding: 0 1rem;
+            margin-bottom: 2rem;
         }
 
         .about-hero__trust {
             flex-direction: column;
-            gap: 1rem;  /* Increased from 0.75rem */
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
 
         .about-hero__trust-item {
@@ -674,6 +684,7 @@
 
         .about-hero__cta {
             margin-top: 2rem;
+            padding: 0 1rem;
         }
 
         .btn--hero {
