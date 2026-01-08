@@ -49,8 +49,7 @@
     .about-hero {
         background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
-        padding: 180px 0 140px; /* Increased bottom padding for CTA visibility */
-        padding-top: max(180px, calc(80px + 100px)); /* Ensure minimum 80px navbar + 100px spacing */
+        padding: 150px 0 80px; /* Reduced top padding, normal bottom padding */
         text-align: center;
         position: relative;
     }
@@ -87,35 +86,13 @@
     .about-hero__subtitle {
         font-size: 1.25rem;
         max-width: 720px;
-        margin: 0 auto 2.5rem; /* Increased from 2rem for better rhythm */
+        margin: 0 auto 3rem; /* Increased bottom margin since trust row removed */
         line-height: 1.8;
         opacity: 0.95;
     }
 
-    .about-hero__trust {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 3rem;
-        flex-wrap: wrap;
-        margin: 2.5rem 0; /* Changed from margin-top to symmetric margin */
-    }
-
-    .about-hero__trust-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9375rem;
-        opacity: 0.9;
-    }
-
-    .about-hero__trust-item i {
-        color: #60a5fa;  /* Light blue */
-    }
-
     .about-hero__cta {
-        margin-top: 3rem; /* Increased from 2rem for more breathing room */
-        margin-bottom: 1rem; /* Added explicit bottom margin */
+        margin-top: 0; /* No extra margin needed */
     }
 
     .btn--hero {
@@ -652,9 +629,7 @@
 
     @media (max-width: 768px) {
         .about-hero {
-            padding: 140px 0 100px; /* Adjusted bottom padding for mobile */
-            padding-top: max(140px, calc(60px + 80px)); /* Mobile navbar is smaller */
-            min-height: auto; /* Remove fixed height on mobile */
+            padding: 120px 0 60px; /* Reduced padding for mobile */
         }
 
         .about-hero__title {
@@ -668,21 +643,10 @@
             font-size: 1.125rem;
             line-height: 1.7;
             padding: 0 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .about-hero__trust {
-            flex-direction: column;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .about-hero__trust-item {
-            font-size: 1rem;  /* Slightly larger on mobile */
+            margin-bottom: 2.5rem;
         }
 
         .about-hero__cta {
-            margin-top: 2rem;
             padding: 0 1rem;
         }
 
@@ -782,19 +746,6 @@
         <p class="about-hero__subtitle">
           {{ __('ui.about_page.hero_subtitle') }}
         </p>
-        <div class="about-hero__trust">
-          <div class="about-hero__trust-item">
-            <span>{{ __('ui.about_page.trust_reviews') }}</span>
-          </div>
-          <div class="about-hero__trust-item">
-            <i class="fas fa-users" aria-hidden="true"></i>
-            <span>{{ __('ui.about_page.trust_travelers') }}</span>
-          </div>
-          <div class="about-hero__trust-item">
-            <i class="fas fa-heart" aria-hidden="true"></i>
-            <span>{{ __('ui.about_page.trust_artisans') }}</span>
-          </div>
-        </div>
         <div class="about-hero__cta">
           <a href="{{ url('/tours') }}" class="btn--hero">
             <i class="fas fa-route" aria-hidden="true"></i> {{ __('ui.about_page.cta_explore') }}
