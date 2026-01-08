@@ -308,6 +308,254 @@ return [
     ],
 
     // ============================================
+    // HOMEPAGE
+    // ============================================
+    'hero' => [
+        'title' => 'Discover Uzbekistan\'s Living Craft Heritage',
+        'subtitle' => 'Small-group journeys connecting you directly with master artisans keeping centuries-old traditions alive',
+        'rating_local_artisans' => 'Local artisan workshops',
+        'rating_small_groups' => 'Small groups (max 8)',
+        'rating_authentic_workshops' => 'Authentic craft experiences',
+        'cta_button' => 'Explore Craft Journeys',
+        'view_itinerary' => 'View Sample Itinerary',
+    ],
+
+    'badges' => [
+        'family_run_title' => 'Family-Run Since 2012',
+        'family_run_text' => 'Local expertise passed down through generations',
+        'hands_on_title' => 'Hands-On Workshops',
+        'hands_on_text' => 'Create your own crafts alongside master artisans',
+        'eco_friendly_title' => 'Sustainable Tourism',
+        'eco_friendly_text' => '60% of fees support local artisan communities',
+    ],
+
+    'trust' => [
+        'artisan_workshops' => '<strong>45+ artisan workshops</strong> supporting traditional crafts',
+        'craft_focused' => 'Craft-focused itineraries',
+        'small_groups' => 'Small groups (max 8 travelers)',
+        'designed_by_locals' => 'Designed by local experts',
+        'transparent_pricing' => 'Transparent pricing',
+    ],
+
+    'differentiation' => [
+        'title' => 'Why Our Craft Tours Are Different',
+        'more_workshops_title' => 'More Time with Artisans',
+        'more_workshops_text' => '3+ hours per workshop vs. 30-minute tourist stops. Real craft immersion, not photo ops.',
+        'real_studios_title' => 'Real Working Studios',
+        'real_studios_text' => 'Visit family workshops and master artisans, not factory showrooms or tourist traps.',
+        'balanced_pacing_title' => 'Thoughtful Pacing',
+        'balanced_pacing_text' => 'Maximum 2 workshops per day. Time to absorb, create, and connect—not rush through experiences.',
+        'cultural_understanding_title' => 'Cultural Context',
+        'cultural_understanding_text' => 'Learn the history, significance, and techniques behind each craft from experts who live it.',
+    ],
+
+    'why_choose_us' => [
+        'eyebrow' => 'Why Choose Us',
+        'title' => 'Authentic Craft Experiences with Real Artisans',
+        'intro' => 'We connect you with master craftspeople in their working studios for hands-on experiences that support traditional crafts.',
+        'cta_subtext' => 'Limited availability for small-group craft experiences',
+    ],
+
+    'pricing' => [
+        'label' => 'From',
+        'package_name' => '3-Day Pottery & Silk Tour',
+        'includes' => [
+            'materials' => 'All craft materials included',
+            'guide' => 'Expert local guide',
+            'transport' => 'Private transport between workshops',
+            'homestay' => 'Traditional homestay accommodation',
+            'meals' => 'Breakfast & lunch',
+            'keep_pottery' => 'Keep your handmade pottery',
+        ],
+    ],
+
+    'features' => [
+        'local_expertise_title' => 'Local Expertise',
+        'local_expertise_text' => 'Born and raised in Samarkand, we know the artisans, their stories, and authentic craft traditions.',
+        'personalized_title' => 'Personalized Experiences',
+        'personalized_text' => 'Small groups and flexible itineraries ensure every tour matches your interests and pace.',
+    ],
+
+    'signals' => [
+        'licensed' => 'Licensed Tour Operator',
+        'established' => 'Est. 2012',
+        'verified' => 'Verified by GetYourGuide',
+    ],
+
+    'crafts' => [
+        'eyebrow' => 'Traditional Crafts',
+        'title' => 'Explore Uzbekistan\'s Living Craft Heritage',
+        'explore_tours' => 'Explore Tours',
+        'no_activities' => 'No craft experiences available at the moment.',
+    ],
+
+    'immersion' => [
+        'eyebrow' => 'Craft Immersion',
+        'title' => 'Deep Dive into Traditional Crafts',
+        'max_travelers' => 'Max 8 travelers per tour',
+        'local_experts' => 'Led by local craft experts',
+        'urgency' => 'Only 3 spots left this month',
+    ],
+
+    'artisans' => [
+        'eyebrow' => 'Meet the Artisans',
+        'title' => 'The Master Craftspeople You\'ll Meet',
+    ],
+
+    'reviews' => [
+        'eyebrow' => 'Reviews',
+        'title' => 'What Travelers Say',
+        'verified_tripadvisor' => 'Verified on TripAdvisor',
+    ],
+
+    'blog' => [
+        'eyebrow' => 'Travel Stories',
+        'title' => 'Uzbekistan Travel Guide & Insights',
+        'no_posts' => 'No blog posts available yet.',
+    ],
+
+    'audience' => [
+        'title' => 'Is This Right For You?',
+        'perfect_for_title' => 'Perfect for travelers who want:',
+    ],
+
+    'audience_extended' => [
+        'not_ideal_title' => 'Not ideal if you prefer:',
+        'not_ideal' => [
+            'many_attractions' => 'Checking off many tourist attractions quickly',
+            'large_tours' => 'Large group tours with set schedules',
+            'luxury_hotels' => 'Luxury hotels over authentic local stays',
+            'pre_planned' => 'Fully pre-planned itineraries with no flexibility',
+            'homestays' => 'Avoiding homestays or family-run guesthouses',
+        ],
+        'footer' => 'Not sure if this is right for you?',
+        'footer_link' => 'Contact us',
+        'footer_text' => 'and we\'ll help you decide.',
+    ],
+
+    'sample_day' => [
+        'eyebrow' => 'Sample Day',
+        'title' => 'A Day in the Life of a Craft Traveler',
+        'morning' => [
+            'label' => 'Morning',
+            'title' => 'Pottery Workshop with Master Alisher',
+            'description' => 'Start your day in Gijduvan meeting 6th-generation ceramic master Alisher Nazirov. Learn traditional pottery techniques, create your own piece, and understand the significance of geometric patterns.',
+        ],
+        'midday' => [
+            'label' => 'Midday',
+            'title' => 'Lunch at Family Home',
+            'description' => 'Share a home-cooked meal with Alisher\'s family. Try traditional Uzbek dishes like plov and shurpa while hearing stories about craft traditions passed through generations.',
+        ],
+        'afternoon' => [
+            'label' => 'Afternoon',
+            'title' => 'Silk Weaving Demonstration',
+            'description' => 'Visit Margilan\'s Yodgorlik Silk Factory to see the ancient art of ikat silk weaving. Watch master weavers create intricate patterns using hand-dyed threads on traditional looms.',
+        ],
+        'evening' => [
+            'label' => 'Evening',
+            'title' => 'Sunset at Registan Square',
+            'description' => 'End your day at Samarkand\'s iconic Registan Square. Watch the sunset illuminate the turquoise domes while reflecting on your day connecting with Uzbekistan\'s craft heritage.',
+        ],
+    ],
+
+    'itinerary' => [
+        'see_full' => 'See Full Itinerary',
+    ],
+
+    'faq_extended' => [
+        'eyebrow' => 'Common Questions',
+        'title' => 'Frequently Asked Questions',
+        'subtitle' => 'Everything you need to know about our craft immersion tours',
+        'famous_masters' => [
+            'question' => 'Will I meet famous master artisans?',
+            'answer_1' => 'Yes, many of our artisan partners are nationally recognized masters.',
+            'answer_2' => 'For example, Alisher Nazirov (ceramics) and the Margilan Yodgorlik Silk Factory team are celebrated throughout Uzbekistan for preserving traditional techniques.',
+        ],
+        'shopping_tour' => [
+            'question' => 'Is this a shopping tour?',
+            'answer_1' => 'No, this is a cultural immersion experience, not a shopping trip.',
+            'answer_2' => 'While you can purchase crafts directly from artisans (supporting them fairly), our focus is on learning, hands-on workshops, and cultural exchange.',
+        ],
+        'hands_on' => [
+            'question' => 'Are all experiences hands-on?',
+            'answer_1' => 'Most workshops include hands-on components where you create your own piece.',
+            'answer_2' => 'Some crafts (like silk weaving on traditional looms) involve demonstrations due to the complexity of the equipment, but you\'ll still get close-up access and explanations.',
+        ],
+    ],
+
+    'faq_items' => [
+        'prior_experience' => [
+            'question' => 'Do I need prior craft experience?',
+            'answer_1' => 'No experience necessary!',
+            'answer_2' => 'Our artisan partners are patient teachers who work with complete beginners.',
+            'answer_3' => 'They\'ll guide you through each step, from basic techniques to finishing your piece.',
+        ],
+        'children' => [
+            'question' => 'Are children welcome?',
+            'answer_1' => 'Yes, children 8+ are welcome on most tours.',
+            'answer_2' => 'Artisans often enjoy teaching younger visitors.',
+            'answer_3' => 'For children under 8, please contact us to discuss which workshops would be most suitable.',
+        ],
+        'languages' => [
+            'question' => 'What languages do guides speak?',
+            'answer_1' => 'All tours include English-speaking guides.',
+            'answer_2' => 'Many artisans speak Russian or Uzbek.',
+            'answer_3' => 'Your guide will translate conversations and provide cultural context throughout.',
+        ],
+        'private' => [
+            'question' => 'Can I book a private tour?',
+            'answer_1' => 'Yes, we offer private tours for groups of 2-8 people.',
+            'answer_2' => 'Private tours offer more flexibility in schedule and pace.',
+            'answer_3' => 'Contact us',
+            'contact_link' => 'contact us',
+        ],
+        'whats_included' => [
+            'question' => 'What\'s included in the tour price?',
+            'answer_intro' => 'Our tours include:',
+            'includes' => [
+                'instruction' => 'All workshop instruction and demonstrations',
+                'materials' => 'Craft materials for hands-on activities',
+                'guides' => 'Expert local guide throughout',
+                'transport' => 'Private transport between workshops',
+                'accommodation' => 'Traditional homestay or guesthouse accommodation',
+                'meals' => 'Breakfast and lunch (dinner not included)',
+                'keep_pieces' => 'You keep any pieces you create',
+            ],
+            'not_included' => 'Not included:',
+            'not_included_text' => 'International flights, dinners, personal purchases, tips.',
+        ],
+        'cancellation' => [
+            'question' => 'What\'s the cancellation policy?',
+            'answer_1' => 'Flexible cancellation up to 7 days before departure for full refund.',
+            'answer_2' => 'Cancellations within 7 days may incur fees depending on artisan commitments.',
+            'answer_3' => 'Free cancellation: 7+ days before departure',
+            'answer_4' => '50% refund: 3-7 days before departure',
+            'answer_5' => 'No refund: Less than 3 days before departure',
+        ],
+    ],
+
+    'faq_footer' => [
+        'text' => 'Still have questions?',
+        'button' => 'Contact Us',
+        'response_time' => 'We typically respond within 2 hours',
+    ],
+
+    'final_cta' => [
+        'title' => 'Ready to Experience Uzbekistan\'s Craft Heritage?',
+        'subtitle' => 'Join a small-group journey connecting you with master artisans',
+        'button_contact' => 'Contact Us',
+        'note' => 'Limited availability • Small groups only',
+    ],
+
+    'whatsapp' => [
+        'text' => 'Message us',
+    ],
+
+    'mobile_cta' => [
+        'check_availability' => 'Check Availability',
+    ],
+
+    // ============================================
     // ABOUT PAGE
     // ============================================
     'about_page' => [
