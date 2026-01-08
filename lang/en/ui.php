@@ -376,6 +376,8 @@ return [
         'local_expertise_text' => 'Born and raised in Samarkand, we know the artisans, their stories, and authentic craft traditions.',
         'personalized_title' => 'Personalized Experiences',
         'personalized_text' => 'Small groups and flexible itineraries ensure every tour matches your interests and pace.',
+        'multilingual_support_title' => '24/7 Multilingual Support',
+        'multilingual_support_text' => 'Round-the-clock assistance in English, French, Russian, and Uzbek throughout your journey.',
     ],
 
     'signals' => [

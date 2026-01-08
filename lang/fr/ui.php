@@ -116,6 +116,8 @@ return [
         'personalized_text' => 'Chaque circuit est personnalisé selon vos intérêts, votre rythme et votre style de voyage.',
         'support_title' => 'Assistance 24/7',
         'support_text' => 'Assistance 24h/24 en anglais, français, russe et ouzbek tout au long de votre voyage.',
+        'multilingual_support_title' => 'Assistance Multilingue 24/7',
+        'multilingual_support_text' => 'Assistance 24h/24 en anglais, français, russe et ouzbek tout au long de votre voyage.',
     ],
 
     // ============================================

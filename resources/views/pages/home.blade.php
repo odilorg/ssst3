@@ -772,8 +772,8 @@
             <li>
               <i class="benefits__icon fas fa-headset" aria-hidden="true"></i>
               <div class="benefits__content">
-                <strong>24/7 Multilingual Support</strong>
-                <p>Round-the-clock assistance in English, French, Russian, and Uzbek throughout your journey.</p>
+                <strong>{{ __('ui.features.multilingual_support_title') }}</strong>
+                <p>{{ __('ui.features.multilingual_support_text') }}</p>
               </div>
             </li>
           </ul>
