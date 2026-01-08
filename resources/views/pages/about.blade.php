@@ -47,9 +47,10 @@
 
     /* Hero Section - Enhanced with trust elements */
     .about-hero {
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, rgba(30, 64, 175, 0.85) 0%, rgba(59, 130, 246, 0.85) 100%),
+                    url('/images/silk-weaving-artisan.webp') center/cover no-repeat;
         color: white;
-        padding: 150px 0 80px; /* Reduced top padding, normal bottom padding */
+        padding: 220px 0 140px; /* Increased top padding to clear navbar + better breathing room */
         text-align: center;
         position: relative;
     }
@@ -75,12 +76,13 @@
     .about-hero__title {
         font-size: 3.25rem;
         font-weight: 700;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2.5rem; /* Increased since subtitle removed */
         font-family: 'Playfair Display', serif;
         line-height: 1.2;
         max-width: 900px; /* Prevent overly long lines */
         margin-left: auto;
         margin-right: auto;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add text shadow for better readability on image */
     }
 
     .about-hero__subtitle {
@@ -581,6 +583,7 @@
         margin-left: auto;
         margin-right: auto;
         line-height: 1.7;
+        color: white; /* Ensure subtitle is visible on blue background */
     }
 
     .btn {
@@ -629,7 +632,7 @@
 
     @media (max-width: 768px) {
         .about-hero {
-            padding: 120px 0 60px; /* Reduced padding for mobile */
+            padding: 160px 0 100px; /* Increased padding for mobile to clear navbar + better breathing room */
         }
 
         .about-hero__title {
@@ -743,9 +746,6 @@
     <section class="about-hero">
       <div class="container">
         <h1 class="about-hero__title">{{ __('ui.about_page.hero_title') }}</h1>
-        <p class="about-hero__subtitle">
-          {{ __('ui.about_page.hero_subtitle') }}
-        </p>
         <div class="about-hero__cta">
           <a href="{{ url('/tours') }}" class="btn--hero">
             <i class="fas fa-route" aria-hidden="true"></i> {{ __('ui.about_page.cta_explore') }}

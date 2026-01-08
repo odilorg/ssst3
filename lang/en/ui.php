@@ -192,7 +192,13 @@ return [
     // FOOTER
     // ============================================
     'footer' => [
+        'tagline' => 'Discover the wonders of Uzbekistan with authentic, personalized travel experiences.',
+        'get_in_touch' => 'Get in Touch',
         'about_us' => 'About Us',
+        'contact' => 'Contact',
+        'blog' => 'Blog',
+        'faqs' => 'FAQs',
+        'destinations' => 'Destinations',
         'quick_links' => 'Quick Links',
         'contact_us' => 'Contact Us',
         'follow_us' => 'Follow Us',
@@ -203,6 +209,41 @@ return [
         'privacy_policy' => 'Privacy Policy',
         'terms_of_service' => 'Terms of Service',
         'cookie_policy' => 'Cookie Policy',
+    ],
+
+    // ============================================
+    // CONTACT PAGE
+    // ============================================
+    'contact' => [
+        // Hero Section
+        'hero_title' => 'Get in Touch',
+        'hero_subtitle_1' => 'Have questions about your Uzbekistan adventure?',
+        'hero_subtitle_2' => 'Our local experts are here to help plan your perfect journey.',
+
+        // Breadcrumb
+        'breadcrumb_home' => 'Home',
+        'breadcrumb_contact' => 'Contact',
+
+        // Form Section
+        'form_title' => 'Send us a message',
+        'benefit_response_title' => 'Quick Response',
+        'label_name' => 'Your Name',
+        'placeholder_name' => 'John Smith',
+        'label_email' => 'Email Address',
+        'label_message' => 'Your Message',
+        'submit_button' => 'Send Message',
+
+        // Contact Info
+        'get_in_touch_title' => 'Get in Touch',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'whatsapp' => 'WhatsApp',
+        'opening_hours_title' => 'Opening Hours',
+        'closed' => 'Closed',
+        'head_office_title' => 'Head Office',
+
+        // Personality Section
+        'personality_title' => 'Real People, Real Local Knowledge',
     ],
 
     // ============================================
