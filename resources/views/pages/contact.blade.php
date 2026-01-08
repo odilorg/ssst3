@@ -615,10 +615,10 @@ h3 {
         <div class="contact-hero__overlay"></div>
         <div class="container">
             <div class="contact-hero__content">
-                <h1 class="contact-hero__title">Contact the Team</h1>
+                <h1 class="contact-hero__title">{{ __('ui.contact.hero_title') }}</h1>
                 <p class="contact-hero__subtitle">
-                    Planning your next trip to Uzbekistan? Let's talk!<br>
-                    Our team of Silk Road experts is here to help you every step of the way.
+                    {{ __('ui.contact.hero_subtitle_1') }}<br>
+                    {{ __('ui.contact.hero_subtitle_2') }}
                 </p>
             </div>
         </div>
@@ -629,10 +629,10 @@ h3 {
         <div class="container">
             <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
                 <li style="display: flex; align-items: center;">
-                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">{{ __('ui.contact.breadcrumb_home') }}</a>
                     <span style="margin: 0 0.5rem; color: #666;">/</span>
                 </li>
-                <li style="color: #666; font-weight: 500;" aria-current="page">Contact</li>
+                <li style="color: #666; font-weight: 500;" aria-current="page">{{ __('ui.contact.breadcrumb_contact') }}</li>
             </ol>
         </div>
     </nav>
@@ -647,7 +647,7 @@ h3 {
                      LEFT COLUMN: CONTACT FORM
                      ======================================== -->
                 <div class="contact-form-wrapper animate-on-scroll" id="contact-form">
-                    <h2 class="contact-form__title">Send us a message</h2>
+                    <h2 class="contact-form__title">{{ __('ui.contact.form_title') }}</h2>
                     <p class="contact-form__intro">We typically respond within 24 hours. Let's start planning your perfect Uzbekistan adventure!</p>
 
                     <!-- Benefits Section -->
@@ -670,7 +670,7 @@ h3 {
                 <!-- P0 FIX: Response time commitment -->
                 <div class="response-commitment">
                     <i class="fas fa-clock"></i>
-                    <span><strong>Quick Response:</strong> We typically respond within 2 hours during business hours</span>
+                    <span><strong>{{ __('ui.contact.benefit_response_title') }}:</strong> We typically respond within 2 hours during business hours</span>
                 </div>
 
 
@@ -680,14 +680,14 @@ h3 {
                         <!-- Name Field -->
                         <div class="form-group">
                             <label for="name" class="form-label">
-                                Your Name <span class="required">*</span>
+                                {{ __('ui.contact.label_name') }} <span class="required">*</span>
                             </label>
                             <input
                                 type="text"
                                 id="name"
                                 name="name"
                                 class="form-input"
-                                placeholder="e.g., John Smith"
+                                placeholder="{{ __('ui.contact.placeholder_name') }}"
                                 required
                                 aria-required="true"
                                 aria-describedby="name-error"
@@ -695,10 +695,10 @@ h3 {
                             <span class="form-error" id="name-error" role="alert"></span>
                         </div>
 
-                        <!-- Email Field -->
+                        <!-- {{ __('ui.contact.email') }} Field -->
                         <div class="form-group">
                             <label for="email" class="form-label">
-                                Email Address <span class="required">*</span>
+                                {{ __('ui.contact.label_email') }} <span class="required">*</span>
                             </label>
                             <input
                                 type="email"
@@ -714,10 +714,10 @@ h3 {
                             <span class="form-error" id="email-error" role="alert"></span>
                         </div>
 
-                        <!-- Phone Field (Optional) -->
+                        <!-- {{ __('ui.contact.phone') }} Field (Optional) -->
                         <div class="form-group">
                             <label for="phone" class="form-label">
-                                Phone <span class="optional">(optional)</span>
+                                {{ __('ui.contact.phone') }} <span class="optional">(optional)</span>
                             </label>
                             <input
                                 type="tel"
@@ -734,7 +734,7 @@ h3 {
                         <!-- Message Field -->
                         <div class="form-group">
                             <label for="message" class="form-label">
-                                Your Message <span class="required">*</span>
+                                {{ __('ui.contact.label_message') }} <span class="required">*</span>
                             </label>
                             <textarea
                                 id="message"
@@ -751,7 +751,7 @@ h3 {
 
                         <!-- Submit Button -->
                         <button type="submit" class="btn btn--primary btn--large form-submit">
-                            <span class="button-text">Send Message</span>
+                            <span class="button-text">{{ __('ui.contact.submit_button') }}</span>
                             <i class="fas fa-arrow-right button-icon"></i>
                         </button>
 
@@ -810,7 +810,7 @@ h3 {
                 <div class="contact-info">
                     <!-- Get in Touch Card -->
                     <div class="contact-card animate-on-scroll">
-                        <h3 class="contact-card__title">Get in touch</h3>
+                        <h3 class="contact-card__title">{{ __('ui.contact.get_in_touch_title') }}</h3>
                         <p class="contact-card__description">
                             We love to chat about your travel plans and
                             are ready to help in any way we can.
@@ -844,7 +844,7 @@ h3 {
                         <div class="contact-card__item">
                             <i class="fas fa-envelope contact-card__icon"></i>
                             <div class="contact-card__content">
-                                <span class="contact-card__label">Email us</span>
+                                <span class="contact-card__label">{{ __('ui.contact.email') }} us</span>
                                 <a href="mailto:info@jahongir-travel.uz" class="contact-card__link">
                                     info@jahongir-travel.uz
                                 </a>
@@ -852,17 +852,17 @@ h3 {
                         </div>
                     </div>
 
-                    <!-- Opening Hours Card -->
+                    <!-- {{ __('ui.contact.opening_hours_title') }} Card -->
                     <div class="contact-card animate-on-scroll">
                         <h3 class="contact-card__title">
                             <i class="fas fa-clock contact-card__title-icon"></i>
-                            Opening Hours
+                            {{ __('ui.contact.opening_hours_title') }}
                         </h3>
 
                         <div class="hours-block">
                             <p class="hours-block__season">Monday through Friday</p>
                             <p class="hours-block__time">9:00 – 18:00</p>
-                            <p class="hours-block__time">Sat – Sun: Closed</p>
+                            <p class="hours-block__time">Sat – Sun: {{ __('ui.contact.closed') }}</p>
                         </div>
 
                         <div class="hours-block">
@@ -877,11 +877,11 @@ h3 {
                         </p>
                     </div>
 
-                    <!-- Head Office Card -->
+                    <!-- {{ __('ui.contact.head_office_title') }} Card -->
                     <div class="contact-card animate-on-scroll">
                         <h3 class="contact-card__title">
                             <i class="fas fa-building contact-card__title-icon"></i>
-                            Head Office
+                            {{ __('ui.contact.head_office_title') }}
                         </h3>
                         <p class="contact-card__description">
                             Visit our cozy office in the heart of Samarkand, right near the historic Registan Square.
@@ -924,7 +924,7 @@ h3 {
                 <figcaption class="visually-hidden">The local team that crafts and supports your trip</figcaption>
             </figure>
             <div class="cp-copy">
-                <h2 id="contact-personality-title" class="cp-title">Faces behind every journey</h2>
+                <h2 id="contact-personality-title" class="cp-title">{{ __('ui.contact.personality_title') }}</h2>
                 <p class="cp-sub">We're a small local team based in Samarkand — the same people who greet travelers, plan routes, and make every trip feel like family.</p>
                 <p class="cp-body">Whether it's crafting your first Silk Road itinerary or helping you choose the best guest house, you'll always talk to someone who knows Uzbekistan by heart.</p>
                 <a href="/about-us" class="btn btn--outline cp-cta">Meet the Team</a>
@@ -1079,7 +1079,7 @@ h3 {
                         <span class="detail-value" id="contact-modal-name">N/A</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Email:</span>
+                        <span class="detail-label">{{ __('ui.contact.email') }}:</span>
                         <span class="detail-value" id="contact-modal-email">N/A</span>
                     </div>
                 </div>
@@ -1139,11 +1139,11 @@ h3 {
                 <div class="alternative-contact-methods">
                     <a href="https://wa.me/998915550808" class="alt-method" target="_blank" rel="noopener">
                         <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp: +998 91 555 0808</span>
+                        <span>{{ __('ui.contact.whatsapp') }}: +998 91 555 0808</span>
                     </a>
                     <a href="mailto:info@jahongir-travel.uz" class="alt-method">
                         <i class="fas fa-envelope"></i>
-                        <span>Email: info@jahongir-travel.uz</span>
+                        <span>{{ __('ui.contact.email') }}: info@jahongir-travel.uz</span>
                     </a>
                     <a href="tel:+998915550808" class="alt-method">
                         <i class="fas fa-phone"></i>

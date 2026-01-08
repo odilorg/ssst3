@@ -568,4 +568,86 @@ return [
         'text' => 'Chattez avec nous !',
     ],
 
+
+    'contact' => [
+        'hero_title' => 'Contactez l\'Équipe',
+        'hero_subtitle_1' => 'Vous planifiez votre prochain voyage en Ouzbékistan ? Parlons-en !',
+        'hero_subtitle_2' => 'Notre équipe d\'experts de la Route de la Soie est là pour vous aider à chaque étape.',
+        'breadcrumb_home' => 'Accueil',
+        'breadcrumb_contact' => 'Contact',
+        
+        // Form section
+        'form_title' => 'Envoyez-nous un message',
+        'form_intro' => 'Racontez-nous vos projets de voyage et nous vous aiderons à créer un itinéraire parfait.',
+        
+        // Form benefits
+        'benefit_guidance_title' => 'Conseils d\'Experts',
+        'benefit_guidance_text' => 'Conseils personnalisés de nos spécialistes de l\'Ouzbékistan',
+        'benefit_response_title' => 'Réponse Rapide',
+        'benefit_response_text' => 'Réponse garantie dans les 24 heures',
+        'benefit_secure_title' => 'Sécurisé & Privé',
+        'benefit_secure_text' => 'Vos informations sont traitées en toute sécurité',
+        
+        'response_commitment' => 'Nous nous engageons à répondre à votre demande dans les 24 heures pendant les jours ouvrables.',
+        
+        // Form fields
+        'label_name' => 'Votre Nom',
+        'placeholder_name' => 'Ex : Marie Dupont',
+        'label_email' => 'Adresse E-mail',
+        'placeholder_email' => 'votre.email@exemple.com',
+        'label_phone' => 'Numéro de Téléphone',
+        'placeholder_phone' => '+33 6 12 34 56 78',
+        'label_message' => 'Votre Message',
+        'placeholder_message' => 'Parlez-nous de vos projets de voyage, dates souhaitées, et préférences spéciales...',
+        'submit_button' => 'Envoyer le Message',
+        'submitting' => 'Envoi en cours...',
+        
+        // Alternative contact
+        'alternative_title' => 'Ou joignez-nous directement :',
+        'whatsapp_text' => 'Envoyez-nous un message sur WhatsApp',
+        'email_text' => 'Envoyez-nous un e-mail',
+        
+        // Testimonial
+        'testimonial_text' => 'L\'équipe de Jahongir Travel a créé l\'\'itinéraire de voyage parfait pour nous. Leur attention aux détails et leur passion pour l\'\'Ouzbékistan transparaissaient dans chaque recommandation.',
+        'testimonial_author' => 'Sarah M.',
+        'testimonial_location' => 'France',
+        
+        // Contact cards
+        'get_in_touch_title' => 'Entrez en contact',
+        'get_in_touch_text' => 'Laissez vos coordonnées et nous vous contacterons sous peu.',
+        'phone' => 'Téléphone',
+        'email' => 'E-mail',
+        'whatsapp' => 'WhatsApp',
+        
+        'opening_hours_title' => 'Horaires d\'Ouverture',
+        'weekdays' => 'Lun - Ven',
+        'weekdays_hours' => '9h00 - 18h00',
+        'saturday' => 'Samedi',
+        'saturday_hours' => '9h00 - 14h00',
+        'sunday' => 'Dimanche',
+        'closed' => 'Fermé',
+        'peak_season_note' => 'En haute saison (avril-octobre), nous sommes disponibles 7j/7',
+        
+        'head_office_title' => 'Siège Social',
+        'address_line1' => '123 Rue de la Soie',
+        'address_line2' => 'Tachkent, Ouzbékistan',
+        'license' => 'Licence',
+        'license_number' => 'N° 123456',
+        
+        // Personality section
+        'personality_title' => 'Visages derrière chaque voyage',
+        'personality_subtitle' => 'Notre équipe passionnée vous aide à découvrir l\'âme de l\'\'Ouzbékistan',
+        
+        // FAQ
+        'faq_title' => 'Questions fréquemment posées',
+        'faq_1_question' => 'Combien de temps faut-il pour recevoir une réponse à ma demande ?',
+        'faq_1_answer' => 'Nous nous efforçons de répondre à toutes les demandes dans les 24 heures pendant les jours ouvrables. En haute saison, cela peut prendre jusqu\'à 48 heures.',
+        'faq_2_question' => 'Puis-je demander un itinéraire personnalisé ?',
+        'faq_2_answer' => 'Absolument ! Nous sommes spécialisés dans la création d\'itinéraires sur mesure en fonction de vos intérêts, budget et délais.',
+        'faq_3_question' => 'Quelles langues parlez-vous ?',
+        'faq_3_answer' => 'Notre équipe parle couramment l\'ouzbek, le russe et l\'\'anglais. Nous pouvons également organiser des guides parlant d\'\'autres langues sur demande.',
+        'faq_4_question' => 'Avez-vous un bureau physique que je peux visiter ?',
+        'faq_4_answer' => 'Oui, notre siège social est situé au cœur de Tachkent. Contactez-nous à l\'avance pour organiser une visite, et nous serons ravis de discuter de vos projets de voyage autour d\'\'un thé.',
+    ],
+
 ];
