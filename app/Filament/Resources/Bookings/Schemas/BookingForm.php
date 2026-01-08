@@ -19,13 +19,13 @@ class BookingForm
                     ->schema([
                         Select::make('customer_id')
                             ->label('Клиент')
-                            ->relationship('customer', 'name')
+                            ->relationship('customer', 'name', modifyQueryUsing: fn ($query) => $query->whereNotNull('name')->where('name', '!=', ''))
                             ->required()
                             ->searchable()
                             ->preload(),
                         Select::make('tour_id')
                             ->label('Тур')
-                            ->relationship('tour', 'title')
+                            ->relationship('tour', 'title', modifyQueryUsing: fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                             ->required()
                             ->searchable()
                             ->preload(),
