@@ -107,6 +107,9 @@ class BookingItineraryItemAssignment extends Model
             case Monument::class:
                 return $this->getMonumentCost();
 
+            case Driver::class:
+                return $this->getDriverCost();
+
             default:
                 return null;
         }
@@ -336,6 +339,60 @@ class BookingItineraryItemAssignment extends Model
         $quantity = $this->quantity ?? 1;
 
         return $price * $quantity;
+    }
+
+
+    /**
+     * Get driver cost - checks contract first.
+     */
+    protected function getDriverCost(): ?float
+    {
+        // Level 2: Check contract price first
+        if ($this->contract_service_id) {
+            $contractPrice = $this->getDriverContractPrice();
+            if ($contractPrice !== null) {
+                return $contractPrice;
+            }
+        }
+
+        // Level 3: Individual drivers don't have standard pricing
+        // (would need daily_rate field in Driver model)
+        // For now, return null - must use contract or manual override
+        return null;
+    }
+
+    /**
+     * Get driver price from contract.
+     */
+    protected function getDriverContractPrice(): ?float
+    {
+        $contractService = $this->contractService;
+        if (!$contractService) {
+            return null;
+        }
+
+        // Get the booking date to find correct price version
+        $bookingDate = $this->bookingItineraryItem?->date;
+        
+        // Get price version active on booking date
+        $priceVersion = $contractService->getPriceVersion($bookingDate);
+        if (!$priceVersion) {
+            return null;
+        }
+
+        // For drivers, check for direct_price or daily_rate in price_data
+        $priceData = $priceVersion->price_data ?? [];
+        
+        // Try different price keys (same as guides)
+        if (isset($priceData["direct_price"])) {
+            return (float) $priceData["direct_price"];
+        }
+        
+        if (isset($priceData["daily_rate"])) {
+            return (float) $priceData["daily_rate"];
+        }
+
+        return null;
     }
 
     /**
