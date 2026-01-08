@@ -143,6 +143,7 @@ return [
         'collapse_all' => 'Collapse all',
         'day' => 'Day',
         'empty_message' => 'Day-by-day itinerary will be provided upon booking confirmation.',
+        'see_full' => 'See Full Itinerary',
     ],
 
     // ============================================
@@ -179,6 +180,9 @@ return [
         'select_rating' => 'Select a rating',
         'required' => '*',
         'verified_guest' => 'Verified Guest',
+        'eyebrow' => 'Reviews',
+        'title' => 'What Travelers Say',
+        'verified_tripadvisor' => 'Verified on TripAdvisor',
     ],
 
     // ============================================
@@ -413,10 +417,23 @@ return [
         'title' => 'The Master Craftspeople You\'ll Meet',
     ],
 
-    'reviews' => [
-        'eyebrow' => 'Reviews',
-        'title' => 'What Travelers Say',
-        'verified_tripadvisor' => 'Verified on TripAdvisor',
+
+    'blog_page' => [
+        'hero_title' => 'Travel Insights & Tips',
+        'hero_subtitle' => 'Expert travel advice and destination guides',
+        'breadcrumb_home' => 'Home',
+        'breadcrumb_blog' => 'Blog',
+        'search_placeholder' => 'Search articles...',
+        'all_articles' => 'All Articles',
+        'sort_by' => 'Sort by:',
+        'sort_latest' => 'Latest',
+        'sort_popular' => 'Most Popular',
+        'sort_oldest' => 'Oldest',
+        'no_articles_title' => 'No articles found',
+        'no_articles_text' => 'Try adjusting your filters or search query.',
+        'view_all_articles' => 'View All Articles',
+        'read_more' => 'Read More',
+        'min_read' => 'min read',
     ],
 
     'blog' => [
@@ -469,9 +486,6 @@ return [
         ],
     ],
 
-    'itinerary' => [
-        'see_full' => 'See Full Itinerary',
-    ],
 
     'faq_extended' => [
         'eyebrow' => 'Common Questions',

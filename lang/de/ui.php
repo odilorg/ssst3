@@ -154,6 +154,24 @@ return [
         'verified_guest' => 'Verifizierter Gast',
     ],
 
+    'blog_page' => [
+        'hero_title' => 'Reise-Einblicke & Tipps',
+        'hero_subtitle' => 'Experten-Reiseberatung und Reisezielführer',
+        'breadcrumb_home' => 'Startseite',
+        'breadcrumb_blog' => 'Blog',
+        'search_placeholder' => 'Artikel suchen...',
+        'all_articles' => 'Alle Artikel',
+        'sort_by' => 'Sortieren nach:',
+        'sort_latest' => 'Neueste',
+        'sort_popular' => 'Beliebteste',
+        'sort_oldest' => 'Älteste',
+        'no_articles_title' => 'Keine Artikel gefunden',
+        'no_articles_text' => 'Versuchen Sie, Ihre Filter oder Suchanfrage anzupassen.',
+        'view_all_articles' => 'Alle Artikel anzeigen',
+        'read_more' => 'Weiterlesen',
+        'min_read' => 'Min. Lesezeit',
+    ],
+
     'blog' => [
         'eyebrow' => 'Reisegeschichten',
         'title' => 'Usbekistan Reiseführer & Einblicke',
