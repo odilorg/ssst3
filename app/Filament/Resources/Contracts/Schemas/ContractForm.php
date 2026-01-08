@@ -339,6 +339,21 @@ class ContractForm
                                             })
                                             ->columnSpanFull(),
 
+                                        // Direct pricing for Driver
+                                        TextInput::make('driver_direct_price_input')
+                                            ->label('Daily Rate (Driver)')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Driver')
+                                            ->numeric()
+                                            ->required()
+                                            ->prefix('$')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Daily rate for this driver (e.g., $50/day for driver services)')
+                                            ->afterStateUpdated(function ($state, $set) {
+                                                $set('price_data', ['direct_price' => (float) $state]);
+                                            })
+                                            ->columnSpanFull(),
+
                                         // Transport pricing with price types
                                         Repeater::make('transport_prices')
                                             ->label('Transport Price Types')
