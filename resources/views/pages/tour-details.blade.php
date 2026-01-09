@@ -1252,7 +1252,7 @@
             <input type="radio" name="payment_type" value="full">
             <div class="payment-content-compact">
               <div class="payment-header-compact">
-                <span class="badge-discount">SAVE 3%</span>
+                <span class="badge-discount">3% OFF</span>
                 <strong class="payment-name-compact">Pay in Full</strong>
               </div>
               <div class="payment-price-compact">
@@ -2896,16 +2896,15 @@
 /* Bottom Sheet Container */
 .modal-container--bottomsheet {
   background: white;
-  border-radius: 24px 24px 0 0;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
-  max-width: 500px;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+  max-width: 440px;
   width: 100%;
-  position: fixed;
-  bottom: 0;
+  position: relative;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  animation: slideUpBottomSheet 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideUpCenter 0.3s ease-out;
 }
 
 @keyframes slideUpBottomSheet {
@@ -2919,19 +2918,25 @@
   }
 }
 
-/* Drag Handle */
+@keyframes slideUpCenter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Drag Handle - hidden for centered modal */
 .bottomsheet-handle {
-  width: 40px;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 2px;
-  margin: 10px auto 8px;
-  flex-shrink: 0;
+  display: none;
 }
 
 /* Compact Header */
 .modal-header-compact {
-  padding: 0 20px 16px;
+  padding: 20px 20px 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   position: relative;
   flex-shrink: 0;
@@ -3006,10 +3011,10 @@
 
 .info-label-compact {
   font-size: 10px;
-  color: #6B7280;
+  color: #9CA3AF;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   flex-shrink: 0;
 }
 
@@ -3027,9 +3032,9 @@
 }
 
 .info-value--price-compact {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #059669;
+  color: #111827;
 }
 
 /* Compact Confirmation Notice */
@@ -3055,10 +3060,12 @@
 }
 
 .payment-title-compact {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: #111827;
-  margin: 0 0 12px;
+  color: #6B7280;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .payment-card-compact {
@@ -3082,8 +3089,8 @@
 }
 
 .payment-card-compact.recommended {
-  border-color: #059669;
-  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border-color: #10B981;
+  background: #F8FDF9;
 }
 
 .payment-content-compact {
@@ -3102,21 +3109,21 @@
 .badge-discount {
   display: inline-block;
   font-size: 9px;
-  font-weight: 700;
-  padding: 3px 6px;
+  font-weight: 600;
+  padding: 3px 7px;
   border-radius: 4px;
   margin-bottom: 4px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .badge-recommended {
-  background: #059669;
-  color: white;
+  background: #E8F5E9;
+  color: #2E7D32;
 }
 
 .badge-discount {
-  background: #DC2626;
-  color: white;
+  background: #F3F4F6;
+  color: #4B5563;
 }
 
 .payment-name-compact {
@@ -3159,8 +3166,8 @@
 
 .btn-payment-primary {
   width: 100%;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  padding: 15px 20px;
+  background: #10B981;
   color: white;
   border: none;
   border-radius: 12px;
@@ -3171,24 +3178,25 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
 }
 
 .btn-payment-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+  background: #059669;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);
 }
 
 .btn-payment-primary:active {
-  transform: translateY(0);
+  transform: scale(0.99);
 }
 
 .trust-footer-compact {
   text-align: center;
   font-size: 11px;
-  color: #6B7280;
-  margin-top: 10px;
+  color: #9CA3AF;
+  margin-top: 12px;
+  letter-spacing: 0.2px;
 }
 
 /* Mobile Optimizations */
