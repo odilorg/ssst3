@@ -161,13 +161,6 @@
                   </div>
                 </div>
               </div>
-              {{-- PDF Download Link --}}
-              <div class="tour-actions">
-                <a href="{{ route("tours.download-pdf", $tour->slug) }}" class="tour-action-link" download>
-                  <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  <span>{{ __('ui.download_itinerary') ?? 'Download Itinerary PDF' }}</span>
-                </a>
-              </div>
             @else
               <!-- Loading Skeleton -->
               <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
@@ -769,6 +762,9 @@
                     </svg>
                     Booking confirmed within 24-48h • No payment fees
                   </p>
+
+                  {{-- PDF Download Button (Secondary Action) --}}
+                  @include("partials.tours.download-pdf-button", ["tour" => $tour, "variant" => "sidebar"])
                 </div>
 
               </div><!-- End Step 2 -->
@@ -1020,6 +1016,9 @@
                   <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   <span>Request a Quote</span>
                 </button>
+
+                {{-- PDF Download Button (Secondary Action) --}}
+                @include("partials.tours.download-pdf-button", ["tour" => $tour, "variant" => "sidebar"])
 
                 {{-- Expandable quote form --}}
                 <div class="quote-request-form" id="quote-request-form-container" style="display: none;">
@@ -4451,39 +4450,75 @@
     padding: 14px;
   }
 }
-/* Tour Actions - PDF Download */
-.tour-actions {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border, #e5e7eb);
-}
-.tour-action-link {
-  display: inline-flex;
+/* PDF Download Button - Sidebar Variant */
+.btn-pdf-download--sidebar {
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--color-primary, #7B3F9E);
-  background: var(--color-background-alt, #f9fafb);
+  color: var(--color-text-secondary, #6b7280);
+  background: transparent;
+  border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 0.5rem;
   text-decoration: none;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
-.tour-action-link:hover {
-  background: var(--color-primary, #7B3F9E);
-  color: white;
+.btn-pdf-download--sidebar:hover {
+  color: var(--color-primary, #7B3F9E);
+  border-color: var(--color-primary, #7B3F9E);
+  background: rgba(123, 63, 158, 0.04);
 }
-.tour-action-link .icon {
+.btn-pdf-download--sidebar:focus {
+  outline: 2px solid var(--color-primary, #7B3F9E);
+  outline-offset: 2px;
+}
+.btn-pdf-download--sidebar .icon {
   flex-shrink: 0;
+  opacity: 0.7;
 }
+.btn-pdf-download--sidebar:hover .icon {
+  opacity: 1;
+}
+
+/* PDF Download Link - Inline Variant (Content Area) */
+.pdf-link-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.pdf-link-inline:hover {
+  color: var(--color-primary, #7B3F9E);
+}
+.pdf-link-inline:hover .icon {
+  stroke: var(--color-primary, #7B3F9E);
+}
+.pdf-link-inline .icon {
+  flex-shrink: 0;
+  transition: stroke 0.2s ease;
+}
+
 @media (max-width: 768px) {
-  .tour-actions {
-    margin-top: 1rem;
+  .btn-pdf-download--sidebar {
+    margin-top: 0.5rem;
   }
-  .tour-action-link {
+  .pdf-link-inline {
     width: 100%;
     justify-content: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
   }
 }
 </style>
