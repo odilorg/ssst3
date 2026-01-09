@@ -22,18 +22,21 @@ class SendPaymentConfirmationEmail implements ShouldQueue
         $booking = $payment->booking;
 
         if (!$booking) {
-            Log::warning("SendPaymentConfirmationEmail: No booking found for payment", [
-                "payment_id" => $payment->id,
+            Log::warning('SendPaymentConfirmationEmail: No booking found for payment', [
+                'payment_id' => $payment->id,
             ]);
             return;
         }
 
-        $customerEmail = $booking->customer_email;
+        // Get email from customer relationship (not directly on booking)
+        $customer = $booking->customer;
+        $customerEmail = $customer?->email;
 
         if (!$customerEmail) {
-            Log::warning("SendPaymentConfirmationEmail: No customer email found", [
-                "booking_id" => $booking->id,
-                "payment_id" => $payment->id,
+            Log::warning('SendPaymentConfirmationEmail: No customer email found', [
+                'booking_id' => $booking->id,
+                'payment_id' => $payment->id,
+                'customer_id' => $booking->customer_id,
             ]);
             return;
         }
@@ -41,17 +44,17 @@ class SendPaymentConfirmationEmail implements ShouldQueue
         try {
             Mail::to($customerEmail)->send(new BalancePaymentReceived($booking));
 
-            Log::info("Payment confirmation email sent", [
-                "booking_id" => $booking->id,
-                "payment_id" => $payment->id,
-                "customer_email" => $customerEmail,
-                "amount" => $payment->amount,
+            Log::info('Payment confirmation email sent', [
+                'booking_id' => $booking->id,
+                'payment_id' => $payment->id,
+                'customer_email' => $customerEmail,
+                'amount' => $payment->amount,
             ]);
         } catch (\Exception $e) {
-            Log::error("Failed to send payment confirmation email", [
-                "booking_id" => $booking->id,
-                "payment_id" => $payment->id,
-                "error" => $e->getMessage(),
+            Log::error('Failed to send payment confirmation email', [
+                'booking_id' => $booking->id,
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
             ]);
         }
     }
