@@ -3,8 +3,14 @@
 
 @php
     $variant = $variant ?? 'sidebar';
-    $pdfUrl = route('tours.download-pdf', $tour->slug);
     $hasItinerary = $tour->itineraryItems && $tour->itineraryItems->where('type', 'day')->count() > 0;
+    
+    // Guard: Only render if tour has itinerary
+    if (!$hasItinerary) {
+        return;
+    }
+    
+    $pdfUrl = route('tours.download-pdf', $tour->slug);
 @endphp
 
 @if($variant === 'sidebar')
@@ -12,12 +18,8 @@
     <a href="{{ $pdfUrl }}"
        class="btn-pdf-download btn-pdf-download--sidebar"
        download
+       data-cta="download-pdf"
        aria-label="Download {{ $tour->title }} itinerary as PDF"
-       @if(!$hasItinerary) 
-           style="opacity: 0.5; pointer-events: none;" 
-           title="No itinerary available"
-           aria-disabled="true"
-       @endif
        @if(config('services.google_analytics.enabled', false))
        onclick="typeof gtag === 'function' && gtag('event', 'download_pdf', {'event_category': 'engagement', 'event_label': '{{ $tour->slug }}'})"
        @endif
@@ -27,15 +29,15 @@
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        <span>Download Itinerary (PDF)</span>
+        <span>Download itinerary (PDF)</span>
     </a>
 @else
     {{-- Inline variant: Simple text link style --}}
     <a href="{{ $pdfUrl }}"
        class="pdf-link-inline"
        download
+       data-cta="download-pdf"
        aria-label="Download itinerary as PDF"
-       @if(!$hasItinerary) style="display: none;" @endif
        @if(config('services.google_analytics.enabled', false))
        onclick="typeof gtag === 'function' && gtag('event', 'download_pdf', {'event_category': 'engagement', 'event_label': '{{ $tour->slug }}'})"
        @endif
