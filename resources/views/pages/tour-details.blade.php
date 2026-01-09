@@ -1023,19 +1023,21 @@
                     <span>Your details</span>
                   </div>
                   <form class="quote-detail-form" id="quote-request-form" action="#" method="POST" data-form-type="quote-request">
+                    <input type="hidden" name="action_type" value="inquiry">
+                    <input type="hidden" name="tour_id" value="{{ $tour->id }}">
                     <div class="form-group">
                       <label for="quote-name" class="form-label">Your name</label>
-                      <input type="text" id="quote-name" name="name" class="form-input" required autocomplete="name" placeholder="John Smith">
+                      <input type="text" id="quote-name" name="customer_name" class="form-input" required autocomplete="name" placeholder="John Smith">
                     </div>
                     <div class="form-group">
                       <label for="quote-email" class="form-label">Email address</label>
-                      <input type="email" id="quote-email" name="email" class="form-input" required autocomplete="email" placeholder="john@example.com">
+                      <input type="email" id="quote-email" name="customer_email" class="form-input" required autocomplete="email" placeholder="john@example.com">
                     </div>
                     <div class="form-group">
                       <label for="quote-message" class="form-label">Message <span class="optional">(optional)</span></label>
                       <textarea id="quote-message" name="message" class="form-input" rows="3" placeholder="Tell us about your ideal trip..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn--accent btn--block" id="submit-quote">
+                    <button type="submit" class="btn btn--accent btn--block" id="submit-quote-request">
                       <span>Send Quote Request</span>
                       <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </button>
