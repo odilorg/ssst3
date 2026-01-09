@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       try {
         // Submit to inquiry endpoint
-        const response = await fetch('/inquiries', {
+        const response = await fetch('/partials/inquiries', {
           method: 'POST',
           headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
