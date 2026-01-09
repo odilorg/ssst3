@@ -23,8 +23,16 @@ class BalancePaymentReceived extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
+        // Determine payment type for subject line
+        $isFullPayment = $this->booking->payment_type === 'full' || 
+                         ($this->booking->balance_amount <= 0 && $this->booking->amount_paid >= $this->booking->total_price);
+
+        $subject = $isFullPayment
+            ? "Payment Confirmation – {$this->booking->reference}"
+            : "Deposit Confirmation – {$this->booking->reference}";
+
         return new Envelope(
-            subject: "✅ Payment Confirmed - {$this->booking->tour->title}",
+            subject: $subject,
         );
     }
 

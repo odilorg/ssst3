@@ -1,66 +1,144 @@
+@php
+    // Determine payment type from booking data
+    $isFullPayment = $booking->payment_type === 'full' || 
+                      ($booking->balance_amount <= 0 && $booking->amount_paid >= $booking->total_price);
+    $isDeposit = !$isFullPayment;
+    
+    // Calculate amounts for display
+    $totalCost = number_format($booking->total_price, 2);
+    $depositPaid = number_format($booking->deposit_amount, 2);
+    $balanceRemaining = number_format($booking->balance_amount, 2);
+    $currency = $booking->currency ?? 'USD';
+@endphp
+
 <x-mail::message>
-# ✅ Payment Confirmed - You're All Set!
+@if($isFullPayment)
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+{{-- FULL PAYMENT RECEIPT --}}
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+
+# Payment Confirmation
 
 Dear {{ $customer->name }},
 
-**Great news!** We've received your balance payment for **{{ $tour->title }}**. Your booking is now fully paid and confirmed!
-
-## Payment Confirmation
-
-<x-mail::table>
-| Detail | Information |
-| :--- | :--- |
-| **Booking Reference** | {{ $booking->reference }} |
-| **Tour** | {{ $tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
-@if($booking->end_date && $booking->start_date->ne($booking->end_date))
-| **End Date** | {{ $booking->end_date->format('F j, Y (l)') }} |
-@endif
-| **Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'guest' : 'guests' }} |
-| **Payment Status** | ✅ FULLY PAID |
-</x-mail::table>
-
-## What Happens Next?
-
-Your booking is now fully confirmed! Our team is finalizing:
-
-- ✓ Transportation arrangements (trains/flights)
-- ✓ Hotel confirmations
-- ✓ Site entry permits
-- ✓ Tour guide assignments
-
-**We'll send your complete travel itinerary within 5-7 business days** with:
-- Detailed day-by-day schedule
-- Transportation details
-- Hotel information
-- Guide contact information
-- Pre-departure checklist
-
-## Getting Ready for Your Tour
-
-Your tour starts in **{{ $booking->daysUntilTour() }} days**! Here's what to do:
-
-1. 📋 Review passenger details (if not submitted yet)
-2. 🎒 Start preparing your packing list
-3. 📸 Check visa requirements for Uzbekistan
-4. 💉 Consult your doctor about vaccinations
-5. 💰 Arrange local currency (Uzbek Som)
-
-We'll send you a comprehensive pre-departure guide soon!
-
-## Questions?
-
-If you have any questions or need assistance:
-
-- **Email:** {{ config('mail.from.address') }}
-- **Booking Reference:** {{ $booking->reference }}
-
-We're excited to welcome you to Uzbekistan!
-
-Best regards,<br>
-**The Jahongir Travel Team**
+We confirm receipt of your payment for **{{ $tour->title }}**. Your booking is now fully paid and confirmed.
 
 ---
 
-*Payment confirmed on {{ now()->format('F j, Y g:i A') }}. Keep this email for your records.*
+## Booking Details
+
+<x-mail::table>
+| | |
+| :--- | :--- |
+| **Booking Reference** | {{ $booking->reference }} |
+| **Tour** | {{ $tour->title }} |
+| **Travel Dates** | {{ $booking->start_date->format('j F Y') }}@if($booking->end_date && $booking->start_date->ne($booking->end_date)) – {{ $booking->end_date->format('j F Y') }}@endif |
+| **Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'person' : 'people' }} |
+</x-mail::table>
+
+---
+
+## Payment Summary
+
+<x-mail::table>
+| | |
+| :--- | :--- |
+| **Total Paid** | {{ $currency }} {{ $totalCost }} |
+| **Payment Status** | Fully Paid |
+| **Balance Remaining** | {{ $currency }} 0.00 |
+</x-mail::table>
+
+---
+
+## What This Means
+
+Your tour is fully confirmed. Our team is now preparing your travel arrangements, including:
+
+- Transportation bookings (domestic flights and trains)
+- Hotel reservations
+- Site entry permits and tickets
+- Guide and driver assignments
+
+You will receive your complete travel itinerary within 5–7 business days, including day-by-day schedules, accommodation details, and emergency contact information.
+
+---
+
+## Assistance
+
+Should you have any questions regarding your booking, please contact us:
+
+**Email:** info@jahongir-travel.uz  
+**Reference:** {{ $booking->reference }}
+
+We look forward to welcoming you to Uzbekistan.
+
+Warm regards,  
+**Jahongir Travel**
+
+<small>Payment confirmed on {{ now()->format('j F Y') }}. Please retain this email for your records.</small>
+
+@else
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+{{-- DEPOSIT RECEIPT --}}
+{{-- ═══════════════════════════════════════════════════════════════ --}}
+
+# Deposit Confirmation
+
+Dear {{ $customer->name }},
+
+We confirm receipt of your deposit payment for **{{ $tour->title }}**. Your booking is now secured.
+
+---
+
+## Booking Details
+
+<x-mail::table>
+| | |
+| :--- | :--- |
+| **Booking Reference** | {{ $booking->reference }} |
+| **Tour** | {{ $tour->title }} |
+| **Travel Dates** | {{ $booking->start_date->format('j F Y') }}@if($booking->end_date && $booking->start_date->ne($booking->end_date)) – {{ $booking->end_date->format('j F Y') }}@endif |
+| **Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'person' : 'people' }} |
+</x-mail::table>
+
+---
+
+## Payment Summary
+
+<x-mail::table>
+| | |
+| :--- | :--- |
+| **Total Tour Cost** | {{ $currency }} {{ $totalCost }} |
+| **Deposit Paid** | {{ $currency }} {{ $depositPaid }} |
+| **Balance Remaining** | {{ $currency }} {{ $balanceRemaining }} |
+| **Payment Status** | Deposit Received |
+</x-mail::table>
+
+---
+
+## What This Means
+
+Your booking is secured. We are holding your place and will begin preliminary arrangements.
+
+The remaining balance of **{{ $currency }} {{ $balanceRemaining }}** is due before your tour start date. We will send a reminder as the due date approaches.
+
+Once the balance is settled, you will receive your complete travel itinerary with all accommodation, transportation, and guide details.
+
+---
+
+## Assistance
+
+Should you have any questions regarding your booking or payment schedule, please contact us:
+
+**Email:** info@jahongir-travel.uz  
+**Reference:** {{ $booking->reference }}
+
+We look forward to welcoming you to Uzbekistan.
+
+Warm regards,  
+**Jahongir Travel**
+
+<small>Deposit confirmed on {{ now()->format('j F Y') }}. Please retain this email for your records.</small>
+
+@endif
 </x-mail::message>
