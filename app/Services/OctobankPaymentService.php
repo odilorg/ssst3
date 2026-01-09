@@ -277,23 +277,30 @@ class OctobankPaymentService
             $signature = request()->header('Signature') ?? request()->header('X-Signature');
         }
 
-        // SECURITY: Signature is MANDATORY - reject if missing
-        if (empty($signature)) {
-            Log::warning('Octobank webhook rejected: missing signature header', [
+        // In TEST MODE, skip signature validation (OctoBank test env may not send signatures)
+        if ($this->testMode && empty($signature)) {
+            Log::warning('Octobank webhook: skipping signature validation in TEST MODE', [
                 'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
-                'ip' => request()->ip(),
             ]);
-            throw new Exception('Missing webhook signature');
-        }
+        } else {
+            // SECURITY: Signature is MANDATORY in production - reject if missing
+            if (empty($signature)) {
+                Log::warning('Octobank webhook rejected: missing signature header', [
+                    'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+                    'ip' => request()->ip(),
+                ]);
+                throw new Exception('Missing webhook signature');
+            }
 
-        // Validate signature - reject if invalid
-        if (!$this->verifyWebhookSignature($payload, $signature)) {
-            Log::error('Octobank webhook rejected: invalid signature', [
-                'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
-                'signature_received' => substr($signature, 0, 20) . '...',
-                'ip' => request()->ip(),
-            ]);
-            throw new Exception('Invalid webhook signature');
+            // Validate signature - reject if invalid
+            if (!$this->verifyWebhookSignature($payload, $signature)) {
+                Log::error('Octobank webhook rejected: invalid signature', [
+                    'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+                    'signature_received' => substr($signature, 0, 20) . '...',
+                    'ip' => request()->ip(),
+                ]);
+                throw new Exception('Invalid webhook signature');
+            }
         }
 
         $shopTransactionId = $payload['shop_transaction_id'] ?? null;
