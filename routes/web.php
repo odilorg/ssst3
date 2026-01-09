@@ -89,6 +89,10 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show']
     ->name('blog.show')
     ->where('slug', '[a-z0-9-]+');
 
+
+// Artisan Workshop pages
+Route::get("/workshops", [\App\Http\Controllers\WorkshopController::class, "index"])->name("workshops.index");
+Route::get("/workshops/{slug}", [\App\Http\Controllers\WorkshopController::class, "show"])->name("workshops.show")->where("slug", "[a-z0-9-]+");
 // Contact form submission
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])
     ->name('contact.store');
