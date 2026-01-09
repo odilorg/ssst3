@@ -1035,11 +1035,15 @@ class TourForm
                         ->helperText('В пределах какого радиуса доступен трансфер'),
 
                     TextInput::make('cancellation_hours')
-                        ->label('Бесплатная отмена за (часов)')
+                        ->label('Бесплатная отмена за (дней)')
                         ->numeric()
                         ->required()
-                        ->default(24)
-                        ->helperText('За сколько часов можно отменить бесплатно'),
+                        ->default(1)
+                        ->minValue(1)
+                        ->maxValue(365)
+                        ->helperText('За сколько дней до тура можно отменить бесплатно')
+                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                        ->dehydrateStateUsing(fn ($state) => $state ? $state * 24 : 24),
 
                     Textarea::make('cancellation_policy')
                         ->label('Политика отмены')
