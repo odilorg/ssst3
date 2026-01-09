@@ -1001,10 +1001,7 @@
                     This tour is tailored to your preferences. Request a quote for exact pricing.
                   </p>
                 @endif
-                <a href="#included" class="quote-pricing__link">
-                  <span>What's included?</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
+                
               </div>
 
               {{-- CARD 3: CTA --}}
