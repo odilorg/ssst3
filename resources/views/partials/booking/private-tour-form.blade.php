@@ -52,7 +52,7 @@
             <input
                 type="number"
                 id="guests_count"
-                name="guests_count"
+                name="number_of_guests"
                 value="{{ $guestsCount }}"
                 min="{{ $tour->private_min_guests }}"
                 max="{{ $tour->private_max_guests }}"
