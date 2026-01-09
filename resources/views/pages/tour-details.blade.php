@@ -161,6 +161,13 @@
                   </div>
                 </div>
               </div>
+              {{-- PDF Download Link --}}
+              <div class="tour-actions">
+                <a href="{{ route("tours.download-pdf", $tour->slug) }}" class="tour-action-link" download>
+                  <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>{{ __('ui.download_itinerary') ?? 'Download Itinerary PDF' }}</span>
+                </a>
+              </div>
             @else
               <!-- Loading Skeleton -->
               <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
@@ -4442,6 +4449,41 @@
 
   .tour-quick-info__item {
     padding: 14px;
+  }
+}
+/* Tour Actions - PDF Download */
+.tour-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+}
+.tour-action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary, #7B3F9E);
+  background: var(--color-background-alt, #f9fafb);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.tour-action-link:hover {
+  background: var(--color-primary, #7B3F9E);
+  color: white;
+}
+.tour-action-link .icon {
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .tour-actions {
+    margin-top: 1rem;
+  }
+  .tour-action-link {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

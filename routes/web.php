@@ -51,6 +51,10 @@ Route::get('/tours/compare', function () {
 })->name('tours.compare');
 
 // Tour details page - SEO-friendly URL with Blade template (must be LAST to avoid conflicts)
+// Tour PDF download
+Route::get("/tours/{slug}/download-pdf", [\App\Http\Controllers\TourPdfController::class, "download"])->name("tours.download-pdf");
+Route::get("/tours/{slug}/view-pdf", [\App\Http\Controllers\TourPdfController::class, "stream"])->name("tours.view-pdf");
+
 Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show');
 
 // About page
