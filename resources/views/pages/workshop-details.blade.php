@@ -261,17 +261,24 @@
             <div class="audience-grid">
               @foreach($workshop->who_is_it_for as $audience)
               <div class="audience-card">
+                @if(is_array($audience) && isset($audience['icon']))
+                <i class="fas fa-{{ $audience['icon'] }}" style="color: #D4A853; font-size: 1.5rem;"></i>
+                <div class="audience-card__content">
+                  <h4>{{ $audience['title'] }}</h4>
+                  <p>{{ $audience['description'] }}</p>
+                </div>
+                @else
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D4A853" stroke-width="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                   <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
-                <span>{{ $audience }}</span>
+                <span>{{ is_array($audience) ? ($audience['title'] ?? '') : $audience }}</span>
+                @endif
               </div>
               @endforeach
             </div>
           </section>
           @endif
-
           <!-- Part of Your Journey -->
           @if($relatedTours && $relatedTours->count() > 0)
           <section class="workshop-section" id="related-tours">
@@ -891,6 +898,28 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+
+.audience-card__content {
+  flex: 1;
+}
+
+.audience-card__content h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ws-text-primary);
+}
+
+.audience-card__content p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ws-text-secondary);
+  line-height: 1.4;
+}
+
+.audience-card i {
+  flex-shrink: 0;
+}
 /* Related Tours */
 .related-tours-grid {
   display: grid;
