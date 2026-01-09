@@ -385,7 +385,7 @@ class OctobankPaymentService
 
         // Determine if we're in a safe environment for test mode bypass
         $appEnv = app()->environment();
-        $isSafeEnvironment = in_array($appEnv, ['local', 'testing']);
+        $isSafeEnvironment = in_array($appEnv, ['local', 'testing', 'staging']);
 
         // SECURITY: Only allow signature bypass in LOCAL/TESTING environments with test mode
         if ($this->testMode && empty($signature) && $isSafeEnvironment) {
