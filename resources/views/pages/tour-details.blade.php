@@ -157,7 +157,7 @@
                   <i class="fas fa-language"></i>
                   <div>
                     <strong>{{ __('ui.languages') }}</strong>
-                    <span>{{ __('ui.english_russian') }}</span>
+                    <span>{{ implode(', ', $tour->languages ?? ['English']) }}</span>
                   </div>
                 </div>
               </div>
