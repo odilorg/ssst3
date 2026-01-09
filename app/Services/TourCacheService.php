@@ -180,6 +180,12 @@ class TourCacheService
         // Clear tour detail
         Cache::forget("tour.detail.{$tour->slug}");
 
+        // Clear tour partials cache for all locales
+        $locales = config("multilang.locales", ["en"]);
+        foreach ($locales as $locale) {
+            Cache::forget("tour.{$tour->slug}.{$locale}.with_translation");
+        }
+
         // Clear city tours
         if ($tour->city_id) {
             for ($i = 1; $i <= 20; $i++) {
