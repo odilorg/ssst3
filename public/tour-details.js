@@ -906,7 +906,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (quoteFormContainer.style.display === 'none') {
       quoteFormContainer.style.display = 'block';
       openQuoteFormBtn.style.display = 'none';
-      askQuestionLink.style.display = 'none';
+      if (askQuestionLink) askQuestionLink.style.display = "none";
 
       // Pre-fill date and guests from Card 1
       const selectedDate = document.getElementById('quote-date')?.value;

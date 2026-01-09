@@ -1012,17 +1012,17 @@
                 <h3 class="quote-card__title">Request a quote</h3>
                 <p class="quote-card__desc">Get a personalized itinerary and pricing for your group.</p>
 
-                <button type="button" class="btn btn--primary btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form">
+                <button type="button" class="btn btn--primary btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form-container">
                   <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                   <span>Request a Quote</span>
                 </button>
 
                 {{-- Expandable quote form --}}
-                <div class="quote-request-form" id="quote-request-form" hidden>
+                <div class="quote-request-form" id="quote-request-form-container" style="display: none;">
                   <div class="quote-form-divider">
                     <span>Your details</span>
                   </div>
-                  <form class="quote-detail-form" id="quote-detail-form" action="#" method="POST" data-form-type="quote-request">
+                  <form class="quote-detail-form" id="quote-request-form" action="#" method="POST" data-form-type="quote-request">
                     <div class="form-group">
                       <label for="quote-name" class="form-label">Your name</label>
                       <input type="text" id="quote-name" name="name" class="form-input" required autocomplete="name" placeholder="John Smith">
@@ -1042,7 +1042,7 @@
                   </form>
 
                   {{-- Success state --}}
-                  <div class="quote-success" id="quote-success" hidden>
+                  <div class="quote-success" id="quote-request-success" style="display: none;">
                     <div class="quote-success__icon">
                       <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#10B981"/><path d="M38 22L25 35L18 28" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
