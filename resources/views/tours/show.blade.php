@@ -891,7 +891,7 @@
                   <span class="breakdown-value breakdown-total" data-total="{{ $initialTotal }}">${{ number_format($initialTotal, 2) }}</span>
                 </div>
               </div>
-              <p class="breakdown-note">Free cancellation up to {{ $tour->cancellation_hours ?? 24 }} hours before the tour</p>
+              <p class="breakdown-note">Free cancellation up to {{ (int) floor(($tour->cancellation_hours ?? 24) / 24) }} days before the tour</p>
             </div>
 
             <!-- Trust Badges -->

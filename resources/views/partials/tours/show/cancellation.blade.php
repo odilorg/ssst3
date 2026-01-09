@@ -2,6 +2,10 @@
 @php
     // Use translated cancellation policy if available, otherwise fall back to tour policy
     $cancellationPolicy = $translation->cancellation_policy ?? $tour->cancellation_policy;
+    
+    // Convert hours to days for display
+    $cancellationHours = $tour->cancellation_hours ?? 24;
+    $cancellationDays = (int) floor($cancellationHours / 24);
 @endphp
 
 <h2 class="section-title">{{ __('ui.sections.cancellation_policy') }}</h2>
@@ -12,8 +16,8 @@
             <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9v-6h2v6zm0-8H9V5h2v2z"/>
         </svg>
         <p>
-            <strong>{{ __('ui.cancellation.free_cancellation', ['hours' => $tour->cancellation_hours ?? 24]) }}</strong>
-            {{ __('ui.cancellation.full_refund', ['hours' => $tour->cancellation_hours ?? 24]) }}
+            <strong>Free cancellation up to {{ $cancellationDays }} days before the tour start time.</strong>
+            You can cancel up to {{ $cancellationDays }} days in advance of the experience for a full refund.
         </p>
     </div>
 
@@ -25,9 +29,9 @@
     @else
         {{-- Default cancellation policy --}}
         <ul class="cancellation-list">
-            <li>{{ __('ui.cancellation.rule_full_refund', ['hours' => $tour->cancellation_hours ?? 24]) }}</li>
-            <li>{{ __('ui.cancellation.rule_no_refund', ['hours' => $tour->cancellation_hours ?? 24]) }}</li>
-            <li>{{ __('ui.cancellation.rule_no_changes', ['hours' => $tour->cancellation_hours ?? 24]) }}</li>
+            <li>Full refund if cancelled {{ $cancellationDays }}+ days before departure.</li>
+            <li>No refund if cancelled less than {{ $cancellationDays }} days before departure.</li>
+            <li>Changes not permitted less than {{ $cancellationDays }} days before departure.</li>
             <li>{{ __('ui.cancellation.weather_policy') }}</li>
         </ul>
     @endif
