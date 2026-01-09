@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Workshops\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -52,11 +51,13 @@ class WorkshopForm
                     ->schema([
                         FileUpload::make('hero_image')
                             ->image()
+                            ->disk('local')
                             ->directory('workshops')
                             ->columnSpanFull(),
                         FileUpload::make('gallery')
                             ->image()
                             ->multiple()
+                            ->disk('local')
                             ->directory('workshops/gallery')
                             ->columnSpanFull(),
                     ]),
@@ -78,6 +79,7 @@ class WorkshopForm
                             ->rows(3),
                         FileUpload::make('master_image')
                             ->image()
+                            ->disk('local')
                             ->directory('workshops/masters'),
                         TextInput::make('master_experience_years')
                             ->numeric(),
