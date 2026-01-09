@@ -1134,10 +1134,17 @@
       @endif
       <!-- Action Buttons Group -->
       <div class="mobile-cta__actions">
+        @if($tour->shouldShowPrice())
         <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="{{ __('ui.book_this_tour') }}">
           <svg class="icon icon--calendar-check" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm1 2h4v2H7V4zM2 9h14v8H2V9zm11.707 1.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
           {{ __('ui.book_now') }}
         </button>
+        @else
+        <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="quote-sidebar" aria-label="Request a Quote">
+          <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Get Quote
+        </button>
+        @endif
         <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20the%20{{ urlencode($tour->title) }}%20tour."
            class="mobile-cta__whatsapp"
            target="_blank"
