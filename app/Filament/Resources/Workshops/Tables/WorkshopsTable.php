@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Workshops\Tables;
 
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -88,7 +88,7 @@ class WorkshopsTable
                     ->label('Featured'),
             ])
             ->actions([
-                ViewAction::make()
+                Action::make('view_page')
                     ->url(fn ($record) => 'https://staging.jahongir-travel.uz/workshops/' . $record->slug)
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-eye')
