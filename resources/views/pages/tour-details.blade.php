@@ -4491,22 +4491,33 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 0;
   font-size: 0.875rem;
+  font-weight: 500;
   color: var(--color-text-secondary, #6b7280);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 .pdf-link-inline:hover {
   color: var(--color-primary, #7B3F9E);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.pdf-link-inline:hover .icon {
-  stroke: var(--color-primary, #7B3F9E);
+.pdf-link-inline:focus {
+  outline: 2px solid var(--color-primary, #7B3F9E);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 .pdf-link-inline .icon {
   flex-shrink: 0;
-  transition: stroke 0.2s ease;
+  opacity: 0.7;
+  transition: stroke 0.2s ease, opacity 0.2s ease;
+}
+.pdf-link-inline:hover .icon {
+  stroke: var(--color-primary, #7B3F9E);
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
