@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\OctobankPayment;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Exception;
 
 class OctobankPaymentService
@@ -18,31 +20,91 @@ class OctobankPaymentService
     protected int $ttl;
 
     /**
-     * Get USD to UZS exchange rate from CBU.uz
+     * Sensitive fields that should be redacted from webhook payloads before storage
      */
-    public function getExchangeRate(): float
+    protected const SENSITIVE_FIELDS = [
+        'card_number',
+        'cvv',
+        'expiry',
+        'card_token',
+        'pan',
+        'full_pan',
+        'expiry_date',
+        'security_code',
+        'pin',
+    ];
+
+    /**
+     * Get USD to UZS exchange rate from CBU.uz
+     *
+     * Caches successful rates for 6 hours to reduce API calls and provide fallback.
+     *
+     * @param bool $throwIfStale If true, throws exception if cached rate is older than 24 hours
+     * @return float Exchange rate
+     * @throws Exception If rate is stale and $throwIfStale is true
+     */
+    public function getExchangeRate(bool $throwIfStale = false): float
     {
+        $cacheKey = 'cbu_usd_uzs_rate';
+        $cacheTimestampKey = 'cbu_usd_uzs_rate_timestamp';
+        $cacheDuration = 6 * 60 * 60; // 6 hours in seconds
+        $staleThreshold = 24 * 60 * 60; // 24 hours in seconds
+
+        // Try to get fresh rate from CBU
         try {
             $date = now()->format('Y-m-d');
             $response = Http::timeout(5)->get("https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/{$date}/");
 
-            if (!$response->successful()) {
-                Log::warning('Failed to fetch CBU exchange rate, using fallback', ['status' => $response->status()]);
-                return 12650.0; // Fallback rate
+            if ($response->successful() && isset($response->json()[0]['Rate'])) {
+                $rate = (float) $response->json()[0]['Rate'];
+
+                // Cache the successful rate
+                Cache::put($cacheKey, $rate, $cacheDuration);
+                Cache::put($cacheTimestampKey, now()->timestamp, $cacheDuration);
+
+                return $rate;
             }
 
-            $data = $response->json();
-
-            if (!isset($data[0]['Rate'])) {
-                Log::warning('Exchange rate missing in CBU response');
-                return 12650.0; // Fallback rate
-            }
-
-            return (float) $data[0]['Rate'];
+            Log::warning('CBU exchange rate API returned invalid response', [
+                'status' => $response->status(),
+                'body' => substr($response->body(), 0, 200),
+            ]);
         } catch (Exception $e) {
-            Log::error('CBU exchange rate fetch failed', ['error' => $e->getMessage()]);
-            return 12650.0; // Fallback rate
+            Log::warning('CBU exchange rate API request failed', ['error' => $e->getMessage()]);
         }
+
+        // API failed - try to use cached rate
+        $cachedRate = Cache::get($cacheKey);
+        $cachedTimestamp = Cache::get($cacheTimestampKey);
+
+        if ($cachedRate !== null) {
+            $ageInSeconds = $cachedTimestamp ? (now()->timestamp - $cachedTimestamp) : 0;
+            $ageInHours = round($ageInSeconds / 3600, 1);
+
+            // Check if rate is too stale
+            if ($throwIfStale && $ageInSeconds > $staleThreshold) {
+                Log::critical('CBU exchange rate is stale and fresh rate unavailable', [
+                    'cached_rate' => $cachedRate,
+                    'age_hours' => $ageInHours,
+                ]);
+                throw new Exception("Exchange rate is stale ({$ageInHours} hours old) and fresh rate unavailable");
+            }
+
+            Log::warning('Using cached CBU exchange rate', [
+                'rate' => $cachedRate,
+                'age_hours' => $ageInHours,
+            ]);
+
+            return $cachedRate;
+        }
+
+        // No cached rate available - use hardcoded fallback
+        Log::critical('CRITICAL: Using hardcoded exchange rate fallback - CBU API unavailable and no cached rate', [
+            'fallback_rate' => 12650.0,
+            'action_required' => 'Check CBU API availability and network connectivity',
+        ]);
+
+        return 12650.0; // Hardcoded fallback - should be updated periodically
     }
 
     /**
@@ -71,7 +133,7 @@ class OctobankPaymentService
     public function initializePayment(Booking $booking, float $amount, array $options = []): OctobankPayment
     {
         $shopTransactionId = OctobankPayment::generateShopTransactionId();
-        
+
         // Create payment record first
         $payment = OctobankPayment::create([
             'booking_id' => $booking->id,
@@ -87,7 +149,7 @@ class OctobankPaymentService
         try {
             // Prepare API request
             $requestPayload = $this->buildPaymentRequest($payment, $booking, $options);
-            
+
             // Save request payload
             $payment->update(['request_payload' => $requestPayload]);
 
@@ -97,7 +159,7 @@ class OctobankPaymentService
             ])->post($this->apiUrl . '/prepare_payment', $requestPayload);
 
             $responseData = $response->json();
-            
+
             // Save response
             $payment->update(['response_payload' => $responseData]);
 
@@ -142,6 +204,10 @@ class OctobankPaymentService
 
     /**
      * Build the payment request payload
+     *
+     * WARNING: This payload contains octo_secret which is required by Octobank's API spec.
+     * Ensure request body logging is DISABLED in production to prevent secret exposure.
+     * The secret is transmitted over HTTPS but should never be logged or stored in plain text.
      */
     protected function buildPaymentRequest(OctobankPayment $payment, Booking $booking, array $options = []): array
     {
@@ -150,6 +216,7 @@ class OctobankPaymentService
 
         $payload = [
             'octo_shop_id' => (int) $this->shopId,  // Cast to int like working app
+            // SECURITY NOTE: octo_secret is required by Octobank API. Never log request bodies in production.
             'octo_secret' => $this->secretKey,
             'shop_transaction_id' => $payment->octo_shop_transaction_id,
             'auto_capture' => $this->autoCapture,
@@ -175,7 +242,7 @@ class OctobankPaymentService
                 ['method' => 'bank_card'],  // CRITICAL FIX: Use 'bank_card' not uzcard/humo
             ],
             'tsp_id' => (int) 18,  // Cast to int like working app
-            'ttl' => 5000,  // Cast to int
+            'ttl' => (int) $this->ttl,  // Use configured TTL from services.octobank.ttl
             'language' => $options['language'] ?? 'en',
             'return_url' => $returnUrl,
             'notify_url' => $callbackUrl,
@@ -223,7 +290,7 @@ class OctobankPaymentService
         }
 
         $refundAmount = $amount ?? $payment->remaining_refundable_amount;
-        
+
         if ($refundAmount > $payment->remaining_refundable_amount) {
             throw new Exception('Сумма возврата превышает остаток платежа');
         }
@@ -243,7 +310,7 @@ class OctobankPaymentService
 
             if ($response->successful() && isset($responseData['error']) && $responseData['error'] === 0) {
                 $payment->processRefund($refundAmount, $reason);
-                
+
                 Log::info('Octobank refund processed', [
                     'payment_id' => $payment->id,
                     'amount' => $refundAmount,
@@ -263,31 +330,77 @@ class OctobankPaymentService
     }
 
     /**
+     * Sanitize webhook payload by redacting sensitive fields
+     *
+     * @param array $payload Raw webhook payload
+     * @return array Sanitized payload safe for database storage
+     */
+    protected function sanitizeWebhookPayload(array $payload): array
+    {
+        $sanitized = $payload;
+
+        foreach (self::SENSITIVE_FIELDS as $field) {
+            if (isset($sanitized[$field])) {
+                $sanitized[$field] = '[REDACTED]';
+            }
+            // Also check nested structures
+            foreach ($sanitized as $key => $value) {
+                if (is_array($value) && isset($value[$field])) {
+                    $sanitized[$key][$field] = '[REDACTED]';
+                }
+            }
+        }
+
+        return $sanitized;
+    }
+
+    /**
      * Process webhook from Octobank
      *
      * @param array $payload The webhook payload
-     * @param string|null $signature Signature from request header (required)
+     * @param string|null $signature Signature from request header (required in production)
      * @return OctobankPayment|null
-     * @throws Exception If signature is missing or invalid
+     * @throws Exception If signature is missing/invalid or rate limit exceeded
      */
     public function processWebhook(array $payload, ?string $signature = null): ?OctobankPayment
     {
+        // SECURITY: Rate limiting - 60 requests per minute per IP
+        $ip = request()->ip();
+        $rateLimitKey = 'octobank_webhook_' . $ip;
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 60)) {
+            $retryAfter = RateLimiter::availableIn($rateLimitKey);
+            Log::warning('Octobank webhook rate limit exceeded', [
+                'ip' => $ip,
+                'retry_after_seconds' => $retryAfter,
+            ]);
+            throw new Exception("Rate limit exceeded. Try again in {$retryAfter} seconds.");
+        }
+        RateLimiter::hit($rateLimitKey, 60); // 60 second decay
+
         // Get signature from request header if not passed directly
         if ($signature === null) {
             $signature = request()->header('Signature') ?? request()->header('X-Signature');
         }
 
-        // In TEST MODE, skip signature validation (OctoBank test env may not send signatures)
-        if ($this->testMode && empty($signature)) {
-            Log::warning('Octobank webhook: skipping signature validation in TEST MODE', [
+        // Determine if we're in a safe environment for test mode bypass
+        $appEnv = app()->environment();
+        $isSafeEnvironment = in_array($appEnv, ['local', 'testing']);
+
+        // SECURITY: Only allow signature bypass in LOCAL/TESTING environments with test mode
+        if ($this->testMode && empty($signature) && $isSafeEnvironment) {
+            Log::warning('Octobank webhook: skipping signature validation in TEST MODE (local/testing env only)', [
                 'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+                'environment' => $appEnv,
             ]);
         } else {
-            // SECURITY: Signature is MANDATORY in production - reject if missing
+            // SECURITY: Signature is MANDATORY in production/staging - reject if missing
             if (empty($signature)) {
                 Log::warning('Octobank webhook rejected: missing signature header', [
                     'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
-                    'ip' => request()->ip(),
+                    'ip' => $ip,
+                    'environment' => $appEnv,
+                    'test_mode' => $this->testMode,
                 ]);
                 throw new Exception('Missing webhook signature');
             }
@@ -297,34 +410,37 @@ class OctobankPaymentService
                 Log::error('Octobank webhook rejected: invalid signature', [
                     'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
                     'signature_received' => substr($signature, 0, 20) . '...',
-                    'ip' => request()->ip(),
+                    'ip' => $ip,
                 ]);
                 throw new Exception('Invalid webhook signature');
             }
         }
 
         $shopTransactionId = $payload['shop_transaction_id'] ?? null;
-        
+
         if (!$shopTransactionId) {
             Log::warning('Octobank webhook missing shop_transaction_id', ['payload' => $payload]);
             return null;
         }
 
         $payment = OctobankPayment::where('octo_shop_transaction_id', $shopTransactionId)->first();
-        
+
         if (!$payment) {
             Log::warning('Octobank webhook: payment not found', ['shop_transaction_id' => $shopTransactionId]);
             return null;
         }
 
-        // Update payment with webhook data
+        // SECURITY: Sanitize payload before storing to remove sensitive card data
+        $sanitizedPayload = $this->sanitizeWebhookPayload($payload);
+
+        // Update payment with webhook data (sanitized)
         $payment->update([
             'webhook_received_at' => now(),
-            'webhook_payload' => $payload,
+            'webhook_payload' => $sanitizedPayload,
         ]);
 
         $status = $payload['status'] ?? $payload['octo_status'] ?? null;
-        
+
         switch ($status) {
             case 'succeeded':
             case 'completed':
@@ -393,19 +509,28 @@ class OctobankPaymentService
      * Octobank typically uses HMAC-SHA256 to sign webhook payloads.
      * The signature is sent in the 'Signature' or 'X-Signature' header.
      *
+     * SECURITY CONCERN: This method tries multiple signature formats (hex, base64, sorted keys).
+     * Ideally, only ONE format should be accepted per Octobank's official documentation.
+     * Multiple formats increase attack surface. Verify with Octobank which format they use
+     * and remove the others. This multi-format approach is a temporary measure for compatibility.
+     *
      * @param array $payload The webhook payload
      * @param string $signature The signature from request header
      * @return bool True if signature is valid
      */
     public function verifyWebhookSignature(array $payload, string $signature): bool
     {
+        // SECURITY: Secret key MUST be configured - never bypass verification
         if (empty($this->secretKey)) {
-            Log::warning('Octobank webhook signature verification skipped - no secret key configured');
-            return true; // Skip verification if no secret configured
+            Log::critical('SECURITY CRITICAL: Octobank webhook signature verification failed - no secret key configured', [
+                'action_required' => 'Configure OCTOBANK_SECRET_KEY in .env immediately',
+                'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
+            ]);
+            return false; // CRITICAL FIX: Return false, not true
         }
 
         // Octobank uses the secret key to sign the JSON payload
-        // Try standard HMAC-SHA256
+        // Try standard HMAC-SHA256 (hex format)
         $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
         $expectedSignature = hash_hmac('sha256', $jsonPayload, $this->secretKey);
 
