@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Exception;
 
 class PaymentController extends Controller
@@ -27,6 +28,24 @@ class PaymentController extends Controller
      */
     public function initialize(Request $request): JsonResponse
     {
+        // SECURITY: Rate limiting - 10 payment initializations per hour per IP
+        $ip = $request->ip();
+        $rateLimitKey = 'payment_init_' . $ip;
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 10)) {
+            $retryAfter = RateLimiter::availableIn($rateLimitKey);
+            Log::warning('Payment initialization rate limit exceeded', [
+                'ip' => $ip,
+                'retry_after_seconds' => $retryAfter,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many payment attempts. Please try again later.',
+            ], 429);
+        }
+        RateLimiter::hit($rateLimitKey, 3600); // 1 hour decay
+
         $request->validate([
             'booking_id' => 'required|exists:bookings,id',
             'payment_type' => 'required|in:deposit,full',
@@ -107,7 +126,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Ошибка инициализации платежа: ' . $e->getMessage(),
+                'message' => 'Payment initialization failed. Please try again.',
             ], 500);
         }
     }
@@ -255,9 +274,9 @@ class PaymentController extends Controller
     public function result(Request $request)
     {
         $shopTransactionId = $request->query('shop_transaction_id');
-        
+
         if (!$shopTransactionId) {
-            return redirect('/')->with('error', 'Некорректный запрос');
+            return redirect('/')->with('error', 'Invalid request');
         }
 
         $payment = OctobankPayment::with('booking.tour')
@@ -265,7 +284,7 @@ class PaymentController extends Controller
             ->first();
 
         if (!$payment) {
-            return redirect('/')->with('error', 'Платёж не найден');
+            return redirect('/')->with('error', 'Payment not found');
         }
 
         if ($payment->is_successful) {
@@ -281,9 +300,28 @@ class PaymentController extends Controller
     /**
      * Octobank webhook handler
      * POST /api/octobank/webhook
+     *
+     * Returns proper HTTP status codes:
+     * - 200: Successful processing
+     * - 401: Invalid/missing signature
+     * - 429: Rate limit exceeded
+     * - 500: Internal error
      */
     public function webhook(Request $request): JsonResponse
     {
+        $ip = $request->ip();
+
+        // SECURITY: Rate limiting - 100 requests per minute per IP (controller level)
+        $rateLimitKey = 'webhook_controller_' . $ip;
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 100)) {
+            Log::warning('Webhook controller rate limit exceeded', ['ip' => $ip]);
+            // Return 429 with minimal info - don't expose rate limit details
+            return response()->json(['status' => 'error'], 429);
+        }
+        RateLimiter::hit($rateLimitKey, 60); // 1 minute decay
+
+        // Log minimal non-sensitive info
         Log::info('Octobank webhook received', [
             'shop_transaction_id' => $request->input('shop_transaction_id'),
             'status' => $request->input('status'),
@@ -297,35 +335,44 @@ class PaymentController extends Controller
                 event(new \App\Events\PaymentSucceeded($payment));
             }
 
-            return response()->json([
-                'status' => 'ok',
-                'processed' => $payment !== null,
-            ]);
+            // 200 OK - successful processing
+            return response()->json(['status' => 'ok'], 200);
 
         } catch (Exception $e) {
-            // Return 401 for signature-related errors
             $message = $e->getMessage();
-            if (str_contains($message, 'signature')) {
+
+            // Check for signature-related errors
+            if (str_contains($message, 'signature') || str_contains($message, 'Signature')) {
                 Log::warning('Octobank webhook signature error', [
                     'error' => $message,
-                    'ip' => $request->ip(),
+                    'ip' => $ip,
+                    'shop_transaction_id' => $request->input('shop_transaction_id'),
                 ]);
 
-                return response()->json([
-                    'status' => 'error',
-                    'message' => $message,
-                ], 401);
+                // 401 Unauthorized - don't expose detailed error to caller
+                return response()->json(['status' => 'error'], 401);
             }
 
+            // Check for rate limit errors from service
+            if (str_contains($message, 'Rate limit')) {
+                Log::warning('Octobank webhook service rate limit', [
+                    'ip' => $ip,
+                    'shop_transaction_id' => $request->input('shop_transaction_id'),
+                ]);
+
+                // 429 Too Many Requests
+                return response()->json(['status' => 'error'], 429);
+            }
+
+            // Log detailed error internally
             Log::error('Octobank webhook processing failed', [
                 'error' => $message,
                 'shop_transaction_id' => $request->input('shop_transaction_id'),
+                'ip' => $ip,
             ]);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => $message,
-            ], 500);
+            // 500 Internal Server Error - generic response
+            return response()->json(['status' => 'error'], 500);
         }
     }
 
@@ -352,7 +399,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Возврат успешно обработан',
+                'message' => 'Refund processed successfully',
                 'payment' => [
                     'status' => $payment->fresh()->status,
                     'refunded_amount' => $payment->fresh()->refunded_amount,
@@ -360,9 +407,14 @@ class PaymentController extends Controller
             ]);
 
         } catch (Exception $e) {
+            Log::error('Refund failed', [
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Refund processing failed. Please try again.',
             ], 400);
         }
     }
