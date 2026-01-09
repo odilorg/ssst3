@@ -925,71 +925,103 @@
           @else
             {{-- ============================================ --}}
             {{-- QUOTE MODE (show_price = false / hide_price) --}}
+                        {{-- ============================================ --}}
+            {{-- QUOTE SIDEBAR - Modern Card Stack Design    --}}
             {{-- ============================================ --}}
 
             <div class="quote-sidebar" data-mode="quote">
 
-              {{-- CARD 1: Date & Guests Selection --}}
-              <div class="quote-card quote-card--date">
-                <h3 class="quote-card__title">
-                  <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm0 2h6v2H6V4zM2 9h14v8H2V9z"/></svg>
-                  Select your date
-                </h3>
+              {{-- CARD 1: Plan Your Tour --}}
+              <div class="quote-card quote-card--plan">
+                <div class="quote-card__header">
+                  <div class="quote-card__icon-wrap">
+                    <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </div>
+                  <h3 class="quote-card__title">Plan your tour</h3>
+                </div>
 
                 <form class="quote-form" id="quote-form" data-form-type="quote">
                   <div class="form-group">
-                    <label for="quote-date" class="form-label">Preferred date</label>
-                    <input type="date" id="quote-date" name="quote-date" class="form-input" required aria-required="true" min="" data-min-date-offset="1">
+                    <label for="quote-date" class="form-label">
+                      <span>Preferred date</span>
+                    </label>
+                    <div class="input-wrapper input-wrapper--icon">
+                      <input type="date" id="quote-date" name="quote-date" class="form-input" required aria-required="true" min="" data-min-date-offset="1">
+                      <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      </span>
+                    </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="quote-guests" class="form-label">Number of guests</label>
-                    <select id="quote-guests" name="quote-guests" class="form-input" required aria-required="true">
-                      @for($i = 1; $i <= ($tour->max_guests ?? 15); $i++)
-                        <option value="{{ $i }}" {{ $i == 2 ? "selected" : "" }}>{{ $i }} {{ $i == 1 ? "guest" : "guests" }}</option>
-                      @endfor
-                    </select>
+                    <label for="quote-guests" class="form-label">
+                      <span>Number of guests</span>
+                    </label>
+                    <div class="input-wrapper input-wrapper--icon">
+                      <select id="quote-guests" name="quote-guests" class="form-input" required aria-required="true">
+                        @for($i = 1; $i <= ($tour->max_guests ?? 15); $i++)
+                          <option value="{{ $i }}" {{ $i == 2 ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? 'guest' : 'guests' }}</option>
+                        @endfor
+                      </select>
+                      <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                      </span>
+                    </div>
                   </div>
                 </form>
 
                 <p class="quote-card__helper">
-                  We will confirm availability and send a quote based on your date and group size.
+                  <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  We'll confirm availability and prepare a personalized quote.
                 </p>
               </div>
 
-              {{-- CARD 2: Pricing Info --}}
+              {{-- CARD 2: Price Hint --}}
               <div class="quote-card quote-card--pricing">
+                <span class="quote-pricing__eyebrow">Estimated starting price</span>
                 @if($tour->price_per_person && $tour->price_per_person > 0)
-                  {{-- Has minimum price --}}
                   <div class="quote-pricing">
-                    <span class="quote-pricing__label">From</span>
+                    <span class="quote-pricing__from">From</span>
                     <span class="quote-pricing__amount">${{ number_format($tour->price_per_person, 0) }}</span>
-                    <span class="quote-pricing__unit">per person</span>
+                    <span class="quote-pricing__unit">/ person</span>
                   </div>
                   <p class="quote-pricing__note">
-                    Final price depends on hotel level, transport type, and season.
+                    Based on a 2-person private tour. Final price depends on hotel level, transport type, and season.
                   </p>
                 @else
-                  {{-- No price - quote only --}}
-                  <div class="quote-pricing quote-pricing--request">
-                    <span class="quote-pricing__label">Price</span>
-                    <span class="quote-pricing__amount">On request</span>
+                  <div class="quote-pricing quote-pricing--custom">
+                    <span class="quote-pricing__amount quote-pricing__amount--text">Custom pricing</span>
                   </div>
                   <p class="quote-pricing__note">
-                    This custom tour is priced based on your preferences.
+                    This tour is tailored to your preferences. Request a quote for exact pricing.
                   </p>
                 @endif
+                <a href="#included" class="quote-pricing__link">
+                  <span>What's included?</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </a>
               </div>
 
-              {{-- CARD 3: Quote Request CTA --}}
+              {{-- CARD 3: CTA --}}
               <div class="quote-card quote-card--cta">
-                <button type="button" class="btn btn--gradient btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form">
-                  <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M15 0H3C1.35 0 0 1.35 0 3v12c0 1.65 1.35 3 3 3h12c1.65 0 3-1.35 3-3V3c0-1.65-1.35-3-3-3zm-3 12H6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1z"/></svg>
-                  Request a Quote
+                <h3 class="quote-card__title">Request a quote</h3>
+                <p class="quote-card__desc">Get a personalized itinerary and pricing for your group.</p>
+
+                <button type="button" class="btn btn--primary btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form">
+                  <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  <span>Request a Quote</span>
                 </button>
 
                 {{-- Expandable quote form --}}
                 <div class="quote-request-form" id="quote-request-form" hidden>
+                  <div class="quote-form-divider">
+                    <span>Your details</span>
+                  </div>
                   <form class="quote-detail-form" id="quote-detail-form" action="#" method="POST" data-form-type="quote-request">
                     <div class="form-group">
                       <label for="quote-name" class="form-label">Your name</label>
@@ -1000,62 +1032,75 @@
                       <input type="email" id="quote-email" name="email" class="form-input" required autocomplete="email" placeholder="john@example.com">
                     </div>
                     <div class="form-group">
-                      <label for="quote-message" class="form-label">Message (optional)</label>
+                      <label for="quote-message" class="form-label">Message <span class="optional">(optional)</span></label>
                       <textarea id="quote-message" name="message" class="form-input" rows="3" placeholder="Tell us about your ideal trip..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn--primary btn--block" id="submit-quote">
-                      Send Quote Request
+                    <button type="submit" class="btn btn--accent btn--block" id="submit-quote">
+                      <span>Send Quote Request</span>
+                      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </button>
                   </form>
 
                   {{-- Success state --}}
                   <div class="quote-success" id="quote-success" hidden>
                     <div class="quote-success__icon">
-                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#10B981"/><path d="M32 18L21 29L16 24" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#10B981"/><path d="M38 22L25 35L18 28" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     <h4 class="quote-success__title">Quote Request Sent!</h4>
-                    <p class="quote-success__message">We will get back to you within 24 hours with a personalized quote.</p>
+                    <p class="quote-success__message">We'll get back to you within 24 hours with a personalized quote.</p>
                   </div>
                 </div>
 
-                <p class="quote-cta__note">
-                  <svg class="icon" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.7 10.5h-1.4v-4h1.4v4zm0-5h-1.4v-1.4h1.4v1.4z"/></svg>
-                  Free quote, no obligation. Response within 24 hours.
-                </p>
-              </div>
-
-              {{-- CARD 4: Private Tour Badge (if applicable) --}}
-              @if(($tour->tour_type ?? "private_only") === "private_only" || $tour->supports_private)
-              <div class="quote-card quote-card--private">
-                <div class="private-badge">
-                  <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a5 5 0 00-5 5v2H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a5 5 0 00-5-5zm3 7H7V5a3 3 0 016 0v2z"/></svg>
-                  <span>Private Tour</span>
+                <div class="quote-cta__microcopy">
+                  <span class="microcopy-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    Free quote
+                  </span>
+                  <span class="microcopy-divider">•</span>
+                  <span class="microcopy-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    No obligation
+                  </span>
+                  <span class="microcopy-divider">•</span>
+                  <span class="microcopy-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    Reply in 24h
+                  </span>
                 </div>
-                <p class="private-desc">
-                  Only your group participates. Start time and pace can be adjusted to your preferences.
-                </p>
               </div>
-              @endif
 
-              {{-- Trust Badges --}}
+              {{-- CARD 4: Private Tour + Trust --}}
               <div class="quote-card quote-card--trust">
-                <div class="trust-badges trust-badges--compact">
-                  <div class="badge-item">
-                    <svg class="icon icon--shield" width="18" height="20" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M9 0L0 3v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V3L9 0zm0 2.18l7 2.09v5.23c0 4.65-3.19 8.98-7 10.05-3.81-1.07-7-5.4-7-10.05V4.27l7-2.09z"/></svg>
-                    <span>Secure</span>
+                @if(($tour->tour_type ?? 'private_only') === 'private_only' || $tour->supports_private)
+                <div class="trust-feature trust-feature--highlight">
+                  <div class="trust-feature__icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
                   </div>
-                  <div class="badge-item">
-                    <svg class="icon icon--headset" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.5 0 0 4.5 0 10v5a3 3 0 003 3h2v-8H2v-2a8 8 0 1116 0v2h-3v8h2a3 3 0 003-3v-5c0-5.5-4.5-10-10-10z"/></svg>
-                    <span>24/7 Support</span>
+                  <div class="trust-feature__content">
+                    <span class="trust-feature__title">Private Tour</span>
+                    <span class="trust-feature__desc">Just your group. Flexible timing and pace.</span>
                   </div>
-                  <div class="badge-item">
-                    <svg class="icon icon--undo" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M2 8a6 6 0 1110.89 3.5.5.5 0 10.78.63A7 7 0 103 8h3l-4-4-4 4h3z"/></svg>
-                    <span>Flexible</span>
+                </div>
+                @endif
+
+                <div class="trust-list">
+                  <div class="trust-item">
+                    <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>Secure payment</span>
+                  </div>
+                  <div class="trust-item">
+                    <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <span>24/7 support</span>
+                  </div>
+                  <div class="trust-item">
+                    <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    <span>Free cancellation</span>
                   </div>
                 </div>
               </div>
 
             </div>
+
 
           @endif
 
