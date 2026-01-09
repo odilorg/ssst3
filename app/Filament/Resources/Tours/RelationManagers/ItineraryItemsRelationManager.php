@@ -65,9 +65,9 @@ class ItineraryItemsRelationManager extends RelationManager
                     })
                     ->visible(fn (callable $get) => $get('type') === 'stop')
                     ->required(fn (callable $get) => $get('type') === 'stop'),
-                Forms\Components\Textarea::make('description')
+                Forms\Components\RichEditor::make('description')
                     ->label('Опис.')
-                    ->rows(3)
+                    ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link'])
                     ->columnSpanFull(),
                 Forms\Components\TimePicker::make('default_start_time')
                     ->label('Время начала по умолчанию'),
@@ -258,8 +258,9 @@ class ItineraryItemsRelationManager extends RelationManager
                             ->label('Название дня')
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
+                        Forms\Components\RichEditor::make('description')
                             ->label('Описание дня')
+                            ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link'])
                             ->rows(3),
                         Forms\Components\TimePicker::make('default_start_time')
                             ->label('Время')
@@ -324,8 +325,9 @@ class ItineraryItemsRelationManager extends RelationManager
                                 ->label('Название остановки')
                                 ->required()
                                 ->maxLength(255),
-                            Forms\Components\Textarea::make('description')
+                            Forms\Components\RichEditor::make('description')
                                 ->label('Опис.')
+                                ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link'])
                                 ->rows(2),
                             Forms\Components\TimePicker::make('default_start_time')
                                 ->label('Время'),
