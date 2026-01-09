@@ -458,21 +458,11 @@
             </div>
             @endif
 
-            <!-- Urgency Indicators -->
-            <div class="booking-urgency" style="background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%); border-left: 3px solid #ff6b35; padding: 10px 12px; margin-bottom: 12px; border-radius: 6px;">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <span style="display: inline-block; width: 8px; height: 8px; background: #ff6b35; border-radius: 50%; animation: pulse 2s infinite;"></span>
-                <span style="color: #d84315; font-weight: 600; font-size: 13px;">
-                  <span id="viewers-count">{{ rand(8, 15) }}</span> people viewing this tour now
-                </span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="#ff6b35">
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12h-2v-2h2v2zm0-3h-2V6h2v5z"/>
-                </svg>
-                <span style="color: #bf360c; font-size: 12px;">
-                  Only <strong id="spots-left">{{ rand(2, 5) }}</strong> spots left for this week
-                </span>
+            <!-- Social Proof (Subtle) -->
+            <div class="booking-social-proof">
+              <div class="social-proof__item">
+                <span class="social-proof__dot"></span>
+                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> people viewing</span>
               </div>
             </div>
 
@@ -520,79 +510,84 @@
               @endif
             </div>
 
-            <!-- Tier Pricing Info -->
+            <!-- Tier Pricing Accordion -->
             @if($tour->shouldShowPrice() && $tour->pricingTiers && $tour->pricingTiers->count() > 0)
-            <div class="tier-pricing-info" style="margin: 16px 0; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-              <h4 style="font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 10px 0; display: flex; align-items: center; gap: 6px;">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+            <details class="booking-accordion">
+              <summary class="booking-accordion__trigger">
+                <svg class="booking-accordion__icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
                 </svg>
-                Group Pricing
-              </h4>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span>Group Pricing</span>
+                <svg class="booking-accordion__chevron" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </summary>
+              <div class="booking-accordion__content">
                 @foreach($tour->pricingTiers as $tier)
-                <div class="tier-option" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: white; border-radius: 6px; font-size: 12px;">
-                  <span style="color: #6b7280; font-weight: 500;">
-                    {{ $tier->display_label }}
-                    <span style="color: #9ca3af; font-size: 11px;">({{ $tier->min_guests }}@if($tier->min_guests !== $tier->max_guests)-{{ $tier->max_guests }}@endif pax)</span>
-                  </span>
-                  <span style="font-weight: 600; color: #111827;">
-                    ${{ number_format($tier->price_per_person, 0) }}/person
-                  </span>
+                <div class="tier-row">
+                  <span class="tier-row__label">{{ $tier->display_label }} <span class="tier-row__pax">({{ $tier->min_guests }}@if($tier->min_guests !== $tier->max_guests)-{{ $tier->max_guests }}@endif)</span></span>
+                  <span class="tier-row__price">${{ number_format($tier->price_per_person, 0) }}/pp</span>
                 </div>
                 @endforeach
+                <p class="booking-accordion__note">Price decreases as group size increases</p>
               </div>
-              <p style="margin: 8px 0 0 0; font-size: 11px; color: #6b7280; line-height: 1.4;">
-                💡 Price decreases as group size increases. All departures guaranteed!
-              </p>
+            </details>
+            @endif
+
+            <!-- Total Block (Prominent) -->
+            @if($tour->shouldShowPrice())
+            <div class="booking-total-block" data-breakdown-visible="true">
+              <div class="booking-total__row">
+                <span class="booking-total__label">
+                  <span class="breakdown-guests" data-guests="{{ $defaultGuestCount }}">{{ $defaultGuestCount }} guests</span> ×
+                  <span class="breakdown-unit-price" data-unit-price="{{ $displayPricePerPerson }}">${{ number_format($displayPricePerPerson, 2) }}</span>
+                </span>
+                <span class="booking-total__value" data-subtotal="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
+              </div>
+              <div class="booking-total__divider"></div>
+              <div class="booking-total__final">
+                <span class="booking-total__final-label">Total</span>
+                <span class="breakdown-total booking-total__final-price" data-total="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
+              </div>
+            </div>
+            @else
+            <div class="booking-total-block" data-breakdown-visible="true">
+              <div class="booking-total__row">
+                <span class="booking-total__label">
+                  <span class="breakdown-guests" data-guests="2">2 guests</span> ×
+                  <span class="breakdown-unit-price" data-unit-price="0">Contact us</span>
+                </span>
+                <span class="booking-total__value" data-subtotal="0">—</span>
+              </div>
+              <div class="booking-total__divider"></div>
+              <div class="booking-total__final">
+                <span class="booking-total__final-label">Total</span>
+                <span class="breakdown-total booking-total__final-price" data-total="0">Contact us</span>
+              </div>
             </div>
             @endif
 
-            <!-- Price Breakdown -->
-            @if($tour->shouldShowPrice())
-            <div class="price-breakdown" data-breakdown-visible="true">
-              <h3 class="breakdown-title">Price Breakdown</h3>
-              <div class="breakdown-items">
-                <div class="breakdown-item">
-                  <span class="breakdown-label">
-                    <span class="breakdown-guests" data-guests="{{ $defaultGuestCount }}">{{ $defaultGuestCount }} guests</span> ×
-                    <span class="breakdown-unit-price" data-unit-price="{{ $displayPricePerPerson }}">${{ number_format($displayPricePerPerson, 2) }}</span>
-                  </span>
-                  <span class="breakdown-value" data-subtotal="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
-                </div>
-                <div class="breakdown-item breakdown-item--total">
-                  <span class="breakdown-label">Total</span>
-                  <span class="breakdown-value breakdown-total" data-total="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
-                </div>
+            <!-- Cancellation Policy Accordion -->
+            <details class="booking-accordion booking-accordion--secondary">
+              <summary class="booking-accordion__trigger">
+                <svg class="booking-accordion__icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Free cancellation</span>
+                <svg class="booking-accordion__chevron" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </summary>
+              <div class="booking-accordion__content">
+                <ul class="cancellation-list">
+                  <li><span class="cancellation-days">60+ days</span> Full refund</li>
+                  <li><span class="cancellation-days">30-59 days</span> 75% refund</li>
+                  <li><span class="cancellation-days">7-29 days</span> 50% refund</li>
+                  <li><span class="cancellation-days">&lt;7 days</span> No refund</li>
+                </ul>
               </div>
-              <p class="breakdown-note">
-                <strong>Cancellation Policy:</strong><br>
-                • 60+ days before: Full refund<br>
-                • 30-59 days: 75% refund<br>
-                • 7-29 days: 50% refund<br>
-                • Less than 7 days: No refund
-              </p>
-            @else
-            <div class=price-breakdown data-breakdown-visible=true>
-              <h3 class=breakdown-title>Price Breakdown</h3>
-              <div class=breakdown-items>
-                <div class=breakdown-item>
-                  <span class=breakdown-label>
-                    <span class=breakdown-guests data-guests=2>2 guests</span> ×
-                    <span class=breakdown-unit-price data-unit-price="0">Contact us</span>
-                  </span>
-                  <span class="breakdown-value" data-subtotal="0">Please contact us</span>
-                </div>
-                <div class="breakdown-item breakdown-item--total">
-                  <span class="breakdown-label">Total</span>
-                  <span class="breakdown-value breakdown-total" data-total="0">Please contact us</span>
-                </div>
-              </div>
-              <p class="breakdown-note">Contact us for pricing information</p>
-            </div>
-            </div>
-            @endif
+            </details>
 
             <!-- Booking Form -->
             <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
@@ -4530,6 +4525,259 @@
     padding: 0.75rem;
     background: #f9fafb;
     border-radius: 0.5rem;
+  }
+}
+
+/* ===================================
+   PREMIUM BOOKING CARD STYLES
+   =================================== */
+
+/* Social Proof - Subtle */
+.booking-social-proof {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+.social-proof__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.social-proof__dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse-subtle 2s infinite;
+}
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.social-proof__text {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Booking Accordion */
+.booking-accordion {
+  margin: 12px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.booking-accordion__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 14px;
+  background: #f9fafb;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  list-style: none;
+  transition: background 0.2s ease;
+}
+.booking-accordion__trigger:hover {
+  background: #f3f4f6;
+}
+.booking-accordion__trigger::-webkit-details-marker {
+  display: none;
+}
+.booking-accordion__icon {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+.booking-accordion__chevron {
+  margin-left: auto;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+}
+.booking-accordion[open] .booking-accordion__chevron {
+  transform: rotate(180deg);
+}
+.booking-accordion__content {
+  padding: 12px 14px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+}
+.booking-accordion__note {
+  margin: 10px 0 0 0;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+.booking-accordion--secondary {
+  border-color: #f3f4f6;
+}
+.booking-accordion--secondary .booking-accordion__trigger {
+  background: white;
+  padding: 10px 14px;
+  font-weight: 500;
+}
+.booking-accordion--secondary .booking-accordion__content {
+  padding: 10px 14px;
+  background: #f9fafb;
+}
+
+/* Tier Pricing Rows */
+.tier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: white;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  border: 1px solid #f3f4f6;
+}
+.tier-row:last-of-type {
+  margin-bottom: 0;
+}
+.tier-row__label {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+.tier-row__pax {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+.tier-row__price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Total Block (Prominent) */
+.booking-total-block {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+.booking-total__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+.booking-total__label {
+  color: #6b7280;
+}
+.booking-total__value {
+  font-weight: 500;
+  color: #374151;
+}
+.booking-total__divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 12px 0;
+}
+.booking-total__final {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.booking-total__final-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+.booking-total__final-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary, #7B3F9E);
+}
+
+/* Cancellation List */
+.cancellation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cancellation-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+}
+.cancellation-list li:last-child {
+  border-bottom: none;
+}
+.cancellation-days {
+  font-weight: 600;
+  color: #374151;
+  min-width: 70px;
+}
+
+/* Booking Card Refinements */
+.booking-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.booking-card__header {
+  padding: 0;
+  margin-bottom: 16px;
+  background: transparent;
+}
+.booking-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.price-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 400;
+}
+.price-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+.price-unit {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .booking-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .booking-total__final-price {
+    font-size: 20px;
+  }
+  .price-amount {
+    font-size: 24px;
+  }
+  .tier-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .tier-row__price {
+    color: var(--color-primary, #7B3F9E);
   }
 }
 </style>
