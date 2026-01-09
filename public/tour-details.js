@@ -981,11 +981,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (response.ok || response.status === 201) {
-          // Show success state - hide form, show success message
-          const formDivider = quoteFormContainer.querySelector('.quote-form-divider');
-          if (formDivider) formDivider.style.display = 'none';
-          quoteRequestForm.style.display = 'none';
-          quoteRequestSuccess.style.display = 'block';
+          // Reset form for another submission
+          quoteRequestForm.reset();
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Send Quote Request</span><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+          
+          // Show brief success toast
+          alert('Quote request sent! We will get back to you within 24 hours.');
 
           // Track success
           if (typeof gtag === 'function') {
