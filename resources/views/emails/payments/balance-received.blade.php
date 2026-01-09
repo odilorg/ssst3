@@ -1,6 +1,6 @@
 @php
     // Determine payment type from booking data
-    $isFullPayment = $booking->payment_type === 'full' || 
+    $isFullPayment = $booking->payment_method === 'full_payment' || 
                       ($booking->balance_amount <= 0 && $booking->amount_paid >= $booking->total_price);
     $isDeposit = !$isFullPayment;
     
