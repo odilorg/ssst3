@@ -28,6 +28,10 @@ class TourPdfController extends Controller
         ]);
 
         $pdf->setPaper('A4', 'portrait');
+        
+        // Enable compression to reduce file size
+        $pdf->setOption('compress', true);
+        $pdf->setOption('dpi', 72);
 
         // Sanitize filename
         $filename = 'itinerary-' . $tour->slug . '.pdf';
@@ -54,6 +58,10 @@ class TourPdfController extends Controller
         ]);
 
         $pdf->setPaper('A4', 'portrait');
+        
+        // Enable compression to reduce file size
+        $pdf->setOption('compress', true);
+        $pdf->setOption('dpi', 72);
 
         return $pdf->stream('itinerary-' . $tour->slug . '.pdf');
     }

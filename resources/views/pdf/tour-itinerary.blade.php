@@ -5,206 +5,139 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ $tour->title }} - Itinerary</title>
     <style>
-        @page {
-            margin: 1.5cm;
-        }
+        @page { margin: 1.5cm; }
         body {
-            font-family: DejaVu Sans, Arial, sans-serif;
-            font-size: 11pt;
-            line-height: 1.5;
+            font-family: sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
             color: #333;
-            margin: 0;
-            padding: 0;
         }
         .header {
-            border-bottom: 3px solid #7B3F9E;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .header-flex {
-            display: table;
-            width: 100%;
-        }
-        .company-info {
-            display: table-cell;
-            width: 60%;
-            vertical-align: top;
-        }
-        .contact-info {
-            display: table-cell;
-            width: 40%;
-            text-align: right;
-            vertical-align: top;
-            font-size: 10pt;
-            color: #666;
+            border-bottom: 2px solid #7B3F9E;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
         .company-name {
-            font-size: 20pt;
+            font-size: 16pt;
             font-weight: bold;
             color: #111;
-            margin: 0 0 5px 0;
         }
-        .company-legal {
-            font-size: 10pt;
+        .contact-info {
+            font-size: 9pt;
             color: #666;
+            float: right;
+            text-align: right;
         }
         .tour-title-section {
             text-align: center;
-            margin: 25px 0;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 5px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
         }
         .tour-id {
-            font-size: 28pt;
+            font-size: 20pt;
             font-weight: bold;
             color: #7B3F9E;
-            margin-bottom: 5px;
         }
         .tour-title {
-            font-size: 18pt;
+            font-size: 14pt;
             font-weight: bold;
             color: #7B3F9E;
-            margin-bottom: 10px;
+            margin-top: 5px;
         }
         .tour-meta {
-            font-size: 10pt;
+            font-size: 9pt;
             color: #555;
-        }
-        .tour-meta span {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 5px 12px;
-            background: #eee;
-            border-radius: 3px;
+            margin-top: 8px;
         }
         .day-card {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             page-break-inside: avoid;
         }
         .day-header {
             background: #e5e7eb;
-            padding: 10px 15px;
-            border-left: 4px solid #7B3F9E;
-            font-size: 14pt;
+            padding: 8px 12px;
+            border-left: 3px solid #7B3F9E;
+            font-size: 11pt;
             font-weight: bold;
-            color: #111;
         }
         .day-content {
-            padding: 15px;
-            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
             border-top: none;
         }
         .day-description {
             color: #444;
-            margin-bottom: 15px;
-        }
-        .time-section {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .time-label {
             font-weight: bold;
-            font-size: 12pt;
             color: #111;
-            display: inline-block;
-            width: 40px;
-            vertical-align: top;
-        }
-        .activities {
-            display: inline-block;
-            width: calc(100% - 50px);
-            vertical-align: top;
         }
         .activity {
-            margin-bottom: 10px;
-            padding-left: 15px;
+            margin: 6px 0 6px 15px;
         }
         .activity-title {
             font-weight: 600;
-            color: #111;
         }
         .activity-desc {
             color: #666;
-            font-size: 10pt;
-            margin-top: 3px;
+            font-size: 9pt;
         }
         .overnight {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 10pt;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+            font-size: 9pt;
             color: #666;
             font-style: italic;
         }
         .footer {
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 9pt;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 8pt;
             color: #888;
-            margin-top: 30px;
+            margin-top: 20px;
         }
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #888;
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
         }
     </style>
 </head>
 <body>
-    {{-- Header --}}
-    <div class="header">
-        <div class="header-flex">
-            <div class="company-info">
-                <div class="company-name">{{ $companySettings->company_name ?? 'Jahongir Travel' }}</div>
-                @if($companySettings && $companySettings->legal_name)
-                    <div class="company-legal">{{ $companySettings->legal_name }}</div>
-                @endif
-            </div>
-            @if($companySettings)
-            <div class="contact-info">
-                @if($companySettings->office_address)
-                    <div>{{ $companySettings->office_address }}</div>
-                @endif
-                @if($companySettings->city || $companySettings->country)
-                    <div>{{ $companySettings->city }}@if($companySettings->city && $companySettings->country), @endif{{ $companySettings->country }}</div>
-                @endif
-                @if($companySettings->phone)
-                    <div>Tel: {{ $companySettings->phone }}</div>
-                @endif
-                @if($companySettings->email)
-                    <div>{{ $companySettings->email }}</div>
-                @endif
-            </div>
-            @endif
+    <div class="header clearfix">
+        <div class="company-name">{{ $companySettings->company_name ?? 'Jahongir Travel' }}</div>
+        @if($companySettings)
+        <div class="contact-info">
+            @if($companySettings->phone)Tel: {{ $companySettings->phone }}<br>@endif
+            @if($companySettings->email){{ $companySettings->email }}@endif
         </div>
+        @endif
     </div>
 
-    {{-- Tour Title Section --}}
     <div class="tour-title-section">
         <div class="tour-id">{{ $tour->id }}US{{ $tour->id }}</div>
         <div class="tour-title">{{ $tour->title }}</div>
         <div class="tour-meta">
-            <span><strong>Duration:</strong> {{ $tour->duration_days }} days / {{ max(0, $tour->duration_days - 1) }} nights</span>
+            <strong>Duration:</strong> {{ $tour->duration_days }} days / {{ max(0, $tour->duration_days - 1) }} nights
         </div>
     </div>
 
-    {{-- Itinerary --}}
     @php
         $days = $tour->itineraryItems->where('type', 'day')->sortBy('sort_order');
     @endphp
 
-    @forelse($days as $index => $day)
+    @forelse($days as $day)
         @php
             $dayNumber = $loop->iteration;
             $stops = $day->children->sortBy('sort_order');
         @endphp
 
         <div class="day-card">
-            <div class="day-header">
-                Day {{ $dayNumber }}: {{ $day->title }}
-            </div>
-
+            <div class="day-header">Day {{ $dayNumber }}: {{ $day->title }}</div>
             <div class="day-content">
                 @if($day->description)
                     <div class="day-description">{{ $day->description }}</div>
@@ -212,51 +145,29 @@
 
                 @if($stops->isNotEmpty())
                     @php
-                        $amStops = [];
-                        $pmStops = [];
-                        foreach ($stops as $stop) {
-                            if ($stop->default_start_time) {
-                                $hour = (int)\Carbon\Carbon::parse($stop->default_start_time)->format('H');
-                                if ($hour < 12) {
-                                    $amStops[] = $stop;
-                                } else {
-                                    $pmStops[] = $stop;
-                                }
-                            } else {
-                                $pmStops[] = $stop;
-                            }
-                        }
+                        $amStops = $stops->filter(fn($s) => $s->default_start_time && (int)\Carbon\Carbon::parse($s->default_start_time)->format('H') < 12);
+                        $pmStops = $stops->filter(fn($s) => !$s->default_start_time || (int)\Carbon\Carbon::parse($s->default_start_time)->format('H') >= 12);
                     @endphp
 
-                    @if(count($amStops) > 0)
-                        <div class="time-section">
-                            <span class="time-label">AM</span>
-                            <div class="activities">
-                                @foreach($amStops as $stop)
-                                    <div class="activity">
-                                        <div class="activity-title">{{ $stop->title }}</div>
-                                        @if($stop->description)
-                                            <div class="activity-desc">{{ $stop->description }}</div>
-                                        @endif
-                                    </div>
-                                @endforeach
+                    @if($amStops->count() > 0)
+                        <div><span class="time-label">AM:</span>
+                        @foreach($amStops as $stop)
+                            <div class="activity">
+                                <span class="activity-title">{{ $stop->title }}</span>
+                                @if($stop->description)<br><span class="activity-desc">{{ $stop->description }}</span>@endif
                             </div>
+                        @endforeach
                         </div>
                     @endif
 
-                    @if(count($pmStops) > 0)
-                        <div class="time-section">
-                            <span class="time-label">PM</span>
-                            <div class="activities">
-                                @foreach($pmStops as $stop)
-                                    <div class="activity">
-                                        <div class="activity-title">{{ $stop->title }}</div>
-                                        @if($stop->description)
-                                            <div class="activity-desc">{{ $stop->description }}</div>
-                                        @endif
-                                    </div>
-                                @endforeach
+                    @if($pmStops->count() > 0)
+                        <div><span class="time-label">PM:</span>
+                        @foreach($pmStops as $stop)
+                            <div class="activity">
+                                <span class="activity-title">{{ $stop->title }}</span>
+                                @if($stop->description)<br><span class="activity-desc">{{ $stop->description }}</span>@endif
                             </div>
+                        @endforeach
                         </div>
                     @endif
                 @endif
@@ -267,18 +178,11 @@
             </div>
         </div>
     @empty
-        <div class="empty-state">
-            <p>No detailed itinerary available for this tour.</p>
-            <p>Please contact us for more information.</p>
-        </div>
+        <p style="text-align:center;color:#888;">No detailed itinerary available.</p>
     @endforelse
 
-    {{-- Footer --}}
     <div class="footer">
-        <p>Generated on {{ now()->format('F d, Y') }}</p>
-        @if($companySettings)
-            <p>{{ $companySettings->company_name }} | {{ $companySettings->email }} | {{ $companySettings->phone }}</p>
-        @endif
+        Generated {{ now()->format('M d, Y') }} | {{ $companySettings->company_name ?? 'Jahongir Travel' }}
     </div>
 </body>
 </html>
