@@ -57,4 +57,17 @@ return [
         'callback_url' => env('OCTOBANK_CALLBACK_URL'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Internal API
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for internal API endpoints. These endpoints are protected
+    | by API key authentication for internal service-to-service communication.
+    |
+    */
+    'internal_api' => [
+        'key' => env('INTERNAL_API_KEY'),
+    ],
+
 ];

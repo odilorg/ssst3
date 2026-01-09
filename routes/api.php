@@ -52,10 +52,9 @@ Route::get('/cities', function () {
             ];
         })
         ->filter(function ($city) {
-            // Only show cities that have at least one tour
             return $city['tour_count'] > 0;
         })
-        ->values(); // Re-index array after filtering
+        ->values();
 
     return response()->json($cities);
 })->name('api.cities.index');
@@ -106,23 +105,13 @@ Route::get('/categories', function () {
 // PAYMENT API ROUTES
 // ============================================
 
-// Initialize payment
 Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('api.payment.initialize');
-
-// Get price preview for booking form
 Route::get('/payment/price-preview', [\App\Http\Controllers\PaymentController::class, 'pricePreview'])->name('api.payment.price-preview');
-
-// Check payment status
 Route::get('/payment/{payment}/status', [\App\Http\Controllers\PaymentController::class, 'status'])->name('api.payment.status');
-
-// Octobank webhook (no auth - verified by signature)
 Route::post('/octobank/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('api.octobank.webhook');
-
-// Refund (admin only - requires authentication and authorization)
 Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])
     ->middleware(['web', 'auth'])
     ->name('api.payment.refund');
-
 
 // OTA Booking Integration (called by Gmail Watcher)
 Route::prefix('ota')->group(function () {
@@ -136,4 +125,18 @@ Route::prefix('ota')->group(function () {
         ->name('api.ota.bookings.unmapped');
     Route::post('/test-match', [\App\Http\Controllers\Api\OtaBookingController::class, 'testMatch'])
         ->name('api.ota.test-match');
+});
+
+// ============================================
+// INTERNAL API ROUTES (Protected by API Key)
+// ============================================
+
+Route::prefix('internal')->middleware('internal.api')->group(function () {
+    // Tour validation endpoint (no DB writes)
+    Route::post('/tours/validate', [\App\Http\Controllers\Api\Internal\TourValidationController::class, 'validate'])
+        ->name('api.internal.tours.validate');
+
+    // Tour upsert endpoint (create or update)
+    Route::post('/tours/upsert', [\App\Http\Controllers\Api\Internal\TourUpsertController::class, 'upsert'])
+        ->name('api.internal.tours.upsert');
 });

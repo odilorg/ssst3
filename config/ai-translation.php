@@ -217,7 +217,6 @@ IMPORTANT: Return ONLY the direct translation. No markdown, no extra formatting,
     */
     'locale_names' => [
         'en' => 'English',
-        'ru' => 'Russian',
         'uz' => 'Uzbek',
         'fr' => 'French',
         'es' => 'Spanish',

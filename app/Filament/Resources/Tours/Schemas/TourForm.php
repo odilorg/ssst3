@@ -562,11 +562,14 @@ class TourForm
                     ->description('Параметры бронирования и отмены')
                     ->schema([
                         TextInput::make('min_booking_hours')
-                            ->label('Минимум часов до бронирования')
+                            ->label('Минимум дней до бронирования')
                             ->numeric()
                             ->required()
-                            ->default(24)
-                            ->helperText('За сколько часов нужно бронировать'),
+                            ->default(1)
+                            ->suffix('дней')
+                            ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                            ->dehydrateStateUsing(fn ($state) => $state * 24)
+                            ->helperText('За сколько дней нужно бронировать тур'),
 
                         Toggle::make('has_hotel_pickup')
                             ->label('Есть трансфер из отеля')
@@ -1010,11 +1013,14 @@ class TourForm
                         ->helperText('Например: 66.9597'),
 
                     TextInput::make('min_booking_hours')
-                        ->label('Минимум часов до бронирования')
+                        ->label('Минимум дней до бронирования')
                         ->numeric()
                         ->required()
-                        ->default(24)
-                        ->helperText('За сколько часов нужно бронировать')
+                        ->default(1)
+                        ->suffix('дней')
+                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                        ->dehydrateStateUsing(fn ($state) => $state * 24)
+                        ->helperText('За сколько дней нужно бронировать тур')
                         ->columnSpanFull(),
 
                     Toggle::make('has_hotel_pickup')

@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
  * - Set app locale
  * - Set URL defaults for route() helper
  * - Share locale variables with all views
+ * - Bind currentLocale to app container for helper functions
  */
 class SetLocaleFromRoute
 {
@@ -46,6 +47,9 @@ class SetLocaleFromRoute
 
         // Set the application locale
         app()->setLocale($locale);
+
+        // Bind currentLocale to app container for helper functions (locale_url, locale_route)
+        app()->instance('currentLocale', $locale);
 
         // Set URL defaults so route() helper includes locale automatically
         URL::defaults(['locale' => $locale]);

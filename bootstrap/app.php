@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register middleware aliases
         $middleware->alias([
             'locale' => \App\Http\Middleware\SetLocaleFromRoute::class,
+            'internal.api' => \App\Http\Middleware\InternalApiKey::class,
         ]);
 
         // Exclude Octobank webhook from CSRF verification

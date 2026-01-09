@@ -1,49 +1,47 @@
-# Project Context - Jahongir Travel Platform (Staging)
+# Project Context - Jahongir Travel (VPS Staging)
 
 > **Essential project information for context recovery after auto-compact**
->
-> Read this file during session initialization instead of full README.md
+
+---
+
+## ⚠️ CRITICAL: VPS-ONLY DEVELOPMENT
+
+**This is a VPS staging environment. You are running DIRECTLY on the server!**
+
+**ALWAYS:**
+- ✅ Work ONLY in: /domains/staging.jahongir-travel.uz/
+- ✅ Use php artisan commands for Laravel
+- ✅ Use composer for dependencies
+- ✅ Test on https://staging.jahongir-travel.uz
+
+**DO NOT:**
+- ❌ Suggest local development commands
+- ❌ Reference localhost or local paths
+- ❌ Touch other /domains/* directories
+- ❌ Touch /var/www/* directories
+- ❌ Modify nginx/systemd configs
+- ❌ Run destructive commands (rm -rf /, drop database, etc.)
 
 ---
 
 ## 📊 Project Overview
 
-**What:** Travel booking platform for Jahongir Travel company
+**What:** Travel booking platform for Jahongir Travel
 **URL:** https://staging.jahongir-travel.uz
-**Market:** Uzbekistan tourism (Russian/English/Uzbek trilingual)
-**Users:** Tourists, travel agents, admin team
-**Client:** Jahongir Travel company
-
-**Key Features:**
-- Tour catalog with detailed itineraries
-- Online booking system with payments (OctoBank)
-- Blog for travel content
-- Admin panel (Filament 4) for content management
-- Lead management CRM
-- Multi-language support (RU/EN/UZ)
-- AI-powered tour matching and email generation
+**Admin:** https://staging.jahongir-travel.uz/admin
+**Tech:** Laravel 12 + Filament 4 + PostgreSQL
+**Market:** Uzbekistan tourism (RU/EN/UZ trilingual)
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
 - **Framework:** Laravel 12 (PHP 8.2+)
 - **Admin Panel:** Filament 4.0
-- **Database:** PostgreSQL / MySQL
-- **ORM:** Eloquent
-- **Payments:** OctoBank API integration
+- **Database:** PostgreSQL
+- **Payments:** OctoBank API
 - **AI:** OpenAI PHP client
-
-### Frontend
-- **Templating:** Blade + Livewire
-- **Styling:** Tailwind CSS
-- **JS:** Alpine.js
-
-### Infrastructure
-- **Server:** VPS at /domains/staging.jahongir-travel.uz
-- **Web Server:** Nginx
-- **Queue:** Laravel Queue (database driver)
+- **Frontend:** Blade + Livewire + Tailwind CSS
 
 ---
 
@@ -56,12 +54,9 @@
 │   ├── Http/           # Controllers, Middleware
 │   ├── Livewire/       # Livewire components
 │   ├── Models/         # Eloquent models
-│   ├── Services/       # Business logic
-│   └── Mail/           # Email classes
-├── resources/
-│   └── views/          # Blade templates
-├── routes/
-│   └── web.php         # Web routes
+│   └── Services/       # Business logic
+├── resources/views/    # Blade templates
+├── routes/web.php      # Web routes
 ├── public/             # Public assets
 ├── config/             # Laravel config
 ├── database/           # Migrations, seeders
@@ -72,60 +67,43 @@
 
 ## 🚀 Quick Commands
 
-### Artisan
 ```bash
+# Navigate to project
 cd /domains/staging.jahongir-travel.uz
-php artisan migrate           # Run migrations
-php artisan cache:clear       # Clear cache
-php artisan config:clear      # Clear config cache
-php artisan queue:work        # Run queue worker
-php artisan tinker            # Interactive REPL
-```
 
-### Composer
-```bash
-composer install              # Install dependencies
-composer dump-autoload        # Regenerate autoload
-```
+# Artisan commands
+php artisan migrate
+php artisan cache:clear
+php artisan config:clear
+php artisan queue:work
+php artisan tinker
 
-### Git
-```bash
-git pull origin main          # Pull latest changes
-git status                    # Check status
+# Composer
+composer install
+composer dump-autoload
+
+# Git
+git pull origin main
+git status
 ```
 
 ---
 
-## ⚠️ Known Issues
-
-1. **ImportLeads Wizard** - Filament 4 compatibility issue (disabled)
-2. See `KNOWN_ISSUES.md` for full list
-
----
-
-## 🔗 Related URLs
-
-- **Staging:** https://staging.jahongir-travel.uz
-- **Admin Panel:** https://staging.jahongir-travel.uz/admin
-- **Dev Environment:** https://dev.jahongir-travel.uz (/var/www/jahongir-dev)
-
----
-
-## 🔒 Safety Rules (CRITICAL!)
+## 🔒 Safety Rules
 
 **ALLOWED:**
-- Work ONLY in: /domains/staging.jahongir-travel.uz/**
-- Git operations in project folder
-- Composer/artisan commands in project folder
+- Work in /domains/staging.jahongir-travel.uz/**
+- Git, composer, artisan commands
 - Read files anywhere (for reference)
 
 **FORBIDDEN:**
-- DO NOT touch other /domains/* directories
-- DO NOT touch /var/www/* (other projects)
+- DO NOT touch other /domains/* or /var/www/*
 - DO NOT modify /etc/nginx/*, /etc/systemd/*
-- DO NOT run destructive commands on other sites
+- DO NOT run: rm -rf /, pm2 delete all, systemctl stop nginx
+- DO NOT drop/modify other databases
 
 ---
 
 **Last Updated:** 2026-01-08
-**Project Type:** Laravel 12 + Filament 4 Travel Platform
+**Environment:** VPS STAGING ONLY
+**Tech Stack:** Laravel 12 + Filament 4
