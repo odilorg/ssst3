@@ -261,7 +261,7 @@ class ItineraryItemsRelationManager extends RelationManager
                         Forms\Components\RichEditor::make('description')
                             ->label('Описание дня')
                             ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link'])
-                            ->rows(3),
+                            ,
                         Forms\Components\TimePicker::make('default_start_time')
                             ->label('Время')
                             ->default('09:00'),
@@ -328,7 +328,7 @@ class ItineraryItemsRelationManager extends RelationManager
                             Forms\Components\RichEditor::make('description')
                                 ->label('Опис.')
                                 ->toolbarButtons(['bold', 'italic', 'bulletList', 'orderedList', 'link'])
-                                ->rows(2),
+                                ,
                             Forms\Components\TimePicker::make('default_start_time')
                                 ->label('Время'),
                             Forms\Components\TextInput::make('duration_minutes')
