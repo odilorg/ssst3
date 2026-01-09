@@ -1050,6 +1050,7 @@
                     </div>
                     <h4 class="quote-success__title">Quote Request Sent!</h4>
                     <p class="quote-success__message">We'll get back to you within 24 hours with a personalized quote.</p>
+                    <button type="button" class="btn btn--outline btn--small" id="reset-quote-form" style="margin-top: 1rem;">Send another request</button>
                   </div>
                 </div>
 

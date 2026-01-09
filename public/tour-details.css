@@ -4347,3 +4347,29 @@
 }
 
 
+
+/* Reset/Outline Button */
+.btn--outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a5490;
+  background: transparent;
+  border: 1.5px solid #1a5490;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn--outline:hover {
+  background: #1a5490;
+  color: #fff;
+}
+
+.btn--small {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+}

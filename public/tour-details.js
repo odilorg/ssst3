@@ -1038,3 +1038,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* End Quote Sidebar Functionality */
+
+  // Reset Quote Form (send another request)
+  const resetQuoteBtn = document.getElementById('reset-quote-form');
+  if (resetQuoteBtn) {
+    resetQuoteBtn.addEventListener('click', function() {
+      const formDivider = quoteFormContainer.querySelector('.quote-form-divider');
+      
+      // Show form elements again
+      if (formDivider) formDivider.style.display = 'block';
+      quoteRequestForm.style.display = 'block';
+      quoteRequestSuccess.style.display = 'none';
+      
+      // Reset form fields
+      quoteRequestForm.reset();
+      
+      // Reset submit button
+      const submitBtn = document.getElementById('submit-quote-request');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Send Quote Request</span><svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+      }
+    });
+  }
