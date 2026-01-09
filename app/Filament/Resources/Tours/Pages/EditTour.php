@@ -28,7 +28,7 @@ class EditTour extends EditRecord
                 ->icon(Heroicon::OutlinedCheckCircle)
                 ->color('success')
                 ->action(function () {
-                    $this->save();
+                    $this->save(shouldRedirect: false);
                     Notification::make()
                         ->title('Saved successfully')
                         ->success()
