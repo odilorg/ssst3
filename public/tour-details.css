@@ -3716,3 +3716,405 @@
     padding-top: 0.5rem !important;
   }
 }
+
+/* ============================================
+   QUOTE SIDEBAR STYLES (hide_price mode)
+   ============================================ */
+
+.quote-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Quote Card Base */
+.quote-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.quote-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem;
+}
+
+.quote-card__title .icon {
+  color: #1a5490;
+  flex-shrink: 0;
+}
+
+.quote-card__desc {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.quote-card__helper {
+  font-size: 0.8125rem;
+  color: #888;
+  line-height: 1.5;
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Quote Form */
+.quote-form .form-group {
+  margin-bottom: 0.875rem;
+}
+
+.quote-form .form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.375rem;
+}
+
+.quote-form .form-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.quote-form .form-input:focus {
+  outline: none;
+  border-color: #1a5490;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.1);
+}
+
+/* Pricing Card */
+.quote-card--pricing {
+  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.quote-pricing {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.quote-pricing__label {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.quote-pricing__amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a5490;
+  line-height: 1;
+}
+
+.quote-pricing__amount--text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.quote-pricing__unit {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.quote-pricing--request .quote-pricing__amount {
+  color: #333;
+}
+
+.quote-pricing__note {
+  font-size: 0.8125rem;
+  color: #777;
+  line-height: 1.5;
+  margin: 0.75rem 0 0;
+}
+
+.quote-pricing__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: #1a5490;
+  text-decoration: none;
+  margin-top: 0.75rem;
+  transition: color 0.2s;
+}
+
+.quote-pricing__link:hover {
+  color: #0d3a6f;
+  text-decoration: underline;
+}
+
+.quote-pricing__link .icon {
+  opacity: 0.7;
+}
+
+/* CTA Card */
+.quote-card--cta {
+  background: linear-gradient(135deg, #1a5490 0%, #0d3a6f 100%);
+  color: #fff;
+}
+
+.quote-card--cta .quote-card__title {
+  color: #fff;
+}
+
+.quote-card--cta .quote-card__desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Quote Request Form */
+.quote-request {
+  margin-top: 0.5rem;
+}
+
+.quote-request__form {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quote-request-form .form-group {
+  margin-bottom: 0.875rem;
+}
+
+.quote-request-form .form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.375rem;
+}
+
+.quote-request-form .form-label .required {
+  color: #fbbf24;
+}
+
+.quote-request-form .form-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.quote-request-form .form-input:focus {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.quote-request-form .form-input::placeholder {
+  color: #999;
+}
+
+.quote-request-form .form-input--textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.quote-request-form .form-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.25rem;
+}
+
+/* Success State */
+.quote-request__success {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.quote-request__success .success-icon {
+  margin-bottom: 1rem;
+}
+
+.quote-request__success .success-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+
+.quote-request__success .success-message {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.quote-request__success .success-note {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* CTA Buttons in Quote Mode */
+.quote-card--cta .btn--accent {
+  background: #fff;
+  color: #1a5490;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.quote-card--cta .btn--accent:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.quote-card--cta .btn--accent .icon {
+  color: #1a5490;
+}
+
+/* Secondary Link */
+.quote-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.quote-link:hover {
+  color: #fff;
+}
+
+.quote-link .icon {
+  opacity: 0.8;
+}
+
+/* Private Tour Card */
+.quote-card--private {
+  background: linear-gradient(135deg, #f8f5f0 0%, #f5f0e8 100%);
+  border-color: #e8dcc8;
+}
+
+.private-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background: #1a5490;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.private-badge .icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.private-desc {
+  font-size: 0.8125rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Trust Card */
+.quote-card--trust {
+  padding: 1rem;
+  background: #fafafa;
+}
+
+.trust-badges--compact {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.5rem;
+}
+
+.trust-badges--compact .badge-item {
+  flex-direction: column;
+  text-align: center;
+  gap: 0.375rem;
+  padding: 0.5rem;
+}
+
+.trust-badges--compact .badge-item span {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.trust-badges--compact .badge-item .icon {
+  color: #1a5490;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .quote-card {
+    padding: 1rem;
+  }
+
+  .quote-pricing__amount {
+    font-size: 1.75rem;
+  }
+
+  .quote-card--cta {
+    position: sticky;
+    bottom: 0;
+    margin: 0 -1rem;
+    border-radius: 0;
+    z-index: 100;
+  }
+
+  .quote-request-form .form-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .btn--large {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* End Quote Sidebar Styles */

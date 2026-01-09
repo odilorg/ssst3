@@ -877,3 +877,162 @@ if (document.readyState === 'loading') {
 } else {
   initBookNowButtons();
 }
+
+/* ============================================
+   QUOTE SIDEBAR FUNCTIONALITY
+   ============================================ */
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Quote Form Elements
+  const openQuoteFormBtn = document.getElementById('open-quote-form');
+  const quoteFormContainer = document.getElementById('quote-request-form-container');
+  const quoteRequestForm = document.getElementById('quote-request-form');
+  const quoteRequestSuccess = document.getElementById('quote-request-success');
+  const askQuestionLink = document.getElementById('ask-question-link');
+
+  // Check if we're in quote mode
+  if (!openQuoteFormBtn) return;
+
+  // Set minimum date for quote date picker
+  const quoteDateInput = document.getElementById('quote-date');
+  if (quoteDateInput) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    quoteDateInput.min = tomorrow.toISOString().split('T')[0];
+  }
+
+  // Open Quote Form
+  openQuoteFormBtn.addEventListener('click', function() {
+    if (quoteFormContainer.style.display === 'none') {
+      quoteFormContainer.style.display = 'block';
+      openQuoteFormBtn.style.display = 'none';
+      askQuestionLink.style.display = 'none';
+
+      // Pre-fill date and guests from Card 1
+      const selectedDate = document.getElementById('quote-date')?.value;
+      const selectedGuests = document.getElementById('quote-guests')?.value;
+
+      if (quoteRequestForm) {
+        const hiddenDate = quoteRequestForm.querySelector('input[name="selected_date"]');
+        const hiddenGuests = quoteRequestForm.querySelector('input[name="guests"]');
+
+        if (!hiddenDate && selectedDate) {
+          const dateInput = document.createElement('input');
+          dateInput.type = 'hidden';
+          dateInput.name = 'selected_date';
+          dateInput.value = selectedDate;
+          quoteRequestForm.appendChild(dateInput);
+        }
+
+        if (!hiddenGuests && selectedGuests) {
+          const guestsInput = document.createElement('input');
+          guestsInput.type = 'hidden';
+          guestsInput.name = 'guests';
+          guestsInput.value = selectedGuests;
+          quoteRequestForm.appendChild(guestsInput);
+        }
+      }
+
+      // Focus on first input
+      setTimeout(() => {
+        const firstInput = quoteFormContainer.querySelector('input[type="text"]');
+        if (firstInput) firstInput.focus();
+      }, 100);
+
+      // Track analytics
+      if (typeof gtag === 'function') {
+        gtag('event', 'quote_form_opened', {
+          'event_category': 'engagement',
+          'event_label': document.querySelector('input[name="tour_slug"]')?.value
+        });
+      }
+    }
+  });
+
+  // Handle Quote Form Submission
+  if (quoteRequestForm) {
+    quoteRequestForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submit-quote-request');
+      const originalText = submitBtn.innerHTML;
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<svg class="icon animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="32" stroke-dashoffset="32"/></svg> Sending...';
+
+      // Get form data
+      const formData = new FormData(quoteRequestForm);
+      const selectedDate = document.getElementById('quote-date')?.value;
+      const selectedGuests = document.getElementById('quote-guests')?.value;
+
+      if (selectedDate) formData.append('selected_date', selectedDate);
+      if (selectedGuests) formData.append('guests', selectedGuests);
+
+      try {
+        // Submit to inquiry endpoint
+        const response = await fetch('/partials/inquiries', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            'Accept': 'application/json',
+          },
+          body: formData
+        });
+
+        if (response.ok || response.status === 201) {
+          // Show success state
+          quoteFormContainer.style.display = 'none';
+          quoteRequestSuccess.style.display = 'block';
+
+          // Track success
+          if (typeof gtag === 'function') {
+            gtag('event', 'quote_request_submitted', {
+              'event_category': 'conversion',
+              'event_label': formData.get('tour_slug')
+            });
+          }
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch (error) {
+        console.error('Quote request error:', error);
+        alert('Sorry, there was an error sending your request. Please try again or contact us directly.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  }
+
+  // Ask a Question Link
+  if (askQuestionLink) {
+    askQuestionLink.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      // Open the form with notes field focused
+      if (quoteFormContainer.style.display === 'none') {
+        openQuoteFormBtn.click();
+        setTimeout(() => {
+          const notesField = document.getElementById('quote-notes');
+          if (notesField) notesField.focus();
+        }, 150);
+      }
+    });
+  }
+
+  // Scroll to included section
+  const scrollToIncludedLink = document.querySelector('[data-scroll-to="included-excluded"]');
+  if (scrollToIncludedLink) {
+    scrollToIncludedLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      const includedSection = document.getElementById('included-excluded') ||
+                              document.querySelector('[data-section="included-excluded"]') ||
+                              document.querySelector('.included-excluded-section');
+      if (includedSection) {
+        includedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+});
+
+/* End Quote Sidebar Functionality */

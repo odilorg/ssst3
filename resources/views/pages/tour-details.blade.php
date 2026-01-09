@@ -370,6 +370,11 @@
           <!-- Screen Reader Live Region for Dynamic Updates -->
           <div aria-live="polite" aria-atomic="true" class="sr-only" id="booking-status"></div>
 
+          @if($tour->show_price)
+            {{-- ============================================ --}}
+            {{-- NORMAL PRICING MODE (show_price = true) --}}
+            {{-- ============================================ --}}
+
           <!-- Skeleton Loader -->
           <div class="booking-sidebar__skeleton" aria-hidden="true">
             <div class="skeleton skeleton--sidebar-top"></div>
@@ -915,6 +920,144 @@
             </div>
 
           </div>
+
+
+          @else
+            {{-- ============================================ --}}
+            {{-- QUOTE MODE (show_price = false / hide_price) --}}
+            {{-- ============================================ --}}
+
+            <div class="quote-sidebar" data-mode="quote">
+
+              {{-- CARD 1: Date & Guests Selection --}}
+              <div class="quote-card quote-card--date">
+                <h3 class="quote-card__title">
+                  <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm0 2h6v2H6V4zM2 9h14v8H2V9z"/></svg>
+                  Select your date
+                </h3>
+
+                <form class="quote-form" id="quote-form" data-form-type="quote">
+                  <div class="form-group">
+                    <label for="quote-date" class="form-label">Preferred date</label>
+                    <input type="date" id="quote-date" name="quote-date" class="form-input" required aria-required="true" min="" data-min-date-offset="1">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="quote-guests" class="form-label">Number of guests</label>
+                    <select id="quote-guests" name="quote-guests" class="form-input" required aria-required="true">
+                      @for($i = 1; $i <= ($tour->max_guests ?? 15); $i++)
+                        <option value="{{ $i }}" {{ $i == 2 ? "selected" : "" }}>{{ $i }} {{ $i == 1 ? "guest" : "guests" }}</option>
+                      @endfor
+                    </select>
+                  </div>
+                </form>
+
+                <p class="quote-card__helper">
+                  We will confirm availability and send a quote based on your date and group size.
+                </p>
+              </div>
+
+              {{-- CARD 2: Pricing Info --}}
+              <div class="quote-card quote-card--pricing">
+                @if($tour->price_per_person && $tour->price_per_person > 0)
+                  {{-- Has minimum price --}}
+                  <div class="quote-pricing">
+                    <span class="quote-pricing__label">From</span>
+                    <span class="quote-pricing__amount">${{ number_format($tour->price_per_person, 0) }}</span>
+                    <span class="quote-pricing__unit">per person</span>
+                  </div>
+                  <p class="quote-pricing__note">
+                    Final price depends on hotel level, transport type, and season.
+                  </p>
+                @else
+                  {{-- No price - quote only --}}
+                  <div class="quote-pricing quote-pricing--request">
+                    <span class="quote-pricing__label">Price</span>
+                    <span class="quote-pricing__amount">On request</span>
+                  </div>
+                  <p class="quote-pricing__note">
+                    This custom tour is priced based on your preferences.
+                  </p>
+                @endif
+              </div>
+
+              {{-- CARD 3: Quote Request CTA --}}
+              <div class="quote-card quote-card--cta">
+                <button type="button" class="btn btn--gradient btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form">
+                  <svg class="icon" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M15 0H3C1.35 0 0 1.35 0 3v12c0 1.65 1.35 3 3 3h12c1.65 0 3-1.35 3-3V3c0-1.65-1.35-3-3-3zm-3 12H6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1z"/></svg>
+                  Request a Quote
+                </button>
+
+                {{-- Expandable quote form --}}
+                <div class="quote-request-form" id="quote-request-form" hidden>
+                  <form class="quote-detail-form" id="quote-detail-form" action="#" method="POST" data-form-type="quote-request">
+                    <div class="form-group">
+                      <label for="quote-name" class="form-label">Your name</label>
+                      <input type="text" id="quote-name" name="name" class="form-input" required autocomplete="name" placeholder="John Smith">
+                    </div>
+                    <div class="form-group">
+                      <label for="quote-email" class="form-label">Email address</label>
+                      <input type="email" id="quote-email" name="email" class="form-input" required autocomplete="email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                      <label for="quote-message" class="form-label">Message (optional)</label>
+                      <textarea id="quote-message" name="message" class="form-input" rows="3" placeholder="Tell us about your ideal trip..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--block" id="submit-quote">
+                      Send Quote Request
+                    </button>
+                  </form>
+
+                  {{-- Success state --}}
+                  <div class="quote-success" id="quote-success" hidden>
+                    <div class="quote-success__icon">
+                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#10B981"/><path d="M32 18L21 29L16 24" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h4 class="quote-success__title">Quote Request Sent!</h4>
+                    <p class="quote-success__message">We will get back to you within 24 hours with a personalized quote.</p>
+                  </div>
+                </div>
+
+                <p class="quote-cta__note">
+                  <svg class="icon" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 0a7 7 0 100 14A7 7 0 007 0zm.7 10.5h-1.4v-4h1.4v4zm0-5h-1.4v-1.4h1.4v1.4z"/></svg>
+                  Free quote, no obligation. Response within 24 hours.
+                </p>
+              </div>
+
+              {{-- CARD 4: Private Tour Badge (if applicable) --}}
+              @if(($tour->tour_type ?? "private_only") === "private_only" || $tour->supports_private)
+              <div class="quote-card quote-card--private">
+                <div class="private-badge">
+                  <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a5 5 0 00-5 5v2H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a5 5 0 00-5-5zm3 7H7V5a3 3 0 016 0v2z"/></svg>
+                  <span>Private Tour</span>
+                </div>
+                <p class="private-desc">
+                  Only your group participates. Start time and pace can be adjusted to your preferences.
+                </p>
+              </div>
+              @endif
+
+              {{-- Trust Badges --}}
+              <div class="quote-card quote-card--trust">
+                <div class="trust-badges trust-badges--compact">
+                  <div class="badge-item">
+                    <svg class="icon icon--shield" width="18" height="20" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M9 0L0 3v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V3L9 0zm0 2.18l7 2.09v5.23c0 4.65-3.19 8.98-7 10.05-3.81-1.07-7-5.4-7-10.05V4.27l7-2.09z"/></svg>
+                    <span>Secure</span>
+                  </div>
+                  <div class="badge-item">
+                    <svg class="icon icon--headset" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.5 0 0 4.5 0 10v5a3 3 0 003 3h2v-8H2v-2a8 8 0 1116 0v2h-3v8h2a3 3 0 003-3v-5c0-5.5-4.5-10-10-10z"/></svg>
+                    <span>24/7 Support</span>
+                  </div>
+                  <div class="badge-item">
+                    <svg class="icon icon--undo" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M2 8a6 6 0 1110.89 3.5.5.5 0 10.78.63A7 7 0 103 8h3l-4-4-4 4h3z"/></svg>
+                    <span>Flexible</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          @endif
 
         </aside>
 
