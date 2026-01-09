@@ -981,8 +981,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (response.ok || response.status === 201) {
-          // Show success state
-          quoteFormContainer.style.display = 'none';
+          // Show success state - hide form, show success message
+          const formDivider = quoteFormContainer.querySelector('.quote-form-divider');
+          if (formDivider) formDivider.style.display = 'none';
+          quoteRequestForm.style.display = 'none';
           quoteRequestSuccess.style.display = 'block';
 
           // Track success
