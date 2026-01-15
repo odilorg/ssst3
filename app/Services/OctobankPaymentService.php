@@ -98,13 +98,16 @@ class OctobankPaymentService
             return $cachedRate;
         }
 
-        // No cached rate available - use hardcoded fallback
-        Log::critical('CRITICAL: Using hardcoded exchange rate fallback - CBU API unavailable and no cached rate', [
-            'fallback_rate' => 12650.0,
-            'action_required' => 'Check CBU API availability and network connectivity',
+        // No cached rate available - this is a critical error
+        Log::critical('CRITICAL: Exchange rate unavailable - CBU API down and no cached rate', [
+            'cbu_api' => 'https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/' . now()->format('Y-m-d') . '/',
+            'action_required' => 'URGENT: Check CBU API connectivity and server network. Payments may fail.',
+            'recommendation' => 'Consider implementing database-backed exchange rate storage',
         ]);
 
-        return 12650.0; // Hardcoded fallback - should be updated periodically
+        // SECURITY: Throw exception instead of using outdated hardcoded rate
+        // This prevents incorrect pricing and financial loss
+        throw new Exception('Exchange rate unavailable - CBU API is down and no cached rate exists. Cannot process payment.');
     }
 
     /**
@@ -428,6 +431,40 @@ class OctobankPaymentService
         if (!$payment) {
             Log::warning('Octobank webhook: payment not found', ['shop_transaction_id' => $shopTransactionId]);
             return null;
+        }
+
+        // SECURITY: Replay attack protection - check if webhook already processed
+        if ($payment->webhook_received_at) {
+            $minutesSinceFirstWebhook = now()->diffInMinutes($payment->webhook_received_at);
+            Log::info('Octobank webhook already processed (possible replay)', [
+                'payment_id' => $payment->id,
+                'first_received' => $payment->webhook_received_at,
+                'minutes_since' => $minutesSinceFirstWebhook,
+                'current_status' => $payment->status,
+            ]);
+            
+            // If webhook was already processed successfully, don't reprocess
+            if ($payment->is_successful || $payment->status === OctobankPayment::STATUS_FAILED) {
+                Log::info('Webhook already processed with final status, ignoring replay', [
+                    'payment_id' => $payment->id,
+                    'status' => $payment->status,
+                ]);
+                return $payment;
+            }
+        }
+
+        // SECURITY: Timestamp validation - reject webhooks older than 5 minutes
+        $timestamp = $payload['timestamp'] ?? $payload['created_at'] ?? null;
+        if ($timestamp) {
+            $webhookAge = time() - strtotime($timestamp);
+            if ($webhookAge > 300) { // 5 minutes
+                Log::warning('Octobank webhook rejected: too old', [
+                    'shop_transaction_id' => $shopTransactionId,
+                    'timestamp' => $timestamp,
+                    'age_seconds' => $webhookAge,
+                ]);
+                throw new Exception("Webhook too old (" . round($webhookAge / 60) . " minutes)");
+            }
         }
 
         // SECURITY: Sanitize payload before storing to remove sensitive card data
