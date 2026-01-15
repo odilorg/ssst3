@@ -56,6 +56,14 @@ class PaymentController extends Controller
         try {
             $booking = Booking::with('tour')->findOrFail($request->booking_id);
 
+            // SECURITY: Verify user owns this booking or is admin
+            if ($booking->user_id !== auth()->id() && !auth()->user()?->isAdmin()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized to initialize payment for this booking',
+                ], 403);
+            }
+
             // Check if booking is already paid
             if ($booking->payment_status === 'paid') {
                 return response()->json([
@@ -243,6 +251,14 @@ class PaymentController extends Controller
      */
     public function status(OctobankPayment $payment): JsonResponse
     {
+        // SECURITY: Verify user owns this payment's booking or is admin
+        if ($payment->booking->user_id !== auth()->id() && !auth()->user()?->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access',
+            ], 403);
+        }
+
         // Optionally fetch fresh status from Octobank
         if ($payment->is_pending) {
             try {
