@@ -69,7 +69,7 @@ class TourTranslationsRelationManager extends RelationManager
                             ->label('Заголовок')
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                            ->afterStateUpdated(function (string $operation, $state, $set) {
                                 if ($operation === 'create') {
                                     $set('slug', Str::slug($state));
                                 }
