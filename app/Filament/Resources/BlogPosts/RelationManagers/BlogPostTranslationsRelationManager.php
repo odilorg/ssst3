@@ -29,7 +29,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Forms\Components\Section::make('Основные данные')
+                \Filament\Schemas\Components\Section::make('Основные данные')
                     ->description('Язык и базовая информация перевода')
                     ->schema([
                         Forms\Components\Select::make('locale')
@@ -86,7 +86,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Контент')
+                \Filament\Schemas\Components\Section::make('Контент')
                     ->description('Содержимое статьи')
                     ->schema([
                         Forms\Components\Textarea::make('excerpt')
@@ -115,7 +115,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
                             ->columnSpanFull(),
                     ]),
 
-                Forms\Components\Section::make('SEO')
+                \Filament\Schemas\Components\Section::make('SEO')
                     ->description('Метаданные для поисковых систем')
                     ->collapsed()
                     ->schema([
