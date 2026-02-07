@@ -190,8 +190,6 @@
                         x-ref="pickerIframe"
                         x-show="iframeLoaded"
                         class="flex-1 w-full border-0"
-                        sandbox="allow-scripts allow-same-origin"
-                        allow=""
                     ></iframe>
                 </div>
             </div>
