@@ -12,9 +12,9 @@
             <article class="tour-card">
                 {{-- Tour Image --}}
                 <a href="{{ route('tours.show', $tour->slug) }}" class="tour-card__image-link">
-                    @if($tour->hero_image)
+                    @if($tour->featured_image_url)
                         <img
-                            src="{{ asset('storage/' . $tour->hero_image) }}"
+                            src="{{ $tour->featured_image_url }}"
                             alt="{{ $tour->title }}"
                             class="tour-card__image"
                             loading="lazy"

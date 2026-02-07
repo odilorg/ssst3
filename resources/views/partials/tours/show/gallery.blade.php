@@ -4,36 +4,30 @@
     $decodedGallery = is_string($rawGallery) ? json_decode($rawGallery, true) : $rawGallery;
     $galleryImages = is_array($decodedGallery) ? $decodedGallery : [];
 
-    // Use WebP hero image if available, fallback to original
-    $heroImage = $tour->hero_image_webp ?: $tour->hero_image;
+    // Use WebP hero image if available (has_webp checks file existence), fallback to original
+    $heroImageUrl = $tour->has_webp
+        ? $tour->hero_image_webp_url
+        : ($tour->featured_image_url ?? '/images/placeholder-tour.jpg');
+    // Helper: resolve image URL (supports both local paths and full URLs from image repo)
+    $imageUrl = function($path) {
+        if (!$path) return '/images/placeholder-tour.jpg';
+        return str_starts_with($path, 'http') ? $path : asset('storage/' . $path);
+    };
     $totalImages = count($galleryImages);
 @endphp
 
 <!-- Main Image (Left) -->
 <div class="tour-hero__main">
-    @if($heroImage)
-        <img
-            src="{{ asset('storage/' . $heroImage) }}"
-            alt="{{ $tour->title }}"
-            width="1200"
-            height="800"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            class="hero-image"
-            id="main-gallery-image">
-    @else
-        <img
-            src="/images/placeholder-tour.jpg"
-            alt="{{ $tour->title }}"
-            width="1200"
-            height="800"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            class="hero-image"
-            id="main-gallery-image">
-    @endif
+    <img
+        src="{{ $heroImageUrl }}"
+        alt="{{ $tour->title }}"
+        width="1200"
+        height="800"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="hero-image"
+        id="main-gallery-image">
 
     <!-- Navigation Arrows -->
     @if($totalImages > 0)
@@ -59,7 +53,7 @@
                 {{-- Show first 3 thumbnails normally --}}
                 <button class="thumbnail {{ $index === 0 ? 'thumbnail--active' : '' }}" data-index="{{ $index }}" aria-label="View image {{ $index + 1 }}">
                     <img
-                        src="{{ asset('storage/' . $imagePath) }}"
+                        src="{{ $imageUrl($imagePath) }}"
                         alt="{{ $imageAlt }}"
                         width="400"
                         height="300"
@@ -70,7 +64,7 @@
                 {{-- 4th thumbnail with overlay showing remaining count --}}
                 <button class="thumbnail thumbnail--overlay" data-index="{{ $index }}" aria-label="View all {{ $totalImages }} photos">
                     <img
-                        src="{{ asset('storage/' . $imagePath) }}"
+                        src="{{ $imageUrl($imagePath) }}"
                         alt="{{ $imageAlt }}"
                         width="400"
                         height="300"
@@ -89,17 +83,14 @@
 @endif
 
 {{-- Store all gallery images data for JavaScript --}}
-@php
-    $heroImageUrl = $heroImage ? asset('storage/' . $heroImage) : '/images/placeholder-tour.jpg';
-@endphp
 <script id="gallery-data" type="application/json">
 {!! json_encode([
     'heroImage' => $heroImageUrl,
-    'images' => collect($galleryImages)->map(function($image) use ($tour) {
+    'images' => collect($galleryImages)->map(function($image) use ($tour, $imageUrl) {
         $imagePath = is_array($image) ? $image['path'] : $image;
         $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tour->title;
         return [
-            'src' => asset('storage/' . $imagePath),
+            'src' => $imageUrl($imagePath),
             'alt' => $imageAlt
         ];
     })->toArray()

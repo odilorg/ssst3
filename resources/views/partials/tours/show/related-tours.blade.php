@@ -11,9 +11,9 @@
             <a href="{{ route('tours.show', $relatedTour->slug) }}" class="related-tour-card">
                 {{-- Tour Image --}}
                 <div class="related-tour-image-wrapper">
-                    @if($relatedTour->hero_image)
+                    @if($relatedTour->featured_image_url)
                         <img
-                            src="{{ asset('storage/' . $relatedTour->hero_image) }}"
+                            src="{{ $relatedTour->featured_image_url }}"
                             alt="{{ $relatedTour->title }}"
                             class="related-tour-image"
                             loading="lazy">

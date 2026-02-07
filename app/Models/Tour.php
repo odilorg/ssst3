@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Tour extends Model
@@ -876,7 +877,8 @@ class Tour extends Model
     public function getHasWebpAttribute(): bool
     {
         return !empty($this->hero_image_webp) &&
-               $this->image_processing_status === 'completed';
+               $this->image_processing_status === 'completed' &&
+               Storage::disk('public')->exists($this->hero_image_webp);
     }
 
     // ==========================================
