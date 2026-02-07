@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Tours\Schemas;
 
 use App\Forms\Components\ImageRepoPicker;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
