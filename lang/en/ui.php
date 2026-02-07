@@ -299,6 +299,8 @@ return [
     'price_breakdown' => 'Price Breakdown',
     'price_per_person' => 'Price per person:',
     'total_price' => 'Total Price:',
+    'travel_date' => 'Travel Date',
+    'advance_booking_notice' => 'Bookings require at least :days days advance notice.',
 
     // Mobile section tabs
     'tabs' => [

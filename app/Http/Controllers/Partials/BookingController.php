@@ -125,11 +125,16 @@ class BookingController extends Controller
             'ip' => $ip,
         ]);
 
-        // Validation - JS is sending start_date and number_of_guests (not tour-date/tour-guests)
-        $validator = Validator::make($request->all(), [
+        // Determine tour type for conditional validation
+        $tourType = $request->input('tour_type', 'group');
+        $tour = Tour::find($request->tour_id);
+        $minAdvanceDays = $tour ? ($tour->minimum_advance_days ?? 0) : 0;
+        $minDate = now()->startOfDay()->addDays($minAdvanceDays)->toDateString();
+
+        // Build conditional validation rules based on tour type
+        $rules = [
             'tour_id' => 'required|exists:tours,id',
-            'departure_id' => 'required|exists:tour_departures,id',
-            'start_date' => 'required|date|after_or_equal:today',
+            'tour_type' => 'nullable|string|in:private,group',
             'number_of_guests' => 'required|integer|min:1|max:50',
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'required|email|max:255',
@@ -138,7 +143,19 @@ class BookingController extends Controller
             'special_requests' => 'nullable|string|max:1000',
             // SECURITY: Validate payment_method against whitelist
             'payment_method' => 'nullable|string|in:request,card,bank_transfer',
-        ]);
+        ];
+
+        if ($tourType === 'private') {
+            // Private tour: no departure needed, date from date picker
+            $rules['departure_id'] = 'nullable';
+            $rules['start_date'] = ['required', 'date', 'after_or_equal:' . $minDate];
+        } else {
+            // Group tour: departure required, start_date derived from departure
+            $rules['departure_id'] = 'required|exists:tour_departures,id';
+            $rules['start_date'] = 'required|date|after_or_equal:today';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             // SECURITY: Sanitized error logging - no PII
@@ -165,10 +182,18 @@ class BookingController extends Controller
             $paymentMethod = 'request'; // Default to safe value
         }
 
+        // Group tour date integrity: derive start_date from departure to prevent mismatch
+        if ($tourType !== 'private' && $request->departure_id) {
+            $departure = \App\Models\TourDeparture::find($request->departure_id);
+            if ($departure) {
+                $request->merge(['start_date' => $departure->start_date->toDateString()]);
+            }
+        }
+
         DB::beginTransaction();
 
         try {
-            // Get tour
+            // Get tour (already fetched above for validation, but findOrFail for safety)
             $tour = Tour::findOrFail($request->tour_id);
 
             // Find or create customer

@@ -137,6 +137,12 @@
             .then(function(html) {
                 document.getElementById('booking-form-container').innerHTML = html;
                 document.getElementById('tour-type-loading').style.display = 'none';
+
+                // Toggle departure calendar visibility based on tour type
+                var calendarSection = document.getElementById('departure-calendar-section');
+                if (calendarSection) {
+                    calendarSection.style.display = (type === 'group') ? 'block' : 'none';
+                }
             })
             .catch(function(error) {
                 console.error('Error switching tour type:', error);

@@ -95,7 +95,7 @@
       function showValidationErrors(errors) {
         // Map backend field names to frontend field IDs
         const fieldMap = {
-          'start_date': 'tour-date',
+          'start_date': document.getElementById('private_start_date') ? 'private_start_date' : 'tour-date',
           'number_of_guests': 'tour-guests',
           'customer_name': 'customer-name',
           'customer_email': 'customer-email',
@@ -357,23 +357,38 @@
           const submitButton = document.getElementById('submit-button');
           const formData = new FormData(bookingForm);
 
-          // Validate departure selection
-          const departureId = formData.get('departure_id');
-          if (!departureId || departureId === '') {
-            alert('Please select a departure date from the calendar above.');
-            console.error('[Booking] No departure selected');
-            return;
-          }
+          // Detect tour type (private vs group)
+          const tourType = formData.get('tour_type');
+          const isPrivate = tourType === 'private';
 
-          // Validate start date
-          const startDate = formData.get('start_date');
-          if (!startDate || startDate === '') {
-            alert('Please select a departure date from the calendar above.');
-            console.error('[Booking] No start date set');
-            return;
-          }
+          if (isPrivate) {
+            // Private tour: validate start_date from date picker, no departure_id needed
+            const startDate = formData.get('start_date');
+            if (!startDate || startDate === '') {
+              alert('Please select a travel date.');
+              const dateField = document.getElementById('private_start_date');
+              if (dateField) dateField.focus();
+              console.error('[Booking] No start date selected for private tour');
+              return;
+            }
+            console.log('[Booking] Private tour submitting with start_date:', startDate);
+          } else {
+            // Group tour: validate departure_id and start_date from calendar
+            const departureId = formData.get('departure_id');
+            if (!departureId || departureId === '') {
+              alert('Please select a departure date from the calendar above.');
+              console.error('[Booking] No departure selected');
+              return;
+            }
 
-          console.log('[Booking] Submitting with departure_id:', departureId, 'start_date:', startDate);
+            const startDate = formData.get('start_date');
+            if (!startDate || startDate === '') {
+              alert('Please select a departure date from the calendar above.');
+              console.error('[Booking] No start date set');
+              return;
+            }
+            console.log('[Booking] Group tour submitting with departure_id:', departureId, 'start_date:', startDate);
+          }
 
           // Disable submit button
           if (submitButton) {
