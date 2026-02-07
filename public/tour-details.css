@@ -132,7 +132,7 @@
    ====================================================== */
 
 .tour-hero {
-  margin: 2rem 0;
+  margin: 0.5rem 0; /* Reduced from 2rem to minimize white space */
 }
 
 .tour-hero__gallery {
@@ -244,8 +244,8 @@
    ====================================================== */
 
 .tour-header {
-  margin: 0 0 2rem 0;
-  padding-top: 6rem; /* Space for sticky header to prevent overlap */
+  margin: 0 0 0.5rem 0; /* Reduced bottom margin from 2rem */
+  padding-top: 1rem; /* Further reduced from 1.5rem - minimal space after header */
 }
 
 .tour-header__top {
@@ -342,7 +342,7 @@
 .tour-layout {
   display: block; /* Single column on mobile */
   gap: 2.5rem;
-  margin: 3rem 0;
+  margin: 0.5rem 0; /* Minimal margin for mobile */
   touch-action: pan-y; /* Always allow vertical scroll on mobile */
 }
 
@@ -1489,14 +1489,14 @@
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text, #1E1E1E);
   margin-bottom: 0.5rem;
   font-size: 0.9375rem;
@@ -1849,6 +1849,7 @@
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: 2.5rem;
+    margin: 3rem 0; /* Restore desktop margin */
     align-items: start; /* Align both columns to top */
   }
 
@@ -1904,6 +1905,17 @@
 
 /* Mobile: 767px and below */
 @media (max-width: 767px) {
+  /* Remove excessive spacing on mobile */
+  .tour-header {
+    padding-top: 0.5rem !important; /* Minimal space on mobile */
+    margin-bottom: 0 !important;
+  }
+
+  .tour-hero {
+    margin-top: 0.5rem !important; /* Very tight spacing on mobile */
+    margin-bottom: 0.5rem !important;
+  }
+
   /* Hero gallery stacked */
   .tour-hero__gallery {
     grid-template-columns: 1fr;
@@ -2094,7 +2106,8 @@
 
   /* Title smaller on mobile */
   .tour-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
   }
 }
 
@@ -2430,7 +2443,7 @@
 }
 
 .price-amount {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1E1E1E;
 }
@@ -2474,7 +2487,8 @@
 }
 
 .form-hint {
-  display: none;
+  display: block;
+  margin-top: 0.25rem;
 }
 
 /* Primary CTA - Brand Blue (changed from alarming red) */
@@ -3641,3 +3655,721 @@
   }
 }
 
+
+
+/* ======================================================
+   MOBILE-SPECIFIC WHITE SPACE FIXES
+   Added to eliminate excessive spacing on mobile view
+   ====================================================== */
+@media (max-width: 767px) {
+  /* Remove all excessive top spacing */
+  .tour-header {
+    padding-top: 0.5rem !important; /* Minimal top padding */
+    margin: 0 0 0.25rem 0 !important; /* Tiny bottom margin */
+  }
+
+  .tour-hero {
+    margin: 0.25rem 0 !important; /* Minimal margins */
+  }
+
+  /* Ensure header starts at top */
+  .site-header + .tour-header {
+    margin-top: 0 !important;
+  }
+
+  /* Remove any container top padding that might add space */
+  .tour-header .container {
+    padding-top: 0.5rem !important;
+  }
+
+  /* Tighten breadcrumb spacing */
+  .breadcrumbs {
+    padding: 0.5rem 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Reduce title spacing */
+  .tour-header__title-row {
+    margin-bottom: 0.25rem !important;
+  }
+
+  .tour-title {
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Reduce rating row spacing */
+  .tour-header__rating {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Fix for any phantom spacing after nav header */
+  #main-content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Ensure tour content starts immediately */
+  main > section:first-child,
+  #main-content > section:first-child {
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
+  }
+}
+
+/* ============================================
+   QUOTE SIDEBAR STYLES (hide_price mode)
+   ============================================ */
+
+/* ============================================ */
+/* QUOTE SIDEBAR - Modern Card Stack Design    */
+/* ============================================ */
+
+.quote-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: sticky;
+  top: 6rem;
+}
+
+/* Card Base */
+.quote-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.quote-card:hover {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Card Header */
+.quote-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.quote-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+  border-radius: 12px;
+  color: #1a5490;
+}
+
+.quote-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.quote-card__desc {
+  font-size: 0.9375rem;
+  color: #5a5a6e;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.quote-card__helper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.quote-card__helper .icon {
+  flex-shrink: 0;
+  color: #9ca3af;
+  margin-top: 1px;
+}
+
+/* ============================================ */
+/* CARD 1: Plan Your Tour                      */
+/* ============================================ */
+
+.quote-card--plan {
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+}
+
+/* Form Styling */
+.quote-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.quote-form .form-group:last-of-type {
+  margin-bottom: 0;
+}
+
+.quote-form .form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper--icon .form-input {
+  padding-left: 2.75rem;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.quote-form .form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #1f2937;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.quote-form .form-input::placeholder {
+  color: #9ca3af;
+}
+
+.quote-form .form-input:hover {
+  border-color: #d1d5db;
+}
+
+.quote-form .form-input:focus {
+  outline: none;
+  border-color: #1a5490;
+  box-shadow: 0 0 0 4px rgba(26, 84, 144, 0.08);
+  background: #fff;
+}
+
+.quote-form select.form-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  padding-right: 2.5rem;
+}
+
+/* ============================================ */
+/* CARD 2: Price Hint                          */
+/* ============================================ */
+
+.quote-card--pricing {
+  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  text-align: center;
+  padding: 1.75rem 1.5rem;
+}
+
+.quote-pricing__eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.quote-pricing {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.quote-pricing__from {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.quote-pricing__amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a5490;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.quote-pricing__amount--text {
+  font-size: 1.5rem;
+  color: #374151;
+}
+
+.quote-pricing__unit {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.quote-pricing--custom .quote-pricing__amount {
+  font-size: 1.375rem;
+  color: #374151;
+}
+
+.quote-pricing__note {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quote-pricing__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a5490;
+  text-decoration: none;
+  margin-top: 1rem;
+  padding: 0.375rem 0;
+  transition: color 0.2s;
+}
+
+.quote-pricing__link:hover {
+  color: #0d3a6f;
+}
+
+.quote-pricing__link svg {
+  transition: transform 0.2s;
+}
+
+.quote-pricing__link:hover svg {
+  transform: translateY(2px);
+}
+
+/* ============================================ */
+/* CARD 3: CTA                                 */
+/* ============================================ */
+
+.quote-card--cta {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.quote-card--cta .quote-card__title {
+  font-size: 1.0625rem;
+  margin-bottom: 0.375rem;
+}
+
+.quote-card--cta .quote-card__desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1.25rem;
+}
+
+/* Primary Button */
+.btn--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.9375rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1a5490 0%, #0d3a6f 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(26, 84, 144, 0.25);
+}
+
+.btn--primary:hover {
+  background: linear-gradient(135deg, #1e5fa3 0%, #0f4280 100%);
+  box-shadow: 0 4px 16px rgba(26, 84, 144, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(26, 84, 144, 0.25);
+}
+
+.btn--primary .icon {
+  flex-shrink: 0;
+}
+
+.btn--large {
+  min-height: 52px;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Quote Request Form */
+.quote-request-form {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quote-form-divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.quote-form-divider span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+}
+
+.quote-detail-form .form-group {
+  margin-bottom: 0.875rem;
+}
+
+.quote-detail-form .form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
+.quote-detail-form .form-label .optional {
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.quote-detail-form .form-input {
+  width: 100%;
+  padding: 0.6875rem 0.875rem;
+  font-size: 0.9375rem;
+  color: #1f2937;
+  background: #fafbfc;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.quote-detail-form .form-input:focus {
+  outline: none;
+  border-color: #1a5490;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26, 84, 144, 0.08);
+}
+
+.quote-detail-form textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Accent Button */
+.btn--accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8125rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.btn--accent:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+}
+
+/* Success State */
+.quote-success {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.quote-success__icon {
+  margin-bottom: 1rem;
+}
+
+.quote-success__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 0.5rem;
+}
+
+.quote-success__message {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Microcopy */
+.quote-cta__microcopy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.microcopy-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.microcopy-item svg {
+  color: #10b981;
+}
+
+.microcopy-divider {
+  color: #d1d5db;
+  font-size: 0.625rem;
+}
+
+/* ============================================ */
+/* CARD 4: Trust                               */
+/* ============================================ */
+
+.quote-card--trust {
+  background: #ffffff;
+  padding: 1.25rem;
+}
+
+.trust-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.trust-feature--highlight {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: -0.25rem -0.25rem 1rem;
+  border-bottom: none;
+}
+
+.trust-feature__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border-radius: 10px;
+  color: #10b981;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.trust-feature__content {
+  flex: 1;
+}
+
+.trust-feature__title {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 0.125rem;
+}
+
+.trust-feature__desc {
+  display: block;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Trust List */
+.trust-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.trust-item__icon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+/* ============================================ */
+/* Responsive Styles                           */
+/* ============================================ */
+
+@media (max-width: 768px) {
+  .quote-sidebar {
+    position: static;
+    gap: 0.875rem;
+  }
+
+  .quote-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+  }
+
+  .quote-card__header {
+    margin-bottom: 1rem;
+  }
+
+  .quote-card__icon-wrap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quote-card__title {
+    font-size: 1rem;
+  }
+
+  .quote-pricing__amount {
+    font-size: 2.25rem;
+  }
+
+  .btn--primary {
+    padding: 1rem 1.5rem;
+    min-height: 50px;
+  }
+
+  .quote-cta__microcopy {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .microcopy-divider {
+    display: none;
+  }
+
+  .trust-feature--highlight {
+    margin: -0.125rem -0.125rem 0.875rem;
+    padding: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quote-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .quote-pricing__eyebrow {
+    font-size: 0.6875rem;
+  }
+
+  .quote-pricing__amount {
+    font-size: 2rem;
+  }
+
+  .quote-form .form-input,
+  .quote-detail-form .form-input {
+    padding: 0.6875rem 0.75rem;
+    font-size: 1rem; /* Prevent zoom on iOS */
+  }
+
+  .input-wrapper--icon .form-input {
+    padding-left: 2.5rem;
+  }
+}
+
+
+
+/* Reset/Outline Button */
+.btn--outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a5490;
+  background: transparent;
+  border: 1.5px solid #1a5490;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn--outline:hover {
+  background: #1a5490;
+  color: #fff;
+}
+
+.btn--small {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+}

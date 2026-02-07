@@ -57,7 +57,7 @@ class ItineraryItemsRelationManager extends RelationManager
                         $set('duration_minutes', $state === 'day' ? 480 : 120); // 8hrs for day, 2hrs for stop
                     }),
                 Forms\Components\Select::make('parent_id')
-                    ->label('Родительский день')
+                    ->label('Родит.')
                     ->options(function () {
                         return $this->ownerRecord->itineraryItems()
                             ->where('type', 'day')
@@ -66,7 +66,7 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->visible(fn (callable $get) => $get('type') === 'stop')
                     ->required(fn (callable $get) => $get('type') === 'stop'),
                 Forms\Components\Textarea::make('description')
-                    ->label('Описание')
+                    ->label('Опис.')
                     ->rows(3)
                     ->columnSpanFull(),
                 Forms\Components\TimePicker::make('default_start_time')
@@ -94,10 +94,6 @@ class ItineraryItemsRelationManager extends RelationManager
                     })
                     ->placeholder('Выберите продолжительность')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('sort_order')
-                    ->label('Порядок сортировки')
-                    ->numeric()
-                    ->default(0),
                 Forms\Components\Select::make('cities')
                     ->label('Города маршрута')
                     ->relationship('cities', 'name')
@@ -106,11 +102,6 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->searchable()
                     ->columnSpanFull()
                     ->helperText('Выберите города, которые посещаются в этом дне/остановке (в порядке посещения)'),
-                Forms\Components\KeyValue::make('meta')
-                    ->label('Дополнительные данные')
-                    ->keyLabel('Ключ')
-                    ->valueLabel('Значение')
-                    ->columnSpanFull(),
             ]);
     }
 
@@ -128,12 +119,19 @@ class ItineraryItemsRelationManager extends RelationManager
                     ->label('Название')
                     ->searchable()
                     ->sortable()
+                    ->wrap()
+                    ->width(180)
                     ->formatStateUsing(function (string $state, ItineraryItem $record): string {
                         $indent = $record->parent_id ? '&nbsp;&nbsp;&nbsp;&nbsp;' : '';
                         $icon = $record->type === 'day' ? '📅' : '📍';
                         return $indent . $icon . ' ' . $state;
                     })
                     ->html(),
+                Tables\Columns\TextColumn::make('city.name')
+                    ->label('Город')
+                    ->placeholder('—')
+                    ->searchable()
+                    ->width(100),
                 Tables\Columns\BadgeColumn::make('type')
                     ->label('Тип')
                     ->colors([
@@ -145,11 +143,11 @@ class ItineraryItemsRelationManager extends RelationManager
                         'stop' => 'Остановка',
                     }),
                 Tables\Columns\TextColumn::make('default_start_time')
-                    ->label('Время начала')
+                    ->label('Время')
                     ->time()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration_minutes')
-                    ->label('Продолжительность')
+                    ->label('Длит.')
                     ->formatStateUsing(function (int $state): string {
                         $hours = intval($state / 60);
                         $minutes = $state % 60;
@@ -163,24 +161,27 @@ class ItineraryItemsRelationManager extends RelationManager
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('parent.title')
-                    ->label('Родительский день')
+                    ->label('Родит.')
                     ->placeholder('—')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Описание')
-                    ->limit(50)
+                    ->label('Опис.')
+                    ->limit(30)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
                         $state = $column->getState();
-                        if (strlen($state) <= 50) return null;
+                        if (strlen($state) <= 30) return null;
                         return $state;
-                    }),
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('usage_count')
-                    ->label('Использований')
+                    ->label('Исп.')
                     ->getStateUsing(function (ItineraryItem $record): int {
                         return $record->bookingItineraryItems()->count();
                     })
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -259,10 +260,18 @@ class ItineraryItemsRelationManager extends RelationManager
                             ->maxLength(255),
                         Forms\Components\Textarea::make('description')
                             ->label('Описание дня')
-                            ->rows(3),
+                            ->rows(3)
+                            ,
                         Forms\Components\TimePicker::make('default_start_time')
-                            ->label('Время начала')
+                            ->label('Время')
                             ->default('09:00'),
+                        Forms\Components\Select::make('city_id')
+                            ->label('Город')
+                            ->relationship('city', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->helperText('Город для этого дня'),
                     ])
                     ->action(function (array $data): void {
                         $lastDay = $this->ownerRecord->itineraryItems()
@@ -272,6 +281,7 @@ class ItineraryItemsRelationManager extends RelationManager
                         
                         ItineraryItem::create([
                             'tour_id' => $this->ownerRecord->id,
+                            'city_id' => $data['city_id'],
                             'title' => $data['title'],
                             'type' => 'day',
                             'description' => $data['description'],
@@ -316,10 +326,11 @@ class ItineraryItemsRelationManager extends RelationManager
                                 ->required()
                                 ->maxLength(255),
                             Forms\Components\Textarea::make('description')
-                                ->label('Описание')
-                                ->rows(2),
+                                ->label('Опис.')
+                                ->rows(3)
+                                ,
                             Forms\Components\TimePicker::make('default_start_time')
-                                ->label('Время начала'),
+                                ->label('Время'),
                             Forms\Components\TextInput::make('duration_minutes')
                                 ->label('Продолжительность (минуты)')
                                 ->numeric()

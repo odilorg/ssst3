@@ -6,6 +6,15 @@ use App\Services\PricingService;
 use App\Services\SupplierRequestService;
 use App\Models\Tour;
 
+// ============================================
+// LOCALIZED ROUTES (Phase 1 - Parallel Routes)
+// ============================================
+// Only load when multilang is enabled AND routes phase is active
+// These routes run IN PARALLEL with existing routes - nothing breaks
+if (config('multilang.enabled') && config('multilang.phases.routes')) {
+    require __DIR__ . '/web_localized.php';
+}
+
 // CSRF Token endpoint for frontend
 Route::get('/csrf-token', function () {
     return response()->json(['token' => csrf_token()]);
@@ -14,16 +23,38 @@ Route::get('/csrf-token', function () {
 // Sitemap XML for SEO
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Locale-specific sitemaps (only when SEO phase enabled)
+Route::get('/sitemap-{locale}.xml', [\App\Http\Controllers\SitemapController::class, 'locale'])
+    ->name('sitemap.locale')
+    ->where('locale', '[a-z]{2}');
+
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-// Tours listing page - SEO-friendly URL (must come BEFORE /tours/{slug} to avoid conflicts)
-Route::get('/tours', [\App\Http\Controllers\TourListingController::class, 'index'])->name('tours.index');
+// Mini Journeys - 1-2 day experiences including overnight camping
+Route::get('/mini-journeys', [\App\Http\Controllers\TourListingController::class, 'miniJourneys'])->name('mini-journeys.index');
+
+// Craft Journeys - 3+ day multi-day boutique tours
+Route::get('/craft-journeys', [\App\Http\Controllers\TourListingController::class, 'craftJourneys'])->name('craft-journeys.index');
+
+// Legacy /tours route - 301 redirect to /craft-journeys
+Route::get('/tours', function() {
+    return redirect()->route('craft-journeys.index', [], 301);
+})->name('tours.index');
 
 // Category landing page - SEO-friendly URL with server-side meta tag injection
 Route::get('/tours/category/{slug}', [\App\Http\Controllers\CategoryLandingController::class, 'show'])->name('tours.category');
 
-// Tour details page - SEO-friendly URL with Blade template
+// Tour comparison page
+Route::get('/tours/compare', function () {
+    return view('pages.tour-comparison');
+})->name('tours.compare');
+
+// Tour details page - SEO-friendly URL with Blade template (must be LAST to avoid conflicts)
+// Tour PDF download
+Route::get("/tours/{slug}/download-pdf", [\App\Http\Controllers\TourPdfController::class, "download"])->name("tours.download-pdf");
+Route::get("/tours/{slug}/view-pdf", [\App\Http\Controllers\TourPdfController::class, "stream"])->name("tours.view-pdf");
+
 Route::get('/tours/{slug}', [\App\Http\Controllers\TourDetailController::class, 'show'])->name('tours.show');
 
 // About page
@@ -62,6 +93,10 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show']
     ->name('blog.show')
     ->where('slug', '[a-z0-9-]+');
 
+
+// Artisan Workshop pages
+Route::get("/workshops", [\App\Http\Controllers\WorkshopController::class, "index"])->name("workshops.index");
+Route::get("/workshops/{slug}", [\App\Http\Controllers\WorkshopController::class, "show"])->name("workshops.show")->where("slug", "[a-z0-9-]+");
 // Contact form submission
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])
     ->name('contact.store');
@@ -493,6 +528,12 @@ Route::prefix('partials')->name('partials.')->group(function () {
 });
 
 // ============================================
+// BOOKING PREVIEW (Dynamic pricing calculation)
+// ============================================
+Route::post('/bookings/preview', [\App\Http\Controllers\BookingPreviewController::class, 'preview'])
+    ->name('bookings.preview');
+
+// ============================================
 // BOOKING CONFIRMATION PAGE (Public-facing)
 // ============================================
 Route::get('/booking/confirmation/{reference}', [\App\Http\Controllers\Partials\BookingController::class, 'confirmation'])
@@ -528,3 +569,13 @@ Route::get('/card-comparison', function () {
     $tours = \App\Models\Tour::with('city')->where('is_active', true)->take(6)->get();
     return view('card-comparison', ['tours' => $tours]);
 })->name('card.comparison');
+
+// ============================================
+// PAYMENT ROUTES
+// ============================================
+
+// Payment result page (user return from Octobank)
+Route::get('/payment/result', [\App\Http\Controllers\PaymentController::class, 'result'])->name('payment.result');
+
+// Octobank callback (webhook) - uses web route like working app
+Route::post('/octo/callback', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('octo.callback');

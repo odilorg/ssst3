@@ -13,6 +13,144 @@
       const tourIdField = document.getElementById('tour-id');
       const csrfTokenField = document.getElementById('csrf-token');
 
+      // ================================================================
+      // DATE PICKER FIX: Set min date to tomorrow (24 hours in advance)
+      // ================================================================
+      if (tourDateField) {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const minDate = tomorrow.toISOString().split('T')[0];
+        tourDateField.min = minDate;
+        console.log('[Booking] Date picker min date set to:', minDate);
+
+        // Clear any date error when user selects new date
+        tourDateField.addEventListener('change', function(e) {
+          console.log('[Booking] Date changed to:', e.target.value);
+          clearFieldError('tour-date');
+        });
+      }
+
+      // ================================================================
+      // INLINE VALIDATION: Helper functions for showing/hiding errors
+      // ================================================================
+      function showFieldError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        // Try multiple error span naming conventions
+        let errorSpan = document.getElementById(fieldId + '-error') ||
+                        document.getElementById(fieldId.replace('tour-', '') + '-error') ||
+                        document.getElementById(fieldId.replace('customer-', '') + '-error');
+
+        if (field) {
+          field.classList.add('form-input--error');
+          field.setAttribute('aria-invalid', 'true');
+        }
+
+        if (errorSpan) {
+          errorSpan.textContent = message;
+          errorSpan.style.display = 'block';
+        } else {
+          // Create error span if it doesn't exist
+          const parent = field ? field.parentElement : null;
+          if (parent) {
+            errorSpan = document.createElement('span');
+            errorSpan.id = fieldId + '-error';
+            errorSpan.className = 'form-error';
+            errorSpan.setAttribute('role', 'alert');
+            errorSpan.textContent = message;
+            errorSpan.style.display = 'block';
+            parent.appendChild(errorSpan);
+          }
+        }
+      }
+
+      function clearFieldError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorSpan = document.getElementById(fieldId + '-error') ||
+                          document.getElementById(fieldId.replace('tour-', '') + '-error') ||
+                          document.getElementById(fieldId.replace('customer-', '') + '-error');
+
+        if (field) {
+          field.classList.remove('form-input--error');
+          field.setAttribute('aria-invalid', 'false');
+        }
+
+        if (errorSpan) {
+          errorSpan.textContent = '';
+          errorSpan.style.display = 'none';
+        }
+      }
+
+      function clearAllErrors() {
+        document.querySelectorAll('.form-input--error').forEach(el => {
+          el.classList.remove('form-input--error');
+          el.setAttribute('aria-invalid', 'false');
+        });
+        document.querySelectorAll('.form-error').forEach(el => {
+          el.textContent = '';
+          el.style.display = 'none';
+        });
+      }
+
+      function showValidationErrors(errors) {
+        // Map backend field names to frontend field IDs
+        const fieldMap = {
+          'start_date': 'tour-date',
+          'number_of_guests': 'tour-guests',
+          'customer_name': 'customer-name',
+          'customer_email': 'customer-email',
+          'customer_phone': 'customer-phone',
+          'tour_id': 'tour-id'
+        };
+
+        Object.keys(errors).forEach(field => {
+          const fieldId = fieldMap[field] || field;
+          const message = Array.isArray(errors[field]) ? errors[field][0] : errors[field];
+          showFieldError(fieldId, message);
+        });
+
+        // Scroll to first error
+        const firstError = document.querySelector('.form-input--error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstError.focus();
+        }
+      }
+
+      function showGeneralError(message) {
+        // Show error in a general error container if available
+        let errorContainer = document.getElementById('form-general-error');
+        if (!errorContainer) {
+          // Create one if it doesn't exist
+          const form = document.getElementById('booking-form') || document.getElementById('inquiry-form');
+          if (form) {
+            errorContainer = document.createElement('div');
+            errorContainer.id = 'form-general-error';
+            errorContainer.className = 'form-error form-error--general';
+            errorContainer.setAttribute('role', 'alert');
+            errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: none;';
+            form.insertBefore(errorContainer, form.firstChild);
+          }
+        }
+
+        if (errorContainer) {
+          errorContainer.textContent = message;
+          errorContainer.style.display = 'block';
+          errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      function hideGeneralError() {
+        const errorContainer = document.getElementById('form-general-error');
+        if (errorContainer) {
+          errorContainer.style.display = 'none';
+          errorContainer.textContent = '';
+        }
+      }
+
+      // Global variable to store current booking ID for payment
+      window.currentBookingId = null;
+
       // Fetch CSRF token and populate field
       fetch('/csrf-token')
         .then(response => response.json())
@@ -49,6 +187,35 @@
           .catch(error => console.error('[Booking] Error fetching tour ID:', error));
       }
 
+      // Add guest count change listener for price preview
+      if (tourGuestsField && tourIdField) {
+        // Fetch initial price on page load
+        const initialTourId = tourIdField.value;
+        const initialGuestCount = parseInt(tourGuestsField.value) || 2;
+
+        if (initialTourId && typeof window.fetchPricePreview === 'function') {
+          window.fetchPricePreview(initialTourId, initialGuestCount);
+        }
+
+        // Update price when guest count changes
+        const updatePrice = function() {
+          const tourId = tourIdField.value;
+          const guestCount = parseInt(tourGuestsField.value) || 1;
+
+          if (tourId && guestCount > 0 && typeof window.fetchPricePreview === 'function') {
+            const pricePreview = document.getElementById('price-preview');
+            if (pricePreview) {
+              pricePreview.style.display = 'block';
+            }
+            window.fetchPricePreview(tourId, guestCount);
+          }
+        };
+
+        // Listen to both 'change' and 'input' events for maximum compatibility
+        tourGuestsField.addEventListener('change', updatePrice);
+        tourGuestsField.addEventListener('input', updatePrice);
+      }
+
       // Handle booking button click - SHOWS FULL BOOKING FORM
       if (bookingBtn) {
         bookingBtn.addEventListener('click', function() {
@@ -76,7 +243,7 @@
           if (messageField) messageField.required = false;
 
           // Update submit button text
-          if (submitText) submitText.textContent = 'Send Booking Request';
+          if (submitText) submitText.textContent = 'Confirm Booking';
 
           // Show step 2 form
           if (step2Form) {
@@ -183,8 +350,30 @@
         bookingForm.addEventListener('submit', function(e) {
           e.preventDefault();
 
+          // Clear previous errors before submission
+          clearAllErrors();
+          hideGeneralError();
+
           const submitButton = document.getElementById('submit-button');
           const formData = new FormData(bookingForm);
+
+          // Validate departure selection
+          const departureId = formData.get('departure_id');
+          if (!departureId || departureId === '') {
+            alert('Please select a departure date from the calendar above.');
+            console.error('[Booking] No departure selected');
+            return;
+          }
+
+          // Validate start date
+          const startDate = formData.get('start_date');
+          if (!startDate || startDate === '') {
+            alert('Please select a departure date from the calendar above.');
+            console.error('[Booking] No start date set');
+            return;
+          }
+
+          console.log('[Booking] Submitting with departure_id:', departureId, 'start_date:', startDate);
 
           // Disable submit button
           if (submitButton) {
@@ -211,6 +400,12 @@
               console.log('[Booking] Success response:', data);
               console.log('[Booking] Record data:', record);
 
+              // Store booking ID globally for payment
+              if (isBooking && record.id) {
+                window.currentBookingId = record.id;
+                console.log('[Payment] Booking ID stored:', record.id);
+              }
+
               // Populate modal with data (with null checks)
               const modalRef = document.getElementById('modal-reference');
               const modalTourName = document.getElementById('modal-tour-name');
@@ -218,26 +413,54 @@
               const modalGuests = document.getElementById('modal-guests');
               const modalTotal = document.getElementById('modal-total');
               const modalEmail = document.getElementById('modal-customer-email');
-              const modalEmailInline = document.getElementById('modal-customer-email-inline');
 
               if (modalRef) modalRef.textContent = record.reference || 'N/A';
               if (modalTourName) modalTourName.textContent = record.tour?.title || 'Your Selected Tour';
               if (modalDate) modalDate.textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
-              if (modalGuests) modalGuests.textContent = (record.pax_total || formData.get('number_of_guests') || '1') + ' guest(s)';
-              if (modalTotal) modalTotal.textContent = record.total_price ? '$' + parseFloat(record.total_price).toFixed(2) : 'TBD';
-              if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
-              if (modalEmailInline) modalEmailInline.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
 
-              // Update modal title for inquiry
-              // Update modal title for inquiry
+              // Guest count with proper pluralization
+              const guestCount = record.pax_total || formData.get('number_of_guests') || 1;
+              if (modalGuests) modalGuests.textContent = `${guestCount} ${guestCount == 1 ? 'guest' : 'guests'}`;
+
+              if (modalTotal) {
+                const totalPrice = record.total_price ? parseFloat(record.total_price) : 200;
+                modalTotal.textContent = '$' + totalPrice.toFixed(2);
+
+                // Update payment amounts
+                const depositAmountEl = document.getElementById('deposit-amount');
+                const fullAmountEl = document.getElementById('full-amount');
+                const paymentBtnText = document.getElementById('payment-btn-text');
+
+                if (depositAmountEl) depositAmountEl.textContent = '$' + (totalPrice * 0.30).toFixed(0);
+                if (fullAmountEl) fullAmountEl.textContent = '$' + (totalPrice * 0.97).toFixed(0);
+                if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + (totalPrice * 0.30).toFixed(0) + ' Now';
+              }
+              if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+
+              // Update modal for inquiry vs booking
+              const paymentBtn = document.getElementById('proceed-to-payment-btn');
+
               if (!isBooking) {
+                // This is an INQUIRY - hide payment button and update text
                 const modalTitle = document.querySelector('.modal-title');
                 const modalSubtitle = document.querySelector('.modal-subtitle');
                 const totalItem = document.querySelector('.summary-item--total');
-                
+
                 if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
                 if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
                 if (totalItem) totalItem.style.display = 'none';
+                if (paymentBtn) paymentBtn.style.display = 'none';
+
+                console.log('[Inquiry] Payment button hidden for inquiry');
+              } else {
+                // This is a BOOKING - button should be visible (it's visible by default now)
+                console.log('[Payment] Booking created with price:', record.total_price);
+                console.log('[Payment] Payment button should be visible');
+                console.log('[Payment] Button element:', paymentBtn);
+
+                if (record.total_price && parseFloat(record.total_price) === 0) {
+                  console.warn('[Payment] Warning: Booking has zero price - button will still show');
+                }
               }
 
               // Show modal
@@ -257,23 +480,19 @@
 
               console.log('[Booking] Confirmation modal shown for:', record.reference);
             } else {
-              // Show error message with validation errors if available
-              let errorMessage = data.message || 'Please check your form and try again.';
+              // Show inline validation errors instead of alert
+              console.error('[Booking] Validation errors:', data.errors);
 
               if (data.errors) {
-                errorMessage += '\n\nValidation errors:\n';
-                Object.keys(data.errors).forEach(field => {
-                  errorMessage += '- ' + field + ': ' + data.errors[field].join(', ') + '\n';
-                });
+                showValidationErrors(data.errors);
+              } else {
+                showGeneralError(data.message || 'Please check your form and try again.');
               }
-
-              alert('Error: ' + errorMessage);
-              console.error('[Booking] Validation errors:', data.errors);
             }
           })
           .catch(error => {
             console.error('[Booking] Submission error:', error);
-            alert('An error occurred. Please try again.');
+            showGeneralError('An error occurred. Please check your connection and try again.');
           })
           .finally(() => {
             // Re-enable submit button
@@ -354,7 +573,7 @@
             const inquiryModalRef = document.getElementById('inquiry-modal-reference');
             const inquiryModalTour = document.getElementById('inquiry-modal-tour');
             const inquiryModalEmail = document.getElementById('inquiry-modal-email');
-            
+
             if (inquiryModalRef) inquiryModalRef.textContent = inquiry.reference || 'N/A';
             if (inquiryModalTour) inquiryModalTour.textContent = inquiry.tour?.title || 'Your Selected Tour';
             if (inquiryModalEmail) inquiryModalEmail.textContent = inquiry.customer_email || 'your email';
@@ -377,18 +596,53 @@
 
             console.log('[Inquiry] Confirmation modal shown for:', inquiry.reference);
           } else {
-            // Show error
-            let errorMessage = data.message || 'Please check your form and try again.';
-
-            if (data.errors) {
-              errorMessage += '\n\nValidation errors:\n';
-              Object.keys(data.errors).forEach(field => {
-                errorMessage += '- ' + field + ': ' + data.errors[field].join(', ') + '\n';
-              });
-            }
-
-            alert('Error: ' + errorMessage);
+            // Show inline error instead of alert
             console.error('[Inquiry] Submission failed:', data);
+
+            // Show inline validation errors
+            if (data.errors) {
+              // Map inquiry form field names
+              const fieldMap = {
+                'customer_name': 'inquiry-name',
+                'customer_email': 'inquiry-email',
+                'message': 'inquiry-message',
+                'tour_id': 'inquiry-tour-id'
+              };
+
+              Object.keys(data.errors).forEach(field => {
+                const fieldId = fieldMap[field] || field;
+                const message = Array.isArray(data.errors[field]) ? data.errors[field][0] : data.errors[field];
+                const inputField = document.getElementById(fieldId);
+                if (inputField) {
+                  inputField.classList.add('form-input--error');
+                  // Show error below field
+                  let errorEl = inputField.nextElementSibling;
+                  if (!errorEl || !errorEl.classList.contains('form-error')) {
+                    errorEl = document.createElement('span');
+                    errorEl.className = 'form-error';
+                    errorEl.setAttribute('role', 'alert');
+                    inputField.parentNode.insertBefore(errorEl, inputField.nextSibling);
+                  }
+                  errorEl.textContent = message;
+                  errorEl.style.display = 'block';
+                }
+              });
+
+              // Focus first error field
+              const firstError = inquiryForm.querySelector('.form-input--error');
+              if (firstError) firstError.focus();
+            } else {
+              // Show general error message in the form
+              let errorContainer = inquiryForm.querySelector('.form-error--general');
+              if (!errorContainer) {
+                errorContainer = document.createElement('div');
+                errorContainer.className = 'form-error form-error--general';
+                errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
+                inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
+              }
+              errorContainer.textContent = data.message || 'Please check your form and try again.';
+              errorContainer.style.display = 'block';
+            }
           }
         })
         .catch(error => {
@@ -399,7 +653,16 @@
           btnText.textContent = 'Send Question';
           spinner.style.display = 'none';
 
-          alert('An error occurred. Please try again.');
+          // Show inline error instead of alert
+          let errorContainer = inquiryForm.querySelector('.form-error--general');
+          if (!errorContainer) {
+            errorContainer = document.createElement('div');
+            errorContainer.className = 'form-error form-error--general';
+            errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
+            inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
+          }
+          errorContainer.textContent = 'An error occurred. Please check your connection and try again.';
+          errorContainer.style.display = 'block';
         });
         };
 
@@ -420,7 +683,17 @@
             })
             .catch(error => {
               console.error('[Inquiry] Failed to load CSRF token:', error);
-              alert('Security token not available. Please refresh the page.');
+
+              // Show inline error instead of alert
+              let errorContainer = inquiryForm.querySelector('.form-error--general');
+              if (!errorContainer) {
+                errorContainer = document.createElement('div');
+                errorContainer.className = 'form-error form-error--general';
+                errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
+                inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
+              }
+              errorContainer.textContent = 'Security token not available. Please refresh the page and try again.';
+              errorContainer.style.display = 'block';
 
               // Reset button state
               submitBtn.disabled = false;
@@ -439,7 +712,7 @@
     // ================================================================
     document.addEventListener('DOMContentLoaded', function() {
       const modal = document.getElementById('booking-confirmation-modal');
-      const closeBtn = document.querySelector('.modal-close');
+      const closeBtn = document.querySelector('.modal-close, .modal-close-minimal');
       const closeXBtn = document.getElementById('booking-modal-close-x');
       const continueBrowsingBtn = document.getElementById('continue-browsing');
 
@@ -461,9 +734,49 @@
         closeXBtn.addEventListener('click', closeModal);
       }
 
-      // Close on "Got It, Thanks!" button
+      // Close on "I'll Pay Later" button
       if (continueBrowsingBtn) {
         continueBrowsingBtn.addEventListener('click', closeModal);
+      }
+
+      // Handle payment option selection
+      const paymentOptions = document.querySelectorAll('input[name="payment_type"]');
+      const paymentBtnText = document.getElementById('payment-btn-text');
+      const depositAmountEl = document.getElementById('deposit-amount');
+      const fullAmountEl = document.getElementById('full-amount');
+
+      function updatePaymentDisplay() {
+        const totalPrice = parseFloat(document.getElementById('modal-total')?.textContent.replace(/[^0-9.-]/g, '')) || 200;
+        const selectedOption = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
+
+        if (selectedOption === 'deposit') {
+          const depositAmount = totalPrice * 0.30;
+          if (depositAmountEl) depositAmountEl.textContent = '$' + depositAmount.toFixed(0);
+          if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + depositAmount.toFixed(0) + ' Now';
+        } else {
+          const fullAmount = totalPrice * 0.97; // 3% discount
+          if (fullAmountEl) fullAmountEl.textContent = '$' + fullAmount.toFixed(0);
+          if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + fullAmount.toFixed(0) + ' Now (Save 3%)';
+        }
+      }
+
+      paymentOptions.forEach(option => {
+        option.addEventListener('change', updatePaymentDisplay);
+      });
+
+      // Handle payment button click
+      const paymentBtn = document.getElementById('proceed-to-payment-btn');
+      if (paymentBtn) {
+        paymentBtn.addEventListener('click', function() {
+          const selectedPaymentType = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
+          console.log('[Payment] Payment button clicked, booking ID:', window.currentBookingId, 'Type:', selectedPaymentType);
+
+          if (window.currentBookingId && typeof initiatePayment === 'function') {
+            initiatePayment(window.currentBookingId, selectedPaymentType);
+          } else {
+            console.error('[Payment] Cannot initiate payment - missing booking ID or function');
+          }
+        });
       }
 
       // Close on overlay click (clicking outside modal)

@@ -1,15 +1,15 @@
 @extends('layouts.main')
 
-@section('title', 'About Us - Jahongir Travel | Family-Run Silk Road Tours Since 2012')
-@section('meta_description', 'Meet the family behind Jahongir Travel. Since 2012, we have been crafting authentic Silk Road journeys from our home in Samarkand with local hospitality and expert care.')
+@section('title', 'About Us - Preserving Uzbekistan\'s Craft Heritage | Jahongir Travel')
+@section('meta_description', 'We support local artisans and preserve traditional crafts through small-group immersive journeys. Supporting artisans and traditional crafts since 2012.')
 @section('canonical', url('/about'))
 
 {{-- Open Graph --}}
 @section('og_type', 'website')
 @section('og_url', url('/about'))
-@section('og_title', 'About Us - Jahongir Travel')
-@section('og_description', 'Meet the family behind Jahongir Travel. Since 2012, we have been crafting authentic Silk Road journeys.')
-@section('og_image', asset('images/og-about.jpg'))
+@section('og_title', 'About Us - Preserving Uzbekistan\'s Craft Heritage')
+@section('og_description', 'Supporting local artisans and preserving traditional crafts through small-group craft immersion journeys.')
+@section('og_image', asset('images/og-about-crafts.jpg'))
 
 {{-- Structured Data - Organization --}}
 @section('structured_data')
@@ -17,1142 +17,1051 @@
   "@@context": "https://schema.org",
   "@@type": "TravelAgency",
   "name": "Jahongir Travel",
-  "description": "Family-run tour operator in Samarkand offering authentic Silk Road journeys since 2012.",
+  "description": "Craft tourism specialist supporting local artisans and preserving traditional Uzbek crafts since 2012.",
   "url": "{{ url('/') }}",
   "logo": "{{ asset('images/logo.png') }}",
-  "image": "{{ asset('images/og-about.jpg') }}",
+  "image": "{{ asset('images/og-about-crafts.jpg') }}",
   "telephone": "+998915550808",
-  "email": "info@jahongirtravel.com",
+  "email": "info@jahongir-travel.uz",
   "address": {
     "@@type": "PostalAddress",
-    "streetAddress": "Samarkand",
+    "streetAddress": "Samarkand, Chirokchi 4",
     "addressLocality": "Samarkand",
     "addressCountry": "UZ"
-  },
-  "geo": {
-    "@@type": "GeoCoordinates",
-    "latitude": "39.6542",
-    "longitude": "66.9597"
   },
   "foundingDate": "2012",
   "founder": {
     "@@type": "Person",
     "name": "Jahongir Karimov"
   },
-  "areaServed": ["Uzbekistan", "Central Asia", "Silk Road"],
-  "priceRange": "$$",
-  "aggregateRating": {
-    "@@type": "AggregateRating",
-    "ratingValue": "5",
-    "reviewCount": "1000",
-    "bestRating": "5"
-  },
-  "sameAs": [
-    "https://www.tripadvisor.com/Attraction_Review-g298068-d12345678-Reviews-Jahongir_Travel-Samarkand.html"
-  ]
+  "areaServed": ["Uzbekistan", "Central Asia"],
+  "specialty": "Craft immersion tours and artisan workshops"
 }
 @endsection
 
-{{-- Breadcrumb Structured Data --}}
-@push('structured_data_breadcrumb')
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "{{ url('/') }}"
-    },
-    {
-      "@@type": "ListItem",
-      "position": 2,
-      "name": "About Us",
-      "item": "{{ url('/about') }}"
-    }
-  ]
-}
-</script>
-@endpush
-
 @push('styles')
 <style>
-    /* Why We Are Best Section */
-    .why-best {
-        padding: 80px 0;
-        background: #f9fafb;
+    /* ==========================================
+       ABOUT PAGE - IMPROVED UI/UX (Dec 2024)
+       ========================================== */
+
+    /* Hero Section - Enhanced with trust elements */
+    .about-hero {
+        background: linear-gradient(135deg, rgba(30, 64, 175, 0.85) 0%, rgba(59, 130, 246, 0.85) 100%),
+                    url('/images/silk-weaving-artisan.webp') center/cover no-repeat;
+        color: white;
+        padding: 220px 0 140px; /* Increased top padding to clear navbar + better breathing room */
+        text-align: center;
+        position: relative;
+    }
+
+
+    .about-hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .about-hero__badge i {
+        color: #60a5fa;  /* Light blue */
+    }
+
+    .about-hero__title {
+        font-size: 3.25rem;
+        font-weight: 700;
+        margin-bottom: 2.5rem; /* Increased since subtitle removed */
+        font-family: 'Playfair Display', serif;
+        line-height: 1.2;
+        max-width: 900px; /* Prevent overly long lines */
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Add text shadow for better readability on image */
+    }
+
+    .about-hero__subtitle {
+        font-size: 1.25rem;
+        max-width: 720px;
+        margin: 0 auto 3rem; /* Increased bottom margin since trust row removed */
+        line-height: 1.8;
+        opacity: 0.95;
+    }
+
+    .about-hero__cta {
+        margin-top: 0; /* No extra margin needed */
+    }
+
+    .btn--hero {
+        background: rgba(255,255,255,0.95);
+        color: #2563eb;
+        padding: 1rem 2.5rem;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);  /* Stronger shadow */
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .btn--hero:hover {
+        background: white;
+        transform: translateY(-4px);  /* More lift */
+        box-shadow: 0 12px 35px rgba(0,0,0,0.35);  /* Much stronger shadow */
+        border-color: white;
+    }
+
+    .btn--hero:active {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+
+    /* Section Styles - Improved spacing & typography */
+    .section {
+        padding: 100px 0;
+    }
+
+    .section--first {
+        padding-top: 120px;  /* Extra top padding for first section after hero */
+    }
+
+    .section--gray {
+        background: #F7F8FA;
+        position: relative;
+    }
+
+    .section--gray::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            #2563eb 25%,
+            #60a5fa 50%,
+            #2563eb 75%,
+            transparent 100%);
+        border-radius: 2px;
     }
 
     .section-heading {
-        font-size: 2.5rem;
+        font-size: 2.75rem;
         font-weight: 700;
         color: #1a1a1a;
         margin-bottom: 1rem;
         font-family: 'Playfair Display', serif;
+        line-height: 1.2;
     }
 
     .section-tagline {
-        font-size: 1.125rem;
-        color: #666;
+        font-size: 1.1875rem;
+        color: #555;  /* Darker for better accessibility */
         margin-bottom: 3rem;
+        max-width: 720px;
+        line-height: 1.7;
     }
 
     .text-center {
         text-align: center;
     }
 
-    .icon-grid {
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .eyebrow {
+        display: block;
+        font-size: 0.9375rem;  /* Increased from 0.875rem */
+        font-weight: 700;  /* Bolder: 600 → 700 */
+        letter-spacing: 2.5px;  /* Wider spacing */
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;  /* More space below */
+    }
+
+    /* Problem Section - Enhanced with imagery */
+    .problem-section__content {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: 1fr 400px;
+        gap: 3rem;
+        align-items: start;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .problem-box {
+        background: linear-gradient(135deg, #FDF8F5 0%, #FAF4EF 100%);
+        border-left: 5px solid #C1876B;
+        padding: 2.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 4px 20px rgba(193, 135, 107, 0.1);
+    }
+
+    .problem-box__text {
+        font-size: 1.0625rem;
+        line-height: 1.85;
+        color: #444;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Pull-quote style for the stat */
+    .problem-box__stat {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #A0826D;
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(160, 130, 109, 0.15);
+    }
+
+    .problem-box__stat::before {
+        content: '"';
+        font-size: 4rem;
+        color: rgba(160, 130, 109, 0.15);
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .problem-image {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .problem-image img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .problem-image__caption {
+        background: #2563eb;
+        color: white;
+        padding: 1rem;
+        font-size: 0.875rem;
+        text-align: center;
+    }
+
+    /* Solution Grid - Enhanced cards (3x2 grid) */
+    .solution-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
         margin-top: 3rem;
     }
 
-    .icon-card {
+    .solution-card {
         background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.04);
     }
 
-    .icon-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    .solution-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     }
 
-    .icon-card__icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 1.5rem;
-        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
+    .solution-card__icon {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.75rem;
+        font-size: 1.875rem;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
     }
 
-    .icon-card__title {
-        font-size: 1.25rem;
+    .solution-card__title {
+        font-size: 1.3125rem;
         font-weight: 600;
         color: #1a1a1a;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.875rem;
     }
 
-    .icon-card__text {
+    .solution-card__text {
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.7;
+    }
+
+    /* Impact Stats - Bolder numbers */
+    .impact-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .impact-stat {
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.04);
+        transition: transform 0.3s ease;
+    }
+
+    .impact-stat:hover {
+        transform: translateY(-4px);
+    }
+
+    .impact-stat__icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2563eb;
+        font-size: 1.25rem;
+    }
+
+    .impact-stat__number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #2563eb;
+        margin-bottom: 0.5rem;
+        font-family: 'Playfair Display', serif;
+        line-height: 1;
+    }
+
+    .impact-stat__label {
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .impact-stat__source {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    /* Partnerships - With icons */
+    .partnership-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .partnership-card {
+        background: white;
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .partnership-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .partnership-card__icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2563eb;
+        font-size: 1.5rem;
+    }
+
+    .partnership-card__name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .partnership-card__role {
         font-size: 0.9375rem;
         color: #666;
-        line-height: 1.6;
+        line-height: 1.5;
     }
 
-    /* Our Story Section */
-    .our-story {
-        padding: 80px 0;
-        background: white;
+    /* Ethical commitment box */
+    .ethical-commitment {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #FDF6F0 0%, #F5EBD8 100%);
+        border-radius: 12px;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid rgba(201, 169, 97, 0.2);
     }
 
-    .two-col-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
-    }
-
-    .eyebrow {
-        display: inline-block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #2c7abf;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 1rem;
-    }
-
-    .two-col-section__content p {
+    .ethical-commitment p {
         font-size: 1.0625rem;
-        line-height: 1.8;
-        color: #444;
-        margin-bottom: 1.5rem;
+        color: #2563eb;
+        margin: 0;
+        line-height: 1.7;
     }
 
-    .two-col-section__images {
+    .ethical-commitment strong {
+        display: block;
+        font-size: 1.1875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Artisan Gallery Section */
+    .artisan-gallery {
         display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 1rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .artisan-gallery__item {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         position: relative;
     }
 
-    .story-image {
+    .artisan-gallery__item img {
         width: 100%;
-        height: auto;
-        border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        height: 250px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
     }
 
-    .story-image--large {
-        grid-column: 1 / 2;
-        grid-row: 1 / 3;
+    .artisan-gallery__item:hover img {
+        transform: scale(1.05);
     }
 
-    .story-image--small {
-        grid-column: 2 / 3;
-        grid-row: 2 / 3;
+    .artisan-gallery__caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.85);
+        color: white;
+        padding: 1.25rem 1rem;
+        font-size: 0.9375rem;
+        backdrop-filter: blur(8px);
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .testimonial-card {
+        background: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border-left: 4px solid #2563eb;
+        position: relative;
+    }
+
+    .testimonial-card::before {
+        content: '"';
+        font-size: 4rem;
+        color: rgba(37, 99, 235, 0.1);
+        position: absolute;
+        top: 1rem;
+        left: 1.5rem;
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .testimonial-card__text {
+        font-size: 1rem;
+        color: #444;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .testimonial-card__author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .testimonial-card__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1.125rem;
+    }
+
+    .testimonial-card__info {
+        flex: 1;
+    }
+
+    .testimonial-card__name {
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 0.9375rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .testimonial-card__meta {
+        font-size: 0.8125rem;
+        color: #888;
+    }
+
+    .testimonial-card__rating {
+        color: #60a5fa;  /* Light blue */
+        font-size: 0.875rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+
+    .cta-section__heading {
+        font-size: 2.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .cta-section__text {
+        font-size: 1.1875rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        max-width: 620px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.7;
+        color: white; /* Ensure subtitle is visible on blue background */
     }
 
     .btn {
         display: inline-block;
-        padding: 0.875rem 2rem;
-        font-size: 1rem;
+        padding: 1.125rem 2.5rem;
+        font-size: 1.0625rem;
         font-weight: 600;
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 10px;
         transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
     }
 
-    .btn--outline-coral {
-        color: #2c7abf;
-        border-color: #2c7abf;
-        background: transparent;
-    }
-
-    .btn--outline-coral:hover {
-        background: #2c7abf;
-        color: white;
-    }
-
-    .btn--primary {
-        background: #2c7abf;
-        color: white;
-        border-color: #2c7abf;
-    }
-
-    .btn--primary:hover {
-        background: #1a5490;
-        border-color: #1a5490;
-    }
-
-    .btn--large {
-        padding: 1.125rem 2.5rem;
-        font-size: 1.125rem;
-    }
-
-    /* Stats Showcase */
-    .stats-showcase {
-        padding: 80px 0;
-        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
-        color: white;
-    }
-
-    .stats-showcase__intro {
-        margin-bottom: 3rem;
-    }
-
-    .stats-showcase .section-heading {
-        color: white;
-    }
-
-    .stats-showcase__subtitle {
-        font-size: 1.125rem;
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .stat-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-    }
-
-    .stat-card {
-        text-align: center;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-    }
-
-    .stat-card__number {
-        font-size: 3rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: 0.5rem;
-        font-family: 'Playfair Display', serif;
-    }
-
-    .stat-card__label {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    /* Team Section */
-    .team-section {
-        padding: 80px 0;
-        background: #f9fafb;
-    }
-
-    .team-section__header {
-        margin-bottom: 3rem;
-    }
-
-    .team-section__subtitle {
-        font-size: 1.125rem;
-        color: #666;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .team-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2.5rem;
-        margin-bottom: 3rem;
-    }
-
-    .team-member {
-        text-align: center;
-    }
-
-    .team-member__photo {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin: 0 auto 1.5rem;
-        border: 4px solid white;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-
-    .team-member__name {
-        font-size: 1.375rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    .team-member__position {
-        font-size: 1rem;
-        color: #666;
-    }
-
-    .team-section__cta {
-        text-align: center;
-    }
-
-    /* Trust Section */
-    .trust-section {
-        padding: 80px 0;
+    .btn--white {
         background: white;
+        color: #2563eb;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    .trust-strip {
-        text-align: center;
-        margin-bottom: 3rem;
-        padding: 2rem;
-        background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
-        border-radius: 12px;
+    .btn--white:hover {
+        background: #F7F8FA;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     }
 
-    .trust-strip__title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 1.5rem;
-    }
-
-    .trust-strip__ratings {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 3rem;
-        flex-wrap: wrap;
-    }
-
-    .trust-rating {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1rem;
-        color: #555;
-    }
-
-    .trust-rating i {
-        color: #f59e0b;
-        font-size: 1.25rem;
-    }
-
-    .trust-rating strong {
-        color: #1a1a1a;
-        font-weight: 600;
-    }
-
-    /* Featured Review */
-    .featured-review {
-        max-width: 900px;
-        margin: 0 auto;
-        background: #f9fafb;
-        padding: 2.5rem;
-        border-radius: 12px;
-        border-left: 4px solid #1a5490;
-    }
-
-    .review-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .review-author__photo {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #00aa6c 0%, #00b97e 100%);
-        border: 2px solid #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .review-author__photo span {
-        color: white;
-        font-weight: 700;
-        font-size: 1.125rem;
-        letter-spacing: 0.5px;
-    }
-
-    .review-author__info {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .review-author__name {
-        font-weight: 600;
-        color: #1a1a1a;
-        font-size: 1rem;
-    }
-
-    .review-author__badge {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.875rem;
-        color: #666;
-    }
-
-    .review-author__badge i {
-        color: #00aa6c;
-        font-size: 1rem;
-    }
-
-    .review-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .review-stars {
-        display: flex;
-        gap: 0.25rem;
-        color: #f59e0b;
-        font-size: 1.125rem;
-    }
-
-    .review-meta {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.25rem;
-    }
-
-    .review-tour {
-        font-weight: 600;
-        color: #1a5490;
-        font-size: 0.9375rem;
-    }
-
-    .review-date {
-        font-size: 0.875rem;
-        color: #666;
-    }
-
-    .review-content p {
-        font-size: 0.9375rem;
-        line-height: 1.8;
-        color: #444;
-        margin-bottom: 1rem;
-    }
-
-    .review-content p:last-child {
-        margin-bottom: 0;
-        font-weight: 500;
-        color: #1a5490;
-    }
-
-    /* Help Section */
-    .help-section {
-        padding: 80px 0;
-        background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
-    }
-
-    .help-section__subtitle {
-        font-size: 1.125rem;
-        color: #666;
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-    }
-
-    .help-primary-cta {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .help-primary-cta__note {
-        margin-top: 1rem;
-        font-size: 0.9375rem;
-        color: #666;
-    }
-
-    .help-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .help-option {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        text-align: center;
-    }
-
-    .help-option__icon {
-        width: 56px;
-        height: 56px;
-        margin: 0 auto 1.5rem;
-        background: linear-gradient(135deg, #1a5490 0%, #2c7abf 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-    }
-
-    .help-option__title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 0.75rem;
-    }
-
-    .help-option__text {
-        font-size: 0.9375rem;
-        color: #666;
-        margin-bottom: 1.25rem;
-        line-height: 1.6;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        /* Add container padding */
-        .container {
-            padding-left: 16px;
-            padding-right: 16px;
-        }
-
-        /* Reduce section padding */
-        .why-best,
-        .our-story,
-        .stats-showcase,
-        .team-section,
-        .trust-section,
-        .help-section {
-            padding: 60px 0;
-        }
-
-        .section-heading {
-            font-size: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .section-tagline {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .two-col-section {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .two-col-section__content p {
-            font-size: 1rem;
-        }
-
-        .icon-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .icon-card {
-            padding: 1.5rem;
-        }
-
-        .icon-card__icon {
-            width: 56px;
-            height: 56px;
-            font-size: 1.5rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .icon-card__title {
-            font-size: 1.125rem;
-        }
-
-        .icon-card__text {
-            font-size: 0.9rem;
-        }
-
-        .stat-cards {
+    /* ==========================================
+       RESPONSIVE - Mobile First Fixes
+       ========================================== */
+    @media (max-width: 1024px) {
+        .solution-grid,
+        .impact-stats,
+        .partnership-grid,
+        .testimonials {
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
         }
 
-        .stat-card {
-            padding: 1.5rem;
-        }
-
-        .stat-card__number {
-            font-size: 2.5rem;
-        }
-
-        .stats-showcase__subtitle {
-            font-size: 1rem;
-        }
-
-        .team-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .team-member__photo {
-            width: 160px;
-            height: 160px;
-        }
-
-        .team-member__name {
-            font-size: 1.25rem;
-        }
-
-        .trust-strip {
-            padding: 1.5rem;
-        }
-
-        .trust-strip__ratings {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .featured-review {
-            padding: 1.5rem;
-        }
-
-        .review-content p {
-            font-size: 0.9rem;
-        }
-
-        .help-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .help-option {
-            padding: 1.5rem;
-        }
-
-        .help-section__subtitle {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .two-col-section__images {
+        .problem-section__content {
             grid-template-columns: 1fr;
         }
 
-        .story-image--large,
-        .story-image--small {
-            grid-column: 1;
-            grid-row: auto;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9375rem;
-        }
-
-        .btn--large {
-            padding: 1rem 2rem;
-            font-size: 1rem;
+        .problem-image {
+            order: -1;
+            max-width: 500px;
+            margin: 0 auto 2rem;
         }
     }
 
-    /* Very Small Mobile (480px and below) */
-    @media (max-width: 480px) {
-        .container {
-            padding-left: 12px;
-            padding-right: 12px;
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 160px 0 100px; /* Increased padding for mobile to clear navbar + better breathing room */
         }
 
-        .why-best,
-        .our-story,
-        .stats-showcase,
-        .team-section,
-        .trust-section,
-        .help-section {
-            padding: 48px 0;
+        .about-hero__title {
+            font-size: 2.25rem;
+            line-height: 1.3;
+            max-width: 100%;
+            padding: 0 1rem;
         }
 
-        .section-heading {
-            font-size: 1.75rem;
-            line-height: 1.2;
+        .about-hero__subtitle {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            padding: 0 1rem;
+            margin-bottom: 2.5rem;
         }
 
-        .section-tagline {
-            font-size: 0.9375rem;
+        .about-hero__cta {
+            padding: 0 1rem;
         }
 
-        .icon-card {
-            padding: 1.25rem;
+        .btn--hero {
+            width: 90%;  /* Wider button on mobile */
+            max-width: 320px;
         }
 
-        .icon-card__icon {
-            width: 48px;
-            height: 48px;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .icon-card__title {
-            font-size: 1.0625rem;
-        }
-
-        .icon-card__text {
-            font-size: 0.875rem;
-        }
-
-        .two-col-section__content p {
-            font-size: 0.9375rem;
-            margin-bottom: 1.25rem;
+        .section {
+            padding: 70px 0;
         }
 
         .eyebrow {
             font-size: 0.8125rem;
+            letter-spacing: 2px;
         }
 
-        .stat-cards {
+        .section-heading {
+            font-size: 2rem;
+        }
+
+        .section-tagline {
+            font-size: 1.0625rem;
+        }
+
+        .solution-grid,
+        .impact-stats,
+        .partnership-grid,
+        .testimonials {
             grid-template-columns: 1fr;
-            gap: 1.25rem;
+            gap: 1.5rem;
         }
 
-        .stat-card {
-            padding: 1.25rem;
+        .solution-card,
+        .impact-stat,
+        .partnership-card {
+            padding: 2rem 1.5rem;
         }
 
-        .stat-card__number {
-            font-size: 2.25rem;
+        .impact-stat__number {
+            font-size: 2.75rem;
         }
 
-        .stat-card__label {
-            font-size: 0.9375rem;
+        .problem-box {
+            padding: 1.75rem;
         }
 
-        .stats-showcase__intro {
-            margin-bottom: 2rem;
-        }
-
-        .stats-showcase__subtitle {
-            font-size: 0.9375rem;
-        }
-
-        .team-member__photo {
-            width: 140px;
-            height: 140px;
-            margin-bottom: 1.25rem;
-        }
-
-        .team-member__name {
-            font-size: 1.125rem;
-        }
-
-        .team-member__position {
-            font-size: 0.9375rem;
-        }
-
-        .testimonial-card {
-            padding: 1.25rem;
-        }
-
-        .testimonial-card__title {
-            font-size: 0.9375rem;
-        }
-
-        .testimonial-card__text {
-            font-size: 0.875rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .testimonial-card__author {
-            gap: 0.75rem;
-        }
-
-        .testimonial-card__avatar {
-            width: 40px;
-            height: 40px;
-        }
-
-        .testimonial-card__author-name {
-            font-size: 0.875rem;
-        }
-
-        .testimonial-card__author-location {
-            font-size: 0.8125rem;
-        }
-
-        .tripadvisor-badge {
-            padding: 1rem;
-        }
-
-        .tripadvisor-badge__logo {
-            height: 32px;
-        }
-
-        .stars {
-            font-size: 1rem;
-        }
-
-        .tripadvisor-badge__count {
-            font-size: 0.875rem;
-        }
-
-        .help-option {
-            padding: 1.25rem;
-        }
-
-        .help-option__icon {
-            width: 48px;
-            height: 48px;
+        .problem-box__stat {
             font-size: 1.25rem;
-            margin-bottom: 1.25rem;
+            padding: 1.25rem;
         }
 
-        .help-option__title {
-            font-size: 1.125rem;
+        .artisan-gallery {
+            grid-template-columns: 1fr;
         }
 
-        .help-option__text {
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
+        .artisan-gallery__item img {
+            height: 220px;
         }
 
-        .help-section__subtitle {
-            font-size: 0.9375rem;
+        .cta-section {
+            padding: 70px 0;
         }
 
-        .help-primary-cta__note {
-            font-size: 0.875rem;
+        .cta-section__heading {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .about-hero__title {
+            font-size: 1.875rem;
+        }
+
+        .section-heading {
+            font-size: 1.75rem;
+        }
+
+        .impact-stat__number {
+            font-size: 2.5rem;
         }
 
         .btn {
-            padding: 0.625rem 1.25rem;
-            font-size: 0.875rem;
-        }
-
-        .btn--large {
-            padding: 0.875rem 1.75rem;
-            font-size: 0.9375rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            width: 100%;
         }
     }
 </style>
 @endpush
 
 @section('content')
-
-    <!-- =====================================================
-         HERO SECTION
-         ===================================================== -->
-    <section class="about-hero" aria-labelledby="about-hero-heading">
-      <div class="about-hero__overlay"></div>
+    {{-- Hero Section - Enhanced with trust elements --}}
+    <section class="about-hero">
       <div class="container">
-        <div class="about-hero__content">
-          <h1 id="about-hero-heading" class="about-hero__title">About Us</h1>
-          <p class="about-hero__subtitle">
-            Family-run in Samarkand since 2012.<br>
-            We craft authentic Silk Road journeys with local hospitality and expert care.
+        <h1 class="about-hero__title">{{ __('ui.about_page.hero_title') }}</h1>
+        <div class="about-hero__cta">
+          <a href="{{ url('/tours') }}" class="btn--hero">
+            <i class="fas fa-route" aria-hidden="true"></i> {{ __('ui.about_page.cta_explore') }}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {{-- The Problem Section --}}
+    <section class="section section--first">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #e74c3c; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.problem_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.problem_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.problem_subtitle') }}
+        </p>
+
+        <div class="problem-section__content">
+          <div class="problem-box">
+            <p class="problem-box__text">
+              <strong>{{ __('ui.about_page.problem_text1') }}</strong> The potter in Gijduvan. The silk weaver in Margilan who learned from her grandmother. They're not just creating beautiful objects—they're living links to a thousand years of history.
+            </p>
+            <p class="problem-box__text">
+              {{ __('ui.about_page.problem_text2') }}
+            </p>
+            <p class="problem-box__stat">{{ __('ui.about_page.problem_stat') }}</p>
+            <p class="problem-box__text" style="margin-bottom: 0;">
+              {{ __('ui.about_page.problem_text3') }}
+            </p>
+          </div>
+          <div class="problem-image">
+            <img src="{{ asset('images/traditional-embroidery-display.webp') }}" alt="Traditional Uzbek embroidery textiles" loading="lazy">
+            <div class="problem-image__caption">
+              <i class="fas fa-palette" aria-hidden="true"></i> {{ __('ui.about_page.problem_image_caption') }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{-- Our Solution Section --}}
+    <section class="section section--gray">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.solution_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.solution_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.solution_subtitle') }}
+        </p>
+
+        <div class="solution-grid">
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-users" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution1_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution1_text') }}</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution2_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution2_text') }}</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-clock" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution3_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution3_text') }}</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-heart" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution4_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution4_text') }}</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-language" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution5_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution5_text') }}</p>
+          </div>
+
+          <div class="solution-card">
+            <div class="solution-card__icon">
+              <i class="fas fa-home" aria-hidden="true"></i>
+            </div>
+            <h3 class="solution-card__title">{{ __('ui.about_page.solution6_title') }}</h3>
+            <p class="solution-card__text">{{ __('ui.about_page.solution6_text') }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{-- Our Impact Section --}}
+    <section class="section section--first">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.impact_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.impact_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.impact_subtitle') }}
+        </p>
+
+        <div class="impact-stats">
+          <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-user-friends" aria-hidden="true"></i>
+            </div>
+            <div class="impact-stat__number">45+</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat1_label') }}</div>
+          </div>
+
+          <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-palette" aria-hidden="true"></i>
+            </div>
+            <div class="impact-stat__number">12</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat2_label') }}</div>
+          </div>
+
+          <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+            </div>
+            <div class="impact-stat__number">$85K+</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat3_label') }}</div>
+            <div class="impact-stat__source">{{ __('ui.about_page.impact_stat3_source') }}</div>
+          </div>
+
+          <div class="impact-stat">
+            <div class="impact-stat__icon">
+              <i class="fas fa-chart-line" aria-hidden="true"></i>
+            </div>
+            <div class="impact-stat__number">13</div>
+            <div class="impact-stat__label">{{ __('ui.about_page.impact_stat4_label') }}</div>
+            <div class="impact-stat__source">{{ __('ui.about_page.impact_stat4_source') }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{-- Partnerships Section --}}
+    <section class="section section--gray">
+      <div class="container">
+        <span class="eyebrow text-center mx-auto" style="display: block; font-size: 0.875rem; font-weight: 600; color: #2563eb; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">{{ __('ui.about_page.partnerships_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.partnerships_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.partnerships_subtitle') }}
+        </p>
+
+        <div class="partnership-grid">
+          <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-landmark" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner1_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner1_role') }}</p>
+          </div>
+
+          <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-hands" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner2_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner2_role') }}</p>
+          </div>
+
+          <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-industry" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner3_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner3_role') }}</p>
+          </div>
+
+          <div class="partnership-card">
+            <div class="partnership-card__icon">
+              <i class="fas fa-scroll" aria-hidden="true"></i>
+            </div>
+            <h3 class="partnership-card__name">{{ __('ui.about_page.partner4_name') }}</h3>
+            <p class="partnership-card__role">{{ __('ui.about_page.partner4_role') }}</p>
+          </div>
+        </div>
+
+        <div class="ethical-commitment">
+          <p>
+            <strong><i class="fas fa-leaf" aria-hidden="true"></i> {{ __('ui.about_page.ethical_commitment_title') }}</strong>
+            {{ __('ui.about_page.ethical_commitment_text') }}
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Breadcrumb Navigation -->
-    <nav class="breadcrumb" aria-label="Breadcrumb" style="background: #f8f9fa; padding: 1rem 0;">
-        <div class="container">
-            <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
-                <li style="display: flex; align-items: center;">
-                    <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
-                    <span style="margin: 0 0.5rem; color: #666;">/</span>
-                </li>
-                <li style="color: #666; font-weight: 500;" aria-current="page">About Us</li>
-            </ol>
-        </div>
-    </nav>
-
-    <!-- =====================================================
-         WHY WE ARE BEST - ICON GRID
-         ===================================================== -->
-    <section class="why-best">
+    {{-- Artisan Gallery Section --}}
+    <section class="section section--first">
       <div class="container">
-        <h2 class="section-heading text-center">Why Travelers Choose Jahongir Travel</h2>
-        <p class="text-center section-tagline">Authenticity, care, and trust in every journey.</p>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">{{ __('ui.about_page.artisans_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.artisans_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.artisans_subtitle') }}
+        </p>
 
-        <div class="icon-grid">
-          <div class="icon-card">
-            <div class="icon-card__icon">
-              <i class="fas fa-home" aria-hidden="true"></i>
+        <div class="artisan-gallery">
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/pottery-artisan.webp') }}" alt="Uzbek pottery craftsman at work" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>{{ __('ui.about_page.gallery_pottery_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_pottery_desc') }}
             </div>
-            <h3 class="icon-card__title">Local family hospitality</h3>
-            <p class="icon-card__text">Born and raised in Samarkand, we treat every guest like family. Flexible, human support 24/7—we reply in 24 hours (often faster).</p>
           </div>
-
-          <div class="icon-card">
-            <div class="icon-card__icon">
-              <i class="fas fa-hands-helping" aria-hidden="true"></i>
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/embroidery-artisan.webp') }}" alt="Suzani embroidery artisan creating traditional patterns" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>{{ __('ui.about_page.gallery_embroidery_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_embroidery_desc') }}
             </div>
-            <h3 class="icon-card__title">Artisan partnerships</h3>
-            <p class="icon-card__text">Direct connections with local craftspeople, family-run guesthouses, and authentic restaurants you won't find in guidebooks.</p>
           </div>
-
-          <div class="icon-card">
-            <div class="icon-card__icon">
-              <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+          <div class="artisan-gallery__item">
+            <img src="{{ asset('images/silk-weaving-artisan.webp') }}" alt="Silk weaving artisans at traditional loom" loading="lazy">
+            <div class="artisan-gallery__caption">
+              <strong>{{ __('ui.about_page.gallery_silk_title') }}</strong><br>
+              {{ __('ui.about_page.gallery_silk_desc') }}
             </div>
-            <h3 class="icon-card__title">Transparent pricing</h3>
-            <p class="icon-card__text">Clear, upfront quotes in UZS/USD with no hidden fees. No prepayment required for most day tours.</p>
-          </div>
-
-          <div class="icon-card">
-            <div class="icon-card__icon">
-              <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-            </div>
-            <h3 class="icon-card__title">Expert local planning</h3>
-            <p class="icon-card__text">We plan, host, and personally guide journeys across Uzbekistan. Every detail handled with care and attention.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =====================================================
-         OUR STORY - TWO COLUMN
-         ===================================================== -->
-    <section class="our-story">
+    {{-- Testimonials Section --}}
+    <section class="section section--gray">
       <div class="container">
-        <div class="two-col-section">
-          <div class="two-col-section__content">
-            <span class="eyebrow">OUR STORY</span>
-            <h2 class="section-heading">It feels like family (because it is)</h2>
-            <p>Our story began in the heart of Samarkand, where our family opened the first Jahongir Guest House in 2012. What started as a cozy guesthouse welcoming travelers to experience authentic Uzbek hospitality has grown into a full-service travel company, but our values remain the same.</p>
-            <p>Born and raised in Samarkand, our founders dreamed of sharing their homeland's hidden treasures with the world. Every tour we craft carries the care and attention we'd give our own family. From recommending the best local restaurants to ensuring you experience authentic cultural moments, <strong>we treat every traveler as part of our extended family.</strong></p>
-            <p>If you're going to visit a new place, it should feel like coming home.</p>
-            <a href="#team" class="btn btn--outline-coral">Meet our team</a>
-          </div>
+        <span class="eyebrow text-center mx-auto" style="color: #2563eb;">{{ __('ui.about_page.testimonials_eyebrow') }}</span>
+        <h2 class="section-heading text-center">{{ __('ui.about_page.testimonials_title') }}</h2>
+        <p class="section-tagline text-center mx-auto">
+          {{ __('ui.about_page.testimonials_subtitle') }}
+        </p>
 
-          <div class="two-col-section__images">
-            <img src="/images/about/team-sunset.jpg" alt="Team silhouette at sunset" class="story-image story-image--large" width="1200" height="630" loading="lazy">
-            <img src="/images/about/workspace.jpg" alt="Team member planning tours" class="story-image story-image--small" width="400" height="300" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         STATS SHOWCASE
-         ===================================================== -->
-    <section class="stats-showcase">
-      <div class="container">
-        <div class="stats-showcase__intro">
-          <h2 class="section-heading text-center">Over a decade of journeys that connect cultures</h2>
-          <p class="text-center stats-showcase__subtitle">Since 2012, our family has guided travelers through the heart of Uzbekistan and beyond, building lasting relationships and unforgettable memories across the Silk Road.</p>
-        </div>
-
-        <div class="stat-cards">
-          <div class="stat-card">
-            <div class="stat-card__number">Thousands</div>
-            <div class="stat-card__label">of tours organized since 2012</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card__number">12+</div>
-            <div class="stat-card__label">years of experience</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card__number">Strong</div>
-            <div class="stat-card__label">network of local partners</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         LEADERSHIP TEAM
-         ===================================================== -->
-    <section class="team-section" id="team">
-      <div class="container">
-        <div class="team-section__header">
-          <span class="eyebrow">LEADERSHIP TEAM</span>
-          <h2 class="section-heading text-center">Our people are your people, too</h2>
-          <p class="text-center team-section__subtitle">The dedicated team guiding your Uzbekistan journey to success</p>
-        </div>
-
-        <div class="team-grid">
-          <div class="team-member">
-            <img src="/images/about/team-member-1.jpg" alt="Jahongir Karimov" class="team-member__photo" width="405" height="340" loading="lazy">
-            <h3 class="team-member__name">Jahongir Karimov</h3>
-            <p class="team-member__position">Founder & CEO</p>
-          </div>
-
-          <div class="team-member">
-            <img src="/images/about/team-member-2.jpg" alt="Dilshod Rahimov" class="team-member__photo" width="405" height="340" loading="lazy">
-            <h3 class="team-member__name">Dilshod Rahimov</h3>
-            <p class="team-member__position">Head of Operations</p>
-          </div>
-
-          <div class="team-member">
-            <img src="/images/about/team-member-3.jpg" alt="Madina Sultanova" class="team-member__photo" width="405" height="340" loading="lazy">
-            <h3 class="team-member__name">Madina Sultanova</h3>
-            <p class="team-member__position">Chief Experience Officer</p>
-          </div>
-        </div>
-
-        <div class="team-section__cta">
-          <a href="/contact" class="btn btn--outline-coral">Meet our team</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         TRUST STRIP & FEATURED REVIEW
-         ===================================================== -->
-    <section class="trust-section">
-      <div class="container">
-        <!-- Trust Strip -->
-        <div class="trust-strip">
-          <h3 class="trust-strip__title">Loved by travelers worldwide</h3>
-          <div class="trust-strip__ratings">
-            <div class="trust-rating">
-              <i class="fas fa-star"></i>
-              <strong>4.9/5</strong> on Tripadvisor (1,200+ reviews)
-            </div>
-            <div class="trust-rating">
-              <i class="fas fa-star"></i>
-              <strong>5.0</strong> on Google Reviews
-            </div>
-          </div>
-        </div>
-
-        <!-- Featured Real Review -->
-        <div class="featured-review">
-          <div class="review-author">
-            <div class="review-author__photo">
-              <span>VT</span>
-            </div>
-            <div class="review-author__info">
-              <div class="review-author__name">Verified TripAdvisor Traveler</div>
-              <div class="review-author__badge">
-                <i class="fab fa-tripadvisor"></i>
-                <span>TripAdvisor Review</span>
+        <div class="testimonials">
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              {{ __('ui.about_page.testimonial1_text') }}
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">SC</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial1_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial1_meta') }}</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="review-header">
-            <div class="review-stars">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="review-meta">
-              <span class="review-tour">Yurt camp tour</span>
-              <span class="review-date">Oct 2024 • Family</span>
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              {{ __('ui.about_page.testimonial2_text') }}
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">MH</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial2_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial2_meta') }}</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="review-content">
-            <p>From the moment our tour began, everything was handled with care and professionalism. Our tour agent Bek personally met with us to walk through the itinerary and provided a dedicated contact number for emergencies. The journey in a comfortable SUV with our fantastic driver Farhod was smooth and relaxing.</p>
-
-            <p>Arriving at Aydarkul Lake was breathtaking — a beautiful oasis in the middle of the desert that suddenly appeared over the hills. The yurt camp offered surprisingly modern facilities while keeping the authentic nomadic vibe. The night in the desert was magical — clear skies filled with stars, sitting by the fire sharing stories.</p>
-
-            <p>The pottery masterclass at the Narzullaev family workshop in Gijduvan was interactive and creative. This tour was one of the most unique and enriching travel experiences we've had — well-organized, personal, and full of local charm. Highly recommended for anyone looking to experience the real heart of Uzbekistan!</p>
+          <div class="testimonial-card">
+            <p class="testimonial-card__text">
+              {{ __('ui.about_page.testimonial3_text') }}
+            </p>
+            <div class="testimonial-card__author">
+              <div class="testimonial-card__avatar">AL</div>
+              <div class="testimonial-card__info">
+                <div class="testimonial-card__name">{{ __('ui.about_page.testimonial3_name') }}</div>
+                <div class="testimonial-card__meta">{{ __('ui.about_page.testimonial3_meta') }}</div>
+                <div class="testimonial-card__rating">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =====================================================
-         HELP / CONTACT OPTIONS
-         ===================================================== -->
-    <section class="help-section">
+    {{-- CTA Section --}}
+    <section class="cta-section">
       <div class="container">
-        <h2 class="section-heading text-center">Let's plan your perfect Silk Road adventure together</h2>
-        <p class="text-center help-section__subtitle">Not sure where to start? Our local experts are here to guide you every step of the way.</p>
-
-        <!-- Primary CTA -->
-        <div class="help-primary-cta">
-          <a href="/tours" class="btn btn--primary btn--large">Plan my trip</a>
-          <p class="help-primary-cta__note">Browse our tours and find your perfect Silk Road adventure</p>
-        </div>
-
-        <!-- Secondary Contact Options -->
-        <div class="help-grid">
-          <div class="help-option">
-            <div class="help-option__icon">
-              <i class="fab fa-whatsapp" aria-hidden="true"></i>
-            </div>
-            <h3 class="help-option__title">Chat on WhatsApp</h3>
-            <p class="help-option__text">Quick questions? Message us on WhatsApp and get instant replies from our team.</p>
-            <a href="https://wa.me/998915550808" target="_blank" rel="noopener" class="help-option__link"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
-          </div>
-
-          <div class="help-option">
-            <div class="help-option__icon">
-              <i class="fas fa-phone-alt" aria-hidden="true"></i>
-            </div>
-            <h3 class="help-option__title">Call now</h3>
-            <p class="help-option__text">Speak with a local expert about your perfect Silk Road journey.</p>
-            <a href="tel:+998915550808" class="help-option__link help-option__link--phone"><i class="fas fa-phone-alt"></i> +998 91 555 08 08</a>
-          </div>
-        </div>
+        <h2 class="cta-section__heading">{{ __('ui.about_page.cta_title') }}</h2>
+        <p class="cta-section__text">
+          {{ __('ui.about_page.cta_text') }}
+        </p>
+        <a href="{{ url('/tours') }}" class="btn btn--white">{{ __('ui.about_page.cta_button') }}</a>
       </div>
-    </section>@endsection
+    </section>
+@endsection

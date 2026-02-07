@@ -30,7 +30,6 @@ class ContractForm
                     ->schema([
                         TextInput::make('contract_number')
                             ->label('Contract Number')
-                            ->required()
                             ->unique(ignoreRecord: true)
                             ->placeholder('Auto-generated: CON-2025-001, CON-2025-002...')
                             ->disabled()
@@ -335,6 +334,21 @@ class ContractForm
                                             ->step(0.01)
                                             ->placeholder('0.00')
                                             ->helperText('Daily rate for this guide (e.g., $80/day for guide services)')
+                                            ->afterStateUpdated(function ($state, $set) {
+                                                $set('price_data', ['direct_price' => (float) $state]);
+                                            })
+                                            ->columnSpanFull(),
+
+                                        // Direct pricing for Driver
+                                        TextInput::make('driver_direct_price_input')
+                                            ->label('Daily Rate (Driver)')
+                                            ->visible(fn ($get) => $get('../../serviceable_type') === 'App\Models\Driver')
+                                            ->numeric()
+                                            ->required()
+                                            ->prefix('$')
+                                            ->step(0.01)
+                                            ->placeholder('0.00')
+                                            ->helperText('Daily rate for this driver (e.g., $50/day for driver services)')
                                             ->afterStateUpdated(function ($state, $set) {
                                                 $set('price_data', ['direct_price' => (float) $state]);
                                             })

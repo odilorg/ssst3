@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     {{-- SEO Meta Tags --}}
     <meta name="description" content="@yield('meta_description', 'Discover Uzbekistan with Jahongir Travel - Expert guided tours of the ancient Silk Road, featuring Samarkand, Bukhara, Khiva, and more.')">
@@ -10,7 +11,14 @@
     <title>@yield('title', 'Jahongir Travel - Discover the Magic of Uzbekistan | Silk Road Tours')</title>
     
     {{-- Canonical URL --}}
-    <link rel="canonical" href="@yield('canonical', url()->current())">
+    @hasSection('canonical')
+        <link rel="canonical" href="@yield('canonical')">
+    @else
+        <x-seo.canonical />
+    @endif
+
+    {{-- Hreflang Tags (for multilingual SEO) --}}
+    @stack('hreflang')
     
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -69,7 +77,10 @@
 
     {{-- Page-specific CSS --}}
     @stack('styles')
-    
+
+    {{-- AlpineJS for language switcher and other interactive components --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     {{-- JSON-LD Structured Data --}}
     @hasSection('structured_data')
         <script type="application/ld+json">

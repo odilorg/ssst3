@@ -80,6 +80,26 @@ class BookingsTable
                     ->label('Стоимость')
                     ->money('USD')
                     ->sortable(),
+                TextColumn::make('payment_status')
+                    ->label('Оплата')
+                    ->badge()
+                    ->color(fn (?string $state): string => match ($state) {
+                        'pending' => 'gray',
+                        'paid' => 'success',
+                        'failed' => 'danger',
+                        'refunded' => 'info',
+                        'partial_refund' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'pending' => 'Ожидание',
+                        'paid' => 'Оплачено',
+                        'failed' => 'Ошибка',
+                        'refunded' => 'Возврат',
+                        'partial_refund' => 'Частичный возврат',
+                        default => 'Не оплачено',
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Создано')
                     ->dateTime()

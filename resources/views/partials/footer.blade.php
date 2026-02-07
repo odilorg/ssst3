@@ -1,15 +1,16 @@
+@php $locale = $currentLocale ?? 'en'; @endphp
 <footer class="site-footer">
     <div class="container">
     <div class="footer-main footer-main--desktop">
         <div class="footer-brand">
-            <a href="{{ url('/') }}" class="footer-brand__link">
+            <a href="{{ route('localized.home', ['locale' => $locale]) }}" class="footer-brand__link">
                 <i class="fas fa-compass footer-brand__logo"></i>
                 <span class="footer-brand__text">Jahongir Travel</span>
             </a>
-            <p class="footer-brand__tagline">Tailor-made Uzbekistan tours since 2012.</p>
+            <p class="footer-brand__tagline">{{ __('ui.footer.tagline') }}</p>
 
             <div class="footer-brand__contact-section">
-                <div class="footer-brand__contact-title">Get in Touch</div>
+                <div class="footer-brand__contact-title">{{ __('ui.footer.get_in_touch') }}</div>
                 <address class="footer-brand__contact">
                     <a href="mailto:info@jahongir-travel.uz"><i class="far fa-envelope"></i> info@jahongir-travel.uz</a>
                     <a href="tel:+998915550808"><i class="fas fa-phone"></i> +998 91 555 08 08</a>
@@ -20,22 +21,21 @@
         </div>
 
         <nav class="footer-col footer-nav" aria-label="Quick Links">
-            <div class="footer-nav__title">Quick Links</div>
+            <div class="footer-nav__title">{{ __('ui.footer.quick_links') }}</div>
             <ul class="footer-nav__list">
-                <li><a href="{{ url('/about') }}">About Us</a></li>
-                <li><a href="{{ url('/contact') }}">Contact</a></li>
-                <li><a href="{{ route('blog.index') }}">Blog</a></li>
-                <li><a href="{{ url('/faqs') }}">FAQs</a></li>
+                <li><a href="{{ route('localized.about', ['locale' => $locale]) }}">{{ __('ui.footer.about_us') }}</a></li>
+                <li><a href="{{ route('localized.contact', ['locale' => $locale]) }}">{{ __('ui.footer.contact') }}</a></li>
+                <li><a href="{{ route('localized.blog.index', ['locale' => $locale]) }}">{{ __('ui.footer.blog') }}</a></li>
             </ul>
         </nav>
 
         <nav class="footer-col footer-nav" aria-label="Popular Destinations">
-            <div class="footer-nav__title">Destinations</div>
+            <div class="footer-nav__title">{{ __('ui.footer.destinations') }}</div>
             <ul class="footer-nav__list">
-                <li><a href="{{ url('/destinations/samarkand') }}">Samarkand</a></li>
-                <li><a href="{{ url('/destinations/bukhara') }}">Bukhara</a></li>
-                <li><a href="{{ url('/destinations/khiva') }}">Khiva</a></li>
-                <li><a href="{{ url('/destinations/tashkent') }}">Tashkent</a></li>
+                <li><a href="{{ route('localized.city.show', ['locale' => $locale, 'slug' => 'samarkand']) }}">Samarkand</a></li>
+                <li><a href="{{ route('localized.city.show', ['locale' => $locale, 'slug' => 'bukhara']) }}">Bukhara</a></li>
+                <li><a href="{{ route('localized.city.show', ['locale' => $locale, 'slug' => 'khiva']) }}">Khiva</a></li>
+                <li><a href="{{ route('localized.city.show', ['locale' => $locale, 'slug' => 'tashkent']) }}">Tashkent</a></li>
             </ul>
         </nav>
 
@@ -44,13 +44,13 @@
 
     <div class="footer-bottom">
         <div class="footer-bottom__wrap">
-            <div>© {{ date('Y') }} Jahongir Travel. All rights reserved.</div>
+            <div>© {{ date('Y') }} Jahongir Travel. {{ __('ui.footer.copyright') }}</div>
             <div class="footer-bottom__legal">
-                <a href="{{ url('/privacy') }}">Privacy</a>
+                <a href="{{ route('localized.privacy', ['locale' => $locale]) }}">{{ __('ui.footer.privacy_policy') }}</a>
                 <span> • </span>
-                <a href="{{ url('/terms') }}">Terms</a>
+                <a href="{{ route('localized.terms', ['locale' => $locale]) }}">{{ __('ui.footer.terms_of_service') }}</a>
                 <span> • </span>
-                <a href="{{ url('/cookies') }}">Cookies</a>
+                <a href="{{ route('localized.cookies', ['locale' => $locale]) }}">{{ __('ui.footer.cookie_policy') }}</a>
             </div>
         </div>
     </div>

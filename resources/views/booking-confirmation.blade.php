@@ -180,34 +180,59 @@
 
         .btn {
             flex: 1;
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 13px 24px;
+            border-radius: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
             font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.02em;
             text-decoration: none;
             text-align: center;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: none;
-            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
             color: white;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b4299 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .btn-secondary {
-            background: #f3f4f6;
+            background: rgba(243, 244, 246, 0.9);
+            backdrop-filter: blur(10px);
             color: #374151;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .btn-secondary:hover {
-            background: #e5e7eb;
+            background: rgba(229, 231, 235, 0.95);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .footer {

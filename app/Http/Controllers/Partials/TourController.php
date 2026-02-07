@@ -90,8 +90,10 @@ class TourController extends Controller
      */
     public function highlights(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
-        return view('partials.tours.show.highlights', compact('tour'));
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
+        return view('partials.tours.show.highlights', compact('tour', 'translation'));
     }
 
     /**
@@ -100,8 +102,10 @@ class TourController extends Controller
      */
     public function itinerary(string $slug)
     {
+        $locale = request()->query('locale', app()->getLocale());
+
         // Get tour with eager-loaded itinerary items (hierarchical structure)
-        $tour = Cache::remember("tour.{$slug}.with_itinerary", 3600, function () use ($slug) {
+        $tour = Cache::remember("tour.{$slug}.with_itinerary.{$locale}", 3600, function () use ($slug) {
             return Tour::where('slug', $slug)
                 ->where('is_active', true)
                 ->with([
@@ -110,12 +114,28 @@ class TourController extends Controller
                     },
                     'topLevelItems.children' => function($query) {
                         $query->orderBy('sort_order');
-                    }
+                    },
+                    'translations'
                 ])
                 ->firstOrFail();
         });
 
-        return view('partials.tours.show.itinerary', compact('tour'));
+        // Get translation for current locale
+        $translation = null;
+        if (config('multilang.phases.tour_translations')) {
+            $translation = $tour->translations()
+                ->where('locale', $locale)
+                ->first();
+
+            // Fallback to default locale if translation not found
+            if (!$translation) {
+                $translation = $tour->translations()
+                    ->where('locale', config('multilang.default_locale', 'en'))
+                    ->first();
+            }
+        }
+
+        return view('partials.tours.show.itinerary', compact('tour', 'translation'));
     }
 
     /**
@@ -124,8 +144,10 @@ class TourController extends Controller
      */
     public function includedExcluded(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
-        return view('partials.tours.show.included-excluded', compact('tour'));
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
+        return view('partials.tours.show.included-excluded', compact('tour', 'translation'));
     }
 
     /**
@@ -134,17 +156,25 @@ class TourController extends Controller
      */
     public function faqs(string $slug)
     {
-        $tour = Tour::where('slug', $slug)
-            ->where('is_active', true)
-            ->firstOrFail();
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
 
         $faqs = Cache::remember("tour.{$slug}.faqs", 86400, function () use ($tour) {
             return $tour->faqs()->orderBy('sort_order')->get();
         });
 
-        $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+        // Get global FAQs based on current locale
+        $locale = app()->getLocale();
+        $settingKey = $locale === 'en' ? 'global_faqs' : "global_faqs_{$locale}";
+        $globalFaqs = \App\Models\Setting::get($settingKey, []);
 
-        return view('partials.tours.show.faqs', compact('tour', 'faqs', 'globalFaqs'));
+        // Fallback to English if translation doesn't exist
+        if (empty($globalFaqs) && $locale !== 'en') {
+            $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+        }
+
+        return view('partials.tours.show.faqs', compact('tour', 'translation', 'faqs', 'globalFaqs'));
     }
 
     /**
@@ -186,33 +216,88 @@ class TourController extends Controller
     }
 
     /**
-     * Helper: Get cached tour
+     * Helper: Get cached tour with translation
      * Caches tour for 1 hour to reduce database queries
+     * Returns array with 'tour' and 'translation' when tour_translations phase is enabled
+     */
+    protected function getCachedTourWithTranslation(string $slug): array
+    {
+        // Get locale from query param or app locale
+        $locale = request()->query('locale', app()->getLocale());
+
+        // Set locale for translation methods to work correctly
+        if (config('multilang.phases.tour_translations') && in_array($locale, config('multilang.locales', ['en']))) {
+            app()->setLocale($locale);
+        }
+
+        $cacheKey = "tour.{$slug}.{$locale}.with_translation";
+
+        return Cache::remember($cacheKey, 3600, function () use ($slug, $locale) {
+            $query = Tour::where('slug', $slug)
+                ->where('is_active', true)
+                ->with('city');
+
+            // Eager load translations when phase is enabled
+            if (config('multilang.phases.tour_translations')) {
+                $query->with('translations');
+            }
+
+            $tour = $query->firstOrFail();
+
+            // Get translation for current locale
+            $translation = null;
+            if (config('multilang.phases.tour_translations')) {
+                $translation = $tour->translations()
+                    ->where('locale', $locale)
+                    ->first();
+
+                // Fallback to default locale if translation not found
+                if (!$translation) {
+                    $translation = $tour->translations()
+                        ->where('locale', config('multilang.default_locale', 'en'))
+                        ->first();
+                }
+            }
+
+            return [
+                'tour' => $tour,
+                'translation' => $translation
+            ];
+        });
+    }
+
+    /**
+     * Helper: Get cached tour (backward compatibility)
+     * Caches tour for 1 hour to reduce database queries
+     * Includes translations when tour_translations phase is enabled
      */
     protected function getCachedTour(string $slug): Tour
     {
-        return Cache::remember("tour.{$slug}", 3600, function () use ($slug) {
-            return Tour::where('slug', $slug)
-                ->where('is_active', true)
-                ->with('city')
-                ->firstOrFail();
-        });
+        $data = $this->getCachedTourWithTranslation($slug);
+        return $data['tour'];
     }
 
     /**
      * Requirements section (Know Before You Go)
      * Returns: Tour-specific requirements or global defaults
      */
-    /**
-     * Requirements section (Know Before You Go)
-     * Returns: Tour-specific requirements or global defaults
-     */
     public function requirements(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
-        $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
 
-        return view('partials.tours.show.requirements', compact('tour', 'globalRequirements'));
+        // Get global requirements based on current locale
+        $locale = app()->getLocale();
+        $settingKey = $locale === 'en' ? 'global_requirements' : "global_requirements_{$locale}";
+        $globalRequirements = \App\Models\Setting::get($settingKey, []);
+
+        // Fallback to English if translation doesn't exist
+        if (empty($globalRequirements) && $locale !== 'en') {
+            $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+        }
+
+        return view('partials.tours.show.requirements', compact('tour', 'translation', 'globalRequirements'));
     }
 
     /**
@@ -221,8 +306,10 @@ class TourController extends Controller
      */
     public function cancellation(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
-        return view('partials.tours.show.cancellation', compact('tour'));
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
+        return view('partials.tours.show.cancellation', compact('tour', 'translation'));
     }
 
     /**
@@ -231,8 +318,10 @@ class TourController extends Controller
      */
     public function meetingPoint(string $slug)
     {
-        $tour = $this->getCachedTour($slug);
-        return view('partials.tours.show.meeting-point', compact('tour'));
+        $data = $this->getCachedTourWithTranslation($slug);
+        $tour = $data['tour'];
+        $translation = $data['translation'];
+        return view('partials.tours.show.meeting-point', compact('tour', 'translation'));
     }
 
     /**

@@ -16,10 +16,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
+    /**
+     * Allowed payment methods - whitelist for validation
+     */
+    protected const ALLOWED_PAYMENT_METHODS = ['request', 'card', 'bank_transfer'];
+
     /**
      * Show booking form partial
      * Returns: Booking form HTML with tour details
@@ -60,18 +66,69 @@ class BookingController extends Controller
      */
     private function handleBooking(Request $request)
     {
-        // Debug: Log what we're actually receiving
-        Log::info('Booking Request Received', [
-            'all_data' => $request->all(),
-            'has_tour_date' => $request->has('tour-date'),
-            'has_tour_guests' => $request->has('tour-guests'),
-            'tour_date_value' => $request->input('tour-date'),
-            'tour_guests_value' => $request->input('tour-guests'),
+        $ip = $request->ip();
+
+        // SECURITY: Honeypot validation - bots fill hidden fields, humans don't
+        if ($request->filled('website') || $request->filled('fax_number')) {
+            Log::warning('Booking honeypot triggered', [
+                'ip' => $ip,
+                'tour_id' => $request->tour_id,
+            ]);
+            // Return success to not tip off the bot, but don't create booking
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking request submitted successfully!',
+                'booking' => [
+                    'reference' => 'BK-' . strtoupper(substr(md5(time()), 0, 8)),
+                ],
+            ]);
+        }
+
+        // SECURITY: Rate limiting - 5 bookings per 10 minutes per IP
+        $shortTermKey = 'booking_short_' . $ip;
+        if (RateLimiter::tooManyAttempts($shortTermKey, 5)) {
+            $retryAfter = RateLimiter::availableIn($shortTermKey);
+            Log::warning('Booking rate limit exceeded (short term)', [
+                'ip' => $ip,
+                'retry_after_seconds' => $retryAfter,
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many booking attempts. Please try again later.',
+            ], 429);
+        }
+
+        // SECURITY: Rate limiting - 20 bookings per day per IP
+        $dailyKey = 'booking_daily_' . $ip;
+        if (RateLimiter::tooManyAttempts($dailyKey, 20)) {
+            $retryAfter = RateLimiter::availableIn($dailyKey);
+            Log::warning('Booking rate limit exceeded (daily)', [
+                'ip' => $ip,
+                'retry_after_seconds' => $retryAfter,
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Daily booking limit reached. Please try again tomorrow.',
+            ], 429);
+        }
+
+        // Hit rate limiters
+        RateLimiter::hit($shortTermKey, 600);  // 10 minutes decay
+        RateLimiter::hit($dailyKey, 86400);    // 24 hours decay
+
+        // SECURITY: Sanitized logging - only non-PII fields
+        Log::info('Booking request received', [
+            'tour_id' => $request->tour_id,
+            'departure_id' => $request->departure_id,
+            'number_of_guests' => $request->number_of_guests,
+            'payment_method' => $request->payment_method,
+            'ip' => $ip,
         ]);
 
         // Validation - JS is sending start_date and number_of_guests (not tour-date/tour-guests)
         $validator = Validator::make($request->all(), [
             'tour_id' => 'required|exists:tours,id',
+            'departure_id' => 'required|exists:tour_departures,id',
             'start_date' => 'required|date|after_or_equal:today',
             'number_of_guests' => 'required|integer|min:1|max:50',
             'customer_name' => 'required|string|max:255',
@@ -79,18 +136,33 @@ class BookingController extends Controller
             'customer_phone' => 'nullable|string|max:50',
             'customer_country' => 'nullable|string|max:100',
             'special_requests' => 'nullable|string|max:1000',
+            // SECURITY: Validate payment_method against whitelist
+            'payment_method' => 'nullable|string|in:request,card,bank_transfer',
         ]);
 
         if ($validator->fails()) {
-            Log::error('Booking Validation Failed', [
-                'errors' => $validator->errors()->toArray(),
-                'request_data' => $request->all(),
+            // SECURITY: Sanitized error logging - no PII
+            Log::warning('Booking validation failed', [
+                'tour_id' => $request->tour_id,
+                'error_fields' => array_keys($validator->errors()->toArray()),
+                'ip' => $ip,
             ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // SECURITY: Additional payment_method validation against whitelist
+        $paymentMethod = $request->payment_method ?? 'request';
+        if (!in_array($paymentMethod, self::ALLOWED_PAYMENT_METHODS)) {
+            Log::warning('Invalid payment method attempted', [
+                'tour_id' => $request->tour_id,
+                'payment_method' => $paymentMethod,
+                'ip' => $ip,
+            ]);
+            $paymentMethod = 'request'; // Default to safe value
         }
 
         DB::beginTransaction();
@@ -110,39 +182,40 @@ class BookingController extends Controller
                 ]
             );
 
-            // Calculate pricing
-            $pricePerPerson = $tour->price_per_person ?? 0;
+            // Calculate pricing using tiered pricing if available
             $numberOfGuests = $request->number_of_guests;
-            $totalAmount = $pricePerPerson * $numberOfGuests;
+            $pricingTier = $tour->getPricingTierForGuests($numberOfGuests);
 
-            // Debug logging
-            Log::info('Booking Creation Debug', [
-                'tour_id' => $tour->id,
-                'price_per_person' => $pricePerPerson,
-                'number_of_guests' => $numberOfGuests,
-                'calculated_total' => $totalAmount,
-                'payment_method_from_request' => $request->payment_method,
-                'all_request_data' => $request->all(),
-            ]);
+            if ($pricingTier) {
+                // Use tiered pricing
+                $totalAmount = $pricingTier->price_total;
+                $pricePerPerson = $pricingTier->price_per_person;
+            } else {
+                // Fallback to base price
+                $pricePerPerson = $tour->price_per_person ?? 0;
+                $totalAmount = $pricePerPerson * $numberOfGuests;
+            }
 
             // Create booking
             $booking = Booking::create([
                 'tour_id' => $tour->id,
+                'departure_id' => $request->departure_id,
                 'customer_id' => $customer->id,
                 'start_date' => $request->start_date,
                 'pax_total' => $numberOfGuests,
                 'total_price' => $totalAmount,
                 'special_requests' => $request->special_requests,
                 'status' => 'pending_payment',
-                'payment_method' => $request->payment_method ?? 'request',
-                'payment_status' => 'unpaid',
+                'payment_method' => $paymentMethod,
+                'payment_status' => 'pending',
             ]);
 
-            Log::info('Booking Created', [
+            // SECURITY: Sanitized success logging - only reference and IDs
+            Log::info('Booking created successfully', [
                 'booking_id' => $booking->id,
                 'reference' => $booking->reference,
-                'total_price_saved' => $booking->total_price,
-                'payment_method_saved' => $booking->payment_method,
+                'tour_id' => $tour->id,
+                'pax_total' => $numberOfGuests,
             ]);
 
             DB::commit();
@@ -159,9 +232,9 @@ class BookingController extends Controller
                     ->send(new BookingAdminNotification($booking, $customer));
 
             } catch (\Exception $e) {
-                Log::error('Failed to send booking emails: ' . $e->getMessage(), [
+                Log::error('Failed to send booking emails', [
                     'booking_id' => $booking->id,
-                    'customer_email' => $customer->email,
+                    'error' => $e->getMessage(),
                 ]);
             }
 
@@ -170,7 +243,10 @@ class BookingController extends Controller
                 $telegramService = new TelegramNotificationService();
                 $telegramService->sendBookingNotification($booking);
             } catch (\Exception $e) {
-                Log::error('Failed to send Telegram notification: ' . $e->getMessage());
+                Log::error('Failed to send Telegram notification', [
+                    'booking_id' => $booking->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
 
             // Refresh to get latest data with relationships
@@ -197,7 +273,12 @@ class BookingController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Booking creation failed: ' . $e->getMessage());
+            // SECURITY: Log error internally without exposing details
+            Log::error('Booking creation failed', [
+                'tour_id' => $request->tour_id,
+                'error' => $e->getMessage(),
+                'ip' => $ip,
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -214,17 +295,60 @@ class BookingController extends Controller
      */
     private function handleInquiry(Request $request)
     {
+        $ip = $request->ip();
+
+        // SECURITY: Honeypot validation
+        if ($request->filled('website') || $request->filled('fax_number')) {
+            Log::warning('Inquiry honeypot triggered', [
+                'ip' => $ip,
+                'tour_id' => $request->tour_id,
+            ]);
+            // Return success to not tip off the bot
+            return response()->json([
+                'success' => true,
+                'message' => 'Question submitted successfully! We will respond within 24 hours.',
+                'inquiry' => [
+                    'reference' => 'INQ-' . strtoupper(substr(md5(time()), 0, 8)),
+                ],
+            ]);
+        }
+
+        // SECURITY: Rate limiting - 3 inquiries per 10 minutes per IP
+        $rateLimitKey = 'inquiry_' . $ip;
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $retryAfter = RateLimiter::availableIn($rateLimitKey);
+            Log::warning('Inquiry rate limit exceeded', [
+                'ip' => $ip,
+                'retry_after_seconds' => $retryAfter,
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many inquiries. Please try again later.',
+            ], 429);
+        }
+        RateLimiter::hit($rateLimitKey, 600); // 10 minutes decay
+
+        // SECURITY: Sanitized logging
+        Log::info('Inquiry request received', [
+            'tour_id' => $request->tour_id,
+            'ip' => $ip,
+        ]);
+
         // Validation - SIMPLIFIED: Only 3 required fields for quick inquiry
         $validator = Validator::make($request->all(), [
             'tour_id' => 'required|exists:tours,id',
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'required|email|max:255',
             'message' => 'required|string|max:1000',
-            // Removed: customer_phone, customer_country, preferred_date, estimated_guests
-            // These are not collected in the simplified inquiry form
         ]);
 
         if ($validator->fails()) {
+            // SECURITY: Sanitized error logging
+            Log::warning('Inquiry validation failed', [
+                'tour_id' => $request->tour_id,
+                'error_fields' => array_keys($validator->errors()->toArray()),
+                'ip' => $ip,
+            ]);
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors()
@@ -244,10 +368,16 @@ class BookingController extends Controller
                 'customer_email' => $request->customer_email,
                 'message' => $request->message,
                 'status' => 'new',
-                // Phone, country, date, guests are now NULL (optional fields)
             ]);
 
             DB::commit();
+
+            // SECURITY: Sanitized success logging
+            Log::info('Inquiry created successfully', [
+                'inquiry_id' => $inquiry->id,
+                'reference' => $inquiry->reference,
+                'tour_id' => $tour->id,
+            ]);
 
             // Send emails (don't fail if email fails)
             try {
@@ -261,9 +391,9 @@ class BookingController extends Controller
                     ->send(new InquiryAdminNotification($inquiry, $tour));
 
             } catch (\Exception $e) {
-                Log::error('Failed to send inquiry emails: ' . $e->getMessage(), [
+                Log::error('Failed to send inquiry emails', [
                     'inquiry_id' => $inquiry->id,
-                    'customer_email' => $inquiry->customer_email,
+                    'error' => $e->getMessage(),
                 ]);
             }
 
@@ -272,7 +402,10 @@ class BookingController extends Controller
                 $telegramService = new TelegramNotificationService();
                 $telegramService->sendInquiryNotification($inquiry, $tour);
             } catch (\Exception $e) {
-                Log::error('Failed to send Telegram notification: ' . $e->getMessage());
+                Log::error('Failed to send Telegram notification', [
+                    'inquiry_id' => $inquiry->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
 
             return response()->json([
@@ -290,7 +423,12 @@ class BookingController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Inquiry creation failed: ' . $e->getMessage());
+            // SECURITY: Log error internally without exposing details
+            Log::error('Inquiry creation failed', [
+                'tour_id' => $request->tour_id,
+                'error' => $e->getMessage(),
+                'ip' => $ip,
+            ]);
 
             return response()->json([
                 'success' => false,

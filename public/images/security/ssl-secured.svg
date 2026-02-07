@@ -1,0 +1,8 @@
+<svg width="80" height="40" viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="40" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1"/>
+  <g fill="#0369a1">
+    <path d="M20 10C18.3 10 17 11.3 17 13v3h-2c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2h-2v-3c0-1.7-1.3-3-3-3zm0 2c.6 0 1 .4 1 1v3h-2v-3c0-.6.4-1 1-1zm0 8c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+    <text x="32" y="18" font-size="7" font-weight="bold">SSL</text>
+    <text x="32" y="26" font-size="7">SECURED</text>
+  </g>
+</svg>

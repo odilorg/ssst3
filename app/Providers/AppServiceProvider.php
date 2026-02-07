@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\PaymentSucceeded;
+use App\Listeners\SendPaymentConfirmationEmail;
 use App\Models\BlogPost;
 use App\Models\Booking;
 use App\Models\City;
@@ -19,6 +21,10 @@ use App\Observers\TourFaqObserver;
 use App\Observers\TourObserver;
 use App\Observers\TransportObserver;
 use App\Observers\TransportInstancePriceObserver;
+use App\Models\OctobankPayment;
+use App\Policies\OctobankPaymentPolicy;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -54,5 +60,19 @@ class AppServiceProvider extends ServiceProvider
         Tour::observe(ImageConversionObserver::class);
         BlogPost::observe(ImageConversionObserver::class);
         City::observe(ImageConversionObserver::class);
+
+        // Register policies
+        Gate::policy(OctobankPayment::class, OctobankPaymentPolicy::class);
+
+        // Register event listeners
+        Event::listen(
+            PaymentSucceeded::class,
+            SendPaymentConfirmationEmail::class
+        );
+
+        // Fail fast if Octobank test mode is enabled in production
+        if ($this->app->environment('production') && config('services.octobank.test_mode') === true) {
+            throw new \RuntimeException('OCTOBANK_TEST_MODE must be false in production. Check your .env file.');
+        }
     }
 }

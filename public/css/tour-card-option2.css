@@ -104,6 +104,7 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3; /* Max 3 lines */
     overflow: hidden;
+    min-height: 67px; /* 3 lines: 14px font × 1.6 line-height × 3 = ~67px */
 }
 
 /* Footer Section */

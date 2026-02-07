@@ -28,11 +28,21 @@ class Tour extends Model
         // Duration
         'duration_days',
         'duration_text',
+        'minimum_advance_days',
 
         // Pricing
         'price_per_person',
         'currency',
         'show_price',
+
+        // Tour Type Support
+        'supports_private',
+        'supports_group',
+
+        // Private Tour Pricing
+        'private_base_price',
+        'private_min_guests',
+        'private_max_guests',
 
         // Capacity
         'max_guests',
@@ -83,14 +93,19 @@ class Tour extends Model
         // Booleans
         'show_price' => 'boolean',
         'is_active' => 'boolean',
+        'supports_private' => 'boolean',
+        'supports_group' => 'boolean',
         'include_global_requirements' => 'boolean',
         'include_global_faqs' => 'boolean',
         'has_hotel_pickup' => 'boolean',
 
         // Integers
         'duration_days' => 'integer',
+        'minimum_advance_days' => 'integer',
         'max_guests' => 'integer',
         'min_guests' => 'integer',
+        'private_min_guests' => 'integer',
+        'private_max_guests' => 'integer',
         'review_count' => 'integer',
         'min_booking_hours' => 'integer',
         'pickup_radius_km' => 'integer',
@@ -98,6 +113,7 @@ class Tour extends Model
 
         // Decimals
         'price_per_person' => 'decimal:2',
+        'private_base_price' => 'decimal:2',
         'rating' => 'decimal:2',
         'meeting_lat' => 'decimal:8',
         'meeting_lng' => 'decimal:8',
@@ -155,6 +171,53 @@ class Tour extends Model
     // ==========================================
 
     /**
+     * Get all translations for this tour.
+     */
+    public function translations()
+    {
+        return $this->hasMany(TourTranslation::class);
+    }
+
+    /**
+     * Get translation for a specific locale (query-safe, returns null if not found).
+     *
+     * @param string|null $locale Locale code (e.g., 'en', 'ru', 'fr'). Defaults to current app locale.
+     * @return TourTranslation|null
+     */
+    public function translation(?string $locale = null): ?TourTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->translations->first(fn ($t) => $t->locale === $locale);
+    }
+
+    /**
+     * Get translation for a specific locale with fallback to default locale.
+     *
+     * @param string|null $locale Locale code (e.g., 'en', 'ru', 'fr'). Defaults to current app locale.
+     * @return TourTranslation|null
+     */
+    public function translationOrDefault(?string $locale = null): ?TourTranslation
+    {
+        $locale = $locale ?? app()->getLocale();
+        $defaultLocale = config('multilang.default_locale', 'en');
+
+        // First try requested locale
+        $translation = $this->translation($locale);
+
+        if ($translation) {
+            return $translation;
+        }
+
+        // Fallback to default locale if different
+        if ($locale !== $defaultLocale) {
+            return $this->translation($defaultLocale);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the city this tour belongs to
      */
     public function city()
@@ -184,6 +247,25 @@ class Tour extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Get all departures for this tour
+     */
+    public function departures()
+    {
+        return $this->hasMany(TourDeparture::class);
+    }
+
+    /**
+     * Get upcoming available departures
+     */
+    public function upcomingDepartures()
+    {
+        return $this->departures()
+            ->upcoming()
+            ->available()
+            ->orderBy('start_date');
     }
 
     /**
@@ -233,6 +315,75 @@ class Tour extends Model
     {
         return $this->hasMany(TourInquiry::class);
     }
+
+    /**
+     * Get all pricing tiers for this tour
+     */
+    public function pricingTiers()
+    {
+        return $this->hasMany(TourPricingTier::class)->ordered();
+    }
+
+    /**
+     * Get active pricing tiers only
+     */
+    public function activePricingTiers()
+    {
+        return $this->pricingTiers()->active();
+    }
+
+    /**
+     * Get price for a specific number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return float|null Total price for that guest count, or null if no tier matches
+     */
+    public function getPriceForGuests(int $guestCount): ?float
+    {
+        $tier = $this->pricingTiers()
+            ->forGuestCount($guestCount)
+            ->first();
+
+        return $tier?->price_total;
+    }
+
+    /**
+     * Get the pricing tier for a specific number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return TourPricingTier|null
+     */
+    public function getPricingTierForGuests(int $guestCount): ?TourPricingTier
+    {
+        return $this->pricingTiers()
+            ->forGuestCount($guestCount)
+            ->first();
+    }
+
+    /**
+     * Check if tour has tiered pricing configured
+     */
+    public function hasTieredPricing(): bool
+    {
+        return $this->activePricingTiers()->exists();
+    }
+
+    /**
+     * Get starting price (lowest tier price) for display
+     */
+    public function getStartingPrice(): ?float
+    {
+        if ($this->hasTieredPricing()) {
+            return $this->activePricingTiers()
+                ->orderBy(price_total)
+                ->first()
+                ?->price_total;
+        }
+
+        // Fallback to legacy price_per_person
+        return $this->price_per_person;
+    }
+
 
     /**
      * Get all categories this tour belongs to
@@ -489,6 +640,119 @@ class Tour extends Model
             'rating' => round($approved->avg('rating'), 2) ?? 0,
             'review_count' => $approved->count(),
         ]);
+    }
+
+    // ==========================================
+    // PRIVATE VS GROUP TOUR HELPERS
+    // ==========================================
+
+    /**
+     * Check if tour supports private bookings
+     */
+    public function supportsPrivate(): bool
+    {
+        return $this->supports_private === true;
+    }
+
+    /**
+     * Check if tour supports group bookings
+     */
+    public function supportsGroup(): bool
+    {
+        return $this->supports_group === true;
+    }
+
+    /**
+     * Check if tour supports both private and group bookings
+     */
+    public function isMixedType(): bool
+    {
+        return $this->supportsPrivate() && $this->supportsGroup();
+    }
+
+    /**
+     * Check if tour is private-only
+     */
+    public function isPrivateOnly(): bool
+    {
+        return $this->supportsPrivate() && !$this->supportsGroup();
+    }
+
+    /**
+     * Check if tour is group-only
+     */
+    public function isGroupOnly(): bool
+    {
+        return $this->supportsGroup() && !$this->supportsPrivate();
+    }
+
+    /**
+     * Get private tour price for given number of guests
+     *
+     * @param int $guestCount Number of guests
+     * @return array|null ['total' => float, 'per_person' => float] or null if invalid
+     */
+    public function getPrivateTourPrice(int $guestCount): ?array
+    {
+        if (!$this->supportsPrivate() || !$this->private_base_price) {
+            return null;
+        }
+
+        // Validate guest count
+        if ($guestCount < $this->private_min_guests) {
+            return null;
+        }
+
+        if ($this->private_max_guests && $guestCount > $this->private_max_guests) {
+            return null;
+        }
+
+        $total = $this->private_base_price * $guestCount;
+
+        return [
+            'total' => $total,
+            'per_person' => $this->private_base_price,
+            'guests_count' => $guestCount,
+        ];
+    }
+
+    /**
+     * Get available group departures for this tour
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAvailableGroupDepartures()
+    {
+        if (!$this->supportsGroup()) {
+            return collect();
+        }
+
+        return $this->departures()
+            ->where('departure_type', TourDeparture::TYPE_GROUP)
+            ->upcoming()
+            ->available()
+            ->orderBy('start_date')
+            ->get();
+    }
+
+    /**
+     * Get the default booking type for this tour
+     * Used when tour supports both types
+     *
+     * @return string 'private' or 'group'
+     */
+    public function getDefaultBookingType(): string
+    {
+        if ($this->isPrivateOnly()) {
+            return 'private';
+        }
+
+        if ($this->isGroupOnly()) {
+            return 'group';
+        }
+
+        // Mixed: default to private
+        return 'private';
     }
 
     /**
@@ -855,6 +1119,72 @@ class Tour extends Model
         return $this->getRouteCities()
                     ->pluck('name')
                     ->join(' → ');
+    }
+
+    /**
+     * Get starting city from first itinerary day
+     * Falls back to tour's direct city_id if no itinerary city
+     */
+    public function getStartingCityAttribute(): ?City
+    {
+        // Try to get from first itinerary item
+        $firstItem = $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->first();
+        
+        if ($firstItem && $firstItem->city) {
+            return $firstItem->city;
+        }
+
+        // Fallback to tour's direct city relationship (for backward compatibility)
+        return $this->city;
+    }
+
+    /**
+     * Get ending city from last itinerary day
+     */
+    public function getEndingCityAttribute(): ?City
+    {
+        $lastItem = $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->orderByDesc('sort_order')
+            ->first();
+        
+        return $lastItem?->city;
+    }
+
+    /**
+     * Get all unique cities visited in order from itinerary
+     * Uses the new single city_id field on itinerary_items
+     */
+    public function getVisitedCitiesAttribute()
+    {
+        return $this->topLevelItems()
+            ->with('city')
+            ->whereNotNull('city_id')
+            ->get()
+            ->pluck('city')
+            ->filter()
+            ->unique('id')
+            ->values();
+    }
+
+    /**
+     * Get route from itinerary cities as string (e.g., Tashkent → Samarkand → Bukhara)
+     */
+    public function getItineraryRouteAttribute(): string
+    {
+        return $this->visited_cities->pluck('name')->join(' → ') ?: 'Uzbekistan';
+    }
+
+    /**
+     * Check if tour has itinerary with cities defined
+     */
+    public function hasItineraryCities(): bool
+    {
+        return $this->topLevelItems()
+            ->whereNotNull('city_id')
+            ->exists();
     }
 
     /**

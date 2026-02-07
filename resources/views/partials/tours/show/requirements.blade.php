@@ -1,5 +1,5 @@
 {{-- Tour Requirements / Know Before You Go Partial --}}
-<h2 class="section-title">Know Before You Go</h2>
+<h2 class="section-title">{{ __('ui.sections.know_before') }}</h2>
 
 @php
     // Icon SVG mapping
@@ -14,17 +14,52 @@
         'clock' => '<svg class="icon icon--clock" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 110 20 10 10 0 010-20zm0 2a8 8 0 100 16 8 8 0 000-16zm1 3v6l4 2-1 1.5-5-3V5h2z"/></svg>',
         'utensils' => '<svg class="icon icon--utensils" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M7 0v7c0 .55-.45 1-1 1H5v12H3V8H2c-.55 0-1-.45-1-1V0h6zm11 0v8.5a2.5 2.5 0 01-5 0V0h2v8.5a.5.5 0 001 0V0h2zm-1 10v10h-2V10h2z"/></svg>',
         'bag' => '<svg class="icon icon--bag" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a5 5 0 00-5 5v1H2l-1 1v12l1 1h16l1-1V7l-1-1h-3V5a5 5 0 00-5-5zm0 2a3 3 0 013 3v1H7V5a3 3 0 013-3zM3 8h14v10H3V8z"/></svg>',
+        'shoe' => '<svg class="icon icon--shoe" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 13c0-2.21 1.79-4 4-4h2c1.1 0 2-.9 2-2V5c0-.55.45-1 1-1h6c.55 0 1 .45 1 1v2c0 1.1.9 2 2 2h2c.55 0 1 .45 1 1v3c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2zm0 4v1c0 .55.45 1 1 1h18c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1z"/></svg>',
+        'clothing' => '<svg class="icon icon--clothing" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M14 0L10 3 6 0 0 3v5l3 1v11h14V9l3-1V3l-6-3zM5 7l-2-.67V4.5L6 2.8v1.7a2.5 2.5 0 104 0V2.8L13 4.5v1.83L11 7v11H9V9H7v9H5V7z"/></svg>',
     ];
 
-    $hasCustomRequirements = $tour->requirements && count($tour->requirements) > 0;
-    $shouldShowGlobal = !$hasCustomRequirements || $tour->include_global_requirements;
+    // Use translated requirements if available, otherwise fall back to tour requirements
+    // Ensure requirements_json is always an array (handle string JSON edge case)
+    $rawReqs = $translation->requirements_json ?? null;
+    $translatedRequirements = is_array($rawReqs) ? $rawReqs : (is_string($rawReqs) ? json_decode($rawReqs, true) : null);
+
+    $tourReqs = $tour->requirements ?? [];
+    $tourReqs = is_array($tourReqs) ? $tourReqs : (is_string($tourReqs) ? json_decode($tourReqs, true) : []);
+    $hasCustomRequirements = !empty($tourReqs);
+    $shouldShowGlobal = (!$translatedRequirements && !$hasCustomRequirements) || $tour->include_global_requirements;
+
+    // Determine which requirements to show (prioritize translation JSON)
+    $requirementsToShow = $translatedRequirements ?? ($hasCustomRequirements ? $tourReqs : null);
 @endphp
 
 <div class="know-before-content">
     <ul class="know-before-list">
-        @if($hasCustomRequirements)
+        @if($translatedRequirements && count($translatedRequirements) > 0)
+            {{-- Translated requirements from JSON --}}
+            @foreach($translatedRequirements as $requirement)
+                <li>
+                    @if(is_array($requirement) && isset($requirement['icon']))
+                        {!! $iconSvgs[$requirement['icon']] ?? $iconSvgs['info'] !!}
+                        <div>
+                            @if(isset($requirement['title']))
+                                <strong>{{ $requirement['title'] }}:</strong> {{ $requirement['text'] }}
+                            @else
+                                <span>{{ $requirement['text'] }}</span>
+                            @endif
+                        </div>
+                    @else
+                        <svg class="icon icon--info" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9V9h2v6zm0-8H9V5h2v2z"/>
+                        </svg>
+                        <div>
+                            <span>{{ is_string($requirement) ? $requirement : ($requirement['text'] ?? 'Requirement') }}</span>
+                        </div>
+                    @endif
+                </li>
+            @endforeach
+        @elseif($hasCustomRequirements)
             {{-- Tour-specific requirements --}}
-            @foreach($tour->requirements as $requirement)
+            @foreach($tourReqs as $requirement)
                 <li>
                     @if(is_array($requirement) && isset($requirement['icon']))
                         {{-- New structured format with icon, title, text --}}
@@ -45,7 +80,7 @@
             @endforeach
         @endif
 
-        @if($shouldShowGlobal && isset($globalRequirements) && count($globalRequirements) > 0)
+        @if($shouldShowGlobal && isset($globalRequirements) && is_array($globalRequirements) && count($globalRequirements) > 0)
             {{-- Global requirements from database --}}
             @foreach($globalRequirements as $requirement)
                 <li>
@@ -57,14 +92,14 @@
             @endforeach
         @endif
 
-        @if(!$hasCustomRequirements && (!isset($globalRequirements) || count($globalRequirements) === 0))
+        @if(!$hasCustomRequirements && (!isset($globalRequirements) || !is_array($globalRequirements) || count($globalRequirements) === 0))
             {{-- Fallback if no requirements at all --}}
             <li>
                 <svg class="icon icon--info" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9V9h2v6zm0-8H9V5h2v2z"/>
                 </svg>
                 <div>
-                    <span>Please contact us for specific requirements for this tour.</span>
+                    <span>{{ __('ui.requirements.fallback_message') }}</span>
                 </div>
             </li>
         @endif

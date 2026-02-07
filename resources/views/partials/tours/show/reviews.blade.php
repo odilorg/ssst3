@@ -2,7 +2,7 @@
 <section class="tour-reviews" id="reviews">
     @if(isset($reviews) && $reviews->isNotEmpty())
         <div class="reviews-header">
-            <h2 class="section-title">Customer Reviews</h2>
+            <h2 class="section-title">{{ __('ui.sections.customer_reviews') }}</h2>
             <div class="reviews-summary">
                 <div class="reviews-rating">
                     <span class="rating-score">{{ number_format($tour->rating, 1) }}</span>
@@ -13,7 +13,7 @@
                             </svg>
                         @endfor
                     </div>
-                    <span class="rating-count">Based on {{ $tour->review_count }} {{ Str::plural('review', $tour->review_count) }}</span>
+                    <span class="rating-count">{{ trans_choice('ui.tour.based_on_reviews', $tour->review_count, ['count' => $tour->review_count]) }}</span>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                                 <span class="sr-only">{{ $review->rating }} out of 5 stars</span>
                             </div>
                             <div class="review-meta">
-                                <span class="review-location">{{ $review->reviewer_location ?? 'Verified Guest' }}</span>
+                                <span class="review-location">{{ $review->reviewer_location ?? __('ui.reviews.verified_guest') }}</span>
                                 <span class="review-separator">•</span>
                                 <time class="review-date" datetime="{{ $review->created_at->format('Y-m-d') }}">
                                     {{ $review->created_at->format('F Y') }}
@@ -60,8 +60,8 @@
 
     {{-- Review Submission Form - Matches "Extra Services" section pattern --}}
     <div class="review-form-wrapper">
-        <h2 class="section-title">Write a Review</h2>
-        <p class="section-intro">Share your experience with this tour</p>
+        <h2 class="section-title">{{ __('ui.reviews.write_review') }}</h2>
+        <p class="section-intro">{{ __('ui.reviews.share_experience') }}</p>
 
         <div class="review-form">
             <form id="reviewForm" data-tour-slug="{{ $tour->slug }}">
@@ -72,7 +72,7 @@
 
                 {{-- Star Rating Selector --}}
                 <div class="form-group">
-                    <label for="rating">Rate your experience <span class="required">*</span></label>
+                    <label for="rating">{{ __('ui.reviews.rate_experience') }} <span class="required">{{ __('ui.reviews.required') }}</span></label>
                     <div class="star-rating-input" id="starRatingInput">
                         <input type="hidden" name="rating" id="ratingValue" value="0" required>
                         <div class="star-buttons">
@@ -84,24 +84,24 @@
                                 </button>
                             @endfor
                         </div>
-                        <span class="rating-label" id="ratingLabel">Select a rating</span>
+                        <span class="rating-label" id="ratingLabel">{{ __('ui.reviews.select_rating') }}</span>
                     </div>
                     <span class="error-message" id="error-rating"></span>
                 </div>
 
                 {{-- Review Title --}}
                 <div class="form-group">
-                    <label for="reviewTitle">Summarize your experience <span class="required">*</span></label>
+                    <label for="reviewTitle">{{ __('ui.reviews.summarize_experience') }} <span class="required">{{ __('ui.reviews.required') }}</span></label>
                     <input type="text" id="reviewTitle" name="title" required minlength="5" maxlength="150"
-                           placeholder="Sum up your experience in a few words">
+                           placeholder="{{ __('ui.reviews.summarize_placeholder') }}">
                     <span class="error-message" id="error-title"></span>
                 </div>
 
                 {{-- Review Content --}}
                 <div class="form-group">
-                    <label for="reviewContent">Share your feedback <span class="required">*</span></label>
+                    <label for="reviewContent">{{ __('ui.reviews.share_feedback') }} <span class="required">{{ __('ui.reviews.required') }}</span></label>
                     <textarea id="reviewContent" name="content" required minlength="20" maxlength="2000" rows="6"
-                              placeholder="Share your thoughts about this tour..."></textarea>
+                              placeholder="{{ __('ui.reviews.share_placeholder') }}"></textarea>
                     <span class="error-message" id="error-content"></span>
                     <span class="char-count"><span id="charCount">0</span>/2000</span>
                 </div>
@@ -109,13 +109,13 @@
                 {{-- Reviewer Information --}}
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="reviewerName">Name <span class="required">*</span></label>
-                        <input type="text" id="reviewerName" name="reviewer_name" required maxlength="100" placeholder="Your name">
+                        <label for="reviewerName">{{ __('ui.reviews.your_name') }} <span class="required">{{ __('ui.reviews.required') }}</span></label>
+                        <input type="text" id="reviewerName" name="reviewer_name" required maxlength="100" placeholder="{{ __('ui.reviews.your_name') }}">
                         <span class="error-message" id="error-reviewer_name"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="reviewerEmail">Email <span class="required">*</span></label>
+                        <label for="reviewerEmail">{{ __('ui.reviews.your_email') }} <span class="required">{{ __('ui.reviews.required') }}</span></label>
                         <input type="email" id="reviewerEmail" name="reviewer_email" required maxlength="150" placeholder="your@email.com">
                         <span class="error-message" id="error-reviewer_email"></span>
                     </div>
@@ -123,25 +123,25 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="reviewerLocation">Location</label>
-                        <input type="text" id="reviewerLocation" name="reviewer_location" maxlength="100" placeholder="City, Country (optional)">
+                        <label for="reviewerLocation">{{ __('ui.reviews.location') }}</label>
+                        <input type="text" id="reviewerLocation" name="reviewer_location" maxlength="100" placeholder="{{ __('ui.reviews.location_placeholder') }}">
                         <span class="error-message" id="error-reviewer_location"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="bookingReference">Booking Reference (for verification)</label>
+                        <label for="bookingReference">{{ __('ui.reviews.booking_reference') }}</label>
                         <input type="text" id="bookingReference" name="booking_reference" maxlength="50"
                                placeholder="Optional">
                         <span class="error-message" id="error-booking_reference"></span>
-                        <span class="field-hint">Enter your booking reference to verify your review</span>
+                        <span class="field-hint">{{ __('ui.reviews.booking_reference_hint') }}</span>
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn--primary" id="submitReview">
-                        <span class="btn-text">Submit Review</span>
+                        <span class="btn-text">{{ __('ui.reviews.submit_review') }}</span>
                         <span class="btn-loader" style="display:none">
-                            <i class="fas fa-spinner fa-spin"></i> Submitting...
+                            <i class="fas fa-spinner fa-spin"></i> {{ __('ui.reviews.submitting') }}
                         </span>
                     </button>
                 </div>

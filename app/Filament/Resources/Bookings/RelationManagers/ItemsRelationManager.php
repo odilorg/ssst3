@@ -1101,9 +1101,12 @@ class ItemsRelationManager extends RelationManager
                                     }),
 
                                 Forms\Components\TextInput::make('cost')
-                                    ->label('Стоимость')
+                                    ->label('Сумма (переопределение)')
                                     ->numeric()
-                                    ->visible(false)
+                                    ->prefix('$')
+                                    ->placeholder('Авто-расчет')
+                                    ->helperText('Если указано, переопределяет цену из типа услуги')
+                                    ->visible(fn ($get) => in_array($get('assignable_type'), [Guide::class, Restaurant::class, Transport::class]))
                                     ->live(),
 
                                 Forms\Components\TextInput::make('currency')
@@ -1172,6 +1175,7 @@ class ItemsRelationManager extends RelationManager
                                     'meal_type_id' => $a->meal_type_id ? (int) $a->meal_type_id : null,
                                     'transport_instance_price_id' => $a->transport_instance_price_id ? (int) $a->transport_instance_price_id : null,
                                     'guide_service_cost' => $a->guide_service_cost ?: null,
+                                    'cost' => $a->cost ?: null,
                                     'status' => $a->status ?: 'pending',
                                     'start_time' => $a->start_time ?: null,
                                     'end_time' => $a->end_time ?: null,

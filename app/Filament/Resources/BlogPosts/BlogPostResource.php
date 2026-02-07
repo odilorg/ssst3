@@ -62,7 +62,7 @@ class BlogPostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\BlogPostTranslationsRelationManager::class,
         ];
     }
 

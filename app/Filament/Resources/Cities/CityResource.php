@@ -57,7 +57,7 @@ class CityResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CityTranslationsRelationManager::class,
         ];
     }
 

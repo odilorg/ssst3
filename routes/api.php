@@ -52,10 +52,9 @@ Route::get('/cities', function () {
             ];
         })
         ->filter(function ($city) {
-            // Only show cities that have at least one tour
             return $city['tour_count'] > 0;
         })
-        ->values(); // Re-index array after filtering
+        ->values();
 
     return response()->json($cities);
 })->name('api.cities.index');
@@ -101,3 +100,49 @@ Route::get('/categories', function () {
 
     return response()->json($categories);
 })->name('api.categories.index');
+
+// ============================================
+// PAYMENT API ROUTES
+// ============================================
+
+Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])
+    ->middleware(['api', 'auth:sanctum'])
+    ->name('api.payment.initialize');
+Route::get('/payment/price-preview', [\App\Http\Controllers\PaymentController::class, 'pricePreview'])
+    ->middleware('throttle:60,1')
+    ->name('api.payment.price-preview');
+Route::get('/payment/{payment}/status', [\App\Http\Controllers\PaymentController::class, 'status'])
+    ->middleware(['api', 'auth:sanctum', 'throttle:30,1'])
+    ->name('api.payment.status');
+Route::post('/octobank/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('api.octobank.webhook');
+Route::post('/payment/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])
+    ->middleware(['web', 'auth'])
+    ->name('api.payment.refund');
+
+// OTA Booking Integration (called by Gmail Watcher)
+Route::prefix('ota')->middleware('throttle:60,1')->group(function () {
+    Route::post('/bookings', [\App\Http\Controllers\Api\OtaBookingController::class, 'store'])
+        ->name('api.ota.bookings.store');
+    Route::post('/bookings/update', [\App\Http\Controllers\Api\OtaBookingController::class, 'update'])
+        ->name('api.ota.bookings.update');
+    Route::post('/bookings/cancel', [\App\Http\Controllers\Api\OtaBookingController::class, 'cancel'])
+        ->name('api.ota.bookings.cancel');
+    Route::get('/bookings/unmapped', [\App\Http\Controllers\Api\OtaBookingController::class, 'unmapped'])
+        ->name('api.ota.bookings.unmapped');
+    Route::post('/test-match', [\App\Http\Controllers\Api\OtaBookingController::class, 'testMatch'])
+        ->name('api.ota.test-match');
+});
+
+// ============================================
+// INTERNAL API ROUTES (Protected by API Key)
+// ============================================
+
+Route::prefix('internal')->middleware('internal.api')->group(function () {
+    // Tour validation endpoint (no DB writes)
+    Route::post('/tours/validate', [\App\Http\Controllers\Api\Internal\TourValidationController::class, 'validate'])
+        ->name('api.internal.tours.validate');
+
+    // Tour upsert endpoint (create or update)
+    Route::post('/tours/upsert', [\App\Http\Controllers\Api\Internal\TourUpsertController::class, 'upsert'])
+        ->name('api.internal.tours.upsert');
+});

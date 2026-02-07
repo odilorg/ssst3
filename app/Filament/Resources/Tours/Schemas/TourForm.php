@@ -52,6 +52,16 @@ class TourForm
                             ->helperText('Например: "4 hours" или "5 Days / 4 Nights"')
                             ->columnSpanFull(),
 
+                        TextInput::make('minimum_advance_days')
+                            ->label('Минимальное количество дней для бронирования')
+                            ->numeric()
+                            ->default(45)
+                            ->minValue(1)
+                            ->maxValue(365)
+                            ->suffix('дней')
+                            ->helperText('За сколько дней до отправления нужно забронировать тур (рекомендуется: короткие туры 30-45 дней, длинные 60-90 дней)')
+                            ->columnSpanFull(),
+
                         Select::make('tour_type')
                             ->label('Тип тура')
                             ->options([
@@ -62,17 +72,7 @@ class TourForm
                             ->required()
                             ->default('private_only'),
 
-                        Select::make('city_id')
-                            ->label('Город')
-                            ->relationship('city', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                TextInput::make('name')->required(),
-                                Textarea::make('description'),
-                            ]),
-
-                        Select::make('categories')
+                                                Select::make('categories')
                             ->label('Категории')
                             ->relationship(
                                 name: 'categories',
@@ -152,37 +152,95 @@ class TourForm
                     ->collapsible()
                     ->collapsed(),
 
-                Section::make('Цены и вместимость')
-                    ->description('Информация о ценах и количестве гостей')
+                Section::make('Тип тура и поддержка')
+                    ->description('Какие типы бронирования поддерживает этот тур')
                     ->schema([
-                        TextInput::make('price_per_person')
-                            ->label('Цена за человека')
+                        Toggle::make('supports_private')
+                            ->label('Поддерживает частные туры')
+                            ->helperText('Разрешить бронирование как частный тур')
+                            ->default(true)
+                            ->inline(false)
+                            ->live()
+                            ->columnSpan(2),
+
+                        Toggle::make('supports_group')
+                            ->label('Поддерживает групповые туры')
+                            ->helperText('Разрешить бронирование через групповые отправления')
+                            ->default(false)
+                            ->inline(false)
+                            ->live()
+                            ->columnSpan(2),
+                    ])
+                    ->columns(4),
+
+                Section::make('Цены для частных туров')
+                    ->description('Настройки цен для частных туров (когда supports_private включено)')
+                    ->schema([
+                        TextInput::make('private_base_price')
+                            ->label('Базовая цена за человека')
                             ->numeric()
-                            ->required()
                             ->minValue(0)
-                            ->prefix('$'),
+                            ->prefix('$')
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private'))
+                            ->helperText('Цена за одного гостя в частном туре'),
 
                         TextInput::make('currency')
                             ->label('Валюта')
                             ->required()
                             ->default('USD')
                             ->maxLength(3),
-                        Toggle::make('show_price')                            ->label('Показывать цену на сайте')                            ->helperText('Если выключено, вместо цены будет "Price on request"')                            ->default(true)                            ->inline(false)                            ->columnSpan(2),
 
-                        TextInput::make('max_guests')
+                        TextInput::make('private_min_guests')
+                            ->label('Минимум гостей')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private')),
+
+                        TextInput::make('private_max_guests')
                             ->label('Максимум гостей')
                             ->numeric()
-                            ->required()
+                            ->default(15)
+                            ->minValue(1)
+                            ->required(fn (callable $get) => $get('supports_private'))
+                            ->disabled(fn (callable $get) => !$get('supports_private')),
+
+                        Toggle::make('show_price')
+                            ->label('Показывать цену на сайте')
+                            ->helperText('Если выключено, вместо цены будет "Price on request"')
+                            ->default(true)
+                            ->inline(false)
+                            ->columnSpan(4),
+                    ])
+                    ->columns(4)
+                    ->visible(fn (callable $get) => $get('supports_private')),
+
+                Section::make('Легаси: Старые поля цен')
+                    ->description('Эти поля сохранены для обратной совместимости')
+                    ->schema([
+                        TextInput::make('price_per_person')
+                            ->label('Цена за человека (легаси)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->prefix('$')
+                            ->helperText('Используется для старых туров без частного/группового разделения'),
+
+                        TextInput::make('max_guests')
+                            ->label('Максимум гостей (легаси)')
+                            ->numeric()
                             ->minValue(1),
 
                         TextInput::make('min_guests')
-                            ->label('Минимум гостей')
+                            ->label('Минимум гостей (легаси)')
                             ->numeric()
-                            ->required()
                             ->default(1)
                             ->minValue(1),
                     ])
-                    ->columns(4),
+                    ->columns(3)
+                    ->collapsible()
+                    ->collapsed(),
 
                 Section::make('Изображения')
                     ->description('Главное изображение и галерея')
@@ -497,11 +555,14 @@ class TourForm
                     ->description('Параметры бронирования и отмены')
                     ->schema([
                         TextInput::make('min_booking_hours')
-                            ->label('Минимум часов до бронирования')
+                            ->label('Минимум дней до бронирования')
                             ->numeric()
                             ->required()
-                            ->default(24)
-                            ->helperText('За сколько часов нужно бронировать'),
+                            ->default(1)
+                            ->suffix('дней')
+                            ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                            ->dehydrateStateUsing(fn ($state) => $state * 24)
+                            ->helperText('За сколько дней нужно бронировать тур'),
 
                         Toggle::make('has_hotel_pickup')
                             ->label('Есть трансфер из отеля')
@@ -603,23 +664,11 @@ class TourForm
 
             // Step 2: Tour Details & Content
             Step::make('Детали и описание')
-                ->description('Город, категории и описание тура')
+                ->description('Категории и описание тура')
                 ->icon('heroicon-o-document-text')
                 ->completedIcon('heroicon-s-check-circle')
                 ->schema([
-                    Select::make('city_id')
-                        ->label('Город')
-                        ->relationship('city', 'name')
-                        ->searchable()
-                        ->preload()
-                        ->required()
-                        ->helperText('Основной город тура')
-                        ->createOptionForm([
-                            TextInput::make('name')->required(),
-                            Textarea::make('description'),
-                        ]),
-
-                    Select::make('categories')
+                                        Select::make('categories')
                         ->label('Категории')
                         ->relationship(
                             name: 'categories',
@@ -733,6 +782,81 @@ class TourForm
                         ->minValue(1)
                         ->default(15)
                         ->helperText('Максимальный размер группы'),
+
+                    // Tiered Pricing Section
+                    Repeater::make('pricingTiers')
+                        ->relationship('pricingTiers')
+                        ->label('Ценовые уровни (Групповые цены)')
+                        ->schema([
+                            TextInput::make('label')
+                                ->label('Название уровня')
+                                ->placeholder('например: Индивидуальный тур, Пара, Группа')
+                                ->maxLength(100)
+                                ->columnSpanFull(),
+
+                            TextInput::make('min_guests')
+                                ->label('Мин. гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(100),
+
+                            TextInput::make('max_guests')
+                                ->label('Макс. гостей')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(100),
+
+                            TextInput::make('price_total')
+                                ->label('Общая цена (USD)')
+                                ->numeric()
+                                ->required()
+                                ->minValue(0)
+                                ->suffix('USD')
+                                ->helperText('Общая стоимость за группу')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, $set, $get) {
+                                    $minGuests = (int) $get('min_guests') ?: 1;
+                                    $maxGuests = (int) $get('max_guests') ?: 1;
+                                    $avgGuests = ($minGuests + $maxGuests) / 2;
+                                    if ($state && $avgGuests > 0) {
+                                        $set('price_per_person', round($state / $avgGuests, 2));
+                                    }
+                                }),
+
+                            TextInput::make('price_per_person')
+                                ->label('Цена за человека')
+                                ->numeric()
+                                ->suffix('USD')
+                                ->disabled()
+                                ->dehydrated(true)
+                                ->helperText('Рассчитывается автоматически'),
+
+                            Toggle::make('is_active')
+                                ->label('Активен')
+                                ->default(true)
+                                ->inline(false),
+
+                            TextInput::make('sort_order')
+                                ->label('Порядок')
+                                ->numeric()
+                                ->default(0)
+                                ->helperText('Меньше = выше'),
+                        ])
+                        ->columns(2)
+                        ->collapsible()
+                        ->collapsed(false)
+                        ->itemLabel(fn (array $state): ?string => 
+                            $state['label'] ?? 
+                            (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
+                        )
+                        ->addActionLabel('Добавить ценовой уровень')
+                        ->reorderable('sort_order')
+                        ->helperText('Настройте разные цены в зависимости от количества гостей. Если не указано, используется Цена за человека выше.')
+                        ->columnSpanFull(),
                 ])
                 ->columns(2),
 
@@ -871,11 +995,14 @@ class TourForm
                         ->helperText('Например: 66.9597'),
 
                     TextInput::make('min_booking_hours')
-                        ->label('Минимум часов до бронирования')
+                        ->label('Минимум дней до бронирования')
                         ->numeric()
                         ->required()
-                        ->default(24)
-                        ->helperText('За сколько часов нужно бронировать')
+                        ->default(1)
+                        ->suffix('дней')
+                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                        ->dehydrateStateUsing(fn ($state) => $state * 24)
+                        ->helperText('За сколько дней нужно бронировать тур')
                         ->columnSpanFull(),
 
                     Toggle::make('has_hotel_pickup')
@@ -890,11 +1017,15 @@ class TourForm
                         ->helperText('В пределах какого радиуса доступен трансфер'),
 
                     TextInput::make('cancellation_hours')
-                        ->label('Бесплатная отмена за (часов)')
+                        ->label('Бесплатная отмена за (дней)')
                         ->numeric()
                         ->required()
-                        ->default(24)
-                        ->helperText('За сколько часов можно отменить бесплатно'),
+                        ->default(1)
+                        ->minValue(1)
+                        ->maxValue(365)
+                        ->helperText('За сколько дней до тура можно отменить бесплатно')
+                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                        ->dehydrateStateUsing(fn ($state) => $state ? $state * 24 : 24),
 
                     Textarea::make('cancellation_policy')
                         ->label('Политика отмены')

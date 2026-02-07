@@ -141,8 +141,8 @@
     <div class="blog-hero__overlay"></div>
     <div class="container">
         <div class="blog-hero__content">
-            <h1 class="blog-hero__title">Travel Insights & Tips</h1>
-            <p class="blog-hero__subtitle">Expert travel advice and destination guides</p>
+            <h1 class="blog-hero__title">{{ __('ui.blog_page.hero_title') }}</h1>
+            <p class="blog-hero__subtitle">{{ __('ui.blog_page.hero_subtitle') }}</p>
         </div>
     </div>
 </section>
@@ -152,10 +152,10 @@
     <div class="container">
         <ol style="list-style: none; padding: 0; margin: 0; display: flex; align-items: center; flex-wrap: wrap;">
             <li style="display: flex; align-items: center;">
-                <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">Home</a>
+                <a href="{{ url('/') }}" style="color: #1a5490; text-decoration: none;">{{ __("ui.blog_page.breadcrumb_home") }}</a>
                 <span style="margin: 0 0.5rem; color: #666;">/</span>
             </li>
-            <li style="color: #666; font-weight: 500;" aria-current="page">Blog</li>
+            <li style="color: #666; font-weight: 500;" aria-current="page">{{ __('ui.blog_page.breadcrumb_blog') }}</li>
         </ol>
     </div>
 </nav>
@@ -172,7 +172,7 @@
                 type="search"
                 name="search"
                 value="{{ request('search') }}"
-                placeholder="Search articles..."
+                placeholder="{{ __("ui.blog_page.search_placeholder") }}"
                 aria-label="Search blog articles">
             <button type="submit" aria-label="Search">
                 <i class="fas fa-search"></i>
@@ -185,7 +185,7 @@
                 <a href="{{ route('blog.index') }}"
                    class="blog-category-btn {{ !request('category') ? 'active' : '' }}">
                     <span class="category-icon"><i class="fas fa-book-open"></i></span>
-                    <span class="category-label">All Articles</span>
+                    <span class="category-label">{{ __('ui.blog_page.all_articles') }}</span>
                     <span class="category-count">{{ $posts->total() }}</span>
                 </a>
                 @foreach($categories as $category)
@@ -225,11 +225,11 @@
             @if(request('tag'))
                 <input type="hidden" name="tag" value="{{ request('tag') }}">
             @endif
-            <label for="sortBy">Sort by:</label>
+            <label for="sortBy">{{ __("ui.blog_page.sort_by") }}</label>
             <select id="sortBy" name="sort" onchange="this.form.submit()">
-                <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
-                <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>Most Popular</option>
-                <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest</option>
+                <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>{{ __("ui.blog_page.sort_latest") }}</option>
+                <option value="popular" {{ request('sort') === 'popular' ? 'selected' : '' }}>{{ __("ui.blog_page.sort_popular") }}</option>
+                <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>{{ __("ui.blog_page.sort_oldest") }}</option>
             </select>
         </form>
 
@@ -246,9 +246,9 @@
             <!-- Empty State -->
             <div class="blog-empty">
                 <i class="fas fa-search"></i>
-                <h2>No articles found</h2>
-                <p>Try adjusting your filters or search query.</p>
-                <a href="{{ route('blog.index') }}" class="btn btn--primary">View All Articles</a>
+                <h2>{{ __('ui.blog_page.no_articles_title') }}</h2>
+                <p>{{ __('ui.blog_page.no_articles_text') }}</p>
+                <a href="{{ route('blog.index') }}" class="btn btn--primary">{{ __('ui.blog_page.view_all_articles') }}</a>
             </div>
         @else
             <!-- Blog Grid -->

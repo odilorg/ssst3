@@ -1,0 +1,1852 @@
+@extends('layouts.main')
+
+@section('title', $pageTitle)
+@section('meta_description', $metaDescription)
+@section('canonical', $canonicalUrl)
+
+{{-- Open Graph / Facebook --}}
+@section('og_type', 'website')
+@section('og_url', $canonicalUrl)
+@section('og_title', $pageTitle)
+@section('og_description', $metaDescription)
+@section('og_image', $ogImage)
+
+{{-- Twitter Card --}}
+@section('twitter_url', $canonicalUrl)
+@section('twitter_title', $pageTitle)
+@section('twitter_description', $metaDescription)
+@section('twitter_image', $ogImage)
+
+{{-- Structured Data for Tour --}}
+@section('structured_data')
+{!! $structuredData ?? '{}' !!}
+@endsection
+@section('content')
+  <!-- =====================================================
+       SECTION 2: TOUR HEADER INFO (Title, Rating, Meta, Tabs)
+       ===================================================== -->
+  <section class="tour-header"
+           hx-get="{{ url('/partials/tours/' . $tour->slug . '/hero') }}"
+           hx-trigger="load"
+           hx-swap="innerHTML"
+           data-tour-slug="{{ $tour->slug }}">
+
+    <!-- Loading Skeleton -->
+    <div class="container">
+      <div class="skeleton skeleton--text" style="width: 40%; height: 16px; margin-bottom: 1rem;"></div>
+      <div class="skeleton skeleton--title" style="height: 40px; width: 80%; margin-bottom: 1rem;"></div>
+      <div class="skeleton skeleton--text" style="width: 30%; height: 20px;"></div>
+    </div>
+
+  </section>
+
+  <!-- =====================================================
+       SECTION 3: TOUR HERO GALLERY
+       ===================================================== -->
+  <section class="tour-hero">
+    <div class="container">
+
+      <!-- Skeleton Loader (hidden once loaded) -->
+      <div class="tour-hero__skeleton" aria-hidden="true">
+        <div class="skeleton skeleton--hero"></div>
+        <div class="skeleton skeleton--thumbnails">
+          <div class="skeleton skeleton--thumb"></div>
+          <div class="skeleton skeleton--thumb"></div>
+          <div class="skeleton skeleton--thumb"></div>
+          <div class="skeleton skeleton--thumb"></div>
+        </div>
+      </div>
+
+      <!-- Actual Gallery -->
+      <!-- Actual Gallery - Loaded via HTMX -->
+      <div class="tour-hero__gallery is-hidden"
+           hx-get="{{ url('/partials/tours/' . $tour->slug . '/gallery') }}"
+           hx-trigger="load"
+           hx-swap="innerHTML"
+           data-tour-slug="{{ $tour->slug }}">
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       TWO-COLUMN LAYOUT: MAIN CONTENT + BOOKING SIDEBAR
+       ===================================================== -->
+  <div class="tour-content-wrapper">
+    <div class="container">
+      <div class="tour-layout">
+
+        <!-- LEFT COLUMN: Main Tour Content -->
+        <main class="tour-main-content" id="main-content">
+
+          <!-- Overview Section -->
+          <section class="tour-overview" id="overview"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/overview') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Overview</h2>
+            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+
+          </section>
+
+          <!-- Highlights Section -->
+          <section class="tour-highlights" id="highlights"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/highlights') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Highlights</h2>
+            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+
+          </section>
+
+          <!-- Includes/Excludes Section -->
+          <section class="tour-includes-excludes" id="includes"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/included-excluded') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">What's Included & Excluded</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+              <div>
+                <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+              </div>
+              <div>
+                <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton skeleton--text" style="width: 93%; height: 16px; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton skeleton--text" style="width: 87%; height: 16px; margin-bottom: 0.5rem;"></div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- Cancellation Policy Section -->
+          <section class="tour-cancellation" id="cancellation"
+                   data-tour-slug="{{ $tour->slug }}"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/cancellation') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML">
+            <div class="loading-spinner">Loading cancellation policy...</div>
+          </section>
+
+          <!-- Itinerary Section -->
+          <section class="tour-itinerary" id="itinerary"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/itinerary') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   aria-label="Tour itinerary"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <div class="itinerary-header">
+              <h2 class="section-title">Tour Itinerary</h2>
+            </div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+
+          </section>
+
+          <!-- Meeting Point & Pickup Section -->
+          <section class="tour-meeting" id="meeting-point"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/meeting-point') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Meeting Point & Pickup</h2>
+            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+            {{-- Map skeleton removed --}}
+          </section>
+
+          <!-- Know Before You Go Section -->
+          <section class="tour-know-before" id="know-before"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/requirements') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Know Before You Go</h2>
+            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+
+          </section>
+
+          <!-- FAQ Section -->
+          <section class="tour-faq" id="faq"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/faqs') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+
+          </section>
+
+          {{-- Extra Services Section - DISABLED --}}
+          {{--
+          <section class="tour-extras" id="extras"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/extras') }}"
+                   hx-trigger="load"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <h2 class="section-title">Extra Services</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+              <div class="skeleton skeleton--thumb"></div>
+              <div class="skeleton skeleton--thumb"></div>
+              <div class="skeleton skeleton--thumb"></div>
+              <div class="skeleton skeleton--thumb"></div>
+            </div>
+
+          </section>
+          --}}
+
+          <!-- Customer Reviews Section -->
+          @if($tour->review_count > 0)
+          <section class="tour-reviews" id="reviews"
+                   hx-get="{{ url('/partials/tours/' . $tour->slug . '/reviews') }}"
+                   hx-trigger="revealed"
+                   hx-swap="innerHTML"
+                   data-tour-slug="{{ $tour->slug }}">
+
+            <!-- Loading Skeleton -->
+            <div class="reviews-header">
+              <h2 class="section-title">Customer Reviews</h2>
+            </div>
+            <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
+            <div class="skeleton skeleton--text" style="width: 100%; height: 80px; margin-bottom: 1rem;"></div>
+
+          </section>
+          @endif
+
+        </main>
+
+        <!-- RIGHT COLUMN: Booking Sidebar -->
+        <aside class="booking-sidebar" data-sticky="true">
+
+          <!-- Tour Data for JavaScript -->
+          <script type=application/json id=tour-data>
+{!! json_encode([
+  'id' => $tour->slug,
+  'name' => html_entity_decode($tour->title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+  'pricePerPerson' => floatval($tour->price_per_person ?? 0),
+  'showPrice' => boolval($tour->show_price ?? true),
+  'currency' => $tour->currency ?? 'USD',
+  'maxGuests' => intval($tour->max_guests ?? 15),
+  'minGuests' => intval($tour->min_guests ?? 1),
+  'duration' => $tour->duration_text ?? ($tour->duration_days . ' days')
+], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
+          </script>
+
+          <!-- Screen Reader Live Region for Dynamic Updates -->
+          <div aria-live="polite" aria-atomic="true" class="sr-only" id="booking-status"></div>
+
+          <!-- Skeleton Loader -->
+          <div class="booking-sidebar__skeleton" aria-hidden="true">
+            <div class="skeleton skeleton--sidebar-top"></div>
+            <div class="skeleton skeleton--sidebar-inputs"></div>
+            <div class="skeleton skeleton--sidebar-buttons"></div>
+          </div>
+
+          <!-- Booking Card -->
+          <div class="booking-card">
+
+            <!-- Price Header -->
+            <div class="booking-card__header">
+              @if($tour->shouldShowPrice())
+                <div class="booking-price">
+                  <span class="price-label">from</span>
+                  <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
+                  <span class="price-unit">/person</span>
+                </div>
+              @else
+                <div class="booking-price-hidden">
+                  <span class="price-contact-label">Price on request</span>
+                  <p class="price-contact-text">Contact us for a personalized quote</p>
+                </div>
+              @endif
+            </div>
+
+            <!-- Price Breakdown -->
+            @if($tour->shouldShowPrice())
+            <div class="price-breakdown" data-breakdown-visible="true">
+              <h3 class="breakdown-title">Price Breakdown</h3>
+              <div class="breakdown-items">
+                <div class="breakdown-item">
+                  <span class="breakdown-label">
+                    <span class="breakdown-guests" data-guests="2">2 guests</span> ×
+                    <span class="breakdown-unit-price" data-unit-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
+                  </span>
+                  <span class="breakdown-value" data-subtotal="{{ $tour->price_per_person * 2 }}">${{ number_format($tour->price_per_person * 2, 2) }}</span>
+                </div>
+                <div class="breakdown-item breakdown-item--total">
+                  <span class="breakdown-label">Total</span>
+                  <span class="breakdown-value breakdown-total" data-total="{{ $tour->price_per_person * 2 }}">${{ number_format($tour->price_per_person * 2, 2) }}</span>
+                </div>
+              </div>
+              <p class="breakdown-note">Free cancellation up to 24 hours before the tour</p>
+            @else
+            <div class=price-breakdown data-breakdown-visible=true>
+              <h3 class=breakdown-title>Price Breakdown</h3>
+              <div class=breakdown-items>
+                <div class=breakdown-item>
+                  <span class=breakdown-label>
+                    <span class=breakdown-guests data-guests=2>2 guests</span> ×
+                    <span class=breakdown-unit-price data-unit-price="0">Contact us</span>
+                  </span>
+                  <span class="breakdown-value" data-subtotal="0">Please contact us</span>
+                </div>
+                <div class="breakdown-item breakdown-item--total">
+                  <span class="breakdown-label">Total</span>
+                  <span class="breakdown-value breakdown-total" data-total="0">Please contact us</span>
+                </div>
+              </div>
+              <p class="breakdown-note">Contact us for pricing information</p>
+            </div>
+            </div>
+            @endif
+
+            <!-- Booking Form -->
+            <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
+              @csrf
+              <!-- Hidden fields -->
+              <input type="hidden" name="tour_id" id="tour-id" value="">
+
+              <!-- Date Picker -->
+              <div class="form-group">
+                <label for="tour-date" class="form-label">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  id="tour-date"
+                  name="tour-date"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                  aria-describedby="date-hint date-error"
+                  autocomplete="off"
+                  min=""
+                  data-min-date-offset="1">
+                <span id="date-hint" class="form-hint">Select your preferred tour date (at least 24 hours in advance)</span>
+                <span id="date-error" class="form-error" role="alert"></span>
+              </div>
+
+              <!-- Guest Selector -->
+              <div class="form-group">
+                <label for="tour-guests" class="form-label">
+                  Guest
+                </label>
+                <select
+                  id="tour-guests"
+                  name="tour-guests"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                  aria-describedby="guests-hint guests-error"
+                  autocomplete="off"
+                  data-price-calculator="true">
+                  <option value="1">1 guest</option>
+                  <option value="2" selected>2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5 guests</option>
+                  <option value="6">6 guests</option>
+                  <option value="7">7 guests</option>
+                  <option value="8">8 guests</option>
+                  <option value="9">9 guests</option>
+                  <option value="10">10 guests</option>
+                </select>
+                <span id="guests-hint" class="form-hint">Maximum 10 guests per booking</span>
+                <span id="guests-error" class="form-error" role="alert"></span>
+<!-- Price Preview (Dynamic) -->                <div id="price-preview" class="price-preview-container" style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; display: none;">                  <div class="price-preview">                    <div class="price-usd" style="font-size: 1.5rem; font-weight: bold; color: #2c3e50;">Loading...</div>                    <div class="price-uzs" style="font-size: 1rem; color: #7f8c8d; margin-top: 0.25rem;"></div>                    <div class="price-label" style="font-size: 0.875rem; color: #95a5a6; margin-top: 0.5rem;"></div>                  </div>                </div>
+              </div>
+
+              <!-- Action Buttons: Book or Inquire -->
+              <div class="booking-actions">
+                <button type="button" class="action-btn action-btn--booking" data-action="booking">
+                  <i class="fas fa-calendar-check"></i>
+                  <div class="action-btn__content">
+                    <span class="action-btn__title">Book This Tour</span>
+                    <span class="action-btn__subtitle">Confirm your dates & guests</span>
+                  </div>
+                </button>
+
+                <button type="button" class="action-btn action-btn--inquiry" data-action="inquiry">
+                  <i class="fas fa-question-circle"></i>
+                  <div class="action-btn__content">
+                    <span class="action-btn__title">Ask a Question</span>
+                    <span class="action-btn__subtitle">Get personalized information</span>
+                  </div>
+                </button>
+              </div>
+
+              <!-- STEP 2: Full Booking Form (Hidden Initially) -->
+              <div id="step-2-full-form" style="display: none;">
+
+                <!-- Customer Information -->
+                <div class="form-section">
+                  <h3 class="form-section__title">Your Information</h3>
+
+                  <div class="form-group">
+                    <label for="customer-name" class="form-label">
+                      Full Name <span class="required">*</span>
+                    </label>
+                    <input type="text"
+                           id="customer-name"
+                           name="customer_name"
+                           class="form-input"
+                           placeholder="John Doe"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-email" class="form-label">
+                      Email <span class="required">*</span>
+                    </label>
+                    <input type="email"
+                           id="customer-email"
+                           name="customer_email"
+                           class="form-input"
+                           placeholder="john@example.com"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-phone" class="form-label">
+                      Phone <span class="required">*</span>
+                    </label>
+                    <input type="tel"
+                           id="customer-phone"
+                           name="customer_phone"
+                           class="form-input"
+                           placeholder="+998 91 123 45 67"
+                           required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-country" class="form-label">
+                      Country (Optional)
+                    </label>
+                    <input type="text"
+                           id="customer-country"
+                           name="customer_country"
+                           class="form-input"
+                           placeholder="United States">
+                  </div>
+                </div>
+
+                <!-- Hidden field to track action type -->
+                <input type="hidden" name="action_type" id="action-type" value="booking">
+
+                <!-- Message Field (Required for Inquiry, Optional for Booking) -->
+                <div class="form-section" id="message-section" style="display: none;">
+                  <div class="form-group">
+                    <label for="inquiry-message" class="form-label">
+                      Your Message <span class="required" id="message-required">*</span>
+                    </label>
+                    <textarea id="inquiry-message"
+                              name="message"
+                              class="form-input"
+                              rows="4"
+                              placeholder="Please tell us about your questions or any specific requirements..."></textarea>
+                    <span class="form-hint">Let us know what information you need about this tour</span>
+                  </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="form-section">
+                  <div class="form-group">
+                    <label for="special-requests" class="form-label">
+                      Special Requests (Optional)
+                    </label>
+                    <textarea id="special-requests"
+                              name="special_requests"
+                              class="form-input"
+                              rows="3"
+                              placeholder="Any special requirements or preferences?"></textarea>
+                  </div>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="form-section">
+                  <label class="terms-checkbox__label">
+                    <input type="checkbox"
+                           name="agree_terms"
+                           id="agree-terms"
+                           class="terms-checkbox__input"
+                           required>
+                    <span class="terms-checkbox__text">
+                      I agree to the <a href="/terms" target="_blank">Terms & Conditions</a>
+                      and <a href="/privacy" target="_blank">Privacy Policy</a>
+                    </span>
+                  </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                  <button type="submit" class="btn--submit btn--block" id="submit-button">
+                    <span class="btn__text" id="submit-text">Send Booking Request</span>
+                    <span class="spinner"></span>
+                  </button>
+                </div>
+
+              </div><!-- End Step 2 -->
+
+            </form>
+
+            <!-- ================================================================ -->
+            <!-- SIMPLE INQUIRY FORM (Separate from booking form)                -->
+            <!-- ================================================================ -->
+            <div id="simple-inquiry-form" class="simple-inquiry-form" style="display: none;">
+              <div class="inquiry-header">
+                <button type="button" class="inquiry-back-btn" id="inquiry-back-btn" aria-label="Go back">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                  </svg>
+                </button>
+                <h3 class="inquiry-title">Ask Us About This Tour</h3>
+              </div>
+
+              <p class="inquiry-subtitle">
+                Have questions? We're here to help! We'll respond to your email within 24 hours.
+              </p>
+
+              <form id="inquiry-form" class="inquiry-form-fields">
+                <input type="hidden" name="tour_id" id="inquiry-tour-id" value="">
+                <input type="hidden" name="action_type" value="inquiry">
+
+                <div class="form-group">
+                  <label for="inquiry-name" class="form-label">
+                    Your Name <span class="required">*</span>
+                  </label>
+                  <input type="text"
+                         id="inquiry-name"
+                         name="customer_name"
+                         class="form-input"
+                         placeholder="John Doe"
+                         required
+                         autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                  <label for="inquiry-email" class="form-label">
+                    Email Address <span class="required">*</span>
+                  </label>
+                  <input type="email"
+                         id="inquiry-email"
+                         name="customer_email"
+                         class="form-input"
+                         placeholder="john@example.com"
+                         required
+                         autocomplete="email">
+                  <span class="form-hint">We'll send our response to this email</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="inquiry-message" class="form-label">
+                    Your Question <span class="required">*</span>
+                  </label>
+                  <textarea id="inquiry-message"
+                            name="message"
+                            class="form-input"
+                            rows="6"
+                            placeholder="What would you like to know about this tour?"
+                            required></textarea>
+                  <span class="form-hint">Ask about itinerary, pricing, availability, group sizes, or anything else!</span>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn--primary btn--large btn--block" id="submit-inquiry-btn">
+                    <span class="btn__text">Send Question</span>
+                    <span class="spinner" style="display: none;"></span>
+                  </button>
+                </div>
+              </form>
+
+              <div class="inquiry-note">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <span>No dates or guest counts needed - just ask your question and we'll help!</span>
+              </div>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="trust-badges">
+              <div class="badge-item">
+                <svg class="icon icon--shield" width="18" height="20" viewBox="0 0 18 20" fill="currentColor" aria-hidden="true"><path d="M9 0L0 3v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V3L9 0zm0 2.18l7 2.09v5.23c0 4.65-3.19 8.98-7 10.05-3.81-1.07-7-5.4-7-10.05V4.27l7-2.09z"/></svg>
+                <span>Secure payments</span>
+              </div>
+              <div class="badge-item">
+                <svg class="icon icon--headset" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.5 0 0 4.5 0 10v5a3 3 0 003 3h2v-8H2v-2a8 8 0 1116 0v2h-3v8h2a3 3 0 003-3v-5c0-5.5-4.5-10-10-10z"/></svg>
+                <span>24/7 support</span>
+              </div>
+              <div class="badge-item">
+                <svg class="icon icon--undo" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M2 8a6 6 0 1110.89 3.5.5.5 0 10.78.63A7 7 0 103 8h3l-4-4-4 4h3z"/></svg>
+                <span>Free cancellation</span>
+              </div>
+            </div>
+
+            <!-- Booking Clarification -->
+            <div class="booking-clarification">
+              <p class="clarification-text">
+                <svg class="icon icon--clock" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M9 0a9 9 0 100 18A9 9 0 009 0zm4 10H9a1 1 0 01-1-1V4a1 1 0 112 0v4h3a1 1 0 010 2z"/></svg>
+                <strong>Confirmation within 24 hours</strong> — we'll verify availability and send you a confirmation.
+              </p>
+              <p class="clarification-note">
+                No payment required now. Pay after confirmation.
+              </p>
+            </div>
+
+
+            <!-- Why Book Section -->
+            <div class="booking-benefits">
+              <h3 class="benefits-title">Why book with Jahongir Travel?</h3>
+              <ul class="benefits-list">
+                <li class="benefit-item">
+                  <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
+                  <span>Best price guarantee</span>
+                </li>
+                <li class="benefit-item">
+                  <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
+                  <span>Free cancellation (24h)</span>
+                </li>
+                <li class="benefit-item">
+                  <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
+                  <span>Expert local guides</span>
+                </li>
+                <li class="benefit-item">
+                  <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
+                  <span>24/7 customer support</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- WhatsApp Contact -->
+            <div class="booking-contact">
+              <p class="contact-text">Questions? Contact us directly:</p>
+              <a href="https://wa.me/998901234567" class="btn btn--whatsapp btn--block" target="_blank" rel="noopener noreferrer">
+                <svg class="icon icon--whatsapp" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.05 0C4.5 0 0 4.48 0 10c0 1.77.46 3.43 1.27 4.87L.05 19.1l4.35-1.14A9.95 9.95 0 0010.05 20c5.52 0 10-4.48 10-10s-4.48-10-10-10zm5.89 14.21c-.24.68-1.41 1.28-1.95 1.35-.51.06-1.02.24-3.44-.74-3.11-1.25-5.11-4.39-5.27-4.59-.15-.2-1.24-1.65-1.24-3.15s.78-2.23 1.06-2.53c.28-.3.61-.38.81-.38.2 0 .41.01.59.01.19 0 .44-.07.69.52.25.61.86 2.1.93 2.25.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.31-.13.61.18.3.79 1.31 1.7 2.12 1.17 1.04 2.16 1.37 2.46 1.52.3.15.48.13.66-.08.18-.2.76-.89.96-1.19.2-.3.41-.25.69-.15.28.1 1.78.84 2.08.99.3.15.5.23.58.35.07.13.07.74-.17 1.42z"/></svg>
+                WhatsApp: +998 90 123 45 67
+              </a>
+              
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Floating CTA (Task 13) -->
+  <!-- Hidden on desktop, visible on mobile/tablet only via CSS -->
+  <div class="mobile-booking-cta" data-mobile-only="true">
+    <div class="mobile-cta__container">
+      @if($tour->shouldShowPrice())
+        <div class="mobile-cta__price">
+          <span class="mobile-cta__amount" data-mobile-price="{{ $tour->price_per_person }}">${{ number_format($tour->price_per_person, 2) }}</span>
+          <span class="mobile-cta__unit">per person</span>
+        </div>
+      @else
+        <div class="mobile-cta__contact">
+          <span>Request Quote</span>
+        </div>
+      @endif
+      <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="booking-form" aria-label="Scroll to booking form">
+        <svg class="icon icon--calendar-check" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6 2a2 2 0 00-2 2v1H2a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2h-2V4a2 2 0 00-2-2H6zm1 2h4v2H7V4zM2 9h14v8H2V9zm11.707 1.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+        Book Now
+      </button>
+    </div>
+  </div>
+  <!-- BOOKING CONFIRMATION MODAL - Modern Minimalist Design -->
+  <div id="booking-confirmation-modal" class="modal-overlay modal-overlay--glassmorphic" style="display: none;">
+    <div class="modal-container modal-container--minimal">
+      <!-- Minimal Header -->
+      <div class="modal-header-minimal">
+        <button class="modal-close-minimal" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 5L5 15M5 5l10 10"/>
+          </svg>
+        </button>
+        <div class="success-animation">
+          <svg class="checkmark-svg" width="56" height="56" viewBox="0 0 56 56">
+            <circle class="checkmark-circle" cx="28" cy="28" r="26" fill="none" stroke="#059669" stroke-width="2"/>
+            <path class="checkmark-check" d="M16 28l8 8 16-16" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2 class="modal-title-minimal">Booking Confirmed</h2>
+        <p class="modal-reference-minimal">
+          <span id="modal-reference">BK-2025-XXX</span>
+        </p>
+      </div>
+
+      <!-- Essential Info Only -->
+      <div class="modal-body-minimal">
+        <div class="booking-info-card">
+          <div class="info-row">
+            <span class="info-label">Tour</span>
+            <span class="info-value" id="modal-tour-name">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Date</span>
+            <span class="info-value" id="modal-date">...</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Guests</span>
+            <span class="info-value" id="modal-guests">...</span>
+          </div>
+          <div class="info-row info-row--total">
+            <span class="info-label">Total</span>
+            <span class="info-value info-value--price" id="modal-total">$200.00</span>
+          </div>
+        </div>
+
+        <!-- Minimal Next Steps -->
+        <div class="next-steps-minimal">
+          <p class="next-step-text">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.5">
+              <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
+            </svg>
+            Confirmation sent to <span id="modal-customer-email">your email</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Single CTA -->
+      <div class="modal-footer-minimal">
+        <button class="btn-minimal-primary" id="proceed-to-payment-btn">
+          <span>Proceed to Payment</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M9.3 3.3a1 1 0 011.4 0l4 4a1 1 0 010 1.4l-4 4a1 1 0 01-1.4-1.4L11.6 9H2a1 1 0 110-2h9.6L9.3 4.7a1 1 0 010-1.4z"/>
+          </svg>
+        </button>
+
+        <!-- Subtle trust indicators -->
+        <div class="trust-minimal">
+          <div class="trust-icons">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" opacity="0.4">
+              <path d="M8 1C6.3 1 5 2.3 5 4v2H3c-.6 0-1 .4-1 1v6c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V7c0-.6-.4-1-1-1h-2V4c0-1.7-1.3-3-3-3zm0 1.5c.8 0 1.5.7 1.5 1.5v2h-3V4c0-.8.7-1.5 1.5-1.5z"/>
+            </svg>
+            <span class="trust-text">Secure payment</span>
+            <div class="payment-icons-minimal">
+              <img src="/images/payments/visa.svg" alt="Visa" class="payment-icon-minimal">
+              <img src="/images/payments/mastercard.svg" alt="Mastercard" class="payment-icon-minimal">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SIMPLE INQUIRY CONFIRMATION MODAL                               -->
+  <!-- ================================================================ -->
+  <div id="inquiry-confirmation-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="success-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h2 class="modal-title">Question Received!</h2>
+        <p class="modal-subtitle">We'll respond to your email within 24 hours</p>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Reference Number -->
+        <div class="confirmation-reference">
+          <span class="label">Reference Number</span>
+          <span class="reference-number" id="inquiry-modal-reference">INQ-2025-XXX</span>
+          <p class="reference-note">Save this for your records</p>
+        </div>
+
+        <!-- Tour Info -->
+        <div class="booking-summary">
+          <h3 class="section-title">Your Question About</h3>
+          <div class="summary-grid">
+            <div class="summary-item" style="grid-column: 1 / -1;">
+              <span class="label">Tour</span>
+              <span class="value" id="inquiry-modal-tour" style="font-size: 1.125rem;">Tour Name</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Confirmation -->
+        <div class="customer-info">
+          <h3 class="section-title">We'll Reply To</h3>
+          <p class="email-address" id="inquiry-modal-email">customer@example.com</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3 class="section-title">What Happens Next?</h3>
+          <ol class="steps-list">
+            <li>Our travel experts will review your question</li>
+            <li>You'll receive a detailed response within <strong>24 hours</strong></li>
+            <li>Check your email for our personalized reply</li>
+            <li>We're here to help you plan the perfect trip!</li>
+          </ol>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important-note">
+          <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <p><strong>Check your spam folder</strong> if you don't receive our email within an hour.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn--primary btn--large" id="close-inquiry-modal">
+          Got It, Thanks!
+        </button>
+      </div>
+    </div>
+  </div>
+
+@endsection
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('tour-details.css') }}">
+<link rel="stylesheet" href="{{ asset('css/gallery-lightbox.css') }}">
+<link rel="stylesheet" href="{{ asset('tour-details-gallery-addon.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">
+<style>
+/* Booking Actions - Two-Button Choice */
+.booking-actions{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+.action-btn{display:flex;align-items:center;gap:0.75rem;padding:1rem;border:2px solid #E3E3E3;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;min-height:80px;text-align:left;width:100%}
+.action-btn:hover{border-color:#0D4C92;transform:translateY(-2px);box-shadow:0 4px 12px rgba(13,76,146,0.15)}
+.action-btn:active{transform:translateY(0)}
+.action-btn.active{border-color:#0D4C92;background:#F0F7FF;box-shadow:0 0 0 3px rgba(13,76,146,0.1)}
+.action-btn i{font-size:1.5rem;color:#0D4C92;flex-shrink:0}
+.action-btn--booking i{color:#4CAF50}
+.action-btn--inquiry i{color:#FF9800}
+.action-btn__content{display:flex;flex-direction:column;gap:0.25rem}
+.action-btn__title{font-size:1rem;font-weight:600;color:#1E1E1E}
+.action-btn__subtitle{font-size:0.875rem;color:#666;line-height:1.3}
+@media (max-width:640px){.booking-actions{grid-template-columns:1fr;gap:0.75rem}}
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-container {
+      background: #ffffff;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      text-align: center;
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      font-size: 1rem;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      border: none;
+      background: rgba(243, 244, 246, 0.95);
+      color: #6b7280;
+      font-size: 24px;
+      line-height: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-close:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .confirmation-reference {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #0ea5e9;
+    }
+
+    .reference-content {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .confirmation-reference .label {
+      font-size: 0.875rem;
+      color: #0369a1;
+      font-weight: 500;
+    }
+
+    .reference-number {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #075985;
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .booking-summary,
+    .next-steps {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.875rem;
+    }
+
+    /* Steps Grid - Modern Card Layout */
+    .steps-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.2s;
+    }
+
+    .step-item:hover {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+
+    .step-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .step-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
+    .step-content strong {
+      color: #111827;
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .step-detail {
+      color: #6b7280;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .summary-grid {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item--total {
+      background: #f9fafb;
+      font-weight: 600;
+    }
+
+    .summary-item .label {
+      color: #6b7280;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .summary-item .value {
+      color: #111827;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .summary-item .value.highlight {
+      color: #059669;
+      font-size: 1.25rem;
+    }
+
+    .email-address {
+      font-size: 1rem;
+      color: #2563eb;
+      font-weight: 600;
+      background: #eff6ff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding-left: 1.5rem;
+      color: #374151;
+      line-height: 1.8;
+    }
+
+    .steps-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .steps-list strong {
+      color: #111827;
+    }
+
+    .important-note {
+      display: flex;
+      gap: 0.75rem;
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 1rem;
+      border-radius: 8px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      flex-shrink: 0;
+      color: #d97706;
+    }
+
+    .important-note p {
+      margin: 0;
+      color: #78350f;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      padding: 1.25rem 1.5rem 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      background: #fafbfc;
+    }
+
+    .btn--large {
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn--primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn--secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn--secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal-container {
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 12px 12px 0 0;
+        margin: 0;
+      }
+
+      .modal-header {
+        padding: 1.25rem 1rem 1rem;
+      }
+
+      .modal-body {
+        padding: 1rem;
+      }
+
+      .modal-footer {
+        padding: 1rem;
+        position: sticky;
+        bottom: 0;
+      }
+
+      .success-icon {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 0.75rem;
+      }
+
+      .success-icon svg {
+        width: 36px;
+        height: 36px;
+      }
+
+      .modal-title {
+        font-size: 1.375rem;
+        margin-bottom: 0.375rem;
+      }
+
+      .modal-subtitle {
+        font-size: 0.875rem;
+      }
+
+      .modal-close {
+        width: 32px;
+        height: 32px;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 20px;
+      }
+
+      .confirmation-reference {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-left-width: 3px;
+      }
+
+      .reference-content {
+        font-size: 0.875rem;
+        gap: 0.5rem;
+      }
+
+      .reference-number {
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+      }
+
+      .section-title {
+        font-size: 0.9375rem;
+        margin-bottom: 0.625rem;
+      }
+
+      .summary-grid {
+        font-size: 0.875rem;
+      }
+
+      .summary-item {
+        padding: 0.625rem 0.75rem;
+      }
+
+      .summary-item .value.highlight {
+        font-size: 1.125rem;
+      }
+
+      /* Compact step items for mobile */
+      .steps-grid {
+        gap: 0;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 0.75rem;
+      }
+
+      .step-item {
+        padding: 0.375rem 0;
+        border: none;
+        background: transparent;
+        gap: 0.5rem;
+      }
+
+      .step-item:hover {
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .step-item:not(:last-child) {
+        border-bottom: 1px dashed #e5e7eb;
+      }
+
+      .step-icon {
+        font-size: 1.125rem;
+      }
+
+      .step-content {
+        gap: 0.125rem;
+      }
+
+      .step-content strong {
+        font-size: 0.8125rem;
+      }
+
+      .step-detail {
+        font-size: 0.75rem;
+        line-height: 1.3;
+      }
+
+      .btn--large {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9375rem;
+      }
+
+      .btn--secondary {
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+      }
+
+      .booking-summary,
+      .next-steps {
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* Payment Trust Section Styles */
+    .payment-trust-section {
+      background: linear-gradient(135deg, #f8fafb 0%, #f3f4f6 100%);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0 1.5rem 1rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .accepted-payments {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .payment-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #6b7280;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.625rem;
+      font-weight: 600;
+    }
+
+    .payment-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+    }
+
+    .payment-logo {
+      height: 28px;
+      width: auto;
+      filter: grayscale(20%);
+      opacity: 0.9;
+      transition: all 0.2s ease;
+    }
+
+    .payment-logo:hover {
+      filter: grayscale(0%);
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    .security-badges {
+      text-align: center;
+      padding-top: 0.875rem;
+      border-top: 1px dashed #e5e7eb;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .security-badge {
+      height: 32px;
+      width: auto;
+    }
+
+    .security-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      font-size: 0.75rem;
+      color: #059669;
+      font-weight: 500;
+    }
+
+    .lock-icon {
+      color: #059669;
+    }
+
+    /* Enhanced Payment Button */
+    .btn--payment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn--payment:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+    }
+
+    .btn-secure-icon {
+      display: flex;
+      align-items: center;
+      padding: 0.125rem 0.375rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    /* Mobile Optimization for Payment Trust */
+    @media (max-width: 640px) {
+      .payment-trust-section {
+        margin: 0 1rem 0.75rem;
+        padding: 0.75rem;
+      }
+
+      .payment-logos {
+        gap: 0.625rem;
+      }
+
+      .payment-logo {
+        height: 22px;
+      }
+
+      .security-badge {
+        height: 24px;
+      }
+
+      .badge-row {
+        gap: 0.5rem;
+      }
+
+      .security-text {
+        font-size: 0.6875rem;
+      }
+    }
+
+/* Fix nav positioning for tour details page - no hero image */
+.nav {
+  position: relative;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.nav .nav__logo-text {
+  color: var(--color-primary) !important;
+  text-shadow: none;
+}
+.nav .nav__menu a {
+  color: var(--color-text) !important;
+  text-shadow: none;
+}
+
+/* ============================================ */
+/* MODERN MINIMALIST MODAL DESIGN - 2025       */
+/* ============================================ */
+
+/* Glassmorphic Overlay */
+.modal-overlay--glassmorphic {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Minimal Modal Container */
+.modal-container--minimal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  max-width: 420px;
+  width: 100%;
+  padding: 0;
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Minimal Header */
+.modal-header-minimal {
+  padding: 32px 32px 24px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-close-minimal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6B7280;
+}
+
+.modal-close-minimal:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: rotate(90deg);
+}
+
+/* Success Animation */
+.success-animation {
+  margin: 0 auto 20px;
+  width: 56px;
+  height: 56px;
+}
+
+.checkmark-svg {
+  width: 56px;
+  height: 56px;
+  animation: scaleIn 0.3s ease 0.1s both;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: strokeCircle 0.6s ease forwards;
+}
+
+.checkmark-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.3s ease 0.5s forwards;
+}
+
+@keyframes strokeCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes strokeCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Minimal Typography */
+.modal-title-minimal {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.modal-reference-minimal {
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+/* Minimal Body */
+.modal-body-minimal {
+  padding: 0 32px 24px;
+}
+
+/* Booking Info Card */
+.booking-info-card {
+  background: rgba(248, 250, 251, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.info-row--total {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.info-label {
+  font-size: 13px;
+  color: #6B7280;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.info-value--price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #059669;
+}
+
+/* Minimal Next Steps */
+.next-steps-minimal {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.next-step-text {
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.next-step-text span {
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Minimal Footer */
+.modal-footer-minimal {
+  padding: 24px 32px 32px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Minimal Primary Button */
+.btn-minimal-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 500;
+  padding: 14px 24px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+}
+
+.btn-minimal-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.btn-minimal-primary:active {
+  transform: translateY(0);
+}
+
+/* Minimal Trust Indicators */
+.trust-minimal {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.trust-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.trust-text {
+  font-size: 11px;
+  color: #9CA3AF;
+  letter-spacing: 0.3px;
+}
+
+.payment-icons-minimal {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.payment-icon-minimal {
+  height: 16px;
+  width: auto;
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .modal-container--minimal {
+    border-radius: 16px;
+    margin: 10px;
+    max-width: calc(100vw - 40px);
+  }
+
+  .modal-header-minimal {
+    padding: 24px 24px 20px;
+  }
+
+  .modal-body-minimal {
+    padding: 0 24px 20px;
+  }
+
+  .modal-footer-minimal {
+    padding: 20px 24px 24px;
+  }
+
+  .booking-info-card {
+    padding: 16px;
+  }
+
+  .info-row {
+    padding: 6px 0;
+  }
+
+  .modal-title-minimal {
+    font-size: 18px;
+  }
+
+  .info-value--price {
+    font-size: 16px;
+  }
+
+  .btn-minimal-primary {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .modal-container--minimal {
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .modal-title-minimal,
+  .info-value {
+    color: #F3F4F6;
+  }
+
+  .modal-reference-minimal,
+  .info-label,
+  .next-step-text {
+    color: #9CA3AF;
+  }
+
+  .next-step-text span {
+    color: #F3F4F6;
+  }
+
+  .booking-info-card {
+    background: rgba(31, 41, 55, 0.5);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .info-row {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .modal-close-minimal {
+    background: rgba(255, 255, 255, 0.05);
+    color: #9CA3AF;
+  }
+
+  .modal-close-minimal:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .modal-footer-minimal {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .trust-minimal {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+}
+</style>
+@endpush
+
+
+@push('scripts')
+<script src="{{ asset('js/htmx.min.js') }}"></script>
+<script src="{{ asset('js/payment-integration.js') }}"></script>
+<script src="{{ asset('tour-details.js') }}"></script>
+<script src="{{ asset('js/booking-form.js') }}"></script>
+<script src="{{ asset('js/gallery-lightbox.js') }}"></script>
+<script>
+</script>
+<script src="{{ asset('js/tour-reviews.js') }}"></script>
+@endpush
