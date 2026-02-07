@@ -67,6 +67,31 @@ class TourTranslation extends Model
         'requirements_json' => 'array',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Sync title to parent tour when English translation is saved
+        // This ensures tours.title is always populated regardless of creation path
+        // (Filament admin, MCP API, tinker, seeders, etc.)
+        static::saved(function (TourTranslation $translation) {
+            if (!$translation->title) {
+                return;
+            }
+
+            $tour = $translation->tour;
+            if (!$tour) {
+                return;
+            }
+
+            // English translation always syncs to tours.title
+            // Any locale syncs if tours.title is empty (fallback)
+            if ($translation->locale === 'en' || empty($tour->title)) {
+                $tour->updateQuietly(['title' => $translation->title]);
+            }
+        });
+    }
+
     /**
      * Get the tour that owns this translation.
      */
