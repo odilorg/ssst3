@@ -112,7 +112,7 @@ class TourDeparturesTable
                     ]),
 
                 SelectFilter::make('tour')
-                    ->relationship('tour', 'title')
+                    ->relationship('tour', 'title', fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                     ->searchable()
                     ->preload(),
             ])
