@@ -1021,16 +1021,24 @@ class TourForm
                         ->numeric()
                         ->helperText('Например: 66.9597'),
 
-                    TextInput::make('min_booking_hours')
+                    TextInput::make('minimum_advance_days')
                         ->label('Минимум дней до бронирования')
                         ->numeric()
                         ->required()
-                        ->default(1)
+                        ->default(30)
+                        ->minValue(1)
+                        ->maxValue(365)
                         ->suffix('дней')
-                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
-                        ->dehydrateStateUsing(fn ($state) => $state * 24)
-                        ->helperText('За сколько дней нужно бронировать тур')
+                        ->helperText('За сколько дней нужно бронировать тур (используется в календаре на сайте)')
                         ->columnSpanFull(),
+
+                    TextInput::make('min_booking_hours')
+                        ->label('Минимум часов до бронирования')
+                        ->numeric()
+                        ->required()
+                        ->default(24)
+                        ->suffix('часов')
+                        ->helperText('Минимальное время до начала тура для бронирования'),
 
                     Toggle::make('has_hotel_pickup')
                         ->label('Есть трансфер из отеля')

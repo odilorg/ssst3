@@ -29,11 +29,6 @@ class EditTour extends EditRecord
                 ->color('success')
                 ->action(function () {
                     $this->save(shouldRedirect: false);
-                    Notification::make()
-                        ->title('Saved successfully')
-                        ->success()
-                        ->duration(2000)
-                        ->send();
                 })
                 ->keyBindings(['mod+s'])
                 ->extraAttributes(['title' => 'Ctrl+S to save'])

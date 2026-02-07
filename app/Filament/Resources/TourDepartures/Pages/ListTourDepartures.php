@@ -80,6 +80,7 @@ class ListTourDepartures extends ListRecords
                             Select::make('frequency')
                                 ->label('Frequency')
                                 ->options([
+                                    'daily' => 'Daily',
                                     'weekly' => 'Weekly',
                                     'biweekly' => 'Every 2 weeks',
                                     'monthly' => 'Monthly (specific day)',
@@ -203,7 +204,13 @@ class ListTourDepartures extends ListRecords
                         $rangeEnd = Carbon::parse($data['range_end']);
                         $frequency = $data['frequency'];
 
-                        if ($frequency === 'weekly' || $frequency === 'biweekly') {
+                        if ($frequency === 'daily') {
+                            $current = $rangeStart->copy();
+                            while ($current->lte($rangeEnd) && count($startDates) < 100) {
+                                $startDates[] = $current->copy();
+                                $current->addDay();
+                            }
+                        } elseif ($frequency === 'weekly' || $frequency === 'biweekly') {
                             $daysOfWeek = array_map('intval', $data['days_of_week'] ?? []);
                             $step = $frequency === 'biweekly' ? 2 : 1;
 
