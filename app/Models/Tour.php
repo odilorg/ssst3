@@ -134,6 +134,27 @@ class Tour extends Model
     {
         parent::boot();
 
+        // Auto-sync supports_* flags based on tour_type on every save
+        static::saving(function ($tour) {
+            if ($tour->tour_type) {
+                match ($tour->tour_type) {
+                    'private_only' => [
+                        $tour->supports_private = true,
+                        $tour->supports_group = false,
+                    ],
+                    'group_only' => [
+                        $tour->supports_private = false,
+                        $tour->supports_group = true,
+                    ],
+                    'hybrid' => [
+                        $tour->supports_private = true,
+                        $tour->supports_group = true,
+                    ],
+                    default => null,
+                };
+            }
+        });
+
         static::creating(function ($tour) {
             if (empty($tour->slug)) {
                 $slug = Str::slug($tour->title);

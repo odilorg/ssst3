@@ -8,13 +8,13 @@ use App\Models\TourDeparture;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Grid;
@@ -207,7 +207,6 @@ class ListTourDepartures extends ListRecords
                             $daysOfWeek = array_map('intval', $data['days_of_week'] ?? []);
                             $step = $frequency === 'biweekly' ? 2 : 1;
 
-                            // Find the first matching day on or after range_start
                             $current = $rangeStart->copy();
                             $weekCounter = 0;
                             $lastWeek = null;

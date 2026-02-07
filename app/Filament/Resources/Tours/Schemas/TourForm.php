@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Tours\Schemas;
 
+use Filament\Forms\Get;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -70,7 +71,27 @@ class TourForm
                                 'hybrid' => 'Hybrid (Private & Group)',
                             ])
                             ->required()
-                            ->default('private_only'),
+                            ->default('private_only')
+                            ->live() // Make reactive
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                // Auto-sync support flags when tour type changes
+                                match ($state) {
+                                    'private_only' => [
+                                        $set('supports_private', true),
+                                        $set('supports_group', false),
+                                    ],
+                                    'group_only' => [
+                                        $set('supports_private', false),
+                                        $set('supports_group', true),
+                                    ],
+                                    'hybrid' => [
+                                        $set('supports_private', true),
+                                        $set('supports_group', true),
+                                    ],
+                                    default => null,
+                                };
+                            })
+                            ->helperText('⚠️ Changing this will automatically update the support flags below'),
 
                                                 Select::make('categories')
                             ->label('Категории')
@@ -157,18 +178,24 @@ class TourForm
                     ->schema([
                         Toggle::make('supports_private')
                             ->label('Поддерживает частные туры')
-                            ->helperText('Разрешить бронирование как частный тур')
+                            ->helperText('Автоматически управляется полем "Тип тура" выше')
                             ->default(true)
                             ->inline(false)
                             ->live()
+                            ->disabled()
+                            ->saved() // v4: allow saving even though disabled
+                            ->dehydrateStateUsing(fn (Get $get) => in_array($get('tour_type'), ['private_only', 'hybrid'], true))
                             ->columnSpan(2),
 
                         Toggle::make('supports_group')
                             ->label('Поддерживает групповые туры')
-                            ->helperText('Разрешить бронирование через групповые отправления')
+                            ->helperText('Автоматически управляется полем "Тип тура" выше')
                             ->default(false)
                             ->inline(false)
                             ->live()
+                            ->disabled()
+                            ->saved() // v4: allow saving even though disabled
+                            ->dehydrateStateUsing(fn (Get $get) => in_array($get('tour_type'), ['group_only', 'hybrid'], true))
                             ->columnSpan(2),
                     ])
                     ->columns(4),
