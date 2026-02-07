@@ -665,5 +665,7 @@ return array (
     'view_all_articles' => 'Voir tous les articles',
     'read_more' => 'Lire la suite',
     'min_read' => 'min de lecture',
+    'travel_date' => 'Date de voyage',
+    'advance_booking_notice' => 'Les réservations nécessitent au moins :days jours de préavis.',
   ),
 );

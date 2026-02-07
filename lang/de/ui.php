@@ -473,4 +473,7 @@ return [
         'cta_button' => 'Handwerkstouren ansehen',
     ],
 
+
+    'travel_date' => 'Reisedatum',
+    'advance_booking_notice' => 'Buchungen erfordern mindestens :days Tage Vorlaufzeit.',
 ];

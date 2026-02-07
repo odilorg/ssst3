@@ -82,6 +82,33 @@
         </div>
     </div>
 
+    {{-- Travel Date Picker --}}
+    <div style="margin-bottom: 16px;">
+        <label for="private_start_date" style="display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+            {{ __('ui.travel_date') }}
+        </label>
+
+        @php
+            $advanceDays = $tour->minimum_advance_days ?? 0;
+            $minDate = now()->startOfDay()->addDays($advanceDays)->format('Y-m-d');
+        @endphp
+
+        <input
+            type="date"
+            name="start_date"
+            id="private_start_date"
+            min="{{ $minDate }}"
+            required
+            style="width: 100%; height: 44px; padding: 0 12px; font-size: 15px; color: #1F2937; border: 1px solid #D1D5DB; border-radius: 8px; background: white; cursor: pointer; transition: border-color 0.2s ease;"
+        >
+
+        @if($advanceDays > 0)
+            <p style="font-size: 12px; color: #6B7280; margin: 6px 0 0 0;">
+                {{ __('ui.advance_booking_notice', ['days' => $advanceDays]) }}
+            </p>
+        @endif
+    </div>
+
     {{-- Price Breakdown --}}
     @if(isset($priceData) && $priceData['success'])
         <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px;">
