@@ -138,7 +138,7 @@ class ReviewsTable
 
                 Tables\Filters\SelectFilter::make('tour_id')
                     ->label('Тур')
-                    ->relationship('tour', 'title')
+                    ->relationship('tour', 'title', fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                     ->searchable()
                     ->preload(),
 

@@ -132,7 +132,7 @@ class TourInquiriesTable
 
                 SelectFilter::make('tour_id')
                     ->label('Tour')
-                    ->relationship('tour', 'title')
+                    ->relationship('tour', 'title', fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                     ->searchable()
                     ->preload(),
 

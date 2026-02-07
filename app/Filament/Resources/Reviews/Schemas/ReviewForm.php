@@ -19,7 +19,7 @@ class ReviewForm
                     ->schema([
                         Select::make('tour_id')
                             ->label('Тур')
-                            ->relationship('tour', 'title')
+                            ->relationship('tour', 'title', fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                             ->searchable()
                             ->preload()
                             ->required()

@@ -100,7 +100,7 @@ class TourPlatformMappingResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('tour_id')
                             ->label('Наш тур')
-                            ->relationship('tour', 'title')
+                            ->relationship('tour', 'title', fn ($query) => $query->whereNotNull('title')->where('title', '!=', ''))
                             ->searchable()
                             ->preload()
                             ->required()

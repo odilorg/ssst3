@@ -40,7 +40,7 @@ class ListTourDepartures extends ListRecords
                         ->schema([
                             Select::make('tour_id')
                                 ->label('Tour')
-                                ->options(fn () => Tour::where('is_active', true)->pluck('title', 'id'))
+                                ->options(fn () => Tour::where('is_active', true)->whereNotNull('title')->where('title', '!=', '')->pluck('title', 'id'))
                                 ->searchable()
                                 ->required()
                                 ->helperText('Select the tour to create departures for'),
