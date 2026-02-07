@@ -59,7 +59,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                            ->afterStateUpdated(function (string $operation, $state, $set) {
                                 if ($operation === 'create') {
                                     $set('slug', Str::slug($state));
                                 }
@@ -74,7 +74,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
                                 table: 'blog_post_translations',
                                 column: 'slug',
                                 ignoreRecord: true,
-                                modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                modifyRuleUsing: function (Unique $rule, $get) {
                                     return $rule->where('locale', $get('locale'));
                                 }
                             )

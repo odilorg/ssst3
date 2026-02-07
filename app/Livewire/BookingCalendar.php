@@ -153,6 +153,7 @@ class BookingCalendar extends Component
         }
     }
 
+    #[\Livewire\Attributes\On("handleDateRangeChanged")]
     public function handleDateRangeChanged(string $start, string $end): void
     {
         $this->startDate = $start;
