@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Monuments\Schemas;
 
+use App\Forms\Components\ImageRepoPicker;
 use App\Models\City;
 use App\Models\Company;
 use Filament\Forms\Components\FileUpload;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -105,6 +107,24 @@ class MonumentForm
                             ->multiple()
                             ->image()
                             ->avatar()
+                            ->columnSpanFull(),
+
+                        ImageRepoPicker::make('images_from_repo')
+                            ->label('Или добавьте из репозитория изображений')
+                            ->multiple()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set, \Filament\Forms\Get $get) {
+                                if ($state) {
+                                    $current = $get('images') ?? [];
+                                    if (is_array($state)) {
+                                        $merged = array_unique(array_merge($current, $state));
+                                    } else {
+                                        $merged = array_unique(array_merge($current, [$state]));
+                                    }
+                                    $set('images', array_values($merged));
+                                }
+                            })
+                            ->dehydrated(false)
                             ->columnSpanFull(),
                     ]),
             ]);

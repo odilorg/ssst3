@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Tours\Schemas;
 
+use App\Forms\Components\ImageRepoPicker;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -164,6 +166,13 @@ class TourForm
                             ->helperText('Оставьте пустым, чтобы использовать главное изображение. Рекомендуемый размер: 1200×630px')
                             ->columnSpanFull(),
 
+                        ImageRepoPicker::make('og_image_from_repo')
+                            ->label('Или выберите OG изображение из репозитория')
+                            ->live()
+                            ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('og_image', $state) : null)
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
                         Toggle::make('schema_enabled')
                             ->label('Включить Schema.org разметку')
                             ->helperText('Структурированные данные для поисковых систем')
@@ -281,6 +290,13 @@ class TourForm
                             ->imageEditor()
                             ->columnSpanFull(),
 
+                        ImageRepoPicker::make('hero_image_from_repo')
+                            ->label('Или выберите из репозитория изображений')
+                            ->live()
+                            ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
                         Repeater::make('gallery_images')
                             ->label('Галерея изображений')
                             ->schema([
@@ -299,6 +315,13 @@ class TourForm
                                     ])
                                     ->maxSize(5120)
                                     ->required(),
+
+                                ImageRepoPicker::make('path_from_repo')
+                                    ->label('Или выберите из репозитория')
+                                    ->live()
+                                    ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
+                                    ->dehydrated(false),
+
                                 TextInput::make('alt')
                                     ->label('Alt текст')
                                     ->helperText('Описание изображения для доступности и SEO')
@@ -904,6 +927,13 @@ class TourForm
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
 
+                    ImageRepoPicker::make('hero_image_from_repo')
+                        ->label('Или выберите из репозитория изображений')
+                        ->live()
+                        ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
+                        ->dehydrated(false)
+                        ->columnSpanFull(),
+
                     Repeater::make('gallery_images')
                         ->label('Галерея изображений')
                         ->schema([
@@ -922,6 +952,13 @@ class TourForm
                                 ])
                                 ->maxSize(5120)
                                 ->required(),
+
+                            ImageRepoPicker::make('path_from_repo')
+                                ->label('Или выберите из репозитория')
+                                ->live()
+                                ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
+                                ->dehydrated(false),
+
                             TextInput::make('alt')
                                 ->label('Alt текст')
                                 ->helperText('Описание изображения для доступности и SEO')
@@ -1103,6 +1140,13 @@ class TourForm
                         ->disk('public')
                         ->visibility('public')
                         ->helperText('Оставьте пустым, чтобы использовать главное изображение. Рекомендуемый размер: 1200×630px')
+                        ->columnSpanFull(),
+
+                    ImageRepoPicker::make('og_image_from_repo')
+                        ->label('Или выберите OG изображение из репозитория')
+                        ->live()
+                        ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('og_image', $state) : null)
+                        ->dehydrated(false)
                         ->columnSpanFull(),
 
                     Toggle::make('schema_enabled')

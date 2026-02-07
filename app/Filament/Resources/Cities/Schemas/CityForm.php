@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Cities\Schemas;
 
+use App\Forms\Components\ImageRepoPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -75,6 +77,12 @@ class CityForm
                             ->imageEditor()
                             ->helperText('Main image for city cards on homepage'),
 
+                        ImageRepoPicker::make('featured_image_from_repo')
+                            ->label('Or choose from Image Repository')
+                            ->live()
+                            ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('featured_image', $state) : null)
+                            ->dehydrated(false),
+
                         FileUpload::make('hero_image')
                             ->label('Hero Image')
                             ->image()
@@ -82,6 +90,12 @@ class CityForm
                             ->directory('cities/hero')
                             ->imageEditor()
                             ->helperText('Large hero image for city detail pages'),
+
+                        ImageRepoPicker::make('hero_image_from_repo')
+                            ->label('Or choose from Image Repository')
+                            ->live()
+                            ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
+                            ->dehydrated(false),
 
                         FileUpload::make('images')
                             ->label('Gallery Images')
@@ -91,6 +105,23 @@ class CityForm
                             ->directory('cities/gallery')
                             ->imageEditor()
                             ->helperText('Additional images for city gallery'),
+
+                        ImageRepoPicker::make('images_from_repo')
+                            ->label('Or add gallery images from Repository')
+                            ->multiple()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set, \Filament\Forms\Get $get) {
+                                if ($state) {
+                                    $current = $get('images') ?? [];
+                                    if (is_array($state)) {
+                                        $merged = array_unique(array_merge($current, $state));
+                                    } else {
+                                        $merged = array_unique(array_merge($current, [$state]));
+                                    }
+                                    $set('images', array_values($merged));
+                                }
+                            })
+                            ->dehydrated(false),
                     ]),
 
                 Section::make('Location')
