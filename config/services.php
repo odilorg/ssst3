@@ -70,4 +70,9 @@ return [
         'key' => env('INTERNAL_API_KEY'),
     ],
 
+    'image_repo' => [
+        'url' => env('IMAGE_REPO_URL', 'https://images.staging-dev.uz'),
+        'picker_secret' => env('IMAGE_REPO_PICKER_SECRET'),
+    ],
+
 ];
