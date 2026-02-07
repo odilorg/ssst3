@@ -10,13 +10,13 @@
     <div
         x-data="{
             state: $wire.entangle('{{ $statePath }}'),
-            showModal: false,
-            nonce: null,
-            iframeLoaded: false,
             pickerToken: @js($pickerToken),
             pickerUrl: @js($pickerUrl),
             repoOrigin: @js($repoOrigin),
             isMultiple: @js($isMultiple),
+            nonce: null,
+            modalEl: null,
+            iframeEl: null,
 
             openPicker() {
                 if (!this.pickerToken) {
@@ -24,22 +24,86 @@
                     return;
                 }
                 this.nonce = crypto.randomUUID();
-                this.iframeLoaded = false;
-                this.showModal = true;
 
-                this.$nextTick(() => {
-                    const iframe = this.$refs.pickerIframe;
-                    if (iframe) {
-                        iframe.src = this.pickerUrl;
+                if (!this.modalEl) {
+                    this.createModal();
+                }
+                this.modalEl.style.display = 'flex';
+                this.iframeEl.src = this.pickerUrl;
+                this.modalEl.querySelector('.picker-spinner').style.display = 'flex';
+                this.iframeEl.style.display = 'none';
+            },
+
+            createModal() {
+                const modal = document.createElement('div');
+                Object.assign(modal.style, {
+                    display: 'none', position: 'fixed', inset: '0',
+                    zIndex: '999999', alignItems: 'center',
+                    justifyContent: 'center', padding: '1rem'
+                });
+
+                const backdrop = document.createElement('div');
+                Object.assign(backdrop.style, {
+                    position: 'fixed', inset: '0', background: 'rgba(0,0,0,0.5)'
+                });
+                backdrop.addEventListener('click', () => this.closePicker());
+                modal.appendChild(backdrop);
+
+                const panel = document.createElement('div');
+                Object.assign(panel.style, {
+                    position: 'relative', width: '100%', maxWidth: '72rem',
+                    height: '85vh', background: '#1a1a2e', borderRadius: '0.75rem',
+                    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                    overflow: 'hidden', display: 'flex', flexDirection: 'column'
+                });
+                modal.appendChild(panel);
+
+                const header = document.createElement('div');
+                Object.assign(header.style, {
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '0.75rem 1rem', borderBottom: '1px solid #374151', flexShrink: '0'
+                });
+                const title = document.createElement('h3');
+                Object.assign(title.style, { fontSize: '1.125rem', fontWeight: '600', color: '#f3f4f6' });
+                title.textContent = 'Select Image from Repository';
+                header.appendChild(title);
+                const closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
+                Object.assign(closeBtn.style, { color: '#9ca3af', cursor: 'pointer', background: 'none', border: 'none', padding: '4px', fontSize: '1.5rem', lineHeight: '1' });
+                closeBtn.textContent = '\u00D7';
+                closeBtn.addEventListener('click', () => this.closePicker());
+                header.appendChild(closeBtn);
+                panel.appendChild(header);
+
+                const spinner = document.createElement('div');
+                spinner.className = 'picker-spinner';
+                Object.assign(spinner.style, {
+                    flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af'
+                });
+                spinner.textContent = 'Loading image repository...';
+                panel.appendChild(spinner);
+
+                const iframe = document.createElement('iframe');
+                Object.assign(iframe.style, { flex: '1', width: '100%', border: '0', display: 'none' });
+                panel.appendChild(iframe);
+
+                document.body.appendChild(modal);
+                this.modalEl = modal;
+                this.iframeEl = iframe;
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modalEl && this.modalEl.style.display === 'flex') {
+                        this.closePicker();
                     }
                 });
             },
 
             closePicker() {
-                this.showModal = false;
-                const iframe = this.$refs.pickerIframe;
-                if (iframe) {
-                    iframe.src = 'about:blank';
+                if (this.modalEl) {
+                    this.modalEl.style.display = 'none';
+                }
+                if (this.iframeEl) {
+                    this.iframeEl.src = 'about:blank';
                 }
             },
 
@@ -47,10 +111,14 @@
                 if (event.origin !== this.repoOrigin) return;
 
                 if (event.data && event.data.type === 'pickerReady') {
-                    this.iframeLoaded = true;
-                    const iframe = this.$refs.pickerIframe;
-                    if (iframe && iframe.contentWindow) {
-                        iframe.contentWindow.postMessage({
+                    if (this.iframeEl) {
+                        this.iframeEl.style.display = 'block';
+                    }
+                    if (this.modalEl) {
+                        this.modalEl.querySelector('.picker-spinner').style.display = 'none';
+                    }
+                    if (this.iframeEl && this.iframeEl.contentWindow) {
+                        this.iframeEl.contentWindow.postMessage({
                             type: 'authToken',
                             token: this.pickerToken,
                             nonce: this.nonce,
@@ -97,6 +165,10 @@
 
             destroy() {
                 window.removeEventListener('message', (e) => this.handleMessage(e));
+                if (this.modalEl) {
+                    this.modalEl.remove();
+                    this.modalEl = null;
+                }
             }
         }"
         x-init="init()"
@@ -145,54 +217,5 @@
             </svg>
             Choose from Image Repository
         </button>
-
-        {{-- Modal with iframe --}}
-        <template x-teleport="body">
-            <div
-                x-show="showModal"
-                x-transition.opacity
-                @keydown.escape.window="closePicker()"
-                class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-                style="display: none;"
-            >
-                {{-- Backdrop --}}
-                <div class="fixed inset-0 bg-black/50" @click="closePicker()"></div>
-
-                {{-- Modal content --}}
-                <div class="relative w-full max-w-6xl h-[85vh] bg-white dark:bg-gray-900 rounded-xl shadow-2xl overflow-hidden flex flex-col">
-                    {{-- Header --}}
-                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 shrink-0">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            Select Image from Repository
-                        </h3>
-                        <button
-                            type="button"
-                            @click="closePicker()"
-                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                        >
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
-                    </div>
-
-                    {{-- Loading indicator --}}
-                    <div x-show="!iframeLoaded" class="flex-1 flex items-center justify-center">
-                        <div class="text-gray-500 dark:text-gray-400">
-                            <svg class="animate-spin h-8 w-8 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                            Loading image repository...
-                        </div>
-                    </div>
-
-                    {{-- Iframe --}}
-                    <iframe
-                        x-ref="pickerIframe"
-                        x-show="iframeLoaded"
-                        class="flex-1 w-full border-0"
-                    ></iframe>
-                </div>
-            </div>
-        </template>
     </div>
 </x-dynamic-component>
