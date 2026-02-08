@@ -63,6 +63,39 @@ OCTOBANK_SECRET_KEY=your_secret_key
 3. Test payment flow end-to-end
 4. Deploy to staging for testing
 
+## Email Notifications Verified ✅
+
+### After Booking Creation
+**Status:** Working correctly
+
+1. **BookingConfirmation** email sent to customer (`app/Http/Controllers/Partials/BookingController.php` lines 251-254)
+   - Includes booking details and confirmation
+2. **BookingAdminNotification** email sent to admin (`BookingController.php` lines 256-257)
+   - Notifies admin of new booking
+
+### After Successful Payment
+**Status:** Properly configured and ready to work
+
+1. **Event Flow:**
+   - Octobank webhook → `PaymentController::webhook()` (line 337)
+   - Service processes payment → `OctobankPaymentService::processWebhook()`
+   - Payment marked as succeeded → `OctobankPayment::markAsSucceeded()`
+   - Controller dispatches event → `event(new PaymentSucceeded($payment))` (line 362)
+
+2. **Listener:** `SendPaymentConfirmationEmail` (queued)
+   - Location: `app/Listeners/SendPaymentConfirmationEmail.php`
+   - Triggers on: `PaymentSucceeded` event
+   - Sends email: `BalancePaymentReceived` mailable
+
+3. **Email Template:** `resources/views/emails/payments/balance-received.blade.php`
+   - **Full Payment Version:** Payment confirmation with full details
+   - **Deposit Version:** Deposit confirmation with balance due information
+   - Includes: booking reference, tour details, payment summary, next steps
+
+**All email components verified and properly connected.**
+
+---
+
 ## Testing Checklist
 
 Once API credentials are configured:
@@ -72,4 +105,5 @@ Once API credentials are configured:
 - [ ] Payment initialization (full payment option)
 - [ ] Payment success callback
 - [ ] Payment failure handling
-- [ ] Email notifications after payment
+- [ ] Email notifications after booking (already verified ✅)
+- [ ] Email notifications after payment (code verified, needs webhook test)

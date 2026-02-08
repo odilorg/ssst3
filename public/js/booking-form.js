@@ -430,10 +430,12 @@
               console.log('[Booking] Success response:', data);
               console.log('[Booking] Record data:', record);
 
-              // Store booking ID globally for payment
+              // Store booking ID, reference, and email globally for payment
               if (isBooking && record.id) {
                 window.currentBookingId = record.id;
-                console.log('[Payment] Booking ID stored:', record.id);
+                window.currentBookingRef = record.reference;
+                window.currentBookingEmail = record.customer?.email;
+                console.log('[Payment] Booking stored:', record.id, record.reference);
               }
 
               // Populate modal with data (with null checks)
@@ -805,6 +807,18 @@
             initiatePayment(window.currentBookingId, selectedPaymentType);
           } else {
             console.error('[Payment] Cannot initiate payment - missing booking ID or function');
+          }
+        });
+      }
+
+      // Handle "Pay Later" link click
+      const payLaterLink = document.getElementById('pay-later-link');
+      if (payLaterLink) {
+        payLaterLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('[Payment] User chose Pay Later');
+          if (typeof handlePaymentFallback === 'function') {
+            handlePaymentFallback('user_choice');
           }
         });
       }

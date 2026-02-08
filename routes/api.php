@@ -108,6 +108,9 @@ Route::get('/categories', function () {
 Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])
     ->middleware(['api'])
     ->name('api.payment.initialize');
+Route::post('/payment/pay-later', [\App\Http\Controllers\PaymentController::class, 'payLater'])
+    ->middleware(['api', 'throttle:10,1'])
+    ->name('api.payment.pay-later');
 Route::get('/payment/price-preview', [\App\Http\Controllers\PaymentController::class, 'pricePreview'])
     ->middleware('throttle:60,1')
     ->name('api.payment.price-preview');
