@@ -172,7 +172,12 @@ class TourAIService
 
         $prompt .= "Generate a complete tour itinerary with:\n";
         $prompt .= "- An engaging tour title\n";
-        $prompt .= "- A 2-3 sentence overview\n";
+        $prompt .= "- A detailed overview (2-3 paragraphs)\n";
+        $prompt .= "- A short 1-sentence summary\n";
+        $prompt .= "- Key highlights (3-5 bullet points)\n";
+        $prompt .= "- What's included in the tour price\n";
+        $prompt .= "- What's excluded from the tour price\n";
+        $prompt .= "- Estimated price per person in USD\n";
         $prompt .= "- Daily itineraries with multiple stops per day\n";
         $prompt .= "- Realistic timing (start times, durations)\n";
         $prompt .= "- Specific activities and descriptions\n\n";
@@ -254,7 +259,27 @@ class TourAIService
         return [
             'title' => 'Engaging Tour Title',
             'duration_days' => 8,
-            'description' => 'Brief 2-3 sentence tour overview',
+            'description' => 'Detailed tour overview (2-3 paragraphs)',
+            'short_description' => 'Brief 1-sentence tour summary for listings',
+            'highlights' => [
+                'Key highlight or attraction 1',
+                'Key highlight or attraction 2',
+                'Key highlight or attraction 3'
+            ],
+            'included' => [
+                'Professional English-speaking guide',
+                'Transportation during tour',
+                'Museum entrance fees',
+                'Lunch on specified days'
+            ],
+            'excluded' => [
+                'International flights',
+                'Travel insurance',
+                'Personal expenses',
+                'Tips and gratuities'
+            ],
+            'languages' => ['English', 'Russian'],
+            'estimated_price' => 150,
             'days' => [
                 [
                     'title' => 'Day Title (e.g., Arrival in Tashkent)',
