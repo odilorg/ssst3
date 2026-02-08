@@ -755,7 +755,7 @@
                     <svg width="12" height="12" viewBox="0 0 20 20" fill="#10b981" style="vertical-align: middle; margin-right: 4px;">
                       <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
                     </svg>
-                    Booking confirmed within 24-48h • No payment fees
+                    Booking confirmed within 24h • No payment fees
                   </p>
 
                   {{-- PDF Download Button (Secondary Action) --}}
@@ -889,7 +889,7 @@
             <!-- Booking Clarification (Compact) -->
             <div class="booking-clarification-compact">
               <p class="clarification-compact-text">
-                ⏱️ <strong>Two-step booking</strong> — We'll confirm hotel availability within 24-48h, then you can pay the deposit or full amount.
+                ⏱️ <strong>Request & confirm</strong> — We'll confirm your booking within 24h, then you can pay online or in cash on your tour day.
               </p>
             </div>
 
