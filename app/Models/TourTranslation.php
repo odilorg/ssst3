@@ -71,12 +71,12 @@ class TourTranslation extends Model
     {
         parent::boot();
 
-        // Bust available_locales cache so new languages appear in FE automatically
+        // Bust locale caches so new languages appear in FE automatically
         static::saved(function () {
-            cache()->forget('available_locales');
+            cache()->forget('global_locales');
         });
         static::deleted(function () {
-            cache()->forget('available_locales');
+            cache()->forget('global_locales');
         });
 
         // Sync title to parent tour when English translation is saved

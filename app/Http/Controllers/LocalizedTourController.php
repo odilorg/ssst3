@@ -39,36 +39,29 @@ class LocalizedTourController extends Controller
             ->with(['tour' => fn($q) => $q->with($tourRelations)])
             ->first();
 
-        // Try 2: Fallback - find by slug in any locale, then get/create translation for requested locale
+        // Try 2: Slug belongs to another locale — find the tour, then get translation for requested locale
         if (!$translation) {
-            // Find any translation with this slug
             $anyTranslation = TourTranslation::where('slug', $slug)
                 ->with(['tour' => fn($q) => $q->with($tourRelations)])
                 ->first();
 
             if ($anyTranslation) {
-                // Try to find translation for requested locale
                 $translation = TourTranslation::where('tour_id', $anyTranslation->tour_id)
                     ->where('locale', $locale)
                     ->first();
 
                 if ($translation) {
-                    // Load tour relations
                     $translation->load(['tour' => fn($q) => $q->with($tourRelations)]);
-                } else {
-                    // Use the found translation but serve content in requested locale context
-                    $translation = $anyTranslation;
                 }
+                // No fallback to another locale — if no translation exists for this locale, 404
             }
         }
 
-        // Try 3: Last resort - find by tour slug directly
+        // Try 3: Slug matches tour.slug directly — get translation for requested locale only
         if (!$translation) {
             $tour = Tour::where('slug', $slug)->with($tourRelations)->first();
             if ($tour) {
-                // Get translation for this tour in requested locale, or default
-                $translation = $tour->translations()->where('locale', $locale)->first()
-                    ?? $tour->translations()->where('locale', config('multilang.default_locale', 'en'))->first();
+                $translation = $tour->translations()->where('locale', $locale)->first();
 
                 if ($translation) {
                     $translation->setRelation('tour', $tour);
