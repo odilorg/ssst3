@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Tours\RelationManagers;
 
+use App\Jobs\TranslateTourWithAI;
 use App\Models\TranslationLog;
 use App\Services\OpenAI\TranslationService;
 use Filament\Actions\Action;
@@ -392,73 +393,22 @@ class TourTranslationsRelationManager extends RelationManager
                     ->modalDescription(fn ($record) => 'Translate this tour to ' . strtoupper($record->locale) . ' using AI? This will cost approximately $0.16 USD.')
                     ->modalSubmitActionLabel('Translate')
                     ->action(function ($record) {
-                        try {
-                            $service = new TranslationService();
-                            $tour = $this->ownerRecord;
-                            $targetLocale = strtoupper($record->locale);
+                        $tour = $this->ownerRecord;
+                        $targetLocale = strtoupper($record->locale);
 
-                            // Show starting notification
-                            Notification::make()
-                                ->title('🔄 Translation Started')
-                                ->body("Translating tour to {$targetLocale}... This may take 30-60 seconds. Please wait...")
-                                ->info()
-                                ->duration(60000) // Show for 60 seconds (entire translation duration)
-                                ->send();
+                        // Dispatch translation job (runs in background, no timeout)
+                        TranslateTourWithAI::dispatch(
+                            $tour,
+                            $record,
+                            auth()->id()
+                        );
 
-                            // Create translation log
-                            $log = TranslationLog::create([
-                                'tour_id' => $tour->id,
-                                'user_id' => auth()->id(),
-                                'source_locale' => 'en',
-                                'target_locale' => $record->locale,
-                                'sections_translated' => [],
-                                'tokens_used' => 0,
-                                'cost_usd' => 0,
-                                'model' => config('ai-translation.openai.model'),
-                                'status' => 'processing',
-                            ]);
-
-                            // Translate tour with progress updates
-                            $startTime = microtime(true);
-                            $result = $service->translateTour($tour, $record->locale);
-                            $duration = round(microtime(true) - $startTime, 1);
-
-                            // Update translation record
-                            $record->update($result['translations']);
-
-                            // Calculate cost
-                            $cost = $service->estimateCost($result['tokens_used'], $result['tokens_used']);
-
-                            // Update log
-                            $log->update([
-                                'sections_translated' => array_keys($result['translations']),
-                                'tokens_used' => $result['tokens_used'],
-                                'cost_usd' => $cost,
-                                'status' => 'completed',
-                            ]);
-
-                            Notification::make()
-                                ->title('✅ Translation Complete!')
-                                ->body("Translated {$tour->title} to {$targetLocale} in {$duration}s. Cost: $" . number_format($cost, 4) . " USD. Sections: " . count($result['translations']))
-                                ->success()
-                                ->duration(15000)
-                                ->persistent()
-                                ->send();
-                        } catch (\Exception $e) {
-                            if (isset($log)) {
-                                $log->update([
-                                    'status' => 'failed',
-                                    'error_message' => $e->getMessage(),
-                                ]);
-                            }
-
-                            Notification::make()
-                                ->title('❌ Translation Failed')
-                                ->body('Error: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')')
-                                ->danger()
-                                ->persistent() // Make error persistent so user must dismiss
-                                ->send();
-                        }
+                        // Show queued notification
+                        Notification::make()
+                            ->title('🔄 Translation Queued')
+                            ->body("Translation to {$targetLocale} has been queued. You will be notified when it's complete (typically 30-60 seconds).")
+                            ->info()
+                            ->send();
                     }),
                 EditAction::make(),
                 DeleteAction::make(),
