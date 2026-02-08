@@ -52,7 +52,7 @@
 ```
 settings table:
 - ai_translation_provider = 'deepseek'
-- ai_translation_api_key = 'sk-e44a750d8bce4d4abe9ab1bcfb704453' ✅ UPDATED TODAY
+- ai_translation_api_key = '[CONFIGURED IN DATABASE]' ✅ UPDATED
 ```
 
 **Fields Translated (16 total):**
@@ -103,10 +103,10 @@ settings table:
 ### 1. DeepSeek API Keys
 ```env
 # .env (VPS) - For Tour Generation
-OPENAI_API_KEY=sk-e44a750d8bce4d4abe9ab1bcfb704453
+OPENAI_API_KEY=[CONFIGURED IN .ENV FILE]
 
 # Database settings - For Translation
-ai_translation_api_key=sk-e44a750d8bce4d4abe9ab1bcfb704453
+ai_translation_api_key=[CONFIGURED IN DATABASE]
 ai_translation_provider=deepseek
 ```
 
