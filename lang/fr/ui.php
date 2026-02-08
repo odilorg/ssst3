@@ -259,7 +259,7 @@ return array (
   ),
   'buttons' => 
   array (
-    'book_now' => 'Réserver Maintenant',
+    'book_now' => 'Demander une réservation',
     'inquire' => 'Demander',
     'submit' => 'Envoyer',
     'send' => 'Envoyer',
