@@ -21,7 +21,8 @@ class GenerateTourWithAI implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 300; // 5 minutes timeout
-    public $tries = 1; // Only try once
+    public $tries = 3;
+    public $backoff = [30, 120, 300]; // 30s, 2min, 5min
 
     /**
      * Create a new job instance.

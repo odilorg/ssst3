@@ -20,7 +20,8 @@ class TranslateTourWithAI implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 600; // 10 minutes timeout for translation
-    public $tries = 1; // Only try once
+    public $tries = 3;
+    public $backoff = [30, 120, 300]; // 30s, 2min, 5min
 
     /**
      * Create a new job instance.

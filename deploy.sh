@@ -163,6 +163,11 @@ $PHP_BIN artisan up 2>>"$LOG_FILE"
 APP_IS_DOWN=false
 log "App is UP."
 
+# ── Step 10: Restart queue workers ─────────────────────────
+banner "Step 10: Restart queue workers"
+$PHP_BIN artisan queue:restart 2>>"$LOG_FILE"
+log "Queue workers signaled to restart."
+
 # ── Health check ────────────────────────────────────────────
 banner "Health check"
 $PHP_BIN artisan --version 2>>"$LOG_FILE" | tee -a "$LOG_FILE"
