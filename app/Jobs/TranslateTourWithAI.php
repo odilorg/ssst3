@@ -9,19 +9,22 @@ use App\Services\OpenAI\TranslationService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class TranslateTourWithAI implements ShouldQueue
+class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 600; // 10 minutes timeout for translation
     public $tries = 3;
     public $backoff = [30, 120, 300]; // 30s, 2min, 5min
+    public $uniqueFor = 900; // ShouldBeUnique: 15 min window
 
     /**
      * Create a new job instance.
@@ -34,10 +37,28 @@ class TranslateTourWithAI implements ShouldQueue
     ) {}
 
     /**
+     * Unique ID prevents duplicate dispatches for the same translation.
+     */
+    public function uniqueId(): string
+    {
+        return "translate:{$this->tourId}:{$this->translationId}";
+    }
+
+    /**
      * Execute the job.
      */
     public function handle(TranslationService $translationService): void
     {
+        // Idempotency: acquire lock to prevent concurrent runs
+        $lock = Cache::lock("translate:tour:{$this->tourId}:trans:{$this->translationId}", 900);
+        if (!$lock->get()) {
+            Log::info('Translation already in progress, skipping duplicate', [
+                'tour_id' => $this->tourId,
+                'translation_id' => $this->translationId,
+            ]);
+            return;
+        }
+
         $startTime = microtime(true);
 
         try {
@@ -132,6 +153,8 @@ class TranslateTourWithAI implements ShouldQueue
             ]);
 
             throw $e;
+        } finally {
+            $lock->release();
         }
     }
 

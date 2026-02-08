@@ -37,3 +37,11 @@ Schedule::command("reminders:tour-operator")
     ->timezone("Asia/Tashkent")
     ->emailOutputOnFailure(config("mail.from.address"))
     ->appendOutputTo(storage_path("logs/tour-operator-reminders.log"));
+
+// ============================================
+// QUEUE HEALTH: FAILED JOB ALERTING
+// ============================================
+
+Schedule::command('queue:check-failed')
+    ->everyTenMinutes()
+    ->appendOutputTo(storage_path('logs/queue-health.log'));

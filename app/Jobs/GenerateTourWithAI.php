@@ -8,21 +8,24 @@ use App\Services\TourAIService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class GenerateTourWithAI implements ShouldQueue
+class GenerateTourWithAI implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 300; // 5 minutes timeout
     public $tries = 3;
     public $backoff = [30, 120, 300]; // 30s, 2min, 5min
+    public $uniqueFor = 600; // ShouldBeUnique: 10 min window
 
     /**
      * Create a new job instance.
@@ -32,10 +35,35 @@ class GenerateTourWithAI implements ShouldQueue
     ) {}
 
     /**
+     * Unique ID prevents duplicate dispatches for the same generation.
+     */
+    public function uniqueId(): string
+    {
+        return "generate:{$this->generation->id}";
+    }
+
+    /**
      * Execute the job.
      */
     public function handle(TourAIService $aiService): void
     {
+        // DB state guard: skip if already completed
+        if ($this->generation->fresh()->status === 'completed') {
+            Log::info('Tour generation already completed, skipping', [
+                'generation_id' => $this->generation->id,
+            ]);
+            return;
+        }
+
+        // Idempotency: acquire lock to prevent concurrent runs
+        $lock = Cache::lock("generate:tour:{$this->generation->id}", 600);
+        if (!$lock->get()) {
+            Log::info('Tour generation already in progress, skipping duplicate', [
+                'generation_id' => $this->generation->id,
+            ]);
+            return;
+        }
+
         try {
             // Update status to processing
             $this->generation->update(['status' => 'processing']);
@@ -195,6 +223,8 @@ class GenerateTourWithAI implements ShouldQueue
 
             // Re-throw to mark job as failed
             throw $e;
+        } finally {
+            $lock->release();
         }
     }
 
