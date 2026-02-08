@@ -91,7 +91,7 @@ class SetLocaleFromRoute
                     ->pluck('locale')
                     ->toArray();
             } catch (\Exception $e) {
-                return config('multilang.locales', ['en']);
+                return ['en'];
             }
         });
 

@@ -33,11 +33,11 @@
         $hreflangs = [];
 
         if ($static) {
-            // Static pages have same URL structure for all locales
-            $supportedLocales = config('multilang.locales', ['en', 'ru', 'fr']);
+            // Static pages — use DB-driven global locales (threshold-based)
+            $globalLocales = \App\Http\Middleware\SetLocaleFromRoute::getGlobalLocales();
             $defaultLocale = config('multilang.default_locale', 'en');
 
-            foreach ($supportedLocales as $locale) {
+            foreach ($globalLocales as $locale) {
                 try {
                     $hreflangs[] = [
                         'locale' => $locale,
@@ -60,33 +60,23 @@
                 }
             }
         } elseif ($entity && method_exists($entity, 'translations')) {
-            // Entity pages - only generate for locales with translations
-            $supportedLocales = config('multilang.locales', ['en', 'ru', 'fr']);
+            // Entity pages — only emit hreflang for locales with actual translations + valid slugs
             $defaultLocale = config('multilang.default_locale', 'en');
 
-            // Load translations if not already loaded
             if (!$entity->relationLoaded('translations')) {
                 $entity->load('translations');
             }
 
-            $availableLocales = $entity->translations->pluck('locale')->toArray();
-
-            foreach ($supportedLocales as $locale) {
-                if (!in_array($locale, $availableLocales)) {
-                    continue;
-                }
-
-                $translation = $entity->translations->firstWhere('locale', $locale);
-
-                if (!$translation || !$translation->slug) {
+            foreach ($entity->translations as $translation) {
+                if (!$translation->slug) {
                     continue;
                 }
 
                 try {
                     $hreflangs[] = [
-                        'locale' => $locale,
+                        'locale' => $translation->locale,
                         'url' => route($routeName, [
-                            'locale' => $locale,
+                            'locale' => $translation->locale,
                             'slug' => $translation->slug,
                         ]),
                     ];
@@ -102,7 +92,7 @@
                         'locale' => 'x-default',
                         'url' => $xDefault,
                     ];
-                } elseif (in_array($defaultLocale, $availableLocales)) {
+                } else {
                     $defaultTranslation = $entity->translations->firstWhere('locale', $defaultLocale);
                     if ($defaultTranslation && $defaultTranslation->slug) {
                         try {
