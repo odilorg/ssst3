@@ -154,6 +154,14 @@ class Tour extends Model
                     default => null,
                 };
             }
+
+            // Sync private guest limits from general capacity
+            if ($tour->max_guests) {
+                $tour->private_max_guests = $tour->max_guests;
+            }
+            if ($tour->min_guests) {
+                $tour->private_min_guests = $tour->min_guests;
+            }
         });
 
         static::creating(function ($tour) {

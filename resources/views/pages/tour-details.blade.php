@@ -574,7 +574,7 @@
                 <svg class="booking-accordion__icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>
-                <span>Free cancellation</span>
+                <span>Flexible cancellation</span>
                 <svg class="booking-accordion__chevron" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                 </svg>
@@ -755,7 +755,7 @@
                     <svg width="12" height="12" viewBox="0 0 20 20" fill="#10b981" style="vertical-align: middle; margin-right: 4px;">
                       <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
                     </svg>
-                    Booking confirmed within 24-48h • No payment fees
+                    Booking confirmed within 24h • No payment fees
                   </p>
 
                   {{-- PDF Download Button (Secondary Action) --}}
@@ -889,7 +889,7 @@
             <!-- Booking Clarification (Compact) -->
             <div class="booking-clarification-compact">
               <p class="clarification-compact-text">
-                ⏱️ <strong>Two-step booking</strong> — We'll confirm hotel availability within 24-48h, then you can pay the deposit or full amount.
+                ⏱️ <strong>Request & confirm</strong> — We'll confirm your booking within 24h, then you can pay online or in cash on your tour day.
               </p>
             </div>
 
@@ -1095,7 +1095,7 @@
                   </div>
                   <div class="trust-item">
                     <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                    <span>Free cancellation</span>
+                    <span>Flexible cancellation</span>
                   </div>
                 </div>
               </div>
