@@ -22,7 +22,7 @@ use App\Http\Middleware\SetLocaleFromRoute;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('{locale}')
-    ->where('locale', '[a-z]{2}')
+    ->where(['locale' => '[a-z]{2}'])
     ->middleware(['web', SetLocaleFromRoute::class])
     ->group(function () {
 
