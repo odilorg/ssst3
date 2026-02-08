@@ -6,8 +6,11 @@ use App\Models\Booking;
 use App\Models\OctobankPayment;
 use App\Models\Tour;
 use App\Services\OctobankPaymentService;
+use App\Services\TelegramNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
@@ -56,13 +59,17 @@ class PaymentController extends Controller
         try {
             $booking = Booking::with('tour')->findOrFail($request->booking_id);
 
-            // SECURITY: Verify user owns this booking or is admin
-            if ($booking->user_id !== auth()->id() && !auth()->user()?->isAdmin()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unauthorized to initialize payment for this booking',
-                ], 403);
+            // SECURITY: Verify user owns this booking or is admin (skip for guest bookings)
+            if (auth()->check()) {
+                // User is authenticated - verify ownership
+                if ($booking->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unauthorized to initialize payment for this booking',
+                    ], 403);
+                }
             }
+            // Guest bookings (user_id is null) are allowed to proceed to payment
 
             // Check if booking is already paid
             if ($booking->payment_status === 'paid') {
@@ -132,9 +139,16 @@ class PaymentController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
+            // Check if this is a connection timeout (likely missing API credentials)
+            $errorMessage = 'Payment initialization failed. Please try again.';
+            if (str_contains($e->getMessage(), 'Timeout was reached') || str_contains($e->getMessage(), 'Failed to connect')) {
+                $errorMessage = 'Payment gateway connection failed. Please contact support or try again later.';
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => 'Payment initialization failed. Please try again.',
+                'message' => $errorMessage,
+                'debug' => app()->environment('local') ? $e->getMessage() : null,
             ], 500);
         }
     }
@@ -433,5 +447,92 @@ class PaymentController extends Controller
                 'message' => 'Refund processing failed. Please try again.',
             ], 400);
         }
+    }
+
+    /**
+     * Handle payment fallback / pay later request
+     * POST /api/payment/pay-later
+     */
+    public function payLater(Request $request): JsonResponse
+    {
+        $request->validate([
+            'reference' => 'required|string',
+            'email' => 'required|email',
+            'reason' => 'required|string|in:gateway_failed,user_choice',
+        ]);
+
+        $reference = $request->input('reference');
+        $email = $request->input('email');
+        $reason = $request->input('reason');
+
+        // Atomic cache lock per reference to limit cross-IP brute force (60s cooldown)
+        $lockKey = 'pay_later_lock:' . $reference;
+        if (!Cache::add($lockKey, true, 60)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Request already processed.',
+                'payment_method' => 'pay_later',
+            ]);
+        }
+
+        // Lookup booking by reference + customer email (authorization)
+        $booking = Booking::where('reference', $reference)
+            ->whereHas('customer', fn($q) => $q->where('email', $email))
+            ->with(['tour', 'customer'])
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found.',
+            ], 404);
+        }
+
+        // Already paid - don't overwrite
+        if ($booking->payment_status === 'paid') {
+            return response()->json([
+                'success' => false,
+                'code' => 'ALREADY_PAID',
+                'message' => 'This booking has already been paid.',
+                'payment_method' => $booking->payment_method,
+                'payment_status' => $booking->payment_status,
+            ], 400);
+        }
+
+        // Atomic update: only set pay_later if not already set and not paid
+        $previousMethod = $booking->payment_method;
+        $affectedRows = DB::table('bookings')
+            ->where('id', $booking->id)
+            ->where('payment_status', '!=', 'paid')
+            ->where('payment_method', '!=', 'pay_later')
+            ->update(['payment_method' => 'pay_later']);
+
+        // Only send Telegram if we actually changed the row (first caller wins)
+        if ($affectedRows > 0) {
+            Log::info('Booking switched to pay-later', [
+                'booking_id' => $booking->id,
+                'reference' => $reference,
+                'reason' => $reason,
+                'previous_method' => $previousMethod,
+                'ip' => $request->ip(),
+            ]);
+
+            try {
+                $telegram = new TelegramNotificationService();
+                $telegram->sendPayLaterNotification($booking, $reason);
+            } catch (Exception $e) {
+                Log::error('Failed to send pay-later Telegram notification', [
+                    'booking_id' => $booking->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking request received. We will contact you with payment options.',
+            'payment_method' => 'pay_later',
+            'payment_status' => $booking->payment_status,
+        ]);
     }
 }

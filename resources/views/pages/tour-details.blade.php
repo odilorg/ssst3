@@ -1272,6 +1272,9 @@
             <path d="M9.3 3.3a1 1 0 011.4 0l4 4a1 1 0 010 1.4l-4 4a1 1 0 01-1.4-1.4L11.6 9H2a1 1 0 110-2h9.6L9.3 4.7a1 1 0 010-1.4z"/>
           </svg>
         </button>
+        <a href="#" id="pay-later-link" style="display:block;text-align:center;padding:8px;color:#6b7280;font-size:13px;text-decoration:underline;cursor:pointer;">
+          I'll pay later
+        </a>
         <div class="trust-footer-compact">
           🔒 Secure payment • 💳 Visa/Mastercard
         </div>

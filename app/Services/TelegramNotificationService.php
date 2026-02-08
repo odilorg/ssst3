@@ -128,6 +128,48 @@ class TelegramNotificationService
     }
 
     /**
+     * Send pay-later notification to admin
+     */
+    public function sendPayLaterNotification($booking, $reason)
+    {
+        $message = $this->formatPayLaterMessage($booking, $reason);
+        return $this->sendMessage($message);
+    }
+
+    /**
+     * Format pay-later message
+     */
+    protected function formatPayLaterMessage($booking, $reason)
+    {
+        $tour = $booking->tour;
+        $customer = $booking->customer;
+
+        $reasonText = $reason === 'gateway_failed'
+            ? 'Payment gateway failed'
+            : 'Customer chose to pay later';
+
+        $emoji = $reason === 'gateway_failed' ? '⚠️' : '💳';
+
+        $message = "{$emoji} *PAY LATER: {$booking->reference}*\n\n";
+        $message .= "📋 *Reason:* {$reasonText}\n";
+        $message .= "🗺️ *Tour:* " . ($tour ? $tour->title : 'N/A') . "\n";
+        $message .= "👤 *Customer:* " . ($customer ? $customer->name : 'N/A') . "\n";
+        $message .= "📧 *Email:* " . ($customer ? $customer->email : 'N/A') . "\n";
+
+        if ($customer && $customer->phone) {
+            $message .= "📞 *Phone:* {$customer->phone}\n";
+        }
+
+        $message .= "💰 *Amount:* \${$booking->total_price}\n";
+        $message .= "\n🔔 *Action needed:* Send payment link or arrange cash payment\n";
+
+        $adminUrl = config('app.url') . '/admin/bookings/' . $booking->id;
+        $message .= "\n[View in Admin Panel]({$adminUrl})";
+
+        return $message;
+    }
+
+    /**
      * Send message to Telegram
      */
     protected function sendMessage($message)
