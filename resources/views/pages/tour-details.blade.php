@@ -487,6 +487,21 @@
                   <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
                   <span class="price-unit">/person</span>
                 </div>
+                <!-- Price Includes Micro-line -->
+                @php
+                  $inclText = collect($tour->included_items ?? [])->implode(' ');
+                  $hasGuide = stripos($inclText, 'guide') !== false;
+                  $hasTransport = stripos($inclText, 'transport') !== false;
+                @endphp
+                <p style="margin: 4px 0 0; font-size: 12px; color: #6B7280; line-height: 1.4;">
+                  @if($hasGuide && $hasTransport)
+                    Per person &middot; Local guide &amp; transport included
+                  @elseif($hasGuide)
+                    Per person &middot; Local guide included
+                  @else
+                    Per person &middot; See what's included below
+                  @endif
+                </p>
                 <!-- Social Proof Near Price -->
                 @if($tour->review_count > 0 && $tour->rating > 0)
                   <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
