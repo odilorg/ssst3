@@ -32,6 +32,8 @@
                     ?? \App\Models\Tour::where('slug', $tourSlug)->value('id');
                 if ($tourId) {
                     $supportedLocales = \App\Models\TourTranslation::where('tour_id', $tourId)
+                        ->whereNotNull('slug')
+                        ->where('slug', '!=', '')
                         ->pluck('locale')
                         ->toArray();
                 }

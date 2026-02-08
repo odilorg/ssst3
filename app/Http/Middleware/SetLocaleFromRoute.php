@@ -27,7 +27,7 @@ class SetLocaleFromRoute
      * Minimum number of tours a locale must have translations for
      * to be considered "globally supported" (shown on non-tour pages).
      */
-    private const GLOBAL_LOCALE_THRESHOLD = 3;
+    private const GLOBAL_LOCALE_THRESHOLD = 2;
 
     public function handle(Request $request, Closure $next): Response
     {
