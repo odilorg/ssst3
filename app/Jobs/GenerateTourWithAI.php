@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Tour;
 use App\Models\TourAIGeneration;
 use App\Services\TourAIService;
+use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -155,9 +156,9 @@ class GenerateTourWithAI implements ShouldQueue
             Notification::make()
                 ->success()
                 ->title('Tour Generated Successfully!')
-                ->body("Your tour {\$tour->title} is ready. Click to edit and complete the details.")
+                ->body("Your tour {$tour->title} is ready. Click to edit and complete the details.")
                 ->actions([
-                    \Filament\Notifications\Actions\Action::make('edit')
+                    Action::make('edit')
                         ->button()
                         ->url(route('filament.admin.resources.tours.tours.edit', ['record' => $tour->id]))
                 ])
