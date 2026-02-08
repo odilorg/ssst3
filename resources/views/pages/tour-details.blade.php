@@ -22,6 +22,11 @@
 {!! $structuredData ?? '{}' !!}
 @endsection
 
+{{-- Hreflang alternate links for multilingual SEO --}}
+@push('hreflang')
+    <x-seo.hreflang :entity="$tour" route-name="localized.tours.show" :x-default="url('/tours/' . $tour->slug)" />
+@endpush
+
 @php
     // Build partial URL with locale parameter for translated content
     $partialBase = '/partials/tours/' . $tour->slug;
