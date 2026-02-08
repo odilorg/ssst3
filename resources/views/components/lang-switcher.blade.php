@@ -18,8 +18,27 @@
 
     // Get locale info from shared view variables or config
     $currentLocale = $currentLocale ?? app()->getLocale();
-    $supportedLocales = $supportedLocales ?? config('multilang.locales', ['en']);
     $localeNames = $localeNames ?? config('multilang.locale_names', []);
+
+    // Dynamic locale detection: on tour pages, show only languages with translations
+    $supportedLocales = $supportedLocales ?? null;
+    if (!$supportedLocales) {
+        $route = request()->route();
+        $routeName = $route?->getName();
+        if ($routeName && in_array($routeName, ['tours.show', 'localized.tours.show'])) {
+            $tourSlug = $route->parameter('slug');
+            if ($tourSlug) {
+                $tourId = \App\Models\TourTranslation::where('slug', $tourSlug)->value('tour_id')
+                    ?? \App\Models\Tour::where('slug', $tourSlug)->value('id');
+                if ($tourId) {
+                    $supportedLocales = \App\Models\TourTranslation::where('tour_id', $tourId)
+                        ->pluck('locale')
+                        ->toArray();
+                }
+            }
+        }
+        $supportedLocales = $supportedLocales ?: config('multilang.locales', ['en']);
+    }
 
     // Get current path and build URLs for each locale
     $currentPath = request()->path();

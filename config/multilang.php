@@ -84,26 +84,19 @@ return [
     */
 
     'locale_names' => [
-        'en' => [
-            'name' => 'English',
-            'native' => 'English',
-            'flag' => '🇬🇧',
-        ],
-        'ru' => [
-            'name' => 'Russian',
-            'native' => 'Русский',
-            'flag' => '🇷🇺',
-        ],
-        'fr' => [
-            'name' => 'French',
-            'native' => 'Français',
-            'flag' => '🇫🇷',
-        ],
-        'de' => [
-            'name' => 'German',
-            'native' => 'Deutsch',
-            'flag' => '🇩🇪',
-        ],
+        'en' => ['name' => 'English', 'native' => 'English', 'flag' => '🇬🇧'],
+        'ru' => ['name' => 'Russian', 'native' => 'Русский', 'flag' => '🇷🇺'],
+        'uz' => ['name' => 'Uzbek', 'native' => "O'zbekcha", 'flag' => '🇺🇿'],
+        'fr' => ['name' => 'French', 'native' => 'Français', 'flag' => '🇫🇷'],
+        'de' => ['name' => 'German', 'native' => 'Deutsch', 'flag' => '🇩🇪'],
+        'es' => ['name' => 'Spanish', 'native' => 'Español', 'flag' => '🇪🇸'],
+        'zh' => ['name' => 'Chinese', 'native' => '中文', 'flag' => '🇨🇳'],
+        'ar' => ['name' => 'Arabic', 'native' => 'العربية', 'flag' => '🇸🇦'],
+        'it' => ['name' => 'Italian', 'native' => 'Italiano', 'flag' => '🇮🇹'],
+        'pt' => ['name' => 'Portuguese', 'native' => 'Português', 'flag' => '🇵🇹'],
+        'ja' => ['name' => 'Japanese', 'native' => '日本語', 'flag' => '🇯🇵'],
+        'ko' => ['name' => 'Korean', 'native' => '한국어', 'flag' => '🇰🇷'],
+        'tr' => ['name' => 'Turkish', 'native' => 'Türkçe', 'flag' => '🇹🇷'],
     ],
 
     /*
