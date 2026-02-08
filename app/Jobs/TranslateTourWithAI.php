@@ -26,8 +26,8 @@ class TranslateTourWithAI implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public Tour $tour,
-        public TourTranslation $translation,
+        public int $tourId,
+        public int $translationId,
         public int $userId,
         public array $sectionsToTranslate = []
     ) {}
@@ -40,30 +40,34 @@ class TranslateTourWithAI implements ShouldQueue
         $startTime = microtime(true);
 
         try {
+            // Fetch models fresh from database
+            $tour = Tour::findOrFail($this->tourId);
+            $translation = TourTranslation::findOrFail($this->translationId);
+
             Log::info('Starting AI translation', [
-                'tour_id' => $this->tour->id,
-                'translation_id' => $this->translation->id,
-                'locale' => $this->translation->locale,
+                'tour_id' => $tour->id,
+                'translation_id' => $translation->id,
+                'locale' => $translation->locale,
                 'user_id' => $this->userId,
             ]);
 
             // Perform translation
             $result = $translationService->translateTour(
-                $this->tour,
-                $this->translation->locale,
+                $tour,
+                $translation->locale,
                 $this->sectionsToTranslate
             );
 
             // Update translation with AI-generated content
-            $this->translation->update($result['translations']);
+            $translation->update($result['translations']);
 
             $duration = round(microtime(true) - $startTime, 2);
 
             // Log translation
             TranslationLog::create([
-                'tour_id' => $this->tour->id,
-                'translation_id' => $this->translation->id,
-                'locale' => $this->translation->locale,
+                'tour_id' => $tour->id,
+                'translation_id' => $translation->id,
+                'locale' => $translation->locale,
                 'sections_translated' => array_keys($result['translations']),
                 'tokens_used' => $result['tokens_used'],
                 'cost' => $translationService->estimateCost($result['tokens_used'], $result['tokens_used']),
@@ -75,17 +79,17 @@ class TranslateTourWithAI implements ShouldQueue
             Notification::make()
                 ->success()
                 ->title('Translation Completed!')
-                ->body("Tour '{$this->tour->title}' has been translated to {$this->translation->locale}. Duration: {$duration}s")
+                ->body("Tour '{$tour->title}' has been translated to {$translation->locale}. Duration: {$duration}s")
                 ->actions([
                     Action::make('view')
                         ->button()
-                        ->url(route('filament.admin.resources.tours.edit', ['record' => $this->tour->id]))
+                        ->url(route('filament.admin.resources.tours.edit', ['record' => $tour->id]))
                 ])
                 ->sendToDatabase(\App\Models\User::find($this->userId));
 
             Log::info('AI translation completed successfully', [
-                'tour_id' => $this->tour->id,
-                'locale' => $this->translation->locale,
+                'tour_id' => $tour->id,
+                'locale' => $translation->locale,
                 'duration' => $duration,
                 'tokens_used' => $result['tokens_used'],
             ]);
@@ -93,29 +97,35 @@ class TranslateTourWithAI implements ShouldQueue
         } catch (\Exception $e) {
             $duration = round(microtime(true) - $startTime, 2);
 
-            // Log failed translation
-            TranslationLog::create([
-                'tour_id' => $this->tour->id,
-                'translation_id' => $this->translation->id,
-                'locale' => $this->translation->locale,
-                'sections_translated' => [],
-                'tokens_used' => 0,
-                'cost' => 0,
-                'duration_seconds' => $duration,
-                'status' => 'failed',
-                'error_message' => $e->getMessage(),
-            ]);
+            // Try to fetch models for logging (they might not exist)
+            $tour = Tour::find($this->tourId);
+            $translation = TourTranslation::find($this->translationId);
+
+            // Log failed translation (if translation exists)
+            if ($translation) {
+                TranslationLog::create([
+                    'tour_id' => $this->tourId,
+                    'translation_id' => $this->translationId,
+                    'locale' => $translation->locale,
+                    'sections_translated' => [],
+                    'tokens_used' => 0,
+                    'cost' => 0,
+                    'duration_seconds' => $duration,
+                    'status' => 'failed',
+                    'error_message' => $e->getMessage(),
+                ]);
+            }
 
             // Send failure notification
             Notification::make()
                 ->danger()
                 ->title('Translation Failed')
-                ->body("Failed to translate tour '{$this->tour->title}' to {$this->translation->locale}. Error: {$e->getMessage()}")
+                ->body("Failed to translate tour. Error: {$e->getMessage()}")
                 ->sendToDatabase(\App\Models\User::find($this->userId));
 
             Log::error('AI translation failed', [
-                'tour_id' => $this->tour->id,
-                'locale' => $this->translation->locale,
+                'tour_id' => $this->tourId,
+                'translation_id' => $this->translationId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -130,8 +140,8 @@ class TranslateTourWithAI implements ShouldQueue
     public function failed(\Throwable $exception): void
     {
         Log::error('AI translation job failed permanently', [
-            'tour_id' => $this->tour->id,
-            'locale' => $this->translation->locale,
+            'tour_id' => $this->tourId,
+            'translation_id' => $this->translationId,
             'error' => $exception->getMessage(),
         ]);
 

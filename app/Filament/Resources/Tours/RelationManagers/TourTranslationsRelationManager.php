@@ -407,10 +407,10 @@ class TourTranslationsRelationManager extends RelationManager
                         $tour = $this->ownerRecord;
                         $targetLocale = strtoupper($record->locale);
 
-                        // Dispatch translation job (runs in background, no timeout)
+                        // Dispatch translation job with IDs (runs in background, no timeout)
                         TranslateTourWithAI::dispatch(
-                            $tour,
-                            $record,
+                            $tour->id,
+                            $record->id,
                             auth()->id()
                         );
 
