@@ -93,10 +93,14 @@
             $minDate = now()->startOfDay()->addDays($advanceDays)->format('Y-m-d');
         @endphp
 
+        @php
+            $defaultDate = now()->startOfDay()->addDays(max($advanceDays, 3))->format('Y-m-d');
+        @endphp
         <input
             type="date"
             name="start_date"
             id="private_start_date"
+            value="{{ $defaultDate }}"
             min="{{ $minDate }}"
             required
             style="width: 100%; height: 44px; padding: 0 12px; font-size: 15px; color: #1F2937; border: 1px solid #D1D5DB; border-radius: 8px; background: white; cursor: pointer; transition: border-color 0.2s ease;"
