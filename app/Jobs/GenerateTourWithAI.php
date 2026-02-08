@@ -160,7 +160,7 @@ class GenerateTourWithAI implements ShouldQueue
                 ->actions([
                     Action::make('edit')
                         ->button()
-                        ->url(route('filament.admin.resources.tours.tours.edit', ['record' => $tour->id]))
+                        ->url(route('filament.admin.resources.tours.edit', ['record' => $tour->id]))
                 ])
                 ->sendToDatabase($this->generation->user);
 
