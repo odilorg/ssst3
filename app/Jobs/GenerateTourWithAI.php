@@ -56,8 +56,8 @@ class GenerateTourWithAI implements ShouldQueue
                     'short_description' => $tourData['short_description'] ?? Str::limit(strip_tags($tourData['description'] ?? ''), 200),
 
                     // Private/Group Tour Support (NEW - added 2026-02-08)
-                    // Let Tour model's saving hook set tour_type based on these flags
-                    'supports_private' => true,  // Default to supporting both
+                    'tour_type' => 'hybrid',  // Support both private and group bookings
+                    'supports_private' => true,
                     'supports_group' => true,
 
                     // Private Tour Pricing (NEW - added 2026-02-08)
