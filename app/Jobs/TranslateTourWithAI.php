@@ -24,7 +24,7 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
     public $timeout = 600; // 10 minutes timeout for translation
     public $tries = 3;
     public $backoff = [30, 120, 300]; // 30s, 2min, 5min
-    public $uniqueFor = 900; // ShouldBeUnique: 15 min window
+    public $uniqueFor = 1200; // ShouldBeUnique: 20 min window (> timeout)
 
     /**
      * Create a new job instance.
@@ -50,7 +50,7 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
     public function handle(TranslationService $translationService): void
     {
         // Idempotency: acquire lock to prevent concurrent runs
-        $lock = Cache::lock("translate:tour:{$this->tourId}:trans:{$this->translationId}", 900);
+        $lock = Cache::lock("translate:tour:{$this->tourId}:trans:{$this->translationId}", 1200);
         if (!$lock->get()) {
             Log::info('Translation already in progress, skipping duplicate', [
                 'tour_id' => $this->tourId,

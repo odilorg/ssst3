@@ -25,7 +25,7 @@ class GenerateTourWithAI implements ShouldQueue, ShouldBeUnique
     public $timeout = 300; // 5 minutes timeout
     public $tries = 3;
     public $backoff = [30, 120, 300]; // 30s, 2min, 5min
-    public $uniqueFor = 600; // ShouldBeUnique: 10 min window
+    public $uniqueFor = 900; // ShouldBeUnique: 15 min window (> timeout)
 
     /**
      * Create a new job instance.
@@ -56,7 +56,7 @@ class GenerateTourWithAI implements ShouldQueue, ShouldBeUnique
         }
 
         // Idempotency: acquire lock to prevent concurrent runs
-        $lock = Cache::lock("generate:tour:{$this->generation->id}", 600);
+        $lock = Cache::lock("generate:tour:{$this->generation->id}", 900);
         if (!$lock->get()) {
             Log::info('Tour generation already in progress, skipping duplicate', [
                 'generation_id' => $this->generation->id,
