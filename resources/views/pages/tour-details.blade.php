@@ -462,7 +462,7 @@
             <div class="booking-social-proof">
               <div class="social-proof__item">
                 <span class="social-proof__dot"></span>
-                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> people viewing</span>
+                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> travelers viewing this tour</span>
               </div>
             </div>
 
@@ -487,14 +487,34 @@
                   <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
                   <span class="price-unit">/person</span>
                 </div>
+                <!-- Price Includes Micro-line -->
+                @php
+                  $inclLower = strtolower(collect($tour->included_items ?? [])->implode(' '));
+                  $hasGuide = (bool) preg_match('/\bguide\b/', $inclLower);
+                  $hasTransport = (bool) preg_match('/\b(transport|transportation|transfer|vehicle|pickup|car)\b/', $inclLower);
+                @endphp
+                <p style="margin: 4px 0 0; font-size: 12px; color: #6B7280; line-height: 1.4;">
+                  @if($hasGuide && $hasTransport)
+                    Per person • Guide &amp; transfers included
+                  @elseif($hasGuide)
+                    Per person • Guide included
+                  @else
+                    Per person • <a href="#includes" style="color: #6B7280; text-decoration: underline; text-underline-offset: 2px;">See what's included</a>
+                  @endif
+                </p>
                 <!-- Social Proof Near Price -->
-                @if($tour->review_count > 0)
+                @if($tour->review_count > 0 && $tour->rating > 0)
                   <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-                    <div style="display: flex;">
-                      @for($i = 0; $i < 5; $i++)
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="#ffc107">
-                          <path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/>
-                        </svg>
+                    <div style="display: flex; gap: 1px;">
+                      @php $roundedRating = round($tour->rating * 2) / 2; @endphp
+                      @for($i = 1; $i <= 5; $i++)
+                        @if($i <= floor($roundedRating))
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/></svg>
+                        @elseif($i - 0.5 == $roundedRating)
+                          <svg width="14" height="14" viewBox="0 0 20 20"><defs><linearGradient id="half{{$i}}"><stop offset="50%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z" fill="url(#half{{$i}})"/></svg>
+                        @else
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#d1d5db"><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/></svg>
+                        @endif
                       @endfor
                     </div>
                     <span style="font-size: 12px; color: #666;">
@@ -635,7 +655,7 @@
               <div class="booking-actions compact">
                 <button type="button" class="action-btn action-btn--booking compact" data-action="booking">
                   <i class="fas fa-calendar-check"></i>
-                  <span class="action-btn__title">Book This Tour</span>
+                  <span class="action-btn__title">Request Booking</span>
                 </button>
 
                 <button type="button" class="action-btn action-btn--inquiry compact" data-action="inquiry">
@@ -643,6 +663,10 @@
                   <span class="action-btn__title">Ask a Question</span>
                 </button>
               </div>
+              <!-- Response-time reassurance -->
+              <p style="text-align: center; margin: 6px 0 0; font-size: 11px; color: #9CA3AF; line-height: 1.4;">
+                We typically respond within a few hours
+              </p>
 
               <!-- STEP 2: Full Booking Form (Hidden Initially) - Modern Compact Design -->
               <div id="step-2-full-form" class="modern-form-compact" style="display: none;">
@@ -748,7 +772,7 @@
                 <!-- Submit Button -->
                 <div class="form-actions">
                   <button type="submit" class="btn--submit btn--block" id="submit-button">
-                    <span class="btn__text" id="submit-text">Reserve Now • Free Cancellation</span>
+                    <span class="btn__text" id="submit-text">Send Booking Request</span>
                     <span class="spinner"></span>
                   </button>
                   <p style="text-align: center; margin-top: 8px; font-size: 11px; color: #666;">
