@@ -13,10 +13,22 @@
     <!-- Tour Meta Information -->
     <div class="tour-meta-bar">
         <span class="tour-meta-item">
+            @if($tour->isGroupOnly())
+            <svg class="icon icon--users" width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M7 8a3 3 0 100-6 3 3 0 000 6zm0 2a7 7 0 00-7 7 1 1 0 001 1h12a1 1 0 001-1 7 7 0 00-7-7zm6-2a2 2 0 100-4 2 2 0 000 4zm0 2a5.997 5.997 0 014.917 9H14a8.97 8.97 0 00-2-5.708A5.98 5.98 0 0113 10z"/>
+            </svg>
+            <span>{{ __('ui.tour_meta.group_tour') }}</span>
+            @elseif($tour->isMixedType())
+            <svg class="icon icon--tag" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
+                <path d="M2 0a2 2 0 00-2 2v5.586a2 2 0 00.586 1.414l8 8a2 2 0 002.828 0l5.586-5.586a2 2 0 000-2.828l-8-8A2 2 0 008.414 0H2zm2.5 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
+            </svg>
+            <span>{{ __('ui.tour_meta.private_activity') }} & {{ __('ui.tour_meta.group_tour') }}</span>
+            @else
             <svg class="icon icon--tag" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
                 <path d="M2 0a2 2 0 00-2 2v5.586a2 2 0 00.586 1.414l8 8a2 2 0 002.828 0l5.586-5.586a2 2 0 000-2.828l-8-8A2 2 0 008.414 0H2zm2.5 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
             </svg>
             <span>{{ __('ui.tour_meta.private_activity') }}</span>
+            @endif
         </span>
 
         <span class="tour-meta-item">

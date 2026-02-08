@@ -140,18 +140,6 @@
               <!-- Quick Info Grid (from tour model) -->
               <div class="tour-quick-info">
                 <div class="tour-quick-info__item">
-                  @if($tour->isPrivateOnly())
-                    <i class="fas fa-user-shield"></i>
-                    <div><span>Private Tour</span></div>
-                  @elseif($tour->isGroupOnly())
-                    <i class="fas fa-users"></i>
-                    <div><span>Group Tour</span></div>
-                  @elseif($tour->isMixedType())
-                    <i class="fas fa-people-arrows"></i>
-                    <div><span>Private or Group</span></div>
-                  @endif
-                </div>
-                <div class="tour-quick-info__item">
                   <i class="far fa-clock"></i>
                   <div>
                     <strong>{{ __('ui.duration') }}</strong>
