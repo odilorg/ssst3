@@ -48,34 +48,63 @@ class GenerateTourWithAI implements ShouldQueue
                     'title' => $tourData['title'],
                     'slug' => Str::slug($tourData['title']) . '-' . time(),
                     'duration_days' => $tourData['duration_days'],
-                    'duration_text' => ($tourData['duration_days'] == 1) 
-                        ? '1 day' 
+                    'duration_text' => ($tourData['duration_days'] == 1)
+                        ? '1 day'
                         : $tourData['duration_days'] . ' days / ' . ($tourData['duration_days'] - 1) . ' nights',
                     'long_description' => $tourData['description'] ?? null,
                     'short_description' => $tourData['short_description'] ?? Str::limit(strip_tags($tourData['description'] ?? ''), 200),
-                    
-                    // Default pricing (user can edit later)
+
+                    // Private/Group Tour Support (NEW - added 2026-02-08)
+                    // Let Tour model's saving hook set tour_type based on these flags
+                    'supports_private' => true,  // Default to supporting both
+                    'supports_group' => true,
+
+                    // Private Tour Pricing (NEW - added 2026-02-08)
+                    'private_base_price' => $tourData['estimated_price'] ?? 100,
+                    'private_min_guests' => 1,
+                    'private_max_guests' => 15,
+                    'private_price_per_person' => $tourData['estimated_price'] ?? 100,
+                    'private_minimum_charge' => ($tourData['estimated_price'] ?? 100) * 2, // 2 guests minimum charge
+
+                    // Group Tour Pricing (NEW - added 2026-02-08)
+                    'group_tour_price_per_person' => $tourData['estimated_price'] ?? 100,
+                    'group_price_per_person' => $tourData['estimated_price'] ?? 100,
+
+                    // Legacy pricing (kept for compatibility)
                     'price_per_person' => $tourData['estimated_price'] ?? 100,
                     'show_price' => false, // Hide price until user sets it
                     'currency' => 'USD',
                     'min_guests' => 1,
                     'max_guests' => 15,
-                    
-                    // Tour type
-                    'tour_type' => 'hybrid',
-                    
+
+                    // Deposit Settings (NEW - added 2026-02-08)
+                    'deposit_required' => false,
+                    'deposit_percentage' => null,
+                    'deposit_min_amount' => null,
+                    'balance_due_days' => null,
+
                     // Arrays from AI
                     'highlights' => $tourData['highlights'] ?? [],
                     'included_items' => $tourData['included'] ?? [],
                     'excluded_items' => $tourData['excluded'] ?? [],
                     'languages' => $tourData['languages'] ?? ['English'],
-                    
-                    // Booking settings
+
+                    // Booking Window (NEW - added 2026-02-08)
+                    'minimum_advance_days' => 3,  // Default 3 days advance booking
                     'min_booking_hours' => 24,
                     'cancellation_hours' => 24,
+                    'booking_window_hours' => null,
+
+                    // Meeting Points (NEW - added 2026-02-08)
+                    'meeting_point_address' => null,
+                    'meeting_lat' => null,
+                    'meeting_lng' => null,
                     'has_hotel_pickup' => true,
                     'pickup_radius_km' => 5,
-                    
+
+                    // Capacity (NEW - added 2026-02-08)
+                    'minimum_participants_to_operate' => null,
+
                     // Status
                     'is_active' => false, // Draft mode
                     'schema_enabled' => true,
