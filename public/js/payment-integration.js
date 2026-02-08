@@ -153,6 +153,9 @@ function handlePaymentFallback(reason) {
 
 // Show the fallback confirmation UI in the modal
 function showPaymentFallbackUI(apiSucceeded) {
+  // Prevent duplicate insertion
+  if (document.querySelector('.payment-fallback-notice')) return;
+
   // Hide payment options
   var paymentOptions = document.querySelector('.payment-options-compact');
   if (paymentOptions) paymentOptions.style.display = 'none';
