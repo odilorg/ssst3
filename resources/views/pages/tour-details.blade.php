@@ -462,7 +462,7 @@
             <div class="booking-social-proof">
               <div class="social-proof__item">
                 <span class="social-proof__dot"></span>
-                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> people viewing</span>
+                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> travelers viewing this tour</span>
               </div>
             </div>
 
@@ -635,7 +635,7 @@
               <div class="booking-actions compact">
                 <button type="button" class="action-btn action-btn--booking compact" data-action="booking">
                   <i class="fas fa-calendar-check"></i>
-                  <span class="action-btn__title">Book This Tour</span>
+                  <span class="action-btn__title">Request Booking</span>
                 </button>
 
                 <button type="button" class="action-btn action-btn--inquiry compact" data-action="inquiry">

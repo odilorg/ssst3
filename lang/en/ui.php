@@ -63,7 +63,7 @@ return [
     // BUTTONS & ACTIONS
     // ============================================
     'buttons' => [
-        'book_now' => 'Book Now',
+        'book_now' => 'Request Booking',
         'inquire' => 'Inquire',
         'submit' => 'Submit',
         'send' => 'Send',
@@ -286,14 +286,14 @@ return [
     'people' => 'people',
     'languages' => 'Languages',
     'english_russian' => 'English, Russian',
-    'book_now' => 'Book Now',
-    'book_this_tour' => 'Book this tour',
+    'book_now' => 'Request Booking',
+    'book_this_tour' => 'Request booking',
     'contact_us_on_whatsapp' => 'Contact us on WhatsApp',
     'secure_ssl_encrypted' => 'Secure • SSL encrypted',
     'scroll_to_top' => 'Scroll to top',
     'back_to_top' => 'Back to top',
-    'private_experience' => 'Private Experience',
-    'private_tour_message' => 'This is a private tour. Only your group will participate.',
+    'private_experience' => 'Private Tour',
+    'private_tour_message' => 'Just your group — no strangers. Flexible pace, personal guide.',
     'number_of_guests' => 'Number of Guests',
     'guests' => 'guests',
     'price_breakdown' => 'Price Breakdown',
