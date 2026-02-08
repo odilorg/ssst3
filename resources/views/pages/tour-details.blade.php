@@ -488,13 +488,18 @@
                   <span class="price-unit">/person</span>
                 </div>
                 <!-- Social Proof Near Price -->
-                @if($tour->review_count > 0)
+                @if($tour->review_count > 0 && $tour->rating > 0)
                   <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-                    <div style="display: flex;">
-                      @for($i = 0; $i < 5; $i++)
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="#ffc107">
-                          <path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/>
-                        </svg>
+                    <div style="display: flex; gap: 1px;">
+                      @php $roundedRating = round($tour->rating * 2) / 2; @endphp
+                      @for($i = 1; $i <= 5; $i++)
+                        @if($i <= floor($roundedRating))
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/></svg>
+                        @elseif($i - 0.5 == $roundedRating)
+                          <svg width="14" height="14" viewBox="0 0 20 20"><defs><linearGradient id="half{{$i}}"><stop offset="50%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z" fill="url(#half{{$i}})"/></svg>
+                        @else
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#d1d5db"><path d="M10 0l2.5 6.5H19l-5.25 4.25L16 18l-6-4.5L4 18l2.25-7.25L1 6.5h6.5z"/></svg>
+                        @endif
                       @endfor
                     </div>
                     <span style="font-size: 12px; color: #666;">
