@@ -66,12 +66,13 @@ class TranslateTourWithAI implements ShouldQueue
             // Log translation
             TranslationLog::create([
                 'tour_id' => $tour->id,
-                'translation_id' => $translation->id,
-                'locale' => $translation->locale,
+                'user_id' => $this->userId,
+                'source_locale' => 'en',
+                'target_locale' => $translation->locale,
                 'sections_translated' => array_keys($result['translations']),
                 'tokens_used' => $result['tokens_used'],
-                'cost' => $translationService->estimateCost($result['tokens_used'], $result['tokens_used']),
-                'duration_seconds' => $duration,
+                'cost_usd' => $translationService->estimateCost($result['tokens_used'], $result['tokens_used']),
+                'model' => config('ai-translation.deepseek.model', 'deepseek-chat'),
                 'status' => 'completed',
             ]);
 
@@ -97,23 +98,22 @@ class TranslateTourWithAI implements ShouldQueue
         } catch (\Exception $e) {
             $duration = round(microtime(true) - $startTime, 2);
 
-            // Try to fetch models for logging (they might not exist)
-            $tour = Tour::find($this->tourId);
-            $translation = TourTranslation::find($this->translationId);
-
-            // Log failed translation (if translation exists)
-            if ($translation) {
+            // Log failed translation
+            try {
                 TranslationLog::create([
                     'tour_id' => $this->tourId,
-                    'translation_id' => $this->translationId,
-                    'locale' => $translation->locale,
+                    'user_id' => $this->userId,
+                    'source_locale' => 'en',
+                    'target_locale' => TourTranslation::find($this->translationId)?->locale ?? 'unknown',
                     'sections_translated' => [],
                     'tokens_used' => 0,
-                    'cost' => 0,
-                    'duration_seconds' => $duration,
+                    'cost_usd' => 0,
+                    'model' => config('ai-translation.deepseek.model', 'deepseek-chat'),
                     'status' => 'failed',
                     'error_message' => $e->getMessage(),
                 ]);
+            } catch (\Exception $logException) {
+                Log::warning('Failed to log translation error', ['error' => $logException->getMessage()]);
             }
 
             // Send failure notification
