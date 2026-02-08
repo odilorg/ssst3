@@ -49,10 +49,21 @@ class TourTranslationsRelationManager extends RelationManager
                             ->options([
                                 'en' => '🇬🇧 English',
                                 'ru' => '🇷🇺 Русский',
+                                'uz' => '🇺🇿 O\'zbekcha',
                                 'fr' => '🇫🇷 Français',
+                                'es' => '🇪🇸 Español',
+                                'de' => '🇩🇪 Deutsch',
+                                'zh' => '🇨🇳 中文',
+                                'ar' => '🇸🇦 العربية',
+                                'it' => '🇮🇹 Italiano',
+                                'pt' => '🇵🇹 Português',
+                                'ja' => '🇯🇵 日本語',
+                                'ko' => '🇰🇷 한국어',
+                                'tr' => '🇹🇷 Türkçe',
                             ])
                             ->required()
                             ->native(false)
+                            ->searchable()
                             ->unique(
                                 table: 'tour_translations',
                                 column: 'locale',

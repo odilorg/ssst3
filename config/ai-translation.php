@@ -217,11 +217,17 @@ IMPORTANT: Return ONLY the direct translation. No markdown, no extra formatting,
     */
     'locale_names' => [
         'en' => 'English',
+        'ru' => 'Russian',
         'uz' => 'Uzbek',
         'fr' => 'French',
         'es' => 'Spanish',
         'de' => 'German',
         'zh' => 'Chinese',
         'ar' => 'Arabic',
+        'it' => 'Italian',
+        'pt' => 'Portuguese',
+        'ja' => 'Japanese',
+        'ko' => 'Korean',
+        'tr' => 'Turkish',
     ],
 ];
