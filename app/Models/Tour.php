@@ -180,6 +180,36 @@ class Tour extends Model
             }
         });
 
+        // Auto-create English translation row when tour is created/updated with title+slug
+        // This ensures LocalizedTourController always finds English content
+        static::saved(function ($tour) {
+            if (!$tour->slug || !$tour->title) {
+                return;
+            }
+
+            $existing = TourTranslation::where('tour_id', $tour->id)
+                ->where('locale', 'en')
+                ->first();
+
+            if ($existing && $existing->slug) {
+                return; // Already has a complete English translation
+            }
+
+            if ($existing) {
+                $existing->updateQuietly([
+                    'slug' => $existing->slug ?: $tour->slug,
+                    'title' => $existing->title ?: $tour->title,
+                ]);
+            } else {
+                TourTranslation::create([
+                    'tour_id' => $tour->id,
+                    'locale' => 'en',
+                    'title' => $tour->title,
+                    'slug' => $tour->slug,
+                ]);
+            }
+        });
+
         // Clear category caches when tour active status changes
         static::updated(function ($tour) {
             // Use TourCacheService for comprehensive cache clearing
