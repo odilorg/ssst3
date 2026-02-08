@@ -663,6 +663,10 @@
                   <span class="action-btn__title">Ask a Question</span>
                 </button>
               </div>
+              <!-- Response-time reassurance -->
+              <p style="text-align: center; margin: 6px 0 0; font-size: 11px; color: #9CA3AF; line-height: 1.4;">
+                We typically respond within a few hours
+              </p>
 
               <!-- STEP 2: Full Booking Form (Hidden Initially) - Modern Compact Design -->
               <div id="step-2-full-form" class="modern-form-compact" style="display: none;">
