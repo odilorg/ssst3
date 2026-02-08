@@ -489,17 +489,17 @@
                 </div>
                 <!-- Price Includes Micro-line -->
                 @php
-                  $inclText = collect($tour->included_items ?? [])->implode(' ');
-                  $hasGuide = stripos($inclText, 'guide') !== false;
-                  $hasTransport = stripos($inclText, 'transport') !== false;
+                  $inclLower = strtolower(collect($tour->included_items ?? [])->implode(' '));
+                  $hasGuide = (bool) preg_match('/\bguide\b/', $inclLower);
+                  $hasTransport = (bool) preg_match('/\b(transport|transportation|transfer|vehicle|pickup|car)\b/', $inclLower);
                 @endphp
                 <p style="margin: 4px 0 0; font-size: 12px; color: #6B7280; line-height: 1.4;">
                   @if($hasGuide && $hasTransport)
-                    Per person &middot; Local guide &amp; transport included
+                    Per person • Guide &amp; transfers included
                   @elseif($hasGuide)
-                    Per person &middot; Local guide included
+                    Per person • Guide included
                   @else
-                    Per person &middot; See what's included below
+                    Per person • <a href="#includes" style="color: #6B7280; text-decoration: underline; text-underline-offset: 2px;">See what's included</a>
                   @endif
                 </p>
                 <!-- Social Proof Near Price -->
@@ -768,7 +768,7 @@
                 <!-- Submit Button -->
                 <div class="form-actions">
                   <button type="submit" class="btn--submit btn--block" id="submit-button">
-                    <span class="btn__text" id="submit-text">Reserve Now • Free Cancellation</span>
+                    <span class="btn__text" id="submit-text">Send Booking Request</span>
                     <span class="spinner"></span>
                   </button>
                   <p style="text-align: center; margin-top: 8px; font-size: 11px; color: #666;">
