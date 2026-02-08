@@ -182,31 +182,29 @@ class Tour extends Model
 
         // Auto-create English translation row when tour is created/updated with title+slug
         // This ensures LocalizedTourController always finds English content
+        // Uses firstOrCreate to be race-safe (concurrent saves won't duplicate)
         static::saved(function ($tour) {
             if (!$tour->slug || !$tour->title) {
                 return;
             }
 
-            $existing = TourTranslation::where('tour_id', $tour->id)
-                ->where('locale', 'en')
-                ->first();
+            $translation = TourTranslation::firstOrCreate(
+                ['tour_id' => $tour->id, 'locale' => 'en'],
+                ['title' => $tour->title, 'slug' => $tour->slug]
+            );
 
-            if ($existing && $existing->slug) {
-                return; // Already has a complete English translation
-            }
-
-            if ($existing) {
-                $existing->updateQuietly([
-                    'slug' => $existing->slug ?: $tour->slug,
-                    'title' => $existing->title ?: $tour->title,
-                ]);
-            } else {
-                TourTranslation::create([
-                    'tour_id' => $tour->id,
-                    'locale' => 'en',
-                    'title' => $tour->title,
-                    'slug' => $tour->slug,
-                ]);
+            // Fill missing fields on existing row (don't overwrite non-empty values)
+            if (!$translation->wasRecentlyCreated) {
+                $updates = [];
+                if (!$translation->slug) {
+                    $updates['slug'] = $tour->slug;
+                }
+                if (!$translation->title) {
+                    $updates['title'] = $tour->title;
+                }
+                if ($updates) {
+                    $translation->updateQuietly($updates);
+                }
             }
         });
 

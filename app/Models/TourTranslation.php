@@ -92,9 +92,20 @@ class TourTranslation extends Model
                 return;
             }
 
-            // English translation always syncs to tours.title
-            // Any locale syncs if tours.title is empty (fallback)
-            if ($translation->locale === 'en' || empty($tour->title)) {
+            // English translation always syncs to tours (title + slug)
+            // Any locale syncs title if tours.title is empty (fallback)
+            if ($translation->locale === 'en') {
+                $updates = [];
+                if ($translation->title) {
+                    $updates['title'] = $translation->title;
+                }
+                if ($translation->slug && !$tour->slug) {
+                    $updates['slug'] = $translation->slug;
+                }
+                if ($updates) {
+                    $tour->updateQuietly($updates);
+                }
+            } elseif (empty($tour->title) && $translation->title) {
                 $tour->updateQuietly(['title' => $translation->title]);
             }
         });
