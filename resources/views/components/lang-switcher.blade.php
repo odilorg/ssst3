@@ -37,7 +37,13 @@
                 }
             }
         }
-        $supportedLocales = $supportedLocales ?: config('multilang.locales', ['en']);
+        $supportedLocales = $supportedLocales ?: cache()->remember('available_locales', 3600, function () {
+            try {
+                return \App\Models\TourTranslation::distinct()->pluck('locale')->toArray();
+            } catch (\Exception $e) {
+                return config('multilang.locales', ['en']);
+            }
+        });
     }
 
     // Get current path and build URLs for each locale

@@ -33,17 +33,23 @@ class SetLocaleFromRoute
         // Get locale from route parameter
         $locale = $request->route('locale');
 
-        // Get supported locales from config
-        $supportedLocales = config('multilang.locales', ['en']);
         $defaultLocale = config('multilang.default_locale', 'en');
-
-        // Validate locale - abort 404 if invalid
-        if ($locale && !in_array($locale, $supportedLocales)) {
-            abort(404, "Locale '{$locale}' is not supported.");
-        }
 
         // Use default locale if none provided
         $locale = $locale ?: $defaultLocale;
+
+        // Get supported locales: DB-driven (cached) for automatic language detection
+        $supportedLocales = cache()->remember('available_locales', 3600, function () {
+            try {
+                return \App\Models\TourTranslation::distinct()->pluck('locale')->toArray();
+            } catch (\Exception $e) {
+                return config('multilang.locales', ['en']);
+            }
+        });
+        // Always include default locale
+        if (!in_array($defaultLocale, $supportedLocales)) {
+            $supportedLocales[] = $defaultLocale;
+        }
 
         // Set the application locale
         app()->setLocale($locale);

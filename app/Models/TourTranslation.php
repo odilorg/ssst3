@@ -71,6 +71,14 @@ class TourTranslation extends Model
     {
         parent::boot();
 
+        // Bust available_locales cache so new languages appear in FE automatically
+        static::saved(function () {
+            cache()->forget('available_locales');
+        });
+        static::deleted(function () {
+            cache()->forget('available_locales');
+        });
+
         // Sync title to parent tour when English translation is saved
         // This ensures tours.title is always populated regardless of creation path
         // (Filament admin, MCP API, tinker, seeders, etc.)
