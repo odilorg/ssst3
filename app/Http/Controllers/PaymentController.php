@@ -56,13 +56,17 @@ class PaymentController extends Controller
         try {
             $booking = Booking::with('tour')->findOrFail($request->booking_id);
 
-            // SECURITY: Verify user owns this booking or is admin
-            if ($booking->user_id !== auth()->id() && !auth()->user()?->isAdmin()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unauthorized to initialize payment for this booking',
-                ], 403);
+            // SECURITY: Verify user owns this booking or is admin (skip for guest bookings)
+            if (auth()->check()) {
+                // User is authenticated - verify ownership
+                if ($booking->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unauthorized to initialize payment for this booking',
+                    ], 403);
+                }
             }
+            // Guest bookings (user_id is null) are allowed to proceed to payment
 
             // Check if booking is already paid
             if ($booking->payment_status === 'paid') {
@@ -132,9 +136,16 @@ class PaymentController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
+            // Check if this is a connection timeout (likely missing API credentials)
+            $errorMessage = 'Payment initialization failed. Please try again.';
+            if (str_contains($e->getMessage(), 'Timeout was reached') || str_contains($e->getMessage(), 'Failed to connect')) {
+                $errorMessage = 'Payment gateway connection failed. Please contact support or try again later.';
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => 'Payment initialization failed. Please try again.',
+                'message' => $errorMessage,
+                'debug' => app()->environment('local') ? $e->getMessage() : null,
             ], 500);
         }
     }

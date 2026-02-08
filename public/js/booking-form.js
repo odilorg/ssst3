@@ -364,14 +364,29 @@
           if (isPrivate) {
             // Private tour: validate start_date from date picker, no departure_id needed
             const startDate = formData.get('start_date');
-            if (!startDate || startDate === '') {
+            const dateField = document.getElementById('private_start_date');
+
+            console.log('[Booking] Private tour validation - start_date from FormData:', startDate);
+            console.log('[Booking] Private tour validation - date field value:', dateField ? dateField.value : 'field not found');
+            console.log('[Booking] Private tour validation - date field name:', dateField ? dateField.name : 'field not found');
+
+            // Check both FormData and direct field value
+            const actualDateValue = dateField ? dateField.value : startDate;
+
+            if (!actualDateValue || actualDateValue === '') {
               alert('Please select a travel date.');
-              const dateField = document.getElementById('private_start_date');
               if (dateField) dateField.focus();
               console.error('[Booking] No start date selected for private tour');
               return;
             }
-            console.log('[Booking] Private tour submitting with start_date:', startDate);
+
+            // If date is in field but not in FormData, add it manually
+            if (actualDateValue && (!startDate || startDate === '')) {
+              formData.set('start_date', actualDateValue);
+              console.log('[Booking] Added start_date to FormData manually:', actualDateValue);
+            }
+
+            console.log('[Booking] Private tour submitting with start_date:', formData.get('start_date'));
           } else {
             // Group tour: validate departure_id and start_date from calendar
             const departureId = formData.get('departure_id');

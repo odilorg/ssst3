@@ -106,7 +106,7 @@ Route::get('/categories', function () {
 // ============================================
 
 Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])
-    ->middleware(['api', 'auth:sanctum'])
+    ->middleware(['api'])
     ->name('api.payment.initialize');
 Route::get('/payment/price-preview', [\App\Http\Controllers\PaymentController::class, 'pricePreview'])
     ->middleware('throttle:60,1')
