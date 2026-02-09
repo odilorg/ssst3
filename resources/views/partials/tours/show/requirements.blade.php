@@ -90,16 +90,42 @@
                     </div>
                 </li>
             @endforeach
-        @endif
-
-        @if(!$hasCustomRequirements && (!isset($globalRequirements) || !is_array($globalRequirements) || count($globalRequirements) === 0))
-            {{-- Fallback if no requirements at all --}}
+        @elseif(!$hasCustomRequirements && $shouldShowGlobal)
+            {{-- Fallback: Translated default requirements --}}
             <li>
-                <svg class="icon icon--info" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9V9h2v6zm0-8H9V5h2v2z"/>
-                </svg>
+                {!! $iconSvgs['walking'] !!}
                 <div>
-                    <span>{{ __('ui.requirements.fallback_message') }}</span>
+                    <strong>{{ __('ui.requirements_default.walking.title') }}:</strong> {{ __('ui.requirements_default.walking.text') }}
+                </div>
+            </li>
+            <li>
+                {!! $iconSvgs['tshirt'] !!}
+                <div>
+                    <strong>{{ __('ui.requirements_default.dress_code.title') }}:</strong> {{ __('ui.requirements_default.dress_code.text') }}
+                </div>
+            </li>
+            <li>
+                {!! $iconSvgs['money'] !!}
+                <div>
+                    <strong>{{ __('ui.requirements_default.cash.title') }}:</strong> {{ __('ui.requirements_default.cash.text') }}
+                </div>
+            </li>
+            <li>
+                {!! $iconSvgs['camera'] !!}
+                <div>
+                    <strong>{{ __('ui.requirements_default.photography.title') }}:</strong> {{ __('ui.requirements_default.photography.text') }}
+                </div>
+            </li>
+            <li>
+                {!! $iconSvgs['sun'] !!}
+                <div>
+                    <strong>{{ __('ui.requirements_default.weather.title') }}:</strong> {{ __('ui.requirements_default.weather.text') }}
+                </div>
+            </li>
+            <li>
+                {!! $iconSvgs['wheelchair'] !!}
+                <div>
+                    <strong>{{ __('ui.requirements_default.accessibility.title') }}:</strong> {{ __('ui.requirements_default.accessibility.text') }}
                 </div>
             </li>
         @endif

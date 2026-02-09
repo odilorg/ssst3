@@ -847,4 +847,52 @@ return [
         'cta_button' => 'View Craft Tours',
     ],
 
+    // Default/Global FAQs (fallback when no tour-specific FAQs)
+    'faq_default' => [
+        'what_bring' => [
+            'question' => 'What should I bring?',
+            'answer' => 'Comfortable walking shoes, sun protection (hat, sunscreen, sunglasses), camera, water bottle, and local currency (Uzbek som) for tips and souvenirs. We also recommend bringing a scarf for women to cover shoulders when entering religious sites.',
+        ],
+        'not_allowed' => [
+            'question' => 'What is not allowed on this tour?',
+            'answer' => 'Smoking inside historical monuments, touching ancient artifacts or walls, flash photography inside certain buildings (external photography is always allowed), and climbing on ancient structures. Please be respectful of these UNESCO World Heritage sites.',
+        ],
+        'suitable_children' => [
+            'question' => 'Is the tour suitable for children?',
+            'answer' => 'Yes, this tour is family-friendly and suitable for children aged 6 and above. The walking pace is moderate, and we can adjust the tour content to keep younger visitors engaged. Children under 12 receive a 50% discount.',
+        ],
+        'if_rains' => [
+            'question' => 'What happens if it rains?',
+            'answer' => 'The tour operates in most weather conditions. Samarkand has relatively little rain, but if heavy rain is forecasted, we'll contact you to reschedule or offer a full refund. Light rain doesn't typically affect the tour as many sites have covered areas.',
+        ],
+    ],
+
+    // Default/Global Requirements (fallback when no tour-specific requirements)
+    'requirements_default' => [
+        'walking' => [
+            'title' => 'Moderate walking required',
+            'text' => 'This tour involves approximately 3km of walking. Wear comfortable walking shoes.',
+        ],
+        'dress_code' => [
+            'title' => 'Dress code',
+            'text' => 'Shoulders and knees should be covered when entering religious sites. Women may want to bring a scarf to cover shoulders. Lightweight, breathable clothing recommended.',
+        ],
+        'cash' => [
+            'title' => 'Cash for purchases',
+            'text' => 'Bring Uzbek som (UZS) for tips, souvenirs, and snacks. ATMs available near Registan Square. Credit cards are not widely accepted at small vendors.',
+        ],
+        'photography' => [
+            'title' => 'Photography',
+            'text' => 'Photography is allowed at all sites. Flash photography may be restricted inside certain buildings. Always ask permission before photographing people.',
+        ],
+        'weather' => [
+            'title' => 'Weather considerations',
+            'text' => 'Samarkand summers are hot (35-40°C/95-104°F). Bring sun protection, hat, and water. Spring and autumn are most comfortable (15-25°C/59-77°F).',
+        ],
+        'accessibility' => [
+            'title' => 'Accessibility',
+            'text' => 'This tour is not wheelchair accessible due to uneven historic surfaces and stairs. Contact us if you have specific mobility concerns and we'll suggest alternatives.',
+        ],
+    ],
+
 ];
