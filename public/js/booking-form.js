@@ -10,6 +10,41 @@
       return str;
     }
 
+    // Global payment display update function (accessible from all scopes)
+    function updatePaymentDisplay() {
+      const totalPrice = parseFloat(document.getElementById('modal-total')?.textContent.replace(/[^0-9.-]/g, '')) || 200;
+      const selectedOption = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
+      const paymentBtnText = document.getElementById('payment-btn-text');
+      const depositAmountEl = document.getElementById('deposit-amount');
+      const fullAmountEl = document.getElementById('full-amount');
+
+      console.log('[Payment Display] Updating, selected option:', selectedOption);
+
+      // Update border styling: remove 'selected' class from all cards, add to checked one
+      document.querySelectorAll('.payment-card-compact').forEach(card => {
+        console.log('[Payment Display] Removing selected from card:', card.querySelector('.payment-name-compact')?.textContent);
+        card.classList.remove('selected');
+      });
+      const checkedInput = document.querySelector('input[name="payment_type"]:checked');
+      if (checkedInput) {
+        const parentCard = checkedInput.closest('.payment-card-compact');
+        console.log('[Payment Display] Adding selected to card:', parentCard?.querySelector('.payment-name-compact')?.textContent);
+        parentCard?.classList.add('selected');
+      } else {
+        console.error('[Payment Display] No checked input found!');
+      }
+
+      if (selectedOption === 'deposit') {
+        const depositAmount = totalPrice * 0.30;
+        if (depositAmountEl) depositAmountEl.textContent = '$' + depositAmount.toFixed(0);
+        if (paymentBtnText) paymentBtnText.textContent = _t('payNow', {amount: depositAmount.toFixed(0)});
+      } else {
+        const fullAmount = totalPrice * 0.97; // 3% discount
+        if (fullAmountEl) fullAmountEl.textContent = '$' + fullAmount.toFixed(0);
+        if (paymentBtnText) paymentBtnText.textContent = _t('payNowSave', {amount: fullAmount.toFixed(0), discount: '3'});
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const bookingBtn = document.querySelector('[data-action="booking"]');
       const inquiryBtn = document.querySelector('[data-action="inquiry"]');
@@ -789,41 +824,8 @@
 
       // Handle payment option selection
       const paymentOptions = document.querySelectorAll('input[name="payment_type"]');
-      const paymentBtnText = document.getElementById('payment-btn-text');
-      const depositAmountEl = document.getElementById('deposit-amount');
-      const fullAmountEl = document.getElementById('full-amount');
 
-      function updatePaymentDisplay() {
-        const totalPrice = parseFloat(document.getElementById('modal-total')?.textContent.replace(/[^0-9.-]/g, '')) || 200;
-        const selectedOption = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
-
-        console.log('[Payment Display] Updating, selected option:', selectedOption);
-
-        // Update border styling: remove 'selected' class from all cards, add to checked one
-        document.querySelectorAll('.payment-card-compact').forEach(card => {
-          console.log('[Payment Display] Removing selected from card:', card.querySelector('.payment-name-compact')?.textContent);
-          card.classList.remove('selected');
-        });
-        const checkedInput = document.querySelector('input[name="payment_type"]:checked');
-        if (checkedInput) {
-          const parentCard = checkedInput.closest('.payment-card-compact');
-          console.log('[Payment Display] Adding selected to card:', parentCard?.querySelector('.payment-name-compact')?.textContent);
-          parentCard?.classList.add('selected');
-        } else {
-          console.error('[Payment Display] No checked input found!');
-        }
-
-        if (selectedOption === 'deposit') {
-          const depositAmount = totalPrice * 0.30;
-          if (depositAmountEl) depositAmountEl.textContent = '$' + depositAmount.toFixed(0);
-          if (paymentBtnText) paymentBtnText.textContent = _t('payNow', {amount: depositAmount.toFixed(0)});
-        } else {
-          const fullAmount = totalPrice * 0.97; // 3% discount
-          if (fullAmountEl) fullAmountEl.textContent = '$' + fullAmount.toFixed(0);
-          if (paymentBtnText) paymentBtnText.textContent = _t('payNowSave', {amount: fullAmount.toFixed(0), discount: '3'});
-        }
-      }
-
+      // Attach event listeners to payment options (function is now global)
       paymentOptions.forEach(option => {
         option.addEventListener('change', updatePaymentDisplay);
       });
