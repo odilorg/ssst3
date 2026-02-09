@@ -64,11 +64,7 @@ class AppServiceProvider extends ServiceProvider
         // Register policies
         Gate::policy(OctobankPayment::class, OctobankPaymentPolicy::class);
 
-        // Register event listeners
-        Event::listen(
-            PaymentSucceeded::class,
-            SendPaymentConfirmationEmail::class
-        );
+        // Event listeners are auto-discovered by Laravel 11+ (no manual registration needed)
 
         // Fail fast if Octobank test mode is enabled in production
         if ($this->app->environment('production') && config('services.octobank.test_mode') === true) {
