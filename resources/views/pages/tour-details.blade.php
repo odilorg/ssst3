@@ -168,12 +168,6 @@
                   <span>{{ __('ui.tour_meta.max_group') }}: {{ $tour->max_guests }} {{ __('ui.tour_meta.guests') }}</span>
                 </span>
 
-                <span class="tour-meta-item">
-                  <svg class="icon icon--language" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm7.75 9h-3.82a19.7 19.7 0 00-1.62-5.53A8.01 8.01 0 0117.75 9zM10 2c.93 1.3 1.65 2.93 2.09 4.74H7.91C8.35 4.93 9.07 3.3 10 2zM2.5 11a7.98 7.98 0 010-2h4.03a21.6 21.6 0 000 2H2.5zm.75 2h3.82a19.7 19.7 0 001.62 5.53A8.01 8.01 0 013.25 13zm3.82-8h-3.82a8.01 8.01 0 015.44-4.53A19.7 19.7 0 007.07 5zM10 18c-.93-1.3-1.65-2.93-2.09-4.74h4.18C11.65 15.07 10.93 16.7 10 18zm2.53-6.74H7.47a19.6 19.6 0 01-.21-2c0-.68.07-1.35.21-2h5.06c.14.65.21 1.32.21 2s-.07 1.35-.21 2zm.16 7.27a19.7 19.7 0 001.62-5.53h3.82a8.01 8.01 0 01-5.44 4.53zM13.47 11a21.6 21.6 0 000-2h4.03a7.98 7.98 0 010 2h-4.03z"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.languages') }}: {{ implode(', ', $tour->languages ?? ['English']) }}</span>
-                </span>
               </div>
 
               @if($translation->excerpt)
