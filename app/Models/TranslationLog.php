@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TranslationLog extends Model
 {
@@ -12,6 +13,8 @@ class TranslationLog extends Model
 
     protected $fillable = [
         'tour_id',
+        'translatable_type',
+        'translatable_id',
         'user_id',
         'source_locale',
         'target_locale',
@@ -30,11 +33,30 @@ class TranslationLog extends Model
     ];
 
     /**
-     * Get the tour that was translated
+     * Get the translatable entity (Tour, BlogPost, etc.)
+     */
+    public function translatable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    /**
+     * Get the tour that was translated (legacy, use translatable() for new code)
      */
     public function tour(): BelongsTo
     {
         return $this->belongsTo(Tour::class);
+    }
+
+    /**
+     * Create a log entry for any translatable model.
+     */
+    public static function logFor(Model $model, array $attributes): static
+    {
+        return static::create(array_merge($attributes, [
+            'translatable_type' => get_class($model),
+            'translatable_id' => $model->getKey(),
+        ]));
     }
 
     /**

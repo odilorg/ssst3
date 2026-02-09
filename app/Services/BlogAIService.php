@@ -17,8 +17,8 @@ class BlogAIService
                     'Authorization' => 'Bearer ' . config('openai.api_key'),
                     'Content-Type' => 'application/json',
                 ])
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model' => 'gpt-4o-mini',
+                ->post('https://api.deepseek.com/v1/chat/completions', [
+                    'model' => 'deepseek-chat',
                     'messages' => [
                         ['role' => 'system', 'content' => $this->getSystemPrompt()],
                         ['role' => 'user', 'content' => $prompt]
@@ -30,8 +30,8 @@ class BlogAIService
             $data = $response->json();
 
             if (!$response->successful() || !isset($data['choices'][0]['message']['content'])) {
-                Log::error('OpenAI API Response', ['status' => $response->status(), 'body' => $response->body()]);
-                throw new \Exception('Invalid API response from OpenAI: ' . $response->body());
+                Log::error('DeepSeek API Response', ['status' => $response->status(), 'body' => $response->body()]);
+                throw new \Exception('Invalid API response from DeepSeek: ' . $response->body());
             }
 
             $content = $data['choices'][0]['message']['content'];
@@ -47,7 +47,7 @@ class BlogAIService
             return $blogData;
 
         } catch (\Exception $e) {
-            Log::error('OpenAI API Error (Blog)', [
+            Log::error('DeepSeek API Error (Blog)', [
                 'message' => $e->getMessage(),
                 'params' => $params,
             ]);
@@ -116,9 +116,9 @@ class BlogAIService
         $inputTokens = $usage->prompt_tokens ?? 0;
         $outputTokens = $usage->completion_tokens ?? 0;
         
-        // GPT-4o-mini pricing: $0.150 per 1M input tokens, $0.600 per 1M output tokens
-        $inputCost = ($inputTokens / 1000000) * 0.150;
-        $outputCost = ($outputTokens / 1000000) * 0.600;
+        // DeepSeek pricing: $0.14 per 1M input tokens, $0.28 per 1M output tokens
+        $inputCost = ($inputTokens / 1000000) * 0.14;
+        $outputCost = ($outputTokens / 1000000) * 0.28;
         
         return round($inputCost + $outputCost, 4);
     }

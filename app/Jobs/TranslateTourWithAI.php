@@ -85,9 +85,9 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
 
             $duration = round(microtime(true) - $startTime, 2);
 
-            // Log translation
-            TranslationLog::create([
-                'tour_id' => $tour->id,
+            // Log translation (polymorphic)
+            TranslationLog::logFor($tour, [
+                'tour_id' => $tour->id, // legacy
                 'user_id' => $this->userId,
                 'source_locale' => 'en',
                 'target_locale' => $translation->locale,
@@ -120,10 +120,11 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
         } catch (\Exception $e) {
             $duration = round(microtime(true) - $startTime, 2);
 
-            // Log failed translation
+            // Log failed translation (polymorphic)
             try {
-                TranslationLog::create([
-                    'tour_id' => $this->tourId,
+                $failedTour = Tour::find($this->tourId);
+                $logData = [
+                    'tour_id' => $this->tourId, // legacy
                     'user_id' => $this->userId,
                     'source_locale' => 'en',
                     'target_locale' => TourTranslation::find($this->translationId)?->locale ?? 'unknown',
@@ -133,7 +134,12 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
                     'model' => config('ai-translation.deepseek.model', 'deepseek-chat'),
                     'status' => 'failed',
                     'error_message' => $e->getMessage(),
-                ]);
+                ];
+                if ($failedTour) {
+                    TranslationLog::logFor($failedTour, $logData);
+                } else {
+                    TranslationLog::create($logData);
+                }
             } catch (\Exception $logException) {
                 Log::warning('Failed to log translation error', ['error' => $logException->getMessage()]);
             }
