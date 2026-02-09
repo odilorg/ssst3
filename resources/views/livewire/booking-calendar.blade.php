@@ -330,9 +330,9 @@
                                     <div class="fc-event-title-container">
                                         <div class="fc-event-title fc-sticky" style="font-size: 11px; line-height: 1.2;">
                                             ${arg.event.title}
-                                        </div>
-                                    </div>
-                                </div>
+                                        <\/div>
+                                    <\/div>
+                                <\/div>
                             `
                         };
                     },
