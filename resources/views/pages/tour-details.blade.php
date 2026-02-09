@@ -4765,6 +4765,67 @@
   min-width: 70px;
 }
 
+/* Main Content Cancellation Section */
+.tour-cancellation .cancellation-content {
+  margin-top: 0.5rem;
+}
+.tour-cancellation .cancellation-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1px solid #FCD34D;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.tour-cancellation .cancellation-notice .icon {
+  flex-shrink: 0;
+  color: #D97706;
+  margin-top: 2px;
+}
+.tour-cancellation .cancellation-notice p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #78350F;
+}
+.tour-cancellation .cancellation-notice strong {
+  color: #92400E;
+}
+.tour-cancellation .cancellation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tour-cancellation .cancellation-list li {
+  position: relative;
+  padding: 10px 0 10px 20px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #374151;
+  border-bottom: 1px solid #F3F4F6;
+}
+.tour-cancellation .cancellation-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D97706;
+}
+.tour-cancellation .cancellation-list li:last-child {
+  border-bottom: none;
+}
+.tour-cancellation .cancellation-custom-policy {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
 /* Booking Card Refinements */
 .booking-card {
   background: white;
