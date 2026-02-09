@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tour;
 use App\Models\TourTranslation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -21,7 +22,7 @@ class LocalizedTourController extends Controller
      * @param string $slug The localized tour slug
      * @return View
      */
-    public function show(string $locale, string $slug): View
+    public function show(string $locale, string $slug): View|RedirectResponse
     {
         // Eager load relations for tour
         $tourRelations = [
@@ -53,7 +54,6 @@ class LocalizedTourController extends Controller
                 if ($translation) {
                     $translation->load(['tour' => fn($q) => $q->with($tourRelations)]);
                 }
-                // No fallback to another locale — if no translation exists for this locale, 404
             }
         }
 
@@ -69,8 +69,14 @@ class LocalizedTourController extends Controller
             }
         }
 
-        // If still nothing found, abort with 404
+        // Fallback: requested locale missing → 302 redirect to English version
         if (!$translation || !$translation->tour) {
+            if ($locale !== 'en') {
+                $enTranslation = $this->findEnglishTranslation($slug, $tourRelations);
+                if ($enTranslation) {
+                    return redirect("/en/tours/{$enTranslation->slug}", 302);
+                }
+            }
             abort(404);
         }
 
@@ -101,5 +107,36 @@ class LocalizedTourController extends Controller
             'canonicalUrl',
             'structuredData'
         ));
+    }
+
+    /**
+     * Find the English translation for a tour identified by slug.
+     */
+    private function findEnglishTranslation(string $slug, array $tourRelations): ?TourTranslation
+    {
+        // Slug might be the EN translation slug itself
+        $enTranslation = TourTranslation::where('locale', 'en')
+            ->where('slug', $slug)
+            ->first();
+
+        if ($enTranslation) {
+            return $enTranslation;
+        }
+
+        // Slug belongs to another locale — find tour, then get EN translation
+        $anyTranslation = TourTranslation::where('slug', $slug)->first();
+        if ($anyTranslation) {
+            return TourTranslation::where('tour_id', $anyTranslation->tour_id)
+                ->where('locale', 'en')
+                ->first();
+        }
+
+        // Slug matches tour.slug directly
+        $tour = Tour::where('slug', $slug)->first();
+        if ($tour) {
+            return $tour->translations()->where('locale', 'en')->first();
+        }
+
+        return null;
     }
 }
