@@ -98,6 +98,151 @@ return [
         'privacy_agree' => 'Я принимаю политику конфиденциальности',
         'success_message' => 'Спасибо! Ваш запрос на бронирование получен.',
         'error_message' => 'Произошла ошибка. Пожалуйста, попробуйте снова.',
+
+        // Price Header
+        'viewers_text' => 'путешественников просматривают этот тур',
+        'from_price' => 'от',
+        'per_person_short' => '/чел.',
+        'price_guide_transfers' => 'За человека &bull; Гид и трансферы включены',
+        'price_guide_only' => 'За человека &bull; Гид включён',
+        'price_see_included' => 'Что включено',
+        'price_includes_prefix' => 'За человека &bull;',
+        'reviews_count' => ':count отзыв|:count отзывов',
+        'price_on_request' => 'Цена по запросу',
+        'contact_for_quote' => 'Свяжитесь с нами для персонального расчёта',
+
+        // Pricing Tiers
+        'group_pricing' => 'Групповые тарифы',
+        'pricing' => 'Цены',
+        'group_price_note' => 'Цена снижается с увеличением группы',
+        'tier_price_note' => 'Цена за человека зависит от размера группы',
+
+        // Total Block
+        'total' => 'Итого',
+        'contact_us' => 'Свяжитесь с нами',
+
+        // Cancellation
+        'flexible_cancellation' => 'Гибкая отмена',
+        'full_refund' => 'Полный возврат',
+        'refund_75' => 'Возврат 75%',
+        'refund_50' => 'Возврат 50%',
+        'no_refund' => 'Без возврата',
+
+        // Calendar
+        'select_departure_date' => 'Выберите дату отправления',
+        'selected_departure' => 'Выбранное отправление:',
+        'months' => ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+        'weekdays_short' => ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+
+        // Action Buttons
+        'request_booking' => 'Запросить бронирование',
+        'ask_question' => 'Задать вопрос',
+        'response_time' => 'Обычно отвечаем в течение нескольких часов',
+
+        // Step 2 - Personal Info
+        'your_information' => 'ВАШИ ДАННЫЕ',
+        'label_full_name' => 'ПОЛНОЕ ИМЯ',
+        'label_email' => 'ЭЛЕКТРОННАЯ ПОЧТА',
+        'label_phone' => 'ТЕЛЕФОН',
+        'label_country' => 'СТРАНА',
+        'label_message' => 'ВАШЕ СООБЩЕНИЕ',
+        'label_special_requests' => 'ОСОБЫЕ ПОЖЕЛАНИЯ',
+        'placeholder_name' => 'Иван Иванов',
+        'placeholder_email' => 'ivan@example.com',
+        'placeholder_phone' => '+998 91 123 45 67',
+        'placeholder_country' => 'Россия',
+        'placeholder_message' => 'Расскажите о ваших вопросах или особых требованиях...',
+        'placeholder_special' => 'Диетические требования, потребности в доступности и т.д.',
+        'terms_text' => 'Я принимаю',
+        'terms_link' => 'Условия',
+        'privacy_link' => 'Политику конфиденциальности',
+        'send_booking_request' => 'Отправить запрос на бронирование',
+        'booking_reassurance' => 'Подтверждение в течение 24ч &bull; Без комиссий за оплату',
+
+        // Inquiry Form
+        'inquiry_ask_title' => 'Задайте вопрос об этом туре',
+        'inquiry_subtitle' => 'Есть вопросы? Мы рады помочь! Ответим на ваш email в течение 24 часов.',
+        'your_name' => 'Ваше имя',
+        'email_address' => 'Электронная почта',
+        'email_hint' => 'Мы отправим ответ на этот email',
+        'your_question' => 'Ваш вопрос',
+        'question_placeholder' => 'Что вы хотите узнать об этом туре?',
+        'question_hint' => 'Спросите о маршруте, ценах, доступности, размере группы или о чём-либо другом!',
+        'send_question' => 'Отправить вопрос',
+        'inquiry_note' => 'Не нужно указывать даты или количество гостей — просто задайте вопрос, и мы поможем!',
+
+        // Trust & Payment
+        'trust_secure' => 'Безопасно',
+        'trust_24_7' => '24/7',
+        'trust_flexible' => 'Гибко',
+        'ssl_certified' => 'SSL шифрование &bull; Проверено &bull; PCI сертификат',
+        'we_accept' => 'Мы принимаем:',
+
+        // Booking Clarification
+        'request_confirm' => 'Запрос и подтверждение',
+        'request_confirm_text' => 'Мы подтвердим бронирование в течение 24 часов, после чего вы сможете оплатить онлайн или наличными в день тура.',
+
+        // Why Book
+        'why_book_title' => 'Почему стоит бронировать у Jahongir Travel?',
+        'best_price' => 'Гарантия лучшей цены',
+        'flexible_cancellation_policy' => 'Гибкая политика отмены',
+        'expert_guides' => 'Опытные местные гиды',
+        'customer_support' => 'Поддержка клиентов 24/7',
+
+        // Quote Mode
+        'plan_your_tour' => 'Спланируйте тур',
+        'preferred_date' => 'Желаемая дата',
+        'number_of_guests' => 'Количество гостей',
+        'quote_helper' => 'Мы подтвердим доступность и подготовим персональный расчёт.',
+        'estimated_price' => 'Ориентировочная начальная цена',
+        'from' => 'От',
+        'per_person_slash' => '/ чел.',
+        'price_note' => 'На основе частного тура для 2 человек. Итоговая цена зависит от уровня отеля, типа транспорта и сезона.',
+        'custom_pricing' => 'Индивидуальная цена',
+        'custom_pricing_note' => 'Этот тур адаптирован под ваши предпочтения. Запросите расчёт для точной цены.',
+        'request_quote' => 'Запросить расчёт',
+        'quote_description' => 'Получите персональный маршрут и расчёт для вашей группы.',
+        'request_quote_btn' => 'Запросить расчёт',
+        'your_details' => 'Ваши данные',
+        'message_optional' => 'Сообщение <span class="optional">(необязательно)</span>',
+        'trip_placeholder' => 'Расскажите о вашем идеальном путешествии...',
+        'send_quote_request' => 'Отправить запрос на расчёт',
+        'quote_sent_title' => 'Запрос на расчёт отправлен!',
+        'quote_sent_message' => 'Мы ответим в течение 24 часов с персональным предложением.',
+        'free_quote' => 'Бесплатный расчёт',
+        'no_obligation' => 'Без обязательств',
+        'reply_24h' => 'Ответ за 24ч',
+        'private_tour' => 'Индивидуальный тур',
+        'private_tour_desc' => 'Только ваша группа. Гибкое расписание и темп.',
+        'secure_payment' => 'Безопасная оплата',
+        'support_24_7' => 'Поддержка 24/7',
+
+        // Mobile CTA
+        'per_person' => 'за человека',
+        'request_quote_mobile' => 'Запросить расчёт',
+        'get_quote' => 'Получить расчёт',
+
+        // Tour Type Selector
+        'select_tour_type' => 'Тип тура',
+        'private_tour_btn' => 'Индивидуальный тур',
+        'group_tour_btn' => 'Групповой тур',
+        'loading' => 'Загрузка...',
+        'error_loading' => 'Ошибка загрузки формы. Пожалуйста, попробуйте снова.',
+
+        // Group Tour Form
+        'no_departures' => 'Нет доступных отправлений',
+        'no_departures_text' => 'В настоящее время нет запланированных групповых отправлений для этого тура. Свяжитесь с нами для вариантов индивидуального тура.',
+        'select_departure_hint' => 'Выберите дату отправления из календаря выше.',
+        'number_of_seats' => 'Количество мест',
+        'max_seats' => '(Макс. :max мест)',
+        'price_breakdown' => 'Детали цены',
+        'price_per_person' => 'Цена за человека:',
+        'number_of_seats_label' => 'Количество мест:',
+        'total_price' => 'Итого:',
+
+        // Shared
+        'guest_singular' => 'гость',
+        'guest_plural' => 'гостей',
     ],
 
     // ============================================

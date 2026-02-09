@@ -20,16 +20,16 @@
                     </svg>
                 </div>
                 <div>
-                    <h4 style="font-family: var(--font-heading); font-size: 15px; font-weight: 600; color: #92400E; margin: 0 0 4px 0;">No Departures Available</h4>
+                    <h4 style="font-family: var(--font-heading); font-size: 15px; font-weight: 600; color: #92400E; margin: 0 0 4px 0;">{{ __('ui.booking.no_departures') }}</h4>
                     <p style="font-size: 13px; color: #78350F; margin: 0; line-height: 1.4;">
-                        There are currently no group departures scheduled for this tour. Please contact us for private tour options.
+                        {{ __('ui.booking.no_departures_text') }}
                     </p>
                 </div>
             </div>
         </div>
     @else
         <p style="font-size: 13px; color: #6B7280; margin: 0 0 16px 0;">
-            Select a departure date from the calendar above.
+            {{ __('ui.booking.select_departure_hint') }}
         </p>
     @endif
 
@@ -42,7 +42,7 @@
 
         <div style="margin-bottom: 16px;">
             <label style="display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                Number of Seats
+                {{ __('ui.booking.number_of_seats') }}
             </label>
 
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -90,7 +90,7 @@
                 </button>
 
                 <span style="font-size: 13px; color: #6B7280; margin-left: 4px;">
-                    (Max {{ $maxGuests }} seats)
+                    {{ __('ui.booking.max_seats', ['max' => $maxGuests]) }}
                 </span>
             </div>
         </div>
@@ -99,25 +99,25 @@
         @if(isset($priceData) && $priceData['success'])
             <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px;">
                 <h4 style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                    Price Breakdown
+                    {{ __('ui.booking.price_breakdown') }}
                 </h4>
 
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 14px; color: #6B7280;">Price per person:</span>
+                        <span style="font-size: 14px; color: #6B7280;">{{ __('ui.booking.price_per_person') }}</span>
                         <span style="font-size: 14px; font-weight: 500; color: #1F2937;">
                             ${{ number_format($priceData['price_per_person'], 2) }}
                         </span>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 14px; color: #6B7280;">Number of seats:</span>
+                        <span style="font-size: 14px; color: #6B7280;">{{ __('ui.booking.number_of_seats_label') }}</span>
                         <span style="font-size: 14px; font-weight: 500; color: #1F2937;">{{ $guestsCount }}</span>
                     </div>
 
                     <div style="border-top: 1px solid #E5E7EB; margin: 6px 0; padding-top: 10px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 15px; font-weight: 600; color: #1F2937;">Total Price:</span>
+                            <span style="font-size: 15px; font-weight: 600; color: #1F2937;">{{ __('ui.booking.total_price') }}</span>
                             <span style="font-size: 20px; font-weight: 700; color: #0D4C92;">
                                 ${{ number_format($priceData['total_price'], 2) }}
                             </span>
