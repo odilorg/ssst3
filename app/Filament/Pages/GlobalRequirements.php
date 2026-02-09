@@ -36,7 +36,10 @@ class GlobalRequirements extends Page implements HasForms
     public function mount(): void
     {
         $requirements = Setting::get('global_requirements', []);
-        $this->form->fill(['requirements' => $requirements]);
+        if (is_string($requirements)) {
+            $requirements = json_decode($requirements, true) ?? [];
+        }
+        $this->form->fill(['requirements' => is_array($requirements) ? $requirements : []]);
     }
 
     public function form(Schema $schema): Schema
