@@ -2,6 +2,8 @@
 
 namespace App\Services\OpenAI;
 
+use App\Models\BlogPost;
+use App\Models\BlogPostTranslation;
 use App\Models\Tour;
 use App\Models\TourTranslation;
 use App\Models\TranslationLog;
@@ -263,6 +265,89 @@ class TranslationService
             } else {
                 // After 10 attempts, just use tour_id for guaranteed uniqueness
                 $slug = "{$baseSlug}-{$tourId}";
+                break;
+            }
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Translate entire blog post to target locale
+     */
+    public function translateBlogPost(BlogPost $blogPost, string $targetLocale, ?int $translationId = null): array
+    {
+        $sourceLocale = 'en';
+        $sourceTranslation = $blogPost->translations()->where('locale', $sourceLocale)->first();
+
+        // Use EN translation row if exists, otherwise fall back to blog post's own fields
+        $source = $sourceTranslation ?? $blogPost;
+
+        $translations = [];
+        $totalTokens = 0;
+
+        // Translate text fields
+        $fields = ['title', 'excerpt', 'content', 'seo_title', 'seo_description'];
+
+        foreach ($fields as $field) {
+            $sourceValue = $source->{$field};
+
+            if (empty($sourceValue)) {
+                continue;
+            }
+
+            $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
+        }
+
+        $englishTitle = $source->title ?? $blogPost->title;
+
+        // Generate slug with non-Latin fallback
+        $translations['slug'] = $this->generateBlogPostSlug(
+            $translations['title'] ?? $englishTitle,
+            $englishTitle,
+            $targetLocale,
+            $blogPost->id,
+            $translationId
+        );
+
+        return [
+            'translations' => $translations,
+            'tokens_used' => $totalTokens,
+        ];
+    }
+
+    /**
+     * Generate unique blog post slug with non-Latin fallback.
+     *
+     * 1. Str::slug(translated title)
+     * 2. If empty (non-Latin) → Str::slug(English title)
+     * 3. If still empty → blog-post-{id}
+     * 4. Ensure unique in BlogPostTranslation (ignoring current row)
+     */
+    protected function generateBlogPostSlug(string $translatedTitle, string $englishTitle, string $locale, int $blogPostId, ?int $translationId = null): string
+    {
+        $baseSlug = Str::slug($translatedTitle);
+
+        if (empty($baseSlug)) {
+            $baseSlug = Str::slug($englishTitle);
+        }
+
+        if (empty($baseSlug)) {
+            $baseSlug = "blog-post-{$blogPostId}";
+        }
+
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while (BlogPostTranslation::where('locale', $locale)
+            ->where('slug', $slug)
+            ->when($translationId, fn ($q) => $q->where('id', '!=', $translationId))
+            ->exists()) {
+            if ($counter <= 10) {
+                $slug = "{$baseSlug}-{$counter}";
+                $counter++;
+            } else {
+                $slug = "{$baseSlug}-{$blogPostId}";
                 break;
             }
         }

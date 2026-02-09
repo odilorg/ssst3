@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\BlogPosts\RelationManagers;
 
+use App\Jobs\TranslateBlogPostWithAI;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -56,7 +59,6 @@ class BlogPostTranslationsRelationManager extends RelationManager
 
                         Forms\Components\TextInput::make('title')
                             ->label('Заголовок')
-                            ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (string $operation, $state, $set) {
@@ -68,7 +70,6 @@ class BlogPostTranslationsRelationManager extends RelationManager
 
                         Forms\Components\TextInput::make('slug')
                             ->label('URL-адрес (slug)')
-                            ->required()
                             ->maxLength(255)
                             ->unique(
                                 table: 'blog_post_translations',
@@ -203,6 +204,31 @@ class BlogPostTranslationsRelationManager extends RelationManager
                     ->label('Добавить перевод'),
             ])
             ->actions([
+                Action::make('ai_translate')
+                    ->label('AI Translate')
+                    ->icon('heroicon-o-language')
+                    ->color('info')
+                    ->visible(fn ($record): bool => $record->locale !== 'en' && config('ai-translation.enabled', true))
+                    ->requiresConfirmation()
+                    ->modalHeading('AI Translation')
+                    ->modalDescription(fn ($record) => 'Translate this blog post to ' . strtoupper($record->locale) . ' using AI? Existing content will be overwritten.')
+                    ->modalSubmitActionLabel('Translate')
+                    ->action(function ($record) {
+                        $blogPost = $this->ownerRecord;
+                        $targetLocale = strtoupper($record->locale);
+
+                        TranslateBlogPostWithAI::dispatch(
+                            $blogPost->id,
+                            $record->id,
+                            auth()->id()
+                        );
+
+                        Notification::make()
+                            ->title('Translation Queued')
+                            ->body("Translation to {$targetLocale} has been queued. You will be notified when it's complete (typically 30-60 seconds).")
+                            ->info()
+                            ->send();
+                    }),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
