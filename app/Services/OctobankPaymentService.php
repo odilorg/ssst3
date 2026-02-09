@@ -388,13 +388,15 @@ class OctobankPaymentService
 
         // Determine if we're in a safe environment for test mode bypass
         $appEnv = app()->environment();
-        $isSafeEnvironment = in_array($appEnv, ['local', 'testing']);
+        $isSafeEnvironment = in_array($appEnv, ['local', 'testing', 'staging']);
 
-        // SECURITY: Only allow signature bypass in LOCAL/TESTING environments with test mode
+        // SECURITY: Only allow signature bypass when test_mode=true in local/testing/staging
+        // Production ALWAYS requires signature even in test mode
         if ($this->testMode && empty($signature) && $isSafeEnvironment) {
-            Log::warning('Octobank webhook: skipping signature validation in TEST MODE (local/testing env only)', [
+            Log::warning('Octobank webhook: skipping signature validation in TEST MODE', [
                 'shop_transaction_id' => $payload['shop_transaction_id'] ?? 'unknown',
                 'environment' => $appEnv,
+                'reason' => 'Octobank test mode does not send signature headers',
             ]);
         } else {
             // SECURITY: Signature is MANDATORY in production/staging - reject if missing
