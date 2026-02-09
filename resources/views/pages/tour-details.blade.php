@@ -4800,11 +4800,10 @@
 }
 .tour-cancellation .cancellation-list li {
   position: relative;
-  padding: 10px 0 10px 20px;
+  padding: 4px 0 4px 20px;
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #374151;
-  border-bottom: 1px solid #F3F4F6;
 }
 .tour-cancellation .cancellation-list li::before {
   content: '';
@@ -4818,7 +4817,7 @@
   background: #D97706;
 }
 .tour-cancellation .cancellation-list li:last-child {
-  border-bottom: none;
+  padding-bottom: 0;
 }
 .tour-cancellation .cancellation-custom-policy {
   font-size: 0.9rem;
