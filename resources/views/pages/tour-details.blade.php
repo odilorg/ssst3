@@ -463,7 +463,7 @@
                       @endfor
                     </div>
                     <span style="font-size: 12px; color: #666;">
-                      <strong>{{ number_format($tour->rating, 1) }}</strong> ({{ $tour->review_count }} {{ Str::plural('review', $tour->review_count) }})
+                      <strong>{{ number_format($tour->rating, 1) }}</strong> ({{ __('ui.booking.reviews_count', ['count' => $tour->review_count]) }})
                     </span>
                   </div>
                 @endif
@@ -492,7 +492,7 @@
                 @foreach($tour->pricingTiers as $tier)
                 <div class="tier-row">
                   <span class="tier-row__label">{{ $tier->display_label }} <span class="tier-row__pax">({{ $tier->min_guests }}@if($tier->min_guests !== $tier->max_guests)-{{ $tier->max_guests }}@endif)</span></span>
-                  <span class="tier-row__price">${{ number_format($tier->price_per_person, 0) }}/pp</span>
+                  <span class="tier-row__price">${{ number_format($tier->price_per_person, 0) }}{{ __('ui.booking.per_person_abbr') }}</span>
                 </div>
                 @endforeach
                 <p class="booking-accordion__note">{{ $tour->supportsGroup() ? __('ui.booking.group_price_note') : __('ui.booking.tier_price_note') }}</p>
@@ -546,10 +546,10 @@
               </summary>
               <div class="booking-accordion__content">
                 <ul class="cancellation-list">
-                  <li><span class="cancellation-days">60+ days</span> {{ __('ui.booking.full_refund') }}</li>
-                  <li><span class="cancellation-days">30-59 days</span> {{ __('ui.booking.refund_75') }}</li>
-                  <li><span class="cancellation-days">7-29 days</span> {{ __('ui.booking.refund_50') }}</li>
-                  <li><span class="cancellation-days">&lt;7 days</span> {{ __('ui.booking.no_refund') }}</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_60_plus') }}</span> {{ __('ui.booking.full_refund') }}</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_30_59') }}</span> {{ __('ui.booking.refund_75') }}</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_7_29') }}</span> {{ __('ui.booking.refund_50') }}</li>
+                  <li><span class="cancellation-days">{!! __('ui.booking.cancel_under_7') !!}</span> {{ __('ui.booking.no_refund') }}</li>
                 </ul>
               </div>
             </details>
@@ -769,7 +769,7 @@
                            required>
                     <span class="terms-checkmark"></span>
                     <span class="terms-text-modern">
-                      {{ __('ui.booking.terms_text') }} <a href="/terms" target="_blank" class="terms-link">{{ __('ui.booking.terms_link') }}</a> and <a href="/privacy" target="_blank" class="terms-link">{{ __('ui.booking.privacy_link') }}</a>
+                      {{ __('ui.booking.terms_text') }} <a href="/terms" target="_blank" class="terms-link">{{ __('ui.booking.terms_link') }}</a> {{ __('ui.booking.terms_and') }} <a href="/privacy" target="_blank" class="terms-link">{{ __('ui.booking.privacy_link') }}</a>
                     </span>
                   </label>
                 </div>

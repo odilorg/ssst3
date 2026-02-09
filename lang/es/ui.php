@@ -243,6 +243,14 @@ return [
         // Shared
         'guest_singular' => 'persona',
         'guest_plural' => 'personas',
+        'reviews_count' => ':count reseñas',
+        'review_singular' => 'reseña',
+        'per_person_abbr' => '/pers',
+        'cancel_60_plus' => '60+ días',
+        'cancel_30_59' => '30-59 días',
+        'cancel_7_29' => '7-29 días',
+        'cancel_under_7' => '<7 días',
+        'terms_and' => 'y',
 
         // JS Booking Form (Milestone B)
         'js_confirm_booking' => 'Confirmar reserva',

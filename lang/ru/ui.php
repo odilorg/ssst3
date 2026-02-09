@@ -243,6 +243,14 @@ return [
         // Shared
         'guest_singular' => 'гость',
         'guest_plural' => 'гостей',
+        'reviews_count' => ':count отзывов',
+        'review_singular' => 'отзыв',
+        'per_person_abbr' => '/чел',
+        'cancel_60_plus' => '60+ дней',
+        'cancel_30_59' => '30-59 дней',
+        'cancel_7_29' => '7-29 дней',
+        'cancel_under_7' => '<7 дней',
+        'terms_and' => 'и',
 
         // JS Booking Form (Milestone B)
         'js_confirm_booking' => 'Подтвердить бронирование',

@@ -641,6 +641,14 @@ return [
         // Shared
         'guest_singular' => 'Gast',
         'guest_plural' => 'Gäste',
+        'reviews_count' => ':count Bewertungen',
+        'review_singular' => 'Bewertung',
+        'per_person_abbr' => '/Pers',
+        'cancel_60_plus' => '60+ Tage',
+        'cancel_30_59' => '30-59 Tage',
+        'cancel_7_29' => '7-29 Tage',
+        'cancel_under_7' => '<7 Tage',
+        'terms_and' => 'und',
 
         // JS Booking Form (Milestone B)
         'js_confirm_booking' => 'Buchung bestätigen',
