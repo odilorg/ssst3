@@ -863,7 +863,7 @@ return [
         ],
         'if_rains' => [
             'question' => 'What happens if it rains?',
-            'answer' => 'The tour operates in most weather conditions. Samarkand has relatively little rain, but if heavy rain is forecasted, we'll contact you to reschedule or offer a full refund. Light rain doesn't typically affect the tour as many sites have covered areas.',
+            'answer' => 'The tour operates in most weather conditions. Samarkand has relatively little rain, but if heavy rain is forecasted, we\'ll contact you to reschedule or offer a full refund. Light rain doesn\'t typically affect the tour as many sites have covered areas.',
         ],
     ],
 
@@ -891,7 +891,7 @@ return [
         ],
         'accessibility' => [
             'title' => 'Accessibility',
-            'text' => 'This tour is not wheelchair accessible due to uneven historic surfaces and stairs. Contact us if you have specific mobility concerns and we'll suggest alternatives.',
+            'text' => 'This tour is not wheelchair accessible due to uneven historic surfaces and stairs. Contact us if you have specific mobility concerns and we\'ll suggest alternatives.',
         ],
     ],
 
