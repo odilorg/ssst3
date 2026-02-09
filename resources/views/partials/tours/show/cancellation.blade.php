@@ -1,8 +1,15 @@
 {{-- Tour Cancellation Policy Partial --}}
 @php
-    // Use translated cancellation policy if available, otherwise fall back to tour policy
-    $cancellationPolicy = $translation->cancellation_policy ?? $tour->cancellation_policy;
-    
+    // Use translated cancellation policy only if it belongs to the current locale
+    $currentLocale = app()->getLocale();
+    $cancellationPolicy = null;
+
+    if ($translation && $translation->locale === $currentLocale && $translation->cancellation_policy) {
+        $cancellationPolicy = $translation->cancellation_policy;
+    } elseif ($currentLocale === 'en' && $tour->cancellation_policy) {
+        $cancellationPolicy = $tour->cancellation_policy;
+    }
+
     // Convert hours to days for display
     $cancellationHours = $tour->cancellation_hours ?? 24;
     $cancellationDays = (int) floor($cancellationHours / 24);

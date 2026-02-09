@@ -104,6 +104,11 @@ class TourController extends Controller
     {
         $locale = request()->query('locale', app()->getLocale());
 
+        // Set locale for __() translation calls
+        if (config('multilang.phases.tour_translations') && in_array($locale, config('multilang.locales', ['en']))) {
+            app()->setLocale($locale);
+        }
+
         // Get tour with eager-loaded itinerary items (hierarchical structure)
         $tour = Cache::remember("tour.{$slug}.with_itinerary.{$locale}", 3600, function () use ($slug) {
             return Tour::where('slug', $slug)
