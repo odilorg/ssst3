@@ -403,79 +403,6 @@
           <!-- Booking Card -->
           <div class="booking-card">
 
-            <!-- Available Departure Dates - Calendar Style (only for group/hybrid tours) -->
-            @if($tour->supportsGroup() && $tour->upcomingDepartures && $tour->upcomingDepartures->count() > 0)
-            <div id="departure-calendar-section" class="departure-calendar-section" style="margin-bottom: 20px;{{ $tour->supportsPrivate() && $tour->getDefaultBookingType() === 'private' ? ' display: none;' : '' }}">
-              <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                </svg>
-                Select Departure Date
-              </h3>
-
-              <!-- Calendar Controls -->
-              <div class="calendar-controls" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                <button type="button" id="prev-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
-                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                </button>
-
-                <div style="flex: 1; display: flex; gap: 8px;">
-                  <select id="calendar-month" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
-                    <option value="0">January</option>
-                    <option value="1">February</option>
-                    <option value="2">March</option>
-                    <option value="3">April</option>
-                    <option value="4">May</option>
-                    <option value="5">June</option>
-                    <option value="6">July</option>
-                    <option value="7">August</option>
-                    <option value="8">September</option>
-                    <option value="9">October</option>
-                    <option value="10">November</option>
-                    <option value="11">December</option>
-                  </select>
-                  <select id="calendar-year" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
-                    <!-- Populated by JavaScript -->
-                  </select>
-                </div>
-
-                <button type="button" id="next-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                </button>
-              </div>
-
-              <!-- Calendar Grid -->
-              <div class="calendar-grid" style="background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
-                <!-- Weekday Headers -->
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px;">
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Su</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mo</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tu</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">We</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Th</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Fr</div>
-                  <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sa</div>
-                </div>
-
-                <!-- Calendar Days (populated by JavaScript) -->
-                <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
-                  <!-- JavaScript will populate this -->
-                </div>
-              </div>
-
-              <!-- Selected Departure Info -->
-              <div id="selected-departure-info" style="margin-top: 12px; padding: 12px; background: #f0f4ff; border-left: 3px solid #667eea; border-radius: 6px; display: none;">
-                <div style="font-size: 11px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Selected Departure:</div>
-                <div id="selected-departure-text" style="font-size: 13px; font-weight: 600; color: #111827;"></div>
-                <div id="selected-departure-status" style="font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px;"></div>
-              </div>
-            </div>
-            @endif
-
             <!-- Social Proof (Subtle) -->
             <div class="booking-social-proof">
               <div class="social-proof__item">
@@ -640,6 +567,79 @@
                 'tour' => $tour,
                 'selectedType' => $tour->getDefaultBookingType()
               ])
+
+              <!-- Available Departure Dates - Calendar Style (only for group/hybrid tours) -->
+              @if($tour->supportsGroup() && $tour->upcomingDepartures && $tour->upcomingDepartures->count() > 0)
+              <div id="departure-calendar-section" class="departure-calendar-section" style="margin-bottom: 20px;{{ $tour->supportsPrivate() && $tour->getDefaultBookingType() === 'private' ? ' display: none;' : '' }}">
+                <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                  </svg>
+                  Select Departure Date
+                </h3>
+
+                <!-- Calendar Controls -->
+                <div class="calendar-controls" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <button type="button" id="prev-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
+                      <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+
+                  <div style="flex: 1; display: flex; gap: 8px;">
+                    <select id="calendar-month" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
+                      <option value="0">January</option>
+                      <option value="1">February</option>
+                      <option value="2">March</option>
+                      <option value="3">April</option>
+                      <option value="4">May</option>
+                      <option value="5">June</option>
+                      <option value="6">July</option>
+                      <option value="7">August</option>
+                      <option value="8">September</option>
+                      <option value="9">October</option>
+                      <option value="10">November</option>
+                      <option value="11">December</option>
+                    </select>
+                    <select id="calendar-year" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
+                      <!-- Populated by JavaScript -->
+                    </select>
+                  </div>
+
+                  <button type="button" id="next-month" style="padding: 8px; border: none; background: #f3f4f6; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" style="color: #6b7280;">
+                      <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div class="calendar-grid" style="background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
+                  <!-- Weekday Headers -->
+                  <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px;">
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Su</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mo</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tu</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">We</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Th</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Fr</div>
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sa</div>
+                  </div>
+
+                  <!-- Calendar Days (populated by JavaScript) -->
+                  <div id="calendar-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
+                    <!-- JavaScript will populate this -->
+                  </div>
+                </div>
+
+                <!-- Selected Departure Info -->
+                <div id="selected-departure-info" style="margin-top: 12px; padding: 12px; background: #f0f4ff; border-left: 3px solid #667eea; border-radius: 6px; display: none;">
+                  <div style="font-size: 11px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Selected Departure:</div>
+                  <div id="selected-departure-text" style="font-size: 13px; font-weight: 600; color: #111827;"></div>
+                  <div id="selected-departure-status" style="font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px;"></div>
+                </div>
+              </div>
+              @endif
 
               <!-- Dynamic Booking Form Container (Private or Group Form) -->
               <div id="booking-form-container">
