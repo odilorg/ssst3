@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\PaymentSucceeded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -147,6 +148,9 @@ class OctobankPayment extends Model
             'amount_paid' => $this->amount,
             'paid_at' => now(),
         ]);
+
+        // Dispatch event to send payment confirmation email
+        PaymentSucceeded::dispatch($this);
     }
 
     public function markAsFailed(string $errorCode = null, string $errorMessage = null): void
