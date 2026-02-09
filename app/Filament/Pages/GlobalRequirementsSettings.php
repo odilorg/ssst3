@@ -8,6 +8,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -45,10 +46,19 @@ class GlobalRequirementsSettings extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill([
-            'requirements_en' => Setting::get('global_requirements') ?? [],
-            'requirements_ru' => Setting::get('global_requirements_ru') ?? [],
-            'requirements_uz' => Setting::get('global_requirements_uz') ?? [],
+            'requirements_en' => $this->ensureArray(Setting::get('global_requirements')),
+            'requirements_ru' => $this->ensureArray(Setting::get('global_requirements_ru')),
+            'requirements_uz' => $this->ensureArray(Setting::get('global_requirements_uz')),
         ]);
+    }
+
+    private function ensureArray(mixed $value): array
+    {
+        if (is_string($value)) {
+            return json_decode($value, true) ?? [];
+        }
+
+        return is_array($value) ? $value : [];
     }
 
     public function form(Form $form): Form
@@ -160,12 +170,12 @@ class GlobalRequirementsSettings extends Page implements HasForms
             ->statePath('data');
     }
 
-    protected function getFormActions(): array
+    protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('save')
+            Action::make('save')
                 ->label('Save Settings')
-                ->submit('save'),
+                ->action('save'),
         ];
     }
 

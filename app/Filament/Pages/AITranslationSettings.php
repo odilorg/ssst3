@@ -112,6 +112,10 @@ class AITranslationSettings extends Page implements HasForms
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('save')
+                ->label('Save Settings')
+                ->action('save'),
+
             Action::make('test_connection')
                 ->label('Test API Key')
                 ->icon('heroicon-o-signal')
@@ -159,17 +163,6 @@ class AITranslationSettings extends Page implements HasForms
                         ]);
                     }
                 }),
-        ];
-    }
-
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('save')
-                ->label('Save Settings')
-                ->action('save')
-                ->icon('heroicon-o-check')
-                ->color('primary'),
         ];
     }
 
