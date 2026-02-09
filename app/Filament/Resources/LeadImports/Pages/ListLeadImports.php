@@ -12,12 +12,6 @@ class ListLeadImports extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\Action::make('import_new')
-                ->label('Import New File')
-                ->icon('heroicon-o-arrow-up-tray')
-                ->url(route('filament.admin.pages.import-leads'))
-                ->color('primary'),
-        ];
+        return [];
     }
 }
