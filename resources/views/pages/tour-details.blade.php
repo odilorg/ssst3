@@ -1262,7 +1262,7 @@
           <h4 class="payment-title-compact">{{ __('ui.booking.modal_choose_payment') }}</h4>
 
           <!-- Deposit Option -->
-          <label class="payment-card-compact recommended">
+          <label class="payment-card-compact recommended selected">
             <input type="radio" name="payment_type" value="deposit" checked>
             <div class="payment-content-compact">
               <div class="payment-header-compact">
@@ -3122,8 +3122,7 @@
 }
 
 .payment-card-compact.recommended {
-  border-color: #10B981;
-  background: #F8FDF9;
+  /* Recommended badge only - border comes from .selected class */
 }
 
 .payment-content-compact {
