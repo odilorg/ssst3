@@ -18,20 +18,13 @@
       const depositAmountEl = document.getElementById('deposit-amount');
       const fullAmountEl = document.getElementById('full-amount');
 
-      console.log('[Payment Display] Updating, selected option:', selectedOption);
-
       // Update border styling: remove 'selected' class from all cards, add to checked one
       document.querySelectorAll('.payment-card-compact').forEach(card => {
-        console.log('[Payment Display] Removing selected from card:', card.querySelector('.payment-name-compact')?.textContent);
         card.classList.remove('selected');
       });
       const checkedInput = document.querySelector('input[name="payment_type"]:checked');
       if (checkedInput) {
-        const parentCard = checkedInput.closest('.payment-card-compact');
-        console.log('[Payment Display] Adding selected to card:', parentCard?.querySelector('.payment-name-compact')?.textContent);
-        parentCard?.classList.add('selected');
-      } else {
-        console.error('[Payment Display] No checked input found!');
+        checkedInput.closest('.payment-card-compact')?.classList.add('selected');
       }
 
       if (selectedOption === 'deposit') {
