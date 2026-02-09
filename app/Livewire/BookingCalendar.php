@@ -276,6 +276,11 @@ class BookingCalendar extends Component
         $this->selectedBooking = null;
     }
 
+    public function handleEventDrop(int $bookingId, string $newStart, ?string $newEnd = null): void
+    {
+        $this->rescheduleBooking($bookingId, $newStart);
+    }
+
     public function rescheduleBooking(int $bookingId, string $newDate): void
     {
         $booking = Booking::find($bookingId);
