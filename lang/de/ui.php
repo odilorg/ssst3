@@ -694,5 +694,23 @@ return [
         'js_network_error' => 'Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
         'js_sending' => 'Wird gesendet...',
         'js_csrf_error' => 'Sicherheitstoken nicht verfügbar. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.',
+
+        // Booking Confirmation Modal
+        'modal_booking_confirmed' => 'Buchung bestätigt',
+        'modal_tour' => 'TOUR',
+        'modal_date' => 'DATUM',
+        'modal_guests' => 'GÄSTE',
+        'modal_total' => 'GESAMT',
+        'modal_sent_to' => 'Gesendet an',
+        'modal_choose_payment' => 'ZAHLUNG WÄHLEN',
+        'modal_recommended' => 'EMPFOHLEN',
+        'modal_pay_deposit' => ':percent% Anzahlung zahlen',
+        'modal_now_balance_later' => 'jetzt, Rest später',
+        'modal_discount_badge' => ':percent% RABATT',
+        'modal_pay_in_full' => 'Vollständig bezahlen',
+        'modal_with_discount' => 'mit :percent% Rabatt',
+        'modal_pay_now' => ':amount jetzt bezahlen',
+        'modal_pay_later' => 'Ich zahle später',
+        'modal_secure_payment' => '🔒 Sichere Zahlung • 💳 Visa/Mastercard',
     ],
 ];

@@ -267,6 +267,24 @@ return [
         'js_network_error' => 'エラーが発生しました。接続をご確認の上、もう一度お試しください。',
         'js_sending' => '送信中...',
         'js_csrf_error' => 'セキュリティトークンが利用できません。ページを更新してもう一度お試しください。',
+
+        // Booking Confirmation Modal
+        'modal_booking_confirmed' => '予約が確定しました',
+        'modal_tour' => 'ツアー',
+        'modal_date' => '日付',
+        'modal_guests' => '人数',
+        'modal_total' => '合計',
+        'modal_sent_to' => '送信先',
+        'modal_choose_payment' => 'お支払い方法を選択',
+        'modal_recommended' => '推奨',
+        'modal_pay_deposit' => ':percent%の予約金を支払う',
+        'modal_now_balance_later' => '今すぐ、残りは後で',
+        'modal_discount_badge' => ':percent%割引',
+        'modal_pay_in_full' => '全額支払う',
+        'modal_with_discount' => ':percent%割引適用',
+        'modal_pay_now' => '今すぐ:amountを支払う',
+        'modal_pay_later' => '後で支払います',
+        'modal_secure_payment' => '🔒 安全な決済 • 💳 Visa/Mastercard',
     ],
 
     // ============================================

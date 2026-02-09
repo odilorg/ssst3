@@ -1222,7 +1222,7 @@
             </svg>
           </div>
           <div class="header-text-compact">
-            <h2 class="modal-title-compact">Booking Confirmed</h2>
+            <h2 class="modal-title-compact">{{ __('ui.booking.modal_booking_confirmed') }}</h2>
             <p class="modal-reference-compact" id="modal-reference">BK-2025-XXX</p>
           </div>
         </div>
@@ -1232,19 +1232,19 @@
       <div class="modal-body-scrollable">
         <div class="booking-info-card-compact">
           <div class="info-row-compact">
-            <span class="info-label-compact">TOUR</span>
+            <span class="info-label-compact">{{ __('ui.booking.modal_tour') }}</span>
             <span class="info-value-compact" id="modal-tour-name">...</span>
           </div>
           <div class="info-row-compact">
-            <span class="info-label-compact">DATE</span>
+            <span class="info-label-compact">{{ __('ui.booking.modal_date') }}</span>
             <span class="info-value-compact" id="modal-date">...</span>
           </div>
           <div class="info-row-compact">
-            <span class="info-label-compact">GUESTS</span>
+            <span class="info-label-compact">{{ __('ui.booking.modal_guests') }}</span>
             <span class="info-value-compact" id="modal-guests">...</span>
           </div>
           <div class="info-row-compact info-row--total">
-            <span class="info-label-compact">TOTAL</span>
+            <span class="info-label-compact">{{ __('ui.booking.modal_total') }}</span>
             <span class="info-value--price-compact" id="modal-total">$200.00</span>
           </div>
         </div>
@@ -1254,24 +1254,24 @@
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" opacity="0.4">
             <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
           </svg>
-          <span>Sent to <span id="modal-customer-email">your email</span></span>
+          <span>{{ __('ui.booking.modal_sent_to') }} <span id="modal-customer-email">your email</span></span>
         </div>
 
         <!-- Payment Options Compact -->
         <div class="payment-options-compact">
-          <h4 class="payment-title-compact">Choose Payment</h4>
+          <h4 class="payment-title-compact">{{ __('ui.booking.modal_choose_payment') }}</h4>
 
           <!-- Deposit Option -->
           <label class="payment-card-compact recommended">
             <input type="radio" name="payment_type" value="deposit" checked>
             <div class="payment-content-compact">
               <div class="payment-header-compact">
-                <span class="badge-recommended">RECOMMENDED</span>
-                <strong class="payment-name-compact">Pay 30% Deposit</strong>
+                <span class="badge-recommended">{{ __('ui.booking.modal_recommended') }}</span>
+                <strong class="payment-name-compact">{{ __('ui.booking.modal_pay_deposit', ['percent' => 30]) }}</strong>
               </div>
               <div class="payment-price-compact">
                 <span class="price-amount" id="deposit-amount">$60</span>
-                <span class="price-desc">now, balance later</span>
+                <span class="price-desc">{{ __('ui.booking.modal_now_balance_later') }}</span>
               </div>
             </div>
           </label>
@@ -1281,12 +1281,12 @@
             <input type="radio" name="payment_type" value="full">
             <div class="payment-content-compact">
               <div class="payment-header-compact">
-                <span class="badge-discount">3% OFF</span>
-                <strong class="payment-name-compact">Pay in Full</strong>
+                <span class="badge-discount">{{ __('ui.booking.modal_discount_badge', ['percent' => 3]) }}</span>
+                <strong class="payment-name-compact">{{ __('ui.booking.modal_pay_in_full') }}</strong>
               </div>
               <div class="payment-price-compact">
                 <span class="price-amount" id="full-amount">$194</span>
-                <span class="price-desc">with 3% discount</span>
+                <span class="price-desc">{{ __('ui.booking.modal_with_discount', ['percent' => 3]) }}</span>
               </div>
             </div>
           </label>
@@ -1302,10 +1302,10 @@
           </svg>
         </button>
         <a href="#" id="pay-later-link" style="display:block;text-align:center;padding:8px;color:#6b7280;font-size:13px;text-decoration:underline;cursor:pointer;">
-          I'll pay later
+          {{ __('ui.booking.modal_pay_later') }}
         </a>
         <div class="trust-footer-compact">
-          🔒 Secure payment • 💳 Visa/Mastercard
+          {{ __('ui.booking.modal_secure_payment') }}
         </div>
       </div>
     </div>
@@ -4912,7 +4912,10 @@ window.bookingI18n = {
     csrfError: @json(__('ui.booking.js_csrf_error')),
     guestSingular: @json(__('ui.booking.guest_singular')),
     guestPlural: @json(__('ui.booking.guest_plural')),
-    sendQuestion: @json(__('ui.booking.send_question'))
+    sendQuestion: @json(__('ui.booking.send_question')),
+
+    // Modal translations
+    modalPayNow: @json(__('ui.booking.modal_pay_now'))
 };
 </script>
 <script src="{{ asset('js/booking-form.js') }}"></script>

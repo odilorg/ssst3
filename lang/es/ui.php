@@ -267,6 +267,24 @@ return [
         'js_network_error' => 'Ocurrió un error. Por favor verifica tu conexión e intenta de nuevo.',
         'js_sending' => 'Enviando...',
         'js_csrf_error' => 'Token de seguridad no disponible. Por favor actualiza la página e intenta de nuevo.',
+
+        // Booking Confirmation Modal
+        'modal_booking_confirmed' => 'Reserva confirmada',
+        'modal_tour' => 'TOUR',
+        'modal_date' => 'FECHA',
+        'modal_guests' => 'HUÉSPEDES',
+        'modal_total' => 'TOTAL',
+        'modal_sent_to' => 'Enviado a',
+        'modal_choose_payment' => 'ELEGIR PAGO',
+        'modal_recommended' => 'RECOMENDADO',
+        'modal_pay_deposit' => 'Pagar :percent% de depósito',
+        'modal_now_balance_later' => 'ahora, saldo después',
+        'modal_discount_badge' => ':percent% DE DESCUENTO',
+        'modal_pay_in_full' => 'Pagar en total',
+        'modal_with_discount' => 'con :percent% de descuento',
+        'modal_pay_now' => 'Pagar :amount ahora',
+        'modal_pay_later' => 'Pagaré después',
+        'modal_secure_payment' => '🔒 Pago seguro • 💳 Visa/Mastercard',
     ],
 
     // ============================================

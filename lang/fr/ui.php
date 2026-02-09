@@ -472,6 +472,24 @@ return array (
     'js_network_error' => 'Une erreur est survenue. Veuillez vérifier votre connexion et réessayer.',
     'js_sending' => 'Envoi en cours...',
     'js_csrf_error' => 'Jeton de sécurité non disponible. Veuillez actualiser la page et réessayer.',
+
+    // Booking Confirmation Modal
+    'modal_booking_confirmed' => 'Réservation confirmée',
+    'modal_tour' => 'TOUR',
+    'modal_date' => 'DATE',
+    'modal_guests' => 'INVITÉS',
+    'modal_total' => 'TOTAL',
+    'modal_sent_to' => 'Envoyé à',
+    'modal_choose_payment' => 'CHOISIR LE PAIEMENT',
+    'modal_recommended' => 'RECOMMANDÉ',
+    'modal_pay_deposit' => 'Payer :percent% d\'acompte',
+    'modal_now_balance_later' => 'maintenant, solde plus tard',
+    'modal_discount_badge' => ':percent% DE RÉDUCTION',
+    'modal_pay_in_full' => 'Payer en totalité',
+    'modal_with_discount' => 'avec :percent% de réduction',
+    'modal_pay_now' => 'Payer :amount maintenant',
+    'modal_pay_later' => 'Je paierai plus tard',
+    'modal_secure_payment' => '🔒 Paiement sécurisé • 💳 Visa/Mastercard',
   ),
   'tour' => 
   array (
