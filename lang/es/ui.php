@@ -243,6 +243,22 @@ return [
         // Shared
         'guest_singular' => 'persona',
         'guest_plural' => 'personas',
+
+        // JS Booking Form (Milestone B)
+        'js_confirm_booking' => 'Confirmar reserva',
+        'js_select_travel_date' => 'Por favor seleccione una fecha de viaje.',
+        'js_select_departure' => 'Por favor seleccione una fecha de salida del calendario de arriba.',
+        'js_fallback_tour_name' => 'Tu tour seleccionado',
+        'js_date_tbd' => 'Fecha por confirmar',
+        'js_your_email' => 'tu email',
+        'js_pay_now' => 'Pagar $:amount ahora',
+        'js_pay_now_save' => 'Pagar $:amount ahora (Ahorra :discount%)',
+        'js_inquiry_submitted' => '¡Consulta enviada!',
+        'js_inquiry_submitted_text' => 'Hemos recibido tu pregunta y responderemos pronto',
+        'js_form_error' => 'Por favor revisa tu formulario e intenta de nuevo.',
+        'js_network_error' => 'Ocurrió un error. Por favor verifica tu conexión e intenta de nuevo.',
+        'js_sending' => 'Enviando...',
+        'js_csrf_error' => 'Token de seguridad no disponible. Por favor actualiza la página e intenta de nuevo.',
     ],
 
     // ============================================

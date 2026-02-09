@@ -4834,6 +4834,27 @@ document.body.addEventListener('htmx:configRequest', function(event) {
 </script>
 <script src="{{ asset('js/payment-integration.js') }}"></script>
 <script src="{{ asset('tour-details.js') }}"></script>
+<script>
+window.bookingI18n = {
+    confirmBooking: @json(__('ui.booking.js_confirm_booking')),
+    selectTravelDate: @json(__('ui.booking.js_select_travel_date')),
+    selectDeparture: @json(__('ui.booking.js_select_departure')),
+    fallbackTourName: @json(__('ui.booking.js_fallback_tour_name')),
+    dateTbd: @json(__('ui.booking.js_date_tbd')),
+    yourEmail: @json(__('ui.booking.js_your_email')),
+    payNow: @json(__('ui.booking.js_pay_now')),
+    payNowSave: @json(__('ui.booking.js_pay_now_save')),
+    inquirySubmitted: @json(__('ui.booking.js_inquiry_submitted')),
+    inquirySubmittedText: @json(__('ui.booking.js_inquiry_submitted_text')),
+    formError: @json(__('ui.booking.js_form_error')),
+    networkError: @json(__('ui.booking.js_network_error')),
+    sending: @json(__('ui.booking.js_sending')),
+    csrfError: @json(__('ui.booking.js_csrf_error')),
+    guestSingular: @json(__('ui.booking.guest_singular')),
+    guestPlural: @json(__('ui.booking.guest_plural')),
+    sendQuestion: @json(__('ui.booking.send_question'))
+};
+</script>
 <script src="{{ asset('js/booking-form.js') }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>
 <script>
