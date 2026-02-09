@@ -319,11 +319,11 @@ return [
     // CANCELLATION
     // ============================================
     'cancellation' => [
-        'free_cancellation' => 'Free cancellation up to :hours hours before the tour start time.',
-        'full_refund' => 'You can cancel up to :hours hours in advance of the experience for a full refund.',
-        'rule_full_refund' => 'For a full refund, cancel at least :hours hours before the scheduled departure time.',
-        'rule_no_refund' => 'If you cancel less than :hours hours before the experience\'s start time, the amount you paid will not be refunded.',
-        'rule_no_changes' => 'Any changes made less than :hours hours before the experience\'s start time will not be accepted.',
+        'free_cancellation' => 'Free cancellation up to :days days before the tour start time.',
+        'full_refund_notice' => 'You can cancel up to :days days in advance of the experience for a full refund.',
+        'rule_full_refund' => 'Full refund if cancelled :days+ days before departure.',
+        'rule_no_refund' => 'No refund if cancelled less than :days days before departure.',
+        'rule_no_changes' => 'Changes not permitted less than :days days before departure.',
         'weather_policy' => 'Weather-dependent: If canceled due to poor weather, you\'ll be offered a different date or a full refund.',
     ],
 
