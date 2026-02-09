@@ -165,12 +165,15 @@ class TourController extends Controller
         $tour = $data['tour'];
         $translation = $data['translation'];
 
+        // Ensure locale is set from query parameter
+        $locale = request()->query('locale', app()->getLocale());
+        app()->setLocale($locale);
+
         $faqs = Cache::remember("tour.{$slug}.faqs", 86400, function () use ($tour) {
             return $tour->faqs()->orderBy('sort_order')->get();
         });
 
         // Get global FAQs based on current locale
-        $locale = app()->getLocale();
         $settingKey = $locale === 'en' ? 'global_faqs' : "global_faqs_{$locale}";
         $globalFaqs = \App\Models\Setting::get($settingKey, []);
 
@@ -292,8 +295,11 @@ class TourController extends Controller
         $tour = $data['tour'];
         $translation = $data['translation'];
 
+        // Ensure locale is set from query parameter
+        $locale = request()->query('locale', app()->getLocale());
+        app()->setLocale($locale);
+
         // Get global requirements based on current locale
-        $locale = app()->getLocale();
         $settingKey = $locale === 'en' ? 'global_requirements' : "global_requirements_{$locale}";
         $globalRequirements = \App\Models\Setting::get($settingKey, []);
 
