@@ -34,7 +34,10 @@ class GlobalFAQs extends Page implements HasForms
     public function mount(): void
     {
         $faqs = Setting::get('global_faqs', []);
-        $this->form->fill(['faqs' => $faqs]);
+        if (is_string($faqs)) {
+            $faqs = json_decode($faqs, true) ?? [];
+        }
+        $this->form->fill(['faqs' => is_array($faqs) ? $faqs : []]);
     }
 
     public function form(Schema $schema): Schema
