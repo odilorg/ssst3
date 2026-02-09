@@ -255,13 +255,12 @@
             </div>
         </div>
     @endif
-</div>
 
-{{-- FullCalendar Scripts --}}
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    {{-- FullCalendar Scripts --}}
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 
-<script>
+    <script>
     let calendar;
 
     function bookingCalendar() {
@@ -371,10 +370,10 @@
             }
         }
     }
-</script>
+    </script>
 
-<style>
-    [x-cloak] { display: none !important; }
+    <style>
+        [x-cloak] { display: none !important; }
 
     /* Calendar dark mode support */
     .fc {
@@ -436,4 +435,5 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #6b7280;
     }
-</style>
+    </style>
+</div>
