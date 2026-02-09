@@ -360,10 +360,8 @@ class PaymentController extends Controller
         try {
             $payment = $this->paymentService->processWebhook($request->all());
 
-            if ($payment && $payment->is_successful) {
-                // Trigger post-payment actions
-                event(new \App\Events\PaymentSucceeded($payment));
-            }
+            // Event is now dispatched in OctobankPayment::markAsSucceeded()
+            // No need to dispatch here to avoid duplicate emails
 
             // 200 OK - successful processing
             return response()->json(['status' => 'ok'], 200);
