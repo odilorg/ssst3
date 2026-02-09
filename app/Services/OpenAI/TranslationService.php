@@ -223,7 +223,14 @@ class TranslationService
         $translatedTitle = $this->translateField($title, $locale, 'en', 'title');
 
         // Generate slug (transliterate to Latin if needed)
-        return Str::slug($translatedTitle);
+        $slug = Str::slug($translatedTitle);
+
+        // Fallback to English slug for non-Latin scripts (ja, zh, ko, ar, etc.)
+        if (empty($slug)) {
+            $slug = Str::slug($title);
+        }
+
+        return $slug;
     }
 
     /**
