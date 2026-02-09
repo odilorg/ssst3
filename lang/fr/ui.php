@@ -83,7 +83,16 @@ return array (
     'comparison' => 'Expériences culturelles privées comparables',
     'view_all' => 'Voir tous les forfaits d\'ateliers →',
   ),
-  'features' => 
+  'cancellation' =>
+  array (
+    'free_cancellation' => 'Annulation gratuite jusqu\'à :days jours avant le début du tour.',
+    'full_refund_notice' => 'Vous pouvez annuler jusqu\'à :days jours avant l\'expérience pour un remboursement complet.',
+    'rule_full_refund' => 'Remboursement complet si annulation :days+ jours avant le départ.',
+    'rule_no_refund' => 'Aucun remboursement si annulation à moins de :days jours du départ.',
+    'rule_no_changes' => 'Modifications non autorisées à moins de :days jours du départ.',
+    'weather_policy' => 'Dépendant de la météo : en cas d\'annulation pour mauvais temps, une autre date ou un remboursement complet vous sera proposé.',
+  ),
+  'features' =>
   array (
     'local_expertise_title' => 'Expertise Locale',
     'local_expertise_text' => 'Nés et élevés à Samarcande, nous connaissons chaque coin caché et secret local.',
@@ -256,6 +265,8 @@ return array (
     'meeting' => 'Rendez-vous',
     'faq' => 'FAQ',
     'reviews' => 'Avis',
+    'cancellation' => 'Annulation',
+    'cancellation_policy' => 'Politique d\'annulation',
   ),
   'buttons' => 
   array (
@@ -552,8 +563,13 @@ return array (
       'description' => 'Détendez-vous, explorez par vous-même ou participez à une activité optionnelle en soirée. Recommandations de restaurants fournies.',
     ),
   ),
-  'itinerary' => 
+  'itinerary' =>
   array (
+    'day_by_day' => 'Itinéraire jour par jour',
+    'expand_all' => 'Tout développer',
+    'collapse_all' => 'Tout réduire',
+    'day' => 'Jour',
+    'empty_message' => 'L\'itinéraire détaillé sera fourni après confirmation de la réservation.',
     'see_full' => 'Voir l\'Itinéraire Complet',
   ),
   'faq_extended' => 

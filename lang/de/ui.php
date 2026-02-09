@@ -23,6 +23,21 @@ return [
     ],
 
     // ============================================
+    // SECTION TITLES
+    // ============================================
+    'sections' => [
+        'overview' => 'Überblick',
+        'highlights' => 'Höhepunkte',
+        'itinerary' => 'Reiseverlauf',
+        'included' => 'Inklusive',
+        'meeting' => 'Treffpunkt',
+        'faq' => 'FAQ',
+        'reviews' => 'Bewertungen',
+        'cancellation' => 'Stornierung',
+        'cancellation_policy' => 'Stornierungsbedingungen',
+    ],
+
+    // ============================================
     // HOMEPAGE
     // ============================================
     'hero' => [
@@ -223,7 +238,21 @@ return [
     ],
 
     'itinerary' => [
+        'day_by_day' => 'Tag-für-Tag Reiseverlauf',
+        'expand_all' => 'Alle aufklappen',
+        'collapse_all' => 'Alle zuklappen',
+        'day' => 'Tag',
+        'empty_message' => 'Der detaillierte Reiseverlauf wird nach der Buchungsbestätigung bereitgestellt.',
         'see_full' => 'Vollständigen Reiseplan ansehen',
+    ],
+
+    'cancellation' => [
+        'free_cancellation' => 'Kostenlose Stornierung bis zu :days Tage vor Tourbeginn.',
+        'full_refund_notice' => 'Sie können bis zu :days Tage vor der Erfahrung stornieren und erhalten eine volle Rückerstattung.',
+        'rule_full_refund' => 'Volle Rückerstattung bei Stornierung :days+ Tage vor Abreise.',
+        'rule_no_refund' => 'Keine Rückerstattung bei Stornierung weniger als :days Tage vor Abreise.',
+        'rule_no_changes' => 'Änderungen weniger als :days Tage vor Abreise nicht gestattet.',
+        'weather_policy' => 'Wetterabhängig: Bei Absage wegen schlechtem Wetter wird ein anderer Termin oder eine volle Rückerstattung angeboten.',
     ],
 
     'faq_extended' => [

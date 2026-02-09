@@ -16,8 +16,8 @@
             <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9v-6h2v6zm0-8H9V5h2v2z"/>
         </svg>
         <p>
-            <strong>Free cancellation up to {{ $cancellationDays }} days before the tour start time.</strong>
-            You can cancel up to {{ $cancellationDays }} days in advance of the experience for a full refund.
+            <strong>{{ __('ui.cancellation.free_cancellation', ['days' => $cancellationDays]) }}</strong>
+            {{ __('ui.cancellation.full_refund_notice', ['days' => $cancellationDays]) }}
         </p>
     </div>
 
@@ -29,9 +29,9 @@
     @else
         {{-- Default cancellation policy --}}
         <ul class="cancellation-list">
-            <li>Full refund if cancelled {{ $cancellationDays }}+ days before departure.</li>
-            <li>No refund if cancelled less than {{ $cancellationDays }} days before departure.</li>
-            <li>Changes not permitted less than {{ $cancellationDays }} days before departure.</li>
+            <li>{{ __('ui.cancellation.rule_full_refund', ['days' => $cancellationDays]) }}</li>
+            <li>{{ __('ui.cancellation.rule_no_refund', ['days' => $cancellationDays]) }}</li>
+            <li>{{ __('ui.cancellation.rule_no_changes', ['days' => $cancellationDays]) }}</li>
             <li>{{ __('ui.cancellation.weather_policy') }}</li>
         </ul>
     @endif
