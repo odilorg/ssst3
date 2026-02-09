@@ -3116,8 +3116,9 @@
   opacity: 0;
 }
 
-.payment-card-compact input[type="radio"]:checked ~ .payment-content-compact {
-  border-color: #059669;
+.payment-card-compact.selected {
+  border-color: #10B981;
+  background: #F8FDF9;
 }
 
 .payment-card-compact.recommended {

@@ -512,6 +512,11 @@
               if (bookingModal) {
                 bookingModal.style.display = 'flex';
                 console.log('[Booking] Modal display set to flex');
+
+                // Initialize payment option styling
+                if (typeof updatePaymentDisplay === 'function') {
+                  updatePaymentDisplay();
+                }
               } else {
                 console.error('[Booking] Modal not found in DOM!');
               }
@@ -791,6 +796,15 @@
       function updatePaymentDisplay() {
         const totalPrice = parseFloat(document.getElementById('modal-total')?.textContent.replace(/[^0-9.-]/g, '')) || 200;
         const selectedOption = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
+
+        // Update border styling: remove 'selected' class from all cards, add to checked one
+        document.querySelectorAll('.payment-card-compact').forEach(card => {
+          card.classList.remove('selected');
+        });
+        const checkedInput = document.querySelector('input[name="payment_type"]:checked');
+        if (checkedInput) {
+          checkedInput.closest('.payment-card-compact')?.classList.add('selected');
+        }
 
         if (selectedOption === 'deposit') {
           const depositAmount = totalPrice * 0.30;
