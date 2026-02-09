@@ -797,13 +797,20 @@
         const totalPrice = parseFloat(document.getElementById('modal-total')?.textContent.replace(/[^0-9.-]/g, '')) || 200;
         const selectedOption = document.querySelector('input[name="payment_type"]:checked')?.value || 'deposit';
 
+        console.log('[Payment Display] Updating, selected option:', selectedOption);
+
         // Update border styling: remove 'selected' class from all cards, add to checked one
         document.querySelectorAll('.payment-card-compact').forEach(card => {
+          console.log('[Payment Display] Removing selected from card:', card.querySelector('.payment-name-compact')?.textContent);
           card.classList.remove('selected');
         });
         const checkedInput = document.querySelector('input[name="payment_type"]:checked');
         if (checkedInput) {
-          checkedInput.closest('.payment-card-compact')?.classList.add('selected');
+          const parentCard = checkedInput.closest('.payment-card-compact');
+          console.log('[Payment Display] Adding selected to card:', parentCard?.querySelector('.payment-name-compact')?.textContent);
+          parentCard?.classList.add('selected');
+        } else {
+          console.error('[Payment Display] No checked input found!');
         }
 
         if (selectedOption === 'deposit') {
