@@ -168,7 +168,7 @@ class TranslationService
             } else {
                 // Handle special case for slug
                 if ($field === 'slug') {
-                    $translations[$field] = $this->generateSlug($sourceTranslation->title ?? $tour->title, $targetLocale);
+                    $translations[$field] = $this->generateSlug($sourceTranslation->title ?? $tour->title, $targetLocale, $tour->id);
                 } else {
                     $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
                 }
@@ -215,19 +215,56 @@ class TranslationService
     }
 
     /**
-     * Generate slug from translated title
+     * Generate unique slug from translated title
+     *
+     * Strategy:
+     * 1. Try slug from translated title
+     * 2. If empty (non-Latin scripts) → fallback to English slug
+     * 3. If still empty (symbols only) → fallback to "tour-{id}"
+     * 4. Ensure uniqueness within (locale, slug) by appending -{id} if needed
+     *
+     * @param string $title English title
+     * @param string $locale Target locale
+     * @param int $tourId Tour ID for uniqueness guarantee
+     * @return string Unique slug for this locale
      */
-    protected function generateSlug(string $title, string $locale): string
+    protected function generateSlug(string $title, string $locale, int $tourId): string
     {
-        // Translate title first
+        // 1. Translate title first
         $translatedTitle = $this->translateField($title, $locale, 'en', 'title');
 
-        // Generate slug (transliterate to Latin if needed)
-        $slug = Str::slug($translatedTitle);
+        // 2. Generate base slug from translated title
+        $baseSlug = Str::slug($translatedTitle);
 
-        // Fallback to English slug for non-Latin scripts (ja, zh, ko, ar, etc.)
-        if (empty($slug)) {
-            $slug = Str::slug($title);
+        // 3. Fallback to English slug for non-Latin scripts (ja, zh, ko, ar, etc.)
+        if (empty($baseSlug)) {
+            $baseSlug = Str::slug($title);
+        }
+
+        // 4. Final fallback: if still empty (title is only symbols), use tour-{id}
+        if (empty($baseSlug)) {
+            $baseSlug = "tour-{$tourId}";
+        }
+
+        // 5. Ensure uniqueness within (locale, slug)
+        // Check if this slug already exists for this locale (excluding current tour)
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while (TourTranslation::where('locale', $locale)
+            ->where('slug', $slug)
+            ->where('tour_id', '!=', $tourId)
+            ->exists()) {
+            // Collision detected - append counter or tour_id
+            if ($counter <= 10) {
+                // Try pretty slugs first: base-2, base-3, etc.
+                $slug = "{$baseSlug}-{$counter}";
+                $counter++;
+            } else {
+                // After 10 attempts, just use tour_id for guaranteed uniqueness
+                $slug = "{$baseSlug}-{$tourId}";
+                break;
+            }
         }
 
         return $slug;
