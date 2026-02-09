@@ -98,6 +98,175 @@ return [
         'privacy_agree' => 'Acepto la politica de privacidad',
         'success_message' => 'Gracias! Su solicitud de reserva ha sido recibida.',
         'error_message' => 'Algo salio mal. Por favor, intentelo de nuevo.',
+
+        // Price Header
+        'viewers_text' => 'viajeros estan viendo este tour',
+        'from_price' => 'desde',
+        'per_person_short' => '/persona',
+        'price_guide_transfers' => 'Por persona &bull; Guia y traslados incluidos',
+        'price_guide_only' => 'Por persona &bull; Guia incluido',
+        'price_see_included' => 'Ver que esta incluido',
+        'price_includes_prefix' => 'Por persona &bull;',
+        'reviews_count' => ':count opinion|:count opiniones',
+        'price_on_request' => 'Precio a consultar',
+        'contact_for_quote' => 'Contactenos para un presupuesto personalizado',
+
+        // Pricing Tiers
+        'group_pricing' => 'Precios de grupo',
+        'pricing' => 'Precios',
+        'group_price_note' => 'El precio disminuye con el tamano del grupo',
+        'tier_price_note' => 'Precio por persona segun el tamano del grupo',
+
+        // Total Block
+        'total' => 'Total',
+        'contact_us' => 'Contactenos',
+
+        // Cancellation
+        'flexible_cancellation' => 'Cancelacion flexible',
+        'full_refund' => 'Reembolso completo',
+        'refund_75' => 'Reembolso del 75%',
+        'refund_50' => 'Reembolso del 50%',
+        'no_refund' => 'Sin reembolso',
+
+        // Calendar
+        'select_departure_date' => 'Seleccionar fecha de salida',
+        'selected_departure' => 'Salida seleccionada:',
+        'months' => ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        'weekdays_short' => ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+
+        // Action Buttons
+        'request_booking' => 'Solicitar reserva',
+        'ask_question' => 'Hacer una pregunta',
+        'response_time' => 'Normalmente respondemos en pocas horas',
+
+        // Step 2 - Personal Info
+        'your_information' => 'SUS DATOS',
+        'label_full_name' => 'NOMBRE COMPLETO',
+        'label_email' => 'CORREO ELECTRONICO',
+        'label_phone' => 'TELEFONO',
+        'label_country' => 'PAIS',
+        'label_message' => 'SU MENSAJE',
+        'label_special_requests' => 'SOLICITUDES ESPECIALES',
+        'placeholder_name' => 'Juan Garcia',
+        'placeholder_email' => 'juan@example.com',
+        'placeholder_phone' => '+34 612 345 678',
+        'placeholder_country' => 'Espana',
+        'placeholder_message' => 'Cuentenos sobre sus preguntas o requisitos especificos...',
+        'placeholder_special' => 'Requisitos dieteticos, necesidades de accesibilidad, etc.',
+        'terms_text' => 'Acepto los',
+        'terms_link' => 'Terminos',
+        'privacy_link' => 'Politica de privacidad',
+        'send_booking_request' => 'Enviar solicitud de reserva',
+        'booking_reassurance' => 'Confirmacion en 24h &bull; Sin gastos de pago',
+
+        // Inquiry Form
+        'inquiry_ask_title' => 'Preguntenos sobre este tour',
+        'inquiry_subtitle' => 'Tiene preguntas? Estamos aqui para ayudarle. Responderemos a su correo en 24 horas.',
+        'your_name' => 'Su nombre',
+        'email_address' => 'Correo electronico',
+        'email_hint' => 'Enviaremos nuestra respuesta a este correo',
+        'your_question' => 'Su pregunta',
+        'question_placeholder' => 'Que le gustaria saber sobre este tour?',
+        'question_hint' => 'Pregunte sobre el itinerario, precios, disponibilidad, tamano de grupo o cualquier otra cosa.',
+        'send_question' => 'Enviar pregunta',
+        'inquiry_note' => 'No necesita fechas ni numero de personas, solo haga su pregunta y le ayudaremos.',
+
+        // Trust & Payment
+        'trust_secure' => 'Seguro',
+        'trust_24_7' => '24/7',
+        'trust_flexible' => 'Flexible',
+        'ssl_certified' => 'Cifrado SSL &bull; Verificado &bull; Certificado PCI',
+        'we_accept' => 'Aceptamos:',
+
+        // Booking Clarification
+        'request_confirm' => 'Solicitar y confirmar',
+        'request_confirm_text' => 'Confirmaremos su reserva en 24h, luego podra pagar en linea o en efectivo el dia del tour.',
+
+        // Why Book
+        'why_book_title' => 'Por que reservar con Jahongir Travel?',
+        'best_price' => 'Garantia del mejor precio',
+        'flexible_cancellation_policy' => 'Politica de cancelacion flexible',
+        'expert_guides' => 'Guias locales expertos',
+        'customer_support' => 'Soporte al cliente 24/7',
+
+        // Quote Mode
+        'plan_your_tour' => 'Planifique su tour',
+        'preferred_date' => 'Fecha preferida',
+        'number_of_guests' => 'Numero de personas',
+        'quote_helper' => 'Confirmaremos la disponibilidad y prepararemos un presupuesto personalizado.',
+        'estimated_price' => 'Precio inicial estimado',
+        'from' => 'Desde',
+        'per_person_slash' => '/ persona',
+        'price_note' => 'Basado en un tour privado para 2 personas. El precio final depende del nivel del hotel, tipo de transporte y temporada.',
+        'custom_pricing' => 'Precio personalizado',
+        'custom_pricing_note' => 'Este tour se adapta a sus preferencias. Solicite un presupuesto para conocer el precio exacto.',
+        'request_quote' => 'Solicitar presupuesto',
+        'quote_description' => 'Obtenga un itinerario y precio personalizado para su grupo.',
+        'request_quote_btn' => 'Solicitar presupuesto',
+        'your_details' => 'Sus datos',
+        'message_optional' => 'Mensaje <span class="optional">(opcional)</span>',
+        'trip_placeholder' => 'Cuentenos sobre su viaje ideal...',
+        'send_quote_request' => 'Enviar solicitud de presupuesto',
+        'quote_sent_title' => 'Solicitud de presupuesto enviada!',
+        'quote_sent_message' => 'Le responderemos en 24 horas con un presupuesto personalizado.',
+        'free_quote' => 'Presupuesto gratuito',
+        'no_obligation' => 'Sin compromiso',
+        'reply_24h' => 'Respuesta en 24h',
+        'private_tour' => 'Tour privado',
+        'private_tour_desc' => 'Solo su grupo. Horarios y ritmo flexibles.',
+        'secure_payment' => 'Pago seguro',
+        'support_24_7' => 'Soporte 24/7',
+
+        // Mobile CTA
+        'per_person' => 'por persona',
+        'request_quote_mobile' => 'Solicitar presupuesto',
+        'get_quote' => 'Obtener presupuesto',
+
+        // Tour Type Selector
+        'select_tour_type' => 'Tipo de tour',
+        'private_tour_btn' => 'Tour privado',
+        'group_tour_btn' => 'Tour en grupo',
+        'loading' => 'Cargando...',
+        'error_loading' => 'Error al cargar el formulario. Por favor, intentelo de nuevo.',
+
+        // Group Tour Form
+        'no_departures' => 'Sin salidas disponibles',
+        'no_departures_text' => 'Actualmente no hay salidas de grupo programadas para este tour. Contactenos para opciones de tour privado.',
+        'select_departure_hint' => 'Seleccione una fecha de salida del calendario de arriba.',
+        'number_of_seats' => 'Numero de plazas',
+        'max_seats' => '(Max :max plazas)',
+        'price_breakdown' => 'Desglose del precio',
+        'price_per_person' => 'Precio por persona:',
+        'number_of_seats_label' => 'Numero de plazas:',
+        'total_price' => 'Precio total:',
+
+        // Shared
+        'guest_singular' => 'persona',
+        'guest_plural' => 'personas',
+        'reviews_count' => ':count reseñas',
+        'review_singular' => 'reseña',
+        'per_person_abbr' => '/pers',
+        'cancel_60_plus' => '60+ días',
+        'cancel_30_59' => '30-59 días',
+        'cancel_7_29' => '7-29 días',
+        'cancel_under_7' => '<7 días',
+        'terms_and' => 'y',
+
+        // JS Booking Form (Milestone B)
+        'js_confirm_booking' => 'Confirmar reserva',
+        'js_select_travel_date' => 'Por favor seleccione una fecha de viaje.',
+        'js_select_departure' => 'Por favor seleccione una fecha de salida del calendario de arriba.',
+        'js_fallback_tour_name' => 'Tu tour seleccionado',
+        'js_date_tbd' => 'Fecha por confirmar',
+        'js_your_email' => 'tu email',
+        'js_pay_now' => 'Pagar $:amount ahora',
+        'js_pay_now_save' => 'Pagar $:amount ahora (Ahorra :discount%)',
+        'js_inquiry_submitted' => '¡Consulta enviada!',
+        'js_inquiry_submitted_text' => 'Hemos recibido tu pregunta y responderemos pronto',
+        'js_form_error' => 'Por favor revisa tu formulario e intenta de nuevo.',
+        'js_network_error' => 'Ocurrió un error. Por favor verifica tu conexión e intenta de nuevo.',
+        'js_sending' => 'Enviando...',
+        'js_csrf_error' => 'Token de seguridad no disponible. Por favor actualiza la página e intenta de nuevo.',
     ],
 
     // ============================================

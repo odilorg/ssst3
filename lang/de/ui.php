@@ -476,4 +476,194 @@ return [
 
     'travel_date' => 'Reisedatum',
     'advance_booking_notice' => 'Buchungen erfordern mindestens :days Tage Vorlaufzeit.',
+
+    // ============================================
+    // BOOKING FORM & SIDEBAR
+    // ============================================
+    'booking' => [
+        'title' => 'Tour buchen',
+        'inquiry_title' => 'Anfrage senden',
+        'full_name' => 'Vollständiger Name',
+        'email' => 'E-Mail-Adresse',
+        'phone' => 'Telefon',
+        'date' => 'Wunschdatum',
+        'guests' => 'Anzahl der Gäste',
+        'adults' => 'Erwachsene',
+        'children' => 'Kinder',
+        'message' => 'Nachricht',
+        'special_requests' => 'Besondere Wünsche',
+        'terms_agree' => 'Ich akzeptiere die Allgemeinen Geschäftsbedingungen',
+        'privacy_agree' => 'Ich akzeptiere die Datenschutzrichtlinie',
+        'success_message' => 'Vielen Dank! Ihre Buchungsanfrage wurde empfangen.',
+        'error_message' => 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.',
+
+        // Price Header
+        'viewers_text' => 'Reisende sehen sich diese Tour an',
+        'from_price' => 'ab',
+        'per_person_short' => '/Person',
+        'price_guide_transfers' => 'Pro Person &bull; Reiseleiter & Transfers inklusive',
+        'price_guide_only' => 'Pro Person &bull; Reiseleiter inklusive',
+        'price_see_included' => 'Sehen Sie, was enthalten ist',
+        'price_includes_prefix' => 'Pro Person &bull;',
+        'reviews_count' => ':count Bewertung|:count Bewertungen',
+        'price_on_request' => 'Preis auf Anfrage',
+        'contact_for_quote' => 'Kontaktieren Sie uns für ein individuelles Angebot',
+
+        // Pricing Tiers
+        'group_pricing' => 'Gruppenpreise',
+        'pricing' => 'Preise',
+        'group_price_note' => 'Der Preis sinkt mit der Gruppengröße',
+        'tier_price_note' => 'Preis pro Person je nach Gruppengröße',
+
+        // Total Block
+        'total' => 'Gesamt',
+        'contact_us' => 'Kontaktieren Sie uns',
+
+        // Cancellation
+        'flexible_cancellation' => 'Flexible Stornierung',
+        'full_refund' => 'Volle Rückerstattung',
+        'refund_75' => '75% Rückerstattung',
+        'refund_50' => '50% Rückerstattung',
+        'no_refund' => 'Keine Rückerstattung',
+
+        // Calendar
+        'select_departure_date' => 'Abreisedatum wählen',
+        'selected_departure' => 'Gewählte Abreise:',
+        'months' => ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+        'weekdays_short' => ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+
+        // Action Buttons
+        'request_booking' => 'Buchung anfragen',
+        'ask_question' => 'Eine Frage stellen',
+        'response_time' => 'Wir antworten normalerweise innerhalb weniger Stunden',
+
+        // Step 2 - Personal Info
+        'your_information' => 'IHRE DATEN',
+        'label_full_name' => 'VOLLSTÄNDIGER NAME',
+        'label_email' => 'E-MAIL',
+        'label_phone' => 'TELEFON',
+        'label_country' => 'LAND',
+        'label_message' => 'IHRE NACHRICHT',
+        'label_special_requests' => 'BESONDERE WÜNSCHE',
+        'placeholder_name' => 'Max Mustermann',
+        'placeholder_email' => 'max@example.com',
+        'placeholder_phone' => '+49 151 123 456 78',
+        'placeholder_country' => 'Deutschland',
+        'placeholder_message' => 'Erzählen Sie uns von Ihren Fragen oder besonderen Anforderungen...',
+        'placeholder_special' => 'Ernährungsanforderungen, Barrierefreiheit usw.',
+        'terms_text' => 'Ich akzeptiere die',
+        'terms_link' => 'AGB',
+        'privacy_link' => 'Datenschutzrichtlinie',
+        'send_booking_request' => 'Buchungsanfrage senden',
+        'booking_reassurance' => 'Bestätigung innerhalb 24h &bull; Keine Zahlungsgebühren',
+
+        // Inquiry Form
+        'inquiry_ask_title' => 'Fragen Sie uns zu dieser Tour',
+        'inquiry_subtitle' => 'Haben Sie Fragen? Wir helfen gerne! Wir antworten innerhalb von 24 Stunden auf Ihre E-Mail.',
+        'your_name' => 'Ihr Name',
+        'email_address' => 'E-Mail-Adresse',
+        'email_hint' => 'Wir senden unsere Antwort an diese E-Mail',
+        'your_question' => 'Ihre Frage',
+        'question_placeholder' => 'Was möchten Sie über diese Tour wissen?',
+        'question_hint' => 'Fragen Sie nach Reiseplan, Preisen, Verfügbarkeit, Gruppengrößen oder allem anderen!',
+        'send_question' => 'Frage senden',
+        'inquiry_note' => 'Keine Daten oder Gästezahlen nötig — stellen Sie einfach Ihre Frage und wir helfen!',
+
+        // Trust & Payment
+        'trust_secure' => 'Sicher',
+        'trust_24_7' => '24/7',
+        'trust_flexible' => 'Flexibel',
+        'ssl_certified' => 'SSL-verschlüsselt &bull; Verifiziert &bull; PCI-zertifiziert',
+        'we_accept' => 'Wir akzeptieren:',
+
+        // Booking Clarification
+        'request_confirm' => 'Anfragen & bestätigen',
+        'request_confirm_text' => 'Wir bestätigen Ihre Buchung innerhalb von 24h, danach können Sie online oder bar am Tourtag bezahlen.',
+
+        // Why Book
+        'why_book_title' => 'Warum bei Jahongir Travel buchen?',
+        'best_price' => 'Bestpreisgarantie',
+        'flexible_cancellation_policy' => 'Flexible Stornierungsrichtlinie',
+        'expert_guides' => 'Erfahrene lokale Reiseleiter',
+        'customer_support' => '24/7 Kundenbetreuung',
+
+        // Quote Mode
+        'plan_your_tour' => 'Planen Sie Ihre Tour',
+        'preferred_date' => 'Wunschdatum',
+        'number_of_guests' => 'Anzahl der Gäste',
+        'quote_helper' => 'Wir bestätigen die Verfügbarkeit und erstellen ein individuelles Angebot.',
+        'estimated_price' => 'Geschätzter Startpreis',
+        'from' => 'Ab',
+        'per_person_slash' => '/ Person',
+        'price_note' => 'Basierend auf einer privaten Tour für 2 Personen. Der Endpreis hängt von Hotelniveau, Transportart und Saison ab.',
+        'custom_pricing' => 'Individuelle Preisgestaltung',
+        'custom_pricing_note' => 'Diese Tour wird an Ihre Wünsche angepasst. Fordern Sie ein Angebot für den genauen Preis an.',
+        'request_quote' => 'Angebot anfordern',
+        'quote_description' => 'Erhalten Sie einen individuellen Reiseplan und Preis für Ihre Gruppe.',
+        'request_quote_btn' => 'Angebot anfordern',
+        'your_details' => 'Ihre Daten',
+        'message_optional' => 'Nachricht <span class="optional">(optional)</span>',
+        'trip_placeholder' => 'Erzählen Sie uns von Ihrer Traumreise...',
+        'send_quote_request' => 'Angebotsanfrage senden',
+        'quote_sent_title' => 'Angebotsanfrage gesendet!',
+        'quote_sent_message' => 'Wir melden uns innerhalb von 24 Stunden mit einem individuellen Angebot.',
+        'free_quote' => 'Kostenloses Angebot',
+        'no_obligation' => 'Unverbindlich',
+        'reply_24h' => 'Antwort in 24h',
+        'private_tour' => 'Private Tour',
+        'private_tour_desc' => 'Nur Ihre Gruppe. Flexible Zeiten und Tempo.',
+        'secure_payment' => 'Sichere Zahlung',
+        'support_24_7' => '24/7 Support',
+
+        // Mobile CTA
+        'per_person' => 'pro Person',
+        'request_quote_mobile' => 'Angebot anfordern',
+        'get_quote' => 'Angebot erhalten',
+
+        // Tour Type Selector
+        'select_tour_type' => 'Tourtyp',
+        'private_tour_btn' => 'Private Tour',
+        'group_tour_btn' => 'Gruppentour',
+        'loading' => 'Laden...',
+        'error_loading' => 'Fehler beim Laden des Formulars. Bitte versuchen Sie es erneut.',
+
+        // Group Tour Form
+        'no_departures' => 'Keine Abfahrten verfügbar',
+        'no_departures_text' => 'Derzeit sind keine Gruppenabfahrten für diese Tour geplant. Bitte kontaktieren Sie uns für private Touroptionen.',
+        'select_departure_hint' => 'Wählen Sie ein Abreisedatum aus dem Kalender oben.',
+        'number_of_seats' => 'Anzahl der Plätze',
+        'max_seats' => '(Max. :max Plätze)',
+        'price_breakdown' => 'Preisaufschlüsselung',
+        'price_per_person' => 'Preis pro Person:',
+        'number_of_seats_label' => 'Anzahl der Plätze:',
+        'total_price' => 'Gesamtpreis:',
+
+        // Shared
+        'guest_singular' => 'Gast',
+        'guest_plural' => 'Gäste',
+        'reviews_count' => ':count Bewertungen',
+        'review_singular' => 'Bewertung',
+        'per_person_abbr' => '/Pers',
+        'cancel_60_plus' => '60+ Tage',
+        'cancel_30_59' => '30-59 Tage',
+        'cancel_7_29' => '7-29 Tage',
+        'cancel_under_7' => '<7 Tage',
+        'terms_and' => 'und',
+
+        // JS Booking Form (Milestone B)
+        'js_confirm_booking' => 'Buchung bestätigen',
+        'js_select_travel_date' => 'Bitte wählen Sie ein Reisedatum.',
+        'js_select_departure' => 'Bitte wählen Sie ein Abfahrtsdatum aus dem Kalender oben.',
+        'js_fallback_tour_name' => 'Ihre ausgewählte Tour',
+        'js_date_tbd' => 'Datum wird bestätigt',
+        'js_your_email' => 'Ihre E-Mail',
+        'js_pay_now' => '$:amount jetzt bezahlen',
+        'js_pay_now_save' => '$:amount jetzt bezahlen (:discount% sparen)',
+        'js_inquiry_submitted' => 'Anfrage gesendet!',
+        'js_inquiry_submitted_text' => 'Wir haben Ihre Frage erhalten und werden bald antworten',
+        'js_form_error' => 'Bitte überprüfen Sie Ihr Formular und versuchen Sie es erneut.',
+        'js_network_error' => 'Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+        'js_sending' => 'Wird gesendet...',
+        'js_csrf_error' => 'Sicherheitstoken nicht verfügbar. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.',
+    ],
 ];

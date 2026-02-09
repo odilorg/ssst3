@@ -407,7 +407,7 @@
             <div class="booking-social-proof">
               <div class="social-proof__item">
                 <span class="social-proof__dot"></span>
-                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> travelers viewing this tour</span>
+                <span class="social-proof__text"><span id="viewers-count">{{ rand(8, 15) }}</span> {{ __('ui.booking.viewers_text') }}</span>
               </div>
             </div>
 
@@ -428,9 +428,9 @@
                   }
                 @endphp
                 <div class="booking-price">
-                  <span class="price-label">from</span>
+                  <span class="price-label">{{ __('ui.booking.from_price') }}</span>
                   <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
-                  <span class="price-unit">/person</span>
+                  <span class="price-unit">{{ __('ui.booking.per_person_short') }}</span>
                 </div>
                 <!-- Price Includes Micro-line -->
                 @php
@@ -440,11 +440,11 @@
                 @endphp
                 <p style="margin: 4px 0 0; font-size: 12px; color: #6B7280; line-height: 1.4;">
                   @if($hasGuide && $hasTransport)
-                    Per person • Guide &amp; transfers included
+                    {!! __('ui.booking.price_guide_transfers') !!}
                   @elseif($hasGuide)
-                    Per person • Guide included
+                    {!! __('ui.booking.price_guide_only') !!}
                   @else
-                    Per person • <a href="#includes" style="color: #6B7280; text-decoration: underline; text-underline-offset: 2px;">See what's included</a>
+                    {!! __('ui.booking.price_includes_prefix') !!} <a href="#includes" style="color: #6B7280; text-decoration: underline; text-underline-offset: 2px;">{{ __('ui.booking.price_see_included') }}</a>
                   @endif
                 </p>
                 <!-- Social Proof Near Price -->
@@ -463,14 +463,14 @@
                       @endfor
                     </div>
                     <span style="font-size: 12px; color: #666;">
-                      <strong>{{ number_format($tour->rating, 1) }}</strong> ({{ $tour->review_count }} {{ Str::plural('review', $tour->review_count) }})
+                      <strong>{{ number_format($tour->rating, 1) }}</strong> ({{ __('ui.booking.reviews_count', ['count' => $tour->review_count]) }})
                     </span>
                   </div>
                 @endif
               @else
                 <div class="booking-price-hidden">
-                  <span class="price-contact-label">Price on request</span>
-                  <p class="price-contact-text">Contact us for a personalized quote</p>
+                  <span class="price-contact-label">{{ __('ui.booking.price_on_request') }}</span>
+                  <p class="price-contact-text">{{ __('ui.booking.contact_for_quote') }}</p>
                 </div>
               @endif
             </div>
@@ -483,7 +483,7 @@
                   <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
                 </svg>
-                <span>{{ $tour->supportsGroup() ? 'Group Pricing' : 'Pricing' }}</span>
+                <span>{{ $tour->supportsGroup() ? __('ui.booking.group_pricing') : __('ui.booking.pricing') }}</span>
                 <svg class="booking-accordion__chevron" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                 </svg>
@@ -492,10 +492,10 @@
                 @foreach($tour->pricingTiers as $tier)
                 <div class="tier-row">
                   <span class="tier-row__label">{{ $tier->display_label }} <span class="tier-row__pax">({{ $tier->min_guests }}@if($tier->min_guests !== $tier->max_guests)-{{ $tier->max_guests }}@endif)</span></span>
-                  <span class="tier-row__price">${{ number_format($tier->price_per_person, 0) }}/pp</span>
+                  <span class="tier-row__price">${{ number_format($tier->price_per_person, 0) }}{{ __('ui.booking.per_person_abbr') }}</span>
                 </div>
                 @endforeach
-                <p class="booking-accordion__note">{{ $tour->supportsGroup() ? 'Price decreases as group size increases' : 'Price per person based on group size' }}</p>
+                <p class="booking-accordion__note">{{ $tour->supportsGroup() ? __('ui.booking.group_price_note') : __('ui.booking.tier_price_note') }}</p>
               </div>
             </details>
             @endif
@@ -505,14 +505,14 @@
             <div class="booking-total-block" data-breakdown-visible="true">
               <div class="booking-total__row">
                 <span class="booking-total__label">
-                  <span class="breakdown-guests" data-guests="{{ $defaultGuestCount }}">{{ $defaultGuestCount }} guests</span> ×
+                  <span class="breakdown-guests" data-guests="{{ $defaultGuestCount }}">{{ $defaultGuestCount }} {{ __('ui.booking.guest_plural') }}</span> ×
                   <span class="breakdown-unit-price" data-unit-price="{{ $displayPricePerPerson }}">${{ number_format($displayPricePerPerson, 2) }}</span>
                 </span>
                 <span class="booking-total__value" data-subtotal="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
               </div>
               <div class="booking-total__divider"></div>
               <div class="booking-total__final">
-                <span class="booking-total__final-label">Total</span>
+                <span class="booking-total__final-label">{{ __('ui.booking.total') }}</span>
                 <span class="breakdown-total booking-total__final-price" data-total="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
               </div>
             </div>
@@ -520,15 +520,15 @@
             <div class="booking-total-block" data-breakdown-visible="true">
               <div class="booking-total__row">
                 <span class="booking-total__label">
-                  <span class="breakdown-guests" data-guests="2">2 guests</span> ×
-                  <span class="breakdown-unit-price" data-unit-price="0">Contact us</span>
+                  <span class="breakdown-guests" data-guests="2">2 {{ __('ui.booking.guest_plural') }}</span> ×
+                  <span class="breakdown-unit-price" data-unit-price="0">{{ __('ui.booking.contact_us') }}</span>
                 </span>
                 <span class="booking-total__value" data-subtotal="0">—</span>
               </div>
               <div class="booking-total__divider"></div>
               <div class="booking-total__final">
-                <span class="booking-total__final-label">Total</span>
-                <span class="breakdown-total booking-total__final-price" data-total="0">Contact us</span>
+                <span class="booking-total__final-label">{{ __('ui.booking.total') }}</span>
+                <span class="breakdown-total booking-total__final-price" data-total="0">{{ __('ui.booking.contact_us') }}</span>
               </div>
             </div>
             @endif
@@ -539,17 +539,17 @@
                 <svg class="booking-accordion__icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>
-                <span>Flexible cancellation</span>
+                <span>{{ __('ui.booking.flexible_cancellation') }}</span>
                 <svg class="booking-accordion__chevron" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                 </svg>
               </summary>
               <div class="booking-accordion__content">
                 <ul class="cancellation-list">
-                  <li><span class="cancellation-days">60+ days</span> Full refund</li>
-                  <li><span class="cancellation-days">30-59 days</span> 75% refund</li>
-                  <li><span class="cancellation-days">7-29 days</span> 50% refund</li>
-                  <li><span class="cancellation-days">&lt;7 days</span> No refund</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_60_plus') }}</span> {{ __('ui.booking.full_refund') }}</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_30_59') }}</span> {{ __('ui.booking.refund_75') }}</li>
+                  <li><span class="cancellation-days">{{ __('ui.booking.cancel_7_29') }}</span> {{ __('ui.booking.refund_50') }}</li>
+                  <li><span class="cancellation-days">{!! __('ui.booking.cancel_under_7') !!}</span> {{ __('ui.booking.no_refund') }}</li>
                 </ul>
               </div>
             </details>
@@ -575,7 +575,7 @@
                   <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                   </svg>
-                  Select Departure Date
+                  {{ __('ui.booking.select_departure_date') }}
                 </h3>
 
                 <!-- Calendar Controls -->
@@ -588,18 +588,9 @@
 
                   <div style="flex: 1; display: flex; gap: 8px;">
                     <select id="calendar-month" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
-                      <option value="0">January</option>
-                      <option value="1">February</option>
-                      <option value="2">March</option>
-                      <option value="3">April</option>
-                      <option value="4">May</option>
-                      <option value="5">June</option>
-                      <option value="6">July</option>
-                      <option value="7">August</option>
-                      <option value="8">September</option>
-                      <option value="9">October</option>
-                      <option value="10">November</option>
-                      <option value="11">December</option>
+                      @foreach(__('ui.booking.months') as $idx => $monthName)
+                        <option value="{{ $idx }}">{{ $monthName }}</option>
+                      @endforeach
                     </select>
                     <select id="calendar-year" style="flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500; color: #111827; background: white; cursor: pointer; transition: all 0.2s;">
                       <!-- Populated by JavaScript -->
@@ -617,13 +608,9 @@
                 <div class="calendar-grid" style="background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
                   <!-- Weekday Headers -->
                   <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px;">
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Su</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mo</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tu</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">We</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Th</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Fr</div>
-                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Sa</div>
+                    @foreach(__('ui.booking.weekdays_short') as $dayName)
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #9ca3af; padding: 6px; text-transform: uppercase; letter-spacing: 0.5px;">{{ $dayName }}</div>
+                    @endforeach
                   </div>
 
                   <!-- Calendar Days (populated by JavaScript) -->
@@ -634,7 +621,7 @@
 
                 <!-- Selected Departure Info -->
                 <div id="selected-departure-info" style="margin-top: 12px; padding: 12px; background: #f0f4ff; border-left: 3px solid #667eea; border-radius: 6px; display: none;">
-                  <div style="font-size: 11px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Selected Departure:</div>
+                  <div style="font-size: 11px; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">{{ __('ui.booking.selected_departure') }}</div>
                   <div id="selected-departure-text" style="font-size: 13px; font-weight: 600; color: #111827;"></div>
                   <div id="selected-departure-status" style="font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px;"></div>
                 </div>
@@ -673,17 +660,17 @@
               <div class="booking-actions compact">
                 <button type="button" class="action-btn action-btn--booking compact" data-action="booking">
                   <i class="fas fa-calendar-check"></i>
-                  <span class="action-btn__title">Request Booking</span>
+                  <span class="action-btn__title">{{ __('ui.booking.request_booking') }}</span>
                 </button>
 
                 <button type="button" class="action-btn action-btn--inquiry compact" data-action="inquiry">
                   <i class="fas fa-question-circle"></i>
-                  <span class="action-btn__title">Ask a Question</span>
+                  <span class="action-btn__title">{{ __('ui.booking.ask_question') }}</span>
                 </button>
               </div>
               <!-- Response-time reassurance -->
               <p style="text-align: center; margin: 6px 0 0; font-size: 11px; color: #9CA3AF; line-height: 1.4;">
-                We typically respond within a few hours
+                {{ __('ui.booking.response_time') }}
               </p>
 
               <!-- STEP 2: Full Booking Form (Hidden Initially) - Modern Compact Design -->
@@ -691,53 +678,53 @@
 
                 <!-- Customer Information -->
                 <div class="form-section-compact">
-                  <h3 class="form-section-title-modern">YOUR INFORMATION</h3>
+                  <h3 class="form-section-title-modern">{{ __('ui.booking.your_information') }}</h3>
 
                   <div class="form-group-modern">
                     <label for="customer-name" class="form-label-modern">
-                      FULL NAME <span class="required-dot">•</span>
+                      {{ __('ui.booking.label_full_name') }} <span class="required-dot">•</span>
                     </label>
                     <input type="text"
                            id="customer-name"
                            name="customer_name"
                            class="form-input-modern"
-                           placeholder="John Doe"
+                           placeholder="{{ __('ui.booking.placeholder_name') }}"
                            required>
                   </div>
 
                   <div class="form-group-modern">
                     <label for="customer-email" class="form-label-modern">
-                      EMAIL <span class="required-dot">•</span>
+                      {{ __('ui.booking.label_email') }} <span class="required-dot">•</span>
                     </label>
                     <input type="email"
                            id="customer-email"
                            name="customer_email"
                            class="form-input-modern"
-                           placeholder="john@example.com"
+                           placeholder="{{ __('ui.booking.placeholder_email') }}"
                            required>
                   </div>
 
                   <div class="form-group-modern">
                     <label for="customer-phone" class="form-label-modern">
-                      PHONE <span class="required-dot">•</span>
+                      {{ __('ui.booking.label_phone') }} <span class="required-dot">•</span>
                     </label>
                     <input type="tel"
                            id="customer-phone"
                            name="customer_phone"
                            class="form-input-modern"
-                           placeholder="+998 91 123 45 67"
+                           placeholder="{{ __('ui.booking.placeholder_phone') }}"
                            required>
                   </div>
 
                   <div class="form-group-modern">
                     <label for="customer-country" class="form-label-modern form-label-optional">
-                      COUNTRY
+                      {{ __('ui.booking.label_country') }}
                     </label>
                     <input type="text"
                            id="customer-country"
                            name="customer_country"
                            class="form-input-modern"
-                           placeholder="United States">
+                           placeholder="{{ __('ui.booking.placeholder_country') }}">
                   </div>
                 </div>
 
@@ -748,13 +735,13 @@
                 <div class="form-section-compact" id="message-section" style="display: none;">
                   <div class="form-group-modern">
                     <label for="inquiry-message" class="form-label-modern">
-                      YOUR MESSAGE <span class="required-dot" id="message-required">•</span>
+                      {{ __('ui.booking.label_message') }} <span class="required-dot" id="message-required">•</span>
                     </label>
                     <textarea id="inquiry-message"
                               name="message"
                               class="form-input-modern form-textarea-compact"
                               rows="3"
-                              placeholder="Tell us about your questions or specific requirements..."></textarea>
+                              placeholder="{{ __('ui.booking.placeholder_message') }}"></textarea>
                   </div>
                 </div>
 
@@ -762,13 +749,13 @@
                 <div class="form-section-compact">
                   <div class="form-group-modern">
                     <label for="special-requests" class="form-label-modern form-label-optional">
-                      SPECIAL REQUESTS
+                      {{ __('ui.booking.label_special_requests') }}
                     </label>
                     <textarea id="special-requests"
                               name="special_requests"
                               class="form-input-modern form-textarea-compact"
                               rows="2"
-                              placeholder="Dietary requirements, accessibility needs, etc."></textarea>
+                              placeholder="{{ __('ui.booking.placeholder_special') }}"></textarea>
                   </div>
                 </div>
 
@@ -782,7 +769,7 @@
                            required>
                     <span class="terms-checkmark"></span>
                     <span class="terms-text-modern">
-                      I agree to the <a href="/terms" target="_blank" class="terms-link">Terms</a> and <a href="/privacy" target="_blank" class="terms-link">Privacy Policy</a>
+                      {{ __('ui.booking.terms_text') }} <a href="/terms" target="_blank" class="terms-link">{{ __('ui.booking.terms_link') }}</a> {{ __('ui.booking.terms_and') }} <a href="/privacy" target="_blank" class="terms-link">{{ __('ui.booking.privacy_link') }}</a>
                     </span>
                   </label>
                 </div>
@@ -790,14 +777,14 @@
                 <!-- Submit Button -->
                 <div class="form-actions">
                   <button type="submit" class="btn--submit btn--block" id="submit-button">
-                    <span class="btn__text" id="submit-text">Send Booking Request</span>
+                    <span class="btn__text" id="submit-text">{{ __('ui.booking.send_booking_request') }}</span>
                     <span class="spinner"></span>
                   </button>
                   <p style="text-align: center; margin-top: 8px; font-size: 11px; color: #666;">
                     <svg width="12" height="12" viewBox="0 0 20 20" fill="#10b981" style="vertical-align: middle; margin-right: 4px;">
                       <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
                     </svg>
-                    Booking confirmed within 24h • No payment fees
+                    {!! __('ui.booking.booking_reassurance') !!}
                   </p>
 
                   {{-- PDF Download Button (Secondary Action) --}}
@@ -818,11 +805,11 @@
                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                   </svg>
                 </button>
-                <h3 class="inquiry-title">Ask Us About This Tour</h3>
+                <h3 class="inquiry-title">{{ __('ui.booking.inquiry_ask_title') }}</h3>
               </div>
 
               <p class="inquiry-subtitle">
-                Have questions? We're here to help! We'll respond to your email within 24 hours.
+                {{ __('ui.booking.inquiry_subtitle') }}
               </p>
 
               <form id="inquiry-form" class="inquiry-form-fields">
@@ -831,47 +818,47 @@
 
                 <div class="form-group">
                   <label for="inquiry-name" class="form-label">
-                    Your Name <span class="required">*</span>
+                    {{ __('ui.booking.your_name') }} <span class="required">*</span>
                   </label>
                   <input type="text"
                          id="inquiry-name"
                          name="customer_name"
                          class="form-input"
-                         placeholder="John Doe"
+                         placeholder="{{ __('ui.booking.placeholder_name') }}"
                          required
                          autocomplete="name">
                 </div>
 
                 <div class="form-group">
                   <label for="inquiry-email" class="form-label">
-                    Email Address <span class="required">*</span>
+                    {{ __('ui.booking.email_address') }} <span class="required">*</span>
                   </label>
                   <input type="email"
                          id="inquiry-email"
                          name="customer_email"
                          class="form-input"
-                         placeholder="john@example.com"
+                         placeholder="{{ __('ui.booking.placeholder_email') }}"
                          required
                          autocomplete="email">
-                  <span class="form-hint">We'll send our response to this email</span>
+                  <span class="form-hint">{{ __('ui.booking.email_hint') }}</span>
                 </div>
 
                 <div class="form-group">
                   <label for="inquiry-message" class="form-label">
-                    Your Question <span class="required">*</span>
+                    {{ __('ui.booking.your_question') }} <span class="required">*</span>
                   </label>
                   <textarea id="inquiry-message"
                             name="message"
                             class="form-input"
                             rows="6"
-                            placeholder="What would you like to know about this tour?"
+                            placeholder="{{ __('ui.booking.question_placeholder') }}"
                             required></textarea>
-                  <span class="form-hint">Ask about itinerary, pricing, availability, group sizes, or anything else!</span>
+                  <span class="form-hint">{{ __('ui.booking.question_hint') }}</span>
                 </div>
 
                 <div class="form-actions">
                   <button type="submit" class="btn btn--primary btn--large btn--block" id="submit-inquiry-btn">
-                    <span class="btn__text">Send Question</span>
+                    <span class="btn__text">{{ __('ui.booking.send_question') }}</span>
                     <span class="spinner" style="display: none;"></span>
                   </button>
                 </div>
@@ -881,7 +868,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                 </svg>
-                <span>No dates or guest counts needed - just ask your question and we'll help!</span>
+                <span>{{ __('ui.booking.inquiry_note') }}</span>
               </div>
             </div>
 
@@ -889,16 +876,16 @@
             <div class="trust-payment-compact">
               <!-- Single Line Trust Indicators -->
               <div class="trust-inline">
-                🔒 Secure • 🎧 24/7 • ↻ Flexible
+                🔒 {{ __('ui.booking.trust_secure') }} • 🎧 {{ __('ui.booking.trust_24_7') }} • ↻ {{ __('ui.booking.trust_flexible') }}
               </div>
 
               <!-- Payment Security & Methods Combined -->
               <div class="payment-compact">
                 <div class="payment-security-line">
-                  💳 SSL Encrypted • Verified • PCI Certified
+                  💳 {!! __('ui.booking.ssl_certified') !!}
                 </div>
                 <div class="payment-methods-inline">
-                  <span class="payment-label">We accept:</span>
+                  <span class="payment-label">{{ __('ui.booking.we_accept') }}</span>
                   <div class="payment-icons-compact">
                 <!-- Visa -->
                 <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -931,30 +918,30 @@
             <!-- Booking Clarification (Compact) -->
             <div class="booking-clarification-compact">
               <p class="clarification-compact-text">
-                ⏱️ <strong>Request & confirm</strong> — We'll confirm your booking within 24h, then you can pay online or in cash on your tour day.
+                ⏱️ <strong>{{ __('ui.booking.request_confirm') }}</strong> — {{ __('ui.booking.request_confirm_text') }}
               </p>
             </div>
 
 
             <!-- Why Book Section -->
             <div class="booking-benefits">
-              <h3 class="benefits-title">Why book with Jahongir Travel?</h3>
+              <h3 class="benefits-title">{{ __('ui.booking.why_book_title') }}</h3>
               <ul class="benefits-list">
                 <li class="benefit-item">
                   <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
-                  <span>Best price guarantee</span>
+                  <span>{{ __('ui.booking.best_price') }}</span>
                 </li>
                 <li class="benefit-item">
                   <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
-                  <span>Flexible cancellation policy</span>
+                  <span>{{ __('ui.booking.flexible_cancellation_policy') }}</span>
                 </li>
                 <li class="benefit-item">
                   <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
-                  <span>Expert local guides</span>
+                  <span>{{ __('ui.booking.expert_guides') }}</span>
                 </li>
                 <li class="benefit-item">
                   <svg class="icon icon--check-circle" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm5.707 7.707l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8 12.586l6.293-6.293a1 1 0 111.414 1.414z"/></svg>
-                  <span>24/7 customer support</span>
+                  <span>{{ __('ui.booking.customer_support') }}</span>
                 </li>
               </ul>
             </div>
@@ -982,13 +969,13 @@
                       <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
                   </div>
-                  <h3 class="quote-card__title">Plan your tour</h3>
+                  <h3 class="quote-card__title">{{ __('ui.booking.plan_your_tour') }}</h3>
                 </div>
 
                 <form class="quote-form" id="quote-form" data-form-type="quote">
                   <div class="form-group">
                     <label for="quote-date" class="form-label">
-                      <span>Preferred date</span>
+                      <span>{{ __('ui.booking.preferred_date') }}</span>
                     </label>
                     <div class="input-wrapper input-wrapper--icon">
                       <input type="date" id="quote-date" name="quote-date" class="form-input" required aria-required="true" min="" data-min-date-offset="1">
@@ -1000,12 +987,12 @@
 
                   <div class="form-group">
                     <label for="quote-guests" class="form-label">
-                      <span>Number of guests</span>
+                      <span>{{ __('ui.booking.number_of_guests') }}</span>
                     </label>
                     <div class="input-wrapper input-wrapper--icon">
                       <select id="quote-guests" name="quote-guests" class="form-input" required aria-required="true">
                         @for($i = 1; $i <= ($tour->max_guests ?? 15); $i++)
-                          <option value="{{ $i }}" {{ $i == 2 ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? 'guest' : 'guests' }}</option>
+                          <option value="{{ $i }}" {{ $i == 2 ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? __('ui.booking.guest_singular') : __('ui.booking.guest_plural') }}</option>
                         @endfor
                       </select>
                       <span class="input-icon">
@@ -1017,28 +1004,28 @@
 
                 <p class="quote-card__helper">
                   <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                  We'll confirm availability and prepare a personalized quote.
+                  {{ __('ui.booking.quote_helper') }}
                 </p>
               </div>
 
               {{-- CARD 2: Price Hint --}}
               <div class="quote-card quote-card--pricing">
-                <span class="quote-pricing__eyebrow">Estimated starting price</span>
+                <span class="quote-pricing__eyebrow">{{ __('ui.booking.estimated_price') }}</span>
                 @if($tour->price_per_person && $tour->price_per_person > 0)
                   <div class="quote-pricing">
-                    <span class="quote-pricing__from">From</span>
+                    <span class="quote-pricing__from">{{ __('ui.booking.from') }}</span>
                     <span class="quote-pricing__amount">${{ number_format($tour->price_per_person, 0) }}</span>
-                    <span class="quote-pricing__unit">/ person</span>
+                    <span class="quote-pricing__unit">{{ __('ui.booking.per_person_slash') }}</span>
                   </div>
                   <p class="quote-pricing__note">
-                    Based on a 2-person private tour. Final price depends on hotel level, transport type, and season.
+                    {{ __('ui.booking.price_note') }}
                   </p>
                 @else
                   <div class="quote-pricing quote-pricing--custom">
-                    <span class="quote-pricing__amount quote-pricing__amount--text">Custom pricing</span>
+                    <span class="quote-pricing__amount quote-pricing__amount--text">{{ __('ui.booking.custom_pricing') }}</span>
                   </div>
                   <p class="quote-pricing__note">
-                    This tour is tailored to your preferences. Request a quote for exact pricing.
+                    {{ __('ui.booking.custom_pricing_note') }}
                   </p>
                 @endif
                 
@@ -1046,12 +1033,12 @@
 
               {{-- CARD 3: CTA --}}
               <div class="quote-card quote-card--cta">
-                <h3 class="quote-card__title">Request a quote</h3>
-                <p class="quote-card__desc">Get a personalized itinerary and pricing for your group.</p>
+                <h3 class="quote-card__title">{{ __('ui.booking.request_quote') }}</h3>
+                <p class="quote-card__desc">{{ __('ui.booking.quote_description') }}</p>
 
                 <button type="button" class="btn btn--primary btn--large btn--block" id="open-quote-form" aria-expanded="false" aria-controls="quote-request-form-container">
                   <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                  <span>Request a Quote</span>
+                  <span>{{ __('ui.booking.request_quote_btn') }}</span>
                 </button>
 
                 {{-- PDF Download Button (Secondary Action) --}}
@@ -1060,25 +1047,25 @@
                 {{-- Expandable quote form --}}
                 <div class="quote-request-form" id="quote-request-form-container" style="display: none;">
                   <div class="quote-form-divider">
-                    <span>Your details</span>
+                    <span>{{ __('ui.booking.your_details') }}</span>
                   </div>
                   <form class="quote-detail-form" id="quote-request-form" action="#" method="POST" data-form-type="quote-request">
                     <input type="hidden" name="action_type" value="inquiry">
                     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
                     <div class="form-group">
-                      <label for="quote-name" class="form-label">Your name</label>
-                      <input type="text" id="quote-name" name="customer_name" class="form-input" required autocomplete="name" placeholder="John Smith">
+                      <label for="quote-name" class="form-label">{{ __('ui.booking.your_name') }}</label>
+                      <input type="text" id="quote-name" name="customer_name" class="form-input" required autocomplete="name" placeholder="{{ __('ui.booking.placeholder_name') }}">
                     </div>
                     <div class="form-group">
-                      <label for="quote-email" class="form-label">Email address</label>
-                      <input type="email" id="quote-email" name="customer_email" class="form-input" required autocomplete="email" placeholder="john@example.com">
+                      <label for="quote-email" class="form-label">{{ __('ui.booking.email_address') }}</label>
+                      <input type="email" id="quote-email" name="customer_email" class="form-input" required autocomplete="email" placeholder="{{ __('ui.booking.placeholder_email') }}">
                     </div>
                     <div class="form-group">
-                      <label for="quote-message" class="form-label">Message <span class="optional">(optional)</span></label>
-                      <textarea id="quote-message" name="message" class="form-input" rows="3" placeholder="Tell us about your ideal trip..."></textarea>
+                      <label for="quote-message" class="form-label">{!! __('ui.booking.message_optional') !!}</label>
+                      <textarea id="quote-message" name="message" class="form-input" rows="3" placeholder="{{ __('ui.booking.trip_placeholder') }}"></textarea>
                     </div>
                     <button type="submit" class="btn btn--accent btn--block" id="submit-quote-request">
-                      <span>Send Quote Request</span>
+                      <span>{{ __('ui.booking.send_quote_request') }}</span>
                       <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </button>
                   </form>
@@ -1088,8 +1075,8 @@
                     <div class="quote-success__icon">
                       <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="28" fill="#10B981"/><path d="M38 22L25 35L18 28" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h4 class="quote-success__title">Quote Request Sent!</h4>
-                    <p class="quote-success__message">We'll get back to you within 24 hours with a personalized quote.</p>
+                    <h4 class="quote-success__title">{{ __('ui.booking.quote_sent_title') }}</h4>
+                    <p class="quote-success__message">{{ __('ui.booking.quote_sent_message') }}</p>
                     
                   </div>
                 </div>
@@ -1097,17 +1084,17 @@
                 <div class="quote-cta__microcopy">
                   <span class="microcopy-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    Free quote
+                    {{ __('ui.booking.free_quote') }}
                   </span>
                   <span class="microcopy-divider">•</span>
                   <span class="microcopy-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    No obligation
+                    {{ __('ui.booking.no_obligation') }}
                   </span>
                   <span class="microcopy-divider">•</span>
                   <span class="microcopy-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    Reply in 24h
+                    {{ __('ui.booking.reply_24h') }}
                   </span>
                 </div>
               </div>
@@ -1120,8 +1107,8 @@
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
                   </div>
                   <div class="trust-feature__content">
-                    <span class="trust-feature__title">Private Tour</span>
-                    <span class="trust-feature__desc">Just your group. Flexible timing and pace.</span>
+                    <span class="trust-feature__title">{{ __('ui.booking.private_tour') }}</span>
+                    <span class="trust-feature__desc">{{ __('ui.booking.private_tour_desc') }}</span>
                   </div>
                 </div>
                 @endif
@@ -1129,15 +1116,15 @@
                 <div class="trust-list">
                   <div class="trust-item">
                     <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    <span>Secure payment</span>
+                    <span>{{ __('ui.booking.secure_payment') }}</span>
                   </div>
                   <div class="trust-item">
                     <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <span>24/7 support</span>
+                    <span>{{ __('ui.booking.support_24_7') }}</span>
                   </div>
                   <div class="trust-item">
                     <svg class="trust-item__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                    <span>Flexible cancellation</span>
+                    <span>{{ __('ui.booking.flexible_cancellation') }}</span>
                   </div>
                 </div>
               </div>
@@ -1165,11 +1152,11 @@
         @endphp
         <div class="mobile-cta__price">
           <span class="mobile-cta__amount" data-mobile-price="{{ $tour->price_per_person }}">${{ number_format($mobilePricePerPerson, 2) }}</span>
-          <span class="mobile-cta__unit">per person</span>
+          <span class="mobile-cta__unit">{{ __('ui.booking.per_person') }}</span>
         </div>
       @else
         <div class="mobile-cta__contact">
-          <span>Request Quote</span>
+          <span>{{ __('ui.booking.request_quote_mobile') }}</span>
         </div>
       @endif
       <!-- Action Buttons Group -->
@@ -1182,7 +1169,7 @@
         @else
         <button type="button" class="btn btn--accent mobile-cta__button" data-scroll-to="quote-sidebar" aria-label="Request a Quote">
           <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Get Quote
+          {{ __('ui.booking.get_quote') }}
         </button>
         @endif
         <a href="https://wa.me/998915550808?text=Hi!%20I'm%20interested%20in%20the%20{{ urlencode($tour->title) }}%20tour."
@@ -4847,6 +4834,27 @@ document.body.addEventListener('htmx:configRequest', function(event) {
 </script>
 <script src="{{ asset('js/payment-integration.js') }}"></script>
 <script src="{{ asset('tour-details.js') }}"></script>
+<script>
+window.bookingI18n = {
+    confirmBooking: @json(__('ui.booking.js_confirm_booking')),
+    selectTravelDate: @json(__('ui.booking.js_select_travel_date')),
+    selectDeparture: @json(__('ui.booking.js_select_departure')),
+    fallbackTourName: @json(__('ui.booking.js_fallback_tour_name')),
+    dateTbd: @json(__('ui.booking.js_date_tbd')),
+    yourEmail: @json(__('ui.booking.js_your_email')),
+    payNow: @json(__('ui.booking.js_pay_now')),
+    payNowSave: @json(__('ui.booking.js_pay_now_save')),
+    inquirySubmitted: @json(__('ui.booking.js_inquiry_submitted')),
+    inquirySubmittedText: @json(__('ui.booking.js_inquiry_submitted_text')),
+    formError: @json(__('ui.booking.js_form_error')),
+    networkError: @json(__('ui.booking.js_network_error')),
+    sending: @json(__('ui.booking.js_sending')),
+    csrfError: @json(__('ui.booking.js_csrf_error')),
+    guestSingular: @json(__('ui.booking.guest_singular')),
+    guestPlural: @json(__('ui.booking.guest_plural')),
+    sendQuestion: @json(__('ui.booking.send_question'))
+};
+</script>
 <script src="{{ asset('js/booking-form.js') }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>
 <script>

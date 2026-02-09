@@ -10,7 +10,7 @@
     {{-- Show toggle only if tour supports BOTH types --}}
     <div class="tour-type-selector" id="tour-type-selector" style="margin-bottom: 16px;">
         <label style="display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
-            Select Tour Type
+            {{ __('ui.booking.select_tour_type') }}
         </label>
 
         <div style="display: inline-flex; border-radius: 10px; border: 1px solid #D1D5DB; background: #F3F4F6; padding: 4px; gap: 4px;">
@@ -37,7 +37,7 @@
                 <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
-                Private Tour
+                {{ __('ui.booking.private_tour_btn') }}
             </button>
 
             {{-- Group Tour Button --}}
@@ -63,7 +63,7 @@
                 <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-                Group Tour
+                {{ __('ui.booking.group_tour_btn') }}
             </button>
         </div>
 
@@ -74,7 +74,7 @@
                     <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Loading...
+                {{ __('ui.booking.loading') }}
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@
             .catch(function(error) {
                 console.error('Error switching tour type:', error);
                 document.getElementById('tour-type-loading').style.display = 'none';
-                alert('Error loading form. Please try again.');
+                alert('{{ __('ui.booking.error_loading') }}');
             });
         }
     </script>

@@ -275,7 +275,7 @@ return array (
     'clear' => 'Effacer',
     'apply' => 'Appliquer',
   ),
-  'booking' => 
+  'booking' =>
   array (
     'title' => 'Réserver ce Circuit',
     'inquiry_title' => 'Envoyer une Demande',
@@ -292,6 +292,175 @@ return array (
     'privacy_agree' => 'J\'accepte la politique de confidentialité',
     'success_message' => 'Merci ! Votre demande de réservation a été reçue.',
     'error_message' => 'Une erreur est survenue. Veuillez réessayer.',
+
+    // Price Header
+    'viewers_text' => 'voyageurs consultent ce circuit',
+    'from_price' => 'à partir de',
+    'per_person_short' => '/personne',
+    'price_guide_transfers' => 'Par personne &bull; Guide et transferts inclus',
+    'price_guide_only' => 'Par personne &bull; Guide inclus',
+    'price_see_included' => 'Voir ce qui est inclus',
+    'price_includes_prefix' => 'Par personne &bull;',
+    'reviews_count' => ':count avis',
+    'price_on_request' => 'Prix sur demande',
+    'contact_for_quote' => 'Contactez-nous pour un devis personnalisé',
+
+    // Pricing Tiers
+    'group_pricing' => 'Tarifs de groupe',
+    'pricing' => 'Tarifs',
+    'group_price_note' => 'Le prix diminue avec la taille du groupe',
+    'tier_price_note' => 'Prix par personne selon la taille du groupe',
+
+    // Total Block
+    'total' => 'Total',
+    'contact_us' => 'Contactez-nous',
+
+    // Cancellation
+    'flexible_cancellation' => 'Annulation flexible',
+    'full_refund' => 'Remboursement intégral',
+    'refund_75' => 'Remboursement de 75%',
+    'refund_50' => 'Remboursement de 50%',
+    'no_refund' => 'Aucun remboursement',
+
+    // Calendar
+    'select_departure_date' => 'Sélectionnez la date de départ',
+    'selected_departure' => 'Départ sélectionné :',
+    'months' => ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+    'weekdays_short' => ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+
+    // Action Buttons
+    'request_booking' => 'Demander une réservation',
+    'ask_question' => 'Poser une question',
+    'response_time' => 'Nous répondons généralement en quelques heures',
+
+    // Step 2 - Personal Info
+    'your_information' => 'VOS INFORMATIONS',
+    'label_full_name' => 'NOM COMPLET',
+    'label_email' => 'E-MAIL',
+    'label_phone' => 'TÉLÉPHONE',
+    'label_country' => 'PAYS',
+    'label_message' => 'VOTRE MESSAGE',
+    'label_special_requests' => 'DEMANDES SPÉCIALES',
+    'placeholder_name' => 'Jean Dupont',
+    'placeholder_email' => 'jean@example.com',
+    'placeholder_phone' => '+33 6 12 34 56 78',
+    'placeholder_country' => 'France',
+    'placeholder_message' => 'Parlez-nous de vos questions ou exigences spécifiques...',
+    'placeholder_special' => 'Régime alimentaire, besoins d\'accessibilité, etc.',
+    'terms_text' => 'J\'accepte les',
+    'terms_link' => 'Conditions',
+    'privacy_link' => 'Politique de confidentialité',
+    'send_booking_request' => 'Envoyer la demande de réservation',
+    'booking_reassurance' => 'Confirmation sous 24h &bull; Sans frais de paiement',
+
+    // Inquiry Form
+    'inquiry_ask_title' => 'Posez-nous une question sur ce circuit',
+    'inquiry_subtitle' => 'Des questions ? Nous sommes là pour vous aider ! Nous répondrons à votre e-mail sous 24 heures.',
+    'your_name' => 'Votre nom',
+    'email_address' => 'Adresse e-mail',
+    'email_hint' => 'Nous enverrons notre réponse à cet e-mail',
+    'your_question' => 'Votre question',
+    'question_placeholder' => 'Que souhaitez-vous savoir sur ce circuit ?',
+    'question_hint' => 'Renseignez-vous sur l\'itinéraire, les tarifs, la disponibilité, la taille des groupes ou tout autre sujet !',
+    'send_question' => 'Envoyer la question',
+    'inquiry_note' => 'Pas besoin de dates ni de nombre de participants — posez simplement votre question et nous vous aiderons !',
+
+    // Trust & Payment
+    'trust_secure' => 'Sécurisé',
+    'trust_24_7' => '24/7',
+    'trust_flexible' => 'Flexible',
+    'ssl_certified' => 'Chiffrement SSL &bull; Vérifié &bull; Certifié PCI',
+    'we_accept' => 'Nous acceptons :',
+
+    // Booking Clarification
+    'request_confirm' => 'Demander et confirmer',
+    'request_confirm_text' => 'Nous confirmerons votre réservation sous 24h, puis vous pourrez payer en ligne ou en espèces le jour du circuit.',
+
+    // Why Book
+    'why_book_title' => 'Pourquoi réserver avec Jahongir Travel ?',
+    'best_price' => 'Garantie du meilleur prix',
+    'flexible_cancellation_policy' => 'Politique d\'annulation flexible',
+    'expert_guides' => 'Guides locaux experts',
+    'customer_support' => 'Support client 24/7',
+
+    // Quote Mode
+    'plan_your_tour' => 'Planifiez votre circuit',
+    'preferred_date' => 'Date souhaitée',
+    'number_of_guests' => 'Nombre de participants',
+    'quote_helper' => 'Nous confirmerons la disponibilité et préparerons un devis personnalisé.',
+    'estimated_price' => 'Prix de départ estimé',
+    'from' => 'À partir de',
+    'per_person_slash' => '/ personne',
+    'price_note' => 'Basé sur un circuit privé pour 2 personnes. Le prix final dépend du niveau d\'hôtel, du type de transport et de la saison.',
+    'custom_pricing' => 'Tarif personnalisé',
+    'custom_pricing_note' => 'Ce circuit est adapté à vos préférences. Demandez un devis pour connaître le prix exact.',
+    'request_quote' => 'Demander un devis',
+    'quote_description' => 'Obtenez un itinéraire et un tarif personnalisés pour votre groupe.',
+    'request_quote_btn' => 'Demander un devis',
+    'your_details' => 'Vos coordonnées',
+    'message_optional' => 'Message <span class="optional">(facultatif)</span>',
+    'trip_placeholder' => 'Décrivez-nous votre voyage idéal...',
+    'send_quote_request' => 'Envoyer la demande de devis',
+    'quote_sent_title' => 'Demande de devis envoyée !',
+    'quote_sent_message' => 'Nous vous répondrons sous 24 heures avec un devis personnalisé.',
+    'free_quote' => 'Devis gratuit',
+    'no_obligation' => 'Sans engagement',
+    'reply_24h' => 'Réponse sous 24h',
+    'private_tour' => 'Circuit privé',
+    'private_tour_desc' => 'Uniquement votre groupe. Horaires et rythme flexibles.',
+    'secure_payment' => 'Paiement sécurisé',
+    'support_24_7' => 'Support 24/7',
+
+    // Mobile CTA
+    'per_person' => 'par personne',
+    'request_quote_mobile' => 'Demander un devis',
+    'get_quote' => 'Obtenir un devis',
+
+    // Tour Type Selector
+    'select_tour_type' => 'Type de circuit',
+    'private_tour_btn' => 'Circuit privé',
+    'group_tour_btn' => 'Circuit en groupe',
+    'loading' => 'Chargement...',
+    'error_loading' => 'Erreur de chargement du formulaire. Veuillez réessayer.',
+
+    // Group Tour Form
+    'no_departures' => 'Aucun départ disponible',
+    'no_departures_text' => 'Il n\'y a actuellement aucun départ de groupe prévu pour ce circuit. Veuillez nous contacter pour les options de circuit privé.',
+    'select_departure_hint' => 'Sélectionnez une date de départ dans le calendrier ci-dessus.',
+    'number_of_seats' => 'Nombre de places',
+    'max_seats' => '(Max :max places)',
+    'price_breakdown' => 'Détail du prix',
+    'price_per_person' => 'Prix par personne :',
+    'number_of_seats_label' => 'Nombre de places :',
+    'total_price' => 'Prix total :',
+
+    // Shared
+    'guest_singular' => 'participant',
+    'guest_plural' => 'participants',
+    'reviews_count' => ':count avis',
+    'review_singular' => 'avis',
+    'per_person_abbr' => '/pers',
+    'cancel_60_plus' => '60+ jours',
+    'cancel_30_59' => '30-59 jours',
+    'cancel_7_29' => '7-29 jours',
+    'cancel_under_7' => '<7 jours',
+    'terms_and' => 'et',
+
+    // JS Booking Form (Milestone B)
+    'js_confirm_booking' => 'Confirmer la réservation',
+    'js_select_travel_date' => 'Veuillez sélectionner une date de voyage.',
+    'js_select_departure' => 'Veuillez sélectionner une date de départ dans le calendrier ci-dessus.',
+    'js_fallback_tour_name' => 'Votre tour sélectionné',
+    'js_date_tbd' => 'Date à confirmer',
+    'js_your_email' => 'votre email',
+    'js_pay_now' => 'Payer $:amount maintenant',
+    'js_pay_now_save' => 'Payer $:amount maintenant (Économisez :discount%)',
+    'js_inquiry_submitted' => 'Demande envoyée !',
+    'js_inquiry_submitted_text' => 'Nous avons reçu votre question et y répondrons bientôt',
+    'js_form_error' => 'Veuillez vérifier votre formulaire et réessayer.',
+    'js_network_error' => 'Une erreur est survenue. Veuillez vérifier votre connexion et réessayer.',
+    'js_sending' => 'Envoi en cours...',
+    'js_csrf_error' => 'Jeton de sécurité non disponible. Veuillez actualiser la page et réessayer.',
   ),
   'tour' => 
   array (

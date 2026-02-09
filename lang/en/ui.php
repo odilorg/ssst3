@@ -81,7 +81,7 @@ return [
     ],
 
     // ============================================
-    // BOOKING FORM
+    // BOOKING FORM & SIDEBAR
     // ============================================
     'booking' => [
         'title' => 'Book This Tour',
@@ -99,6 +99,175 @@ return [
         'privacy_agree' => 'I agree to the privacy policy',
         'success_message' => 'Thank you! Your booking request has been received.',
         'error_message' => 'Something went wrong. Please try again.',
+
+        // Price Header
+        'viewers_text' => 'travelers viewing this tour',
+        'from_price' => 'from',
+        'per_person_short' => '/person',
+        'price_guide_transfers' => 'Per person &bull; Guide & transfers included',
+        'price_guide_only' => 'Per person &bull; Guide included',
+        'price_see_included' => 'See what\'s included',
+        'price_includes_prefix' => 'Per person &bull;',
+        'reviews_count' => ':count review|:count reviews',
+        'price_on_request' => 'Price on request',
+        'contact_for_quote' => 'Contact us for a personalized quote',
+
+        // Pricing Tiers
+        'group_pricing' => 'Group Pricing',
+        'pricing' => 'Pricing',
+        'group_price_note' => 'Price decreases as group size increases',
+        'tier_price_note' => 'Price per person based on group size',
+
+        // Total Block
+        'total' => 'Total',
+        'contact_us' => 'Contact us',
+
+        // Cancellation
+        'flexible_cancellation' => 'Flexible cancellation',
+        'full_refund' => 'Full refund',
+        'refund_75' => '75% refund',
+        'refund_50' => '50% refund',
+        'no_refund' => 'No refund',
+
+        // Calendar
+        'select_departure_date' => 'Select Departure Date',
+        'selected_departure' => 'Selected Departure:',
+        'months' => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        'weekdays_short' => ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+
+        // Action Buttons
+        'request_booking' => 'Request Booking',
+        'ask_question' => 'Ask a Question',
+        'response_time' => 'We typically respond within a few hours',
+
+        // Step 2 - Personal Info
+        'your_information' => 'YOUR INFORMATION',
+        'label_full_name' => 'FULL NAME',
+        'label_email' => 'EMAIL',
+        'label_phone' => 'PHONE',
+        'label_country' => 'COUNTRY',
+        'label_message' => 'YOUR MESSAGE',
+        'label_special_requests' => 'SPECIAL REQUESTS',
+        'placeholder_name' => 'John Doe',
+        'placeholder_email' => 'john@example.com',
+        'placeholder_phone' => '+998 91 123 45 67',
+        'placeholder_country' => 'United States',
+        'placeholder_message' => 'Tell us about your questions or specific requirements...',
+        'placeholder_special' => 'Dietary requirements, accessibility needs, etc.',
+        'terms_text' => 'I agree to the',
+        'terms_link' => 'Terms',
+        'privacy_link' => 'Privacy Policy',
+        'send_booking_request' => 'Send Booking Request',
+        'booking_reassurance' => 'Booking confirmed within 24h &bull; No payment fees',
+
+        // Inquiry Form
+        'inquiry_ask_title' => 'Ask Us About This Tour',
+        'inquiry_subtitle' => 'Have questions? We\'re here to help! We\'ll respond to your email within 24 hours.',
+        'your_name' => 'Your Name',
+        'email_address' => 'Email Address',
+        'email_hint' => 'We\'ll send our response to this email',
+        'your_question' => 'Your Question',
+        'question_placeholder' => 'What would you like to know about this tour?',
+        'question_hint' => 'Ask about itinerary, pricing, availability, group sizes, or anything else!',
+        'send_question' => 'Send Question',
+        'inquiry_note' => 'No dates or guest counts needed — just ask your question and we\'ll help!',
+
+        // Trust & Payment
+        'trust_secure' => 'Secure',
+        'trust_24_7' => '24/7',
+        'trust_flexible' => 'Flexible',
+        'ssl_certified' => 'SSL Encrypted &bull; Verified &bull; PCI Certified',
+        'we_accept' => 'We accept:',
+
+        // Booking Clarification
+        'request_confirm' => 'Request & confirm',
+        'request_confirm_text' => 'We\'ll confirm your booking within 24h, then you can pay online or in cash on your tour day.',
+
+        // Why Book
+        'why_book_title' => 'Why book with Jahongir Travel?',
+        'best_price' => 'Best price guarantee',
+        'flexible_cancellation_policy' => 'Flexible cancellation policy',
+        'expert_guides' => 'Expert local guides',
+        'customer_support' => '24/7 customer support',
+
+        // Quote Mode
+        'plan_your_tour' => 'Plan your tour',
+        'preferred_date' => 'Preferred date',
+        'number_of_guests' => 'Number of guests',
+        'quote_helper' => 'We\'ll confirm availability and prepare a personalized quote.',
+        'estimated_price' => 'Estimated starting price',
+        'from' => 'From',
+        'per_person_slash' => '/ person',
+        'price_note' => 'Based on a 2-person private tour. Final price depends on hotel level, transport type, and season.',
+        'custom_pricing' => 'Custom pricing',
+        'custom_pricing_note' => 'This tour is tailored to your preferences. Request a quote for exact pricing.',
+        'request_quote' => 'Request a quote',
+        'quote_description' => 'Get a personalized itinerary and pricing for your group.',
+        'request_quote_btn' => 'Request a Quote',
+        'your_details' => 'Your details',
+        'message_optional' => 'Message <span class="optional">(optional)</span>',
+        'trip_placeholder' => 'Tell us about your ideal trip...',
+        'send_quote_request' => 'Send Quote Request',
+        'quote_sent_title' => 'Quote Request Sent!',
+        'quote_sent_message' => 'We\'ll get back to you within 24 hours with a personalized quote.',
+        'free_quote' => 'Free quote',
+        'no_obligation' => 'No obligation',
+        'reply_24h' => 'Reply in 24h',
+        'private_tour' => 'Private Tour',
+        'private_tour_desc' => 'Just your group. Flexible timing and pace.',
+        'secure_payment' => 'Secure payment',
+        'support_24_7' => '24/7 support',
+
+        // Mobile CTA
+        'per_person' => 'per person',
+        'request_quote_mobile' => 'Request Quote',
+        'get_quote' => 'Get Quote',
+
+        // Tour Type Selector
+        'select_tour_type' => 'Select Tour Type',
+        'private_tour_btn' => 'Private Tour',
+        'group_tour_btn' => 'Group Tour',
+        'loading' => 'Loading...',
+        'error_loading' => 'Error loading form. Please try again.',
+
+        // Group Tour Form
+        'no_departures' => 'No Departures Available',
+        'no_departures_text' => 'There are currently no group departures scheduled for this tour. Please contact us for private tour options.',
+        'select_departure_hint' => 'Select a departure date from the calendar above.',
+        'number_of_seats' => 'Number of Seats',
+        'max_seats' => '(Max :max seats)',
+        'price_breakdown' => 'Price Breakdown',
+        'price_per_person' => 'Price per person:',
+        'number_of_seats_label' => 'Number of seats:',
+        'total_price' => 'Total Price:',
+
+        // Shared
+        'guest_singular' => 'guest',
+        'guest_plural' => 'guests',
+        'reviews_count' => ':count reviews',
+        'review_singular' => 'review',
+        'per_person_abbr' => '/pp',
+        'cancel_60_plus' => '60+ days',
+        'cancel_30_59' => '30-59 days',
+        'cancel_7_29' => '7-29 days',
+        'cancel_under_7' => '<7 days',
+        'terms_and' => 'and',
+
+        // JS Booking Form (Milestone B)
+        'js_confirm_booking' => 'Confirm Booking',
+        'js_select_travel_date' => 'Please select a travel date.',
+        'js_select_departure' => 'Please select a departure date from the calendar above.',
+        'js_fallback_tour_name' => 'Your Selected Tour',
+        'js_date_tbd' => 'Date TBD',
+        'js_your_email' => 'your email',
+        'js_pay_now' => 'Pay $:amount Now',
+        'js_pay_now_save' => 'Pay $:amount Now (Save :discount%)',
+        'js_inquiry_submitted' => 'Inquiry Submitted!',
+        'js_inquiry_submitted_text' => "We've received your question and will respond soon",
+        'js_form_error' => 'Please check your form and try again.',
+        'js_network_error' => 'An error occurred. Please check your connection and try again.',
+        'js_sending' => 'Sending...',
+        'js_csrf_error' => 'Security token not available. Please refresh the page and try again.',
     ],
 
     // ============================================

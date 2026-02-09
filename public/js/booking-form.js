@@ -1,4 +1,15 @@
 
+    // i18n helper: replace :placeholder with values
+    function _t(key, replacements) {
+      var str = (window.bookingI18n && window.bookingI18n[key]) || key;
+      if (replacements) {
+        Object.keys(replacements).forEach(function(k) {
+          str = str.replace(':' + k, replacements[k]);
+        });
+      }
+      return str;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const bookingBtn = document.querySelector('[data-action="booking"]');
       const inquiryBtn = document.querySelector('[data-action="inquiry"]');
@@ -243,7 +254,7 @@
           if (messageField) messageField.required = false;
 
           // Update submit button text
-          if (submitText) submitText.textContent = 'Confirm Booking';
+          if (submitText) submitText.textContent = _t('confirmBooking');
 
           // Show step 2 form
           if (step2Form) {
@@ -374,7 +385,7 @@
             const actualDateValue = dateField ? dateField.value : startDate;
 
             if (!actualDateValue || actualDateValue === '') {
-              alert('Please select a travel date.');
+              alert(_t('selectTravelDate'));
               if (dateField) dateField.focus();
               console.error('[Booking] No start date selected for private tour');
               return;
@@ -391,14 +402,14 @@
             // Group tour: validate departure_id and start_date from calendar
             const departureId = formData.get('departure_id');
             if (!departureId || departureId === '') {
-              alert('Please select a departure date from the calendar above.');
+              alert(_t('selectDeparture'));
               console.error('[Booking] No departure selected');
               return;
             }
 
             const startDate = formData.get('start_date');
             if (!startDate || startDate === '') {
-              alert('Please select a departure date from the calendar above.');
+              alert(_t('selectDeparture'));
               console.error('[Booking] No start date set');
               return;
             }
@@ -447,12 +458,12 @@
               const modalEmail = document.getElementById('modal-customer-email');
 
               if (modalRef) modalRef.textContent = record.reference || 'N/A';
-              if (modalTourName) modalTourName.textContent = record.tour?.title || 'Your Selected Tour';
-              if (modalDate) modalDate.textContent = record.start_date ? new Date(record.start_date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD';
+              if (modalTourName) modalTourName.textContent = record.tour?.title || _t('fallbackTourName');
+              if (modalDate) modalDate.textContent = record.start_date ? new Date(record.start_date).toLocaleDateString(document.documentElement.lang || 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : _t('dateTbd');
 
               // Guest count with proper pluralization
               const guestCount = record.pax_total || formData.get('number_of_guests') || 1;
-              if (modalGuests) modalGuests.textContent = `${guestCount} ${guestCount == 1 ? 'guest' : 'guests'}`;
+              if (modalGuests) modalGuests.textContent = `${guestCount} ${guestCount == 1 ? _t('guestSingular') : _t('guestPlural')}`;
 
               if (modalTotal) {
                 const totalPrice = record.total_price ? parseFloat(record.total_price) : 200;
@@ -465,9 +476,9 @@
 
                 if (depositAmountEl) depositAmountEl.textContent = '$' + (totalPrice * 0.30).toFixed(0);
                 if (fullAmountEl) fullAmountEl.textContent = '$' + (totalPrice * 0.97).toFixed(0);
-                if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + (totalPrice * 0.30).toFixed(0) + ' Now';
+                if (paymentBtnText) paymentBtnText.textContent = _t('payNow', {amount: (totalPrice * 0.30).toFixed(0)});
               }
-              if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || 'your email';
+              if (modalEmail) modalEmail.textContent = record.customer?.email || formData.get('customer_email') || _t('yourEmail');
 
               // Update modal for inquiry vs booking
               const paymentBtn = document.getElementById('proceed-to-payment-btn');
@@ -478,8 +489,8 @@
                 const modalSubtitle = document.querySelector('.modal-subtitle');
                 const totalItem = document.querySelector('.summary-item--total');
 
-                if (modalTitle) modalTitle.textContent = 'Inquiry Submitted!';
-                if (modalSubtitle) modalSubtitle.textContent = "We've received your question and will respond soon";
+                if (modalTitle) modalTitle.textContent = _t('inquirySubmitted');
+                if (modalSubtitle) modalSubtitle.textContent = _t('inquirySubmittedText');
                 if (totalItem) totalItem.style.display = 'none';
                 if (paymentBtn) paymentBtn.style.display = 'none';
 
@@ -518,13 +529,13 @@
               if (data.errors) {
                 showValidationErrors(data.errors);
               } else {
-                showGeneralError(data.message || 'Please check your form and try again.');
+                showGeneralError(data.message || _t('formError'));
               }
             }
           })
           .catch(error => {
             console.error('[Booking] Submission error:', error);
-            showGeneralError('An error occurred. Please check your connection and try again.');
+            showGeneralError(_t('networkError'));
           })
           .finally(() => {
             // Re-enable submit button
@@ -559,7 +570,7 @@
 
         // Show loading state
         submitBtn.disabled = true;
-        btnText.textContent = 'Sending...';
+        btnText.textContent = _t('sending');
         spinner.style.display = 'inline-block';
 
         // Prepare form data
@@ -595,7 +606,7 @@
 
           // Reset button state
           submitBtn.disabled = false;
-          btnText.textContent = 'Send Question';
+          btnText.textContent = _t('sendQuestion');
           spinner.style.display = 'none';
 
           if (data.success) {
@@ -607,8 +618,8 @@
             const inquiryModalEmail = document.getElementById('inquiry-modal-email');
 
             if (inquiryModalRef) inquiryModalRef.textContent = inquiry.reference || 'N/A';
-            if (inquiryModalTour) inquiryModalTour.textContent = inquiry.tour?.title || 'Your Selected Tour';
-            if (inquiryModalEmail) inquiryModalEmail.textContent = inquiry.customer_email || 'your email';
+            if (inquiryModalTour) inquiryModalTour.textContent = inquiry.tour?.title || _t('fallbackTourName');
+            if (inquiryModalEmail) inquiryModalEmail.textContent = inquiry.customer_email || _t('yourEmail');
 
             // Show inquiry confirmation modal
             const inquiryModal = document.getElementById('inquiry-confirmation-modal');
@@ -672,7 +683,7 @@
                 errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
                 inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
               }
-              errorContainer.textContent = data.message || 'Please check your form and try again.';
+              errorContainer.textContent = data.message || _t('formError');
               errorContainer.style.display = 'block';
             }
           }
@@ -682,7 +693,7 @@
 
           // Reset button state
           submitBtn.disabled = false;
-          btnText.textContent = 'Send Question';
+          btnText.textContent = _t('sendQuestion');
           spinner.style.display = 'none';
 
           // Show inline error instead of alert
@@ -693,7 +704,7 @@
             errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
             inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
           }
-          errorContainer.textContent = 'An error occurred. Please check your connection and try again.';
+          errorContainer.textContent = _t('networkError');
           errorContainer.style.display = 'block';
         });
         };
@@ -724,12 +735,12 @@
                 errorContainer.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;';
                 inquiryForm.insertBefore(errorContainer, inquiryForm.firstChild);
               }
-              errorContainer.textContent = 'Security token not available. Please refresh the page and try again.';
+              errorContainer.textContent = _t('csrfError');
               errorContainer.style.display = 'block';
 
               // Reset button state
               submitBtn.disabled = false;
-              btnText.textContent = 'Send Question';
+              btnText.textContent = _t('sendQuestion');
               spinner.style.display = 'none';
             });
         } else {
@@ -784,11 +795,11 @@
         if (selectedOption === 'deposit') {
           const depositAmount = totalPrice * 0.30;
           if (depositAmountEl) depositAmountEl.textContent = '$' + depositAmount.toFixed(0);
-          if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + depositAmount.toFixed(0) + ' Now';
+          if (paymentBtnText) paymentBtnText.textContent = _t('payNow', {amount: depositAmount.toFixed(0)});
         } else {
           const fullAmount = totalPrice * 0.97; // 3% discount
           if (fullAmountEl) fullAmountEl.textContent = '$' + fullAmount.toFixed(0);
-          if (paymentBtnText) paymentBtnText.textContent = 'Pay $' + fullAmount.toFixed(0) + ' Now (Save 3%)';
+          if (paymentBtnText) paymentBtnText.textContent = _t('payNowSave', {amount: fullAmount.toFixed(0), discount: '3'});
         }
       }
 
