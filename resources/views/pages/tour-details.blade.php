@@ -58,11 +58,26 @@
         <h1 class="tour-header__title">{{ $translation->title }}</h1>
         <div class="tour-header__meta">
           <span class="tour-header__duration">
-            <i class="far fa-clock"></i> {{ $tour->duration_days }} {{ __('ui.days') }}
+            <i class="far fa-clock"></i> {{ $tour->duration_text ?: $tour->duration_days . ' ' . __('ui.days') }}
           </span>
-          <span class="tour-header__city">
-            <i class="fas fa-map-marker-alt"></i> {{ $tour->city->name ?? '' }}
+          <span class="tour-header__tour-type">
+            <i class="fas {{ $tour->tour_type === 'group_only' ? 'fa-users' : ($tour->tour_type === 'private_only' ? 'fa-user' : 'fa-user-friends') }}"></i>
+            @if($tour->tour_type === 'group_only')
+              {{ __('ui.tour_meta.group_tour') }}
+            @elseif($tour->tour_type === 'private_only')
+              {{ __('ui.tour_meta.private_activity') }}
+            @else
+              {{ __('ui.tour_meta.private_activity') }} & {{ __('ui.tour_meta.group_tour') }}
+            @endif
           </span>
+          <span class="tour-header__cancellation">
+            <i class="far fa-calendar-check"></i> {{ __('ui.cancellation.free_cancellation_short', ['days' => max(1, round($tour->cancellation_hours / 24))]) }}
+          </span>
+          @if(!empty($tour->languages) && is_array($tour->languages) && count($tour->languages) > 0)
+            <span class="tour-header__languages">
+              <i class="fas fa-language"></i> {{ implode(', ', $tour->languages) }}
+            </span>
+          @endif
         </div>
       </div>
     @else

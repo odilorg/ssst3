@@ -338,6 +338,7 @@ return [
     // ============================================
     'cancellation' => [
         'free_cancellation' => 'Free cancellation up to :days days before the tour start time.',
+        'free_cancellation_short' => 'Free cancellation :days days',
         'full_refund_notice' => 'You can cancel up to :days days in advance of the experience for a full refund.',
         'rule_full_refund' => 'Full refund if cancelled :days+ days before departure.',
         'rule_no_refund' => 'No refund if cancelled less than :days days before departure.',
