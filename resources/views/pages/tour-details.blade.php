@@ -49,9 +49,9 @@
       <!-- Translated Content -->
       <div class="container">
         <div class="tour-header__breadcrumb">
-          <a href="{{ url(app()->getLocale()) }}">{{ __('ui.home') }}</a>
+          <a href="{{ url(app()->getLocale()) }}">{{ __('ui.nav.home') }}</a>
           <span class="tour-header__breadcrumb-separator">/</span>
-          <a href="{{ url(app()->getLocale() . '/craft-journeys') }}">{{ __('ui.tours') }}</a>
+          <a href="{{ url(app()->getLocale() . '/craft-journeys') }}">{{ __('ui.nav.tours') }}</a>
           <span class="tour-header__breadcrumb-separator">/</span>
           <span>{{ $translation->title }}</span>
         </div>
