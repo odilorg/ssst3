@@ -83,6 +83,13 @@ class BookingPreviewController extends Controller
                         'price_per_person' => (float) $tour->private_base_price,
                         'total_price' => (float) $tour->private_base_price * $guestsCount,
                     ];
+                } elseif ($tour->price_per_person) {
+                    // Final fallback to group price if private pricing not configured
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $tour->price_per_person,
+                        'total_price' => (float) $tour->price_per_person * $guestsCount,
+                    ];
                 }
 
                 return view('partials.booking.private-tour-form', [
