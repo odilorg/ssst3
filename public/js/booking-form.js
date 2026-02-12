@@ -1038,9 +1038,10 @@
           // Include selected extras to preserve state across swaps
           const container = document.getElementById('booking-form-container') || document;
           const selectedExtras = Array.from(container.querySelectorAll('.booking-extra-checkbox:checked')).map(cb => cb.value);
-          if (selectedExtras.length > 0) {
-            values.extras = selectedExtras;
-          }
+          // Format extras as Laravel expects (extras[0]=id, extras[1]=id, etc.)
+          selectedExtras.forEach((id, index) => {
+            values[`extras[${index}]`] = id;
+          });
 
           // For group tours, include selected departure ID
           if (tourType === 'group') {
