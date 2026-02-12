@@ -1010,6 +1010,8 @@
         // Try to get computed total from private form layout first
         var grandTotalEl = document.getElementById('price-grand-total');
 
+        console.log('[Sticky Price] Looking for #price-grand-total:', !!grandTotalEl);
+
         if (grandTotalEl) {
           // Private form: read data-base attribute + calculate with addons
           var basePrice = parseFloat(grandTotalEl.dataset.base) || 0;
