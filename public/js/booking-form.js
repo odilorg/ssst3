@@ -982,10 +982,84 @@
       });
 
       // Recalculate after HTMX swaps (guest count change re-renders the form)
-      document.addEventListener('htmx:afterSettle', function() {
-        updateExtrasTotal();
+      document.addEventListener('htmx:afterSettle', function(event) {
+        // Only recalculate if the swap target was the booking form
+        if (event.detail.target && event.detail.target.id === 'booking-form-container') {
+          // Small delay to ensure DOM is fully settled
+          setTimeout(function() {
+            updateExtrasTotal();
+          }, 50);
+        }
       });
 
       console.log('[Extras] Add-on price calculation initialized');
+    })();
+
+    // ================================================================
+    // GUEST COUNT HANDLERS: Event delegation for +/- buttons
+    // ================================================================
+    (function() {
+      // Event delegation: listen on document for guest count button clicks
+      document.addEventListener('click', function(e) {
+        // Check if clicked element is a guest count button
+        if (e.target && (e.target.classList.contains('guest-decrease-btn') || e.target.classList.contains('guest-increase-btn'))) {
+          const btn = e.target;
+          const input = document.getElementById('guests_count');
+          if (!input) return;
+
+          let currentValue = parseInt(input.value) || 1;
+          const action = btn.dataset.action;
+          const min = parseInt(btn.dataset.min || input.min || 1);
+          const max = parseInt(btn.dataset.max || input.max || 10);
+
+          // Update guest count
+          if (action === 'decrease' && currentValue > min) {
+            currentValue--;
+          } else if (action === 'increase' && currentValue < max) {
+            currentValue++;
+          } else {
+            return; // No change needed
+          }
+
+          input.value = currentValue;
+
+          // Get tour ID and type
+          const tourIdInput = document.getElementById('tour_id_for_htmx');
+          const tourTypeInput = document.querySelector('input[name="tour_type"]');
+          if (!tourIdInput || !tourTypeInput) return;
+
+          const tourId = tourIdInput.value;
+          const tourType = tourTypeInput.value;
+
+          // Prepare HTMX values
+          const values = {
+            tour_id: tourId,
+            type: tourType,
+            guests_count: currentValue
+          };
+
+          // For group tours, include selected departure ID
+          if (tourType === 'group') {
+            const selectedDepartureId = document.querySelector('input[name="group_departure_id"]:checked')?.value;
+            if (!selectedDepartureId) return; // Group tours require departure selection
+            values.group_departure_id = selectedDepartureId;
+          }
+
+          // Trigger HTMX update
+          htmx.ajax('POST', '/bookings/preview', {
+            target: '#booking-form-container',
+            swap: 'innerHTML',
+            values: values
+          });
+
+          // Update button states
+          const decreaseBtn = document.querySelector('.guest-decrease-btn');
+          const increaseBtn = document.querySelector('.guest-increase-btn');
+          if (decreaseBtn) decreaseBtn.disabled = currentValue <= min;
+          if (increaseBtn) increaseBtn.disabled = currentValue >= max;
+        }
+      });
+
+      console.log('[Guest Count] Event delegation initialized');
     })();
 

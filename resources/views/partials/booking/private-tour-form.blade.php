@@ -186,40 +186,5 @@
     {{-- Hidden Fields --}}
     <input type="hidden" name="tour_type" value="private">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+    <input type="hidden" name="tour_id_for_htmx" id="tour_id_for_htmx" value="{{ $tour->id }}">
 </div>
-
-<script>
-    // Guest count adjustment
-    document.querySelectorAll('.guest-decrease-btn, .guest-increase-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const input = document.getElementById('guests_count');
-            let currentValue = parseInt(input.value);
-            const action = this.dataset.action;
-            const min = parseInt(this.dataset.min || input.min);
-            const max = parseInt(this.dataset.max || input.max);
-
-            if (action === 'decrease' && currentValue > min) {
-                currentValue--;
-            } else if (action === 'increase' && currentValue < max) {
-                currentValue++;
-            }
-
-            input.value = currentValue;
-
-            // Update pricing via HTMX
-            htmx.ajax('POST', '/bookings/preview', {
-                target: '#booking-form-container',
-                swap: 'innerHTML',
-                values: {
-                    tour_id: {{ $tour->id }},
-                    type: 'private',
-                    guests_count: currentValue
-                }
-            });
-
-            // Update button states
-            document.querySelector('.guest-decrease-btn').disabled = currentValue <= min;
-            document.querySelector('.guest-increase-btn').disabled = currentValue >= max;
-        });
-    });
-</script>
