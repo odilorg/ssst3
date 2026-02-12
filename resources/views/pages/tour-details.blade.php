@@ -57,10 +57,10 @@
         </div>
         <h1 class="tour-header__title">{{ $translation->title }}</h1>
         <div class="tour-header__meta">
-          <span class="tour-header__duration">
+          <span class="meta-item">
             <i class="far fa-clock"></i> {{ $tour->duration_text ?: $tour->duration_days . ' ' . __('ui.days') }}
           </span>
-          <span class="tour-header__tour-type">
+          <span class="meta-item">
             <i class="fas {{ $tour->tour_type === 'group_only' ? 'fa-users' : ($tour->tour_type === 'private_only' ? 'fa-user' : 'fa-user-friends') }}"></i>
             @if($tour->tour_type === 'group_only')
               {{ __('ui.tour_meta.group_tour') }}
@@ -70,11 +70,14 @@
               {{ __('ui.tour_meta.private_activity') }} & {{ __('ui.tour_meta.group_tour') }}
             @endif
           </span>
-          <span class="tour-header__cancellation">
+          <span class="meta-item">
+            <i class="fas fa-users"></i> {{ __('ui.tour_meta.max_group') }}: {{ $tour->max_guests }} {{ __('ui.tour_meta.guests') }}
+          </span>
+          <span class="meta-item">
             <i class="far fa-calendar-check"></i> {{ __('ui.cancellation.free_cancellation_short', ['days' => max(1, round($tour->cancellation_hours / 24))]) }}
           </span>
           @if(!empty($tour->languages) && is_array($tour->languages) && count($tour->languages) > 0)
-            <span class="tour-header__languages">
+            <span class="meta-item">
               <i class="fas fa-language"></i> {{ implode(', ', $tour->languages) }}
             </span>
           @endif
@@ -146,44 +149,6 @@
             @if(isset($translation))
               <!-- Translated Overview -->
               <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
-
-              <!-- Tour Meta Information (always at top, consistent position) -->
-              <div class="tour-meta-bar">
-                <span class="tour-meta-item">
-                  @if($tour->isGroupOnly())
-                  <svg class="icon icon--users" width="18" height="18" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M7 8a3 3 0 100-6 3 3 0 000 6zm0 2a7 7 0 00-7 7 1 1 0 001 1h12a1 1 0 001-1 7 7 0 00-7-7zm6-2a2 2 0 100-4 2 2 0 000 4zm0 2a5.997 5.997 0 014.917 9H14a8.97 8.97 0 00-2-5.708A5.98 5.98 0 0113 10z"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.group_tour') }}</span>
-                  @elseif($tour->isMixedType())
-                  <svg class="icon icon--tag" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
-                    <path d="M2 0a2 2 0 00-2 2v5.586a2 2 0 00.586 1.414l8 8a2 2 0 002.828 0l5.586-5.586a2 2 0 000-2.828l-8-8A2 2 0 008.414 0H2zm2.5 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.private_activity') }} & {{ __('ui.tour_meta.group_tour') }}</span>
-                  @else
-                  <svg class="icon icon--tag" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
-                    <path d="M2 0a2 2 0 00-2 2v5.586a2 2 0 00.586 1.414l8 8a2 2 0 002.828 0l5.586-5.586a2 2 0 000-2.828l-8-8A2 2 0 008.414 0H2zm2.5 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.private_activity') }}</span>
-                  @endif
-                </span>
-
-                <span class="tour-meta-item">
-                  <svg class="icon icon--clock" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <circle cx="9" cy="9" r="8"/>
-                    <path d="M9 4.5v4.5l3 2"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.duration') }}: {{ $tour->duration_text }}</span>
-                </span>
-
-                <span class="tour-meta-item">
-                  <svg class="icon icon--users" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M7 8a3 3 0 100-6 3 3 0 000 6zm0 2a7 7 0 00-7 7 1 1 0 001 1h12a1 1 0 001-1 7 7 0 00-7-7zm6-2a2 2 0 100-4 2 2 0 000 4zm0 2a5.997 5.997 0 014.917 9H14a8.97 8.97 0 00-2-5.708A5.98 5.98 0 0113 10z"/>
-                  </svg>
-                  <span>{{ __('ui.tour_meta.max_group') }}: {{ $tour->max_guests }} {{ __('ui.tour_meta.guests') }}</span>
-                </span>
-
-              </div>
 
               @if($translation->excerpt)
                 <p class="tour-overview__excerpt">{{ $translation->excerpt }}</p>
