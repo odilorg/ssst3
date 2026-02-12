@@ -85,6 +85,16 @@ class BookingPreviewController extends Controller
                     ];
                 } elseif ($tour->price_per_person) {
                     // Final fallback to group price if private pricing not configured
+                    // SECURITY: Log warning about data inconsistency
+                    Log::warning('Tour pricing fallback triggered - private tour using group price', [
+                        'tour_id' => $tour->id,
+                        'tour_slug' => $tour->slug,
+                        'tour_type' => $tour->tour_type,
+                        'private_base_price' => $tour->private_base_price,
+                        'price_per_person' => $tour->price_per_person,
+                        'guests_count' => $guestsCount,
+                    ]);
+
                     $priceData = [
                         'success' => true,
                         'price_per_person' => (float) $tour->price_per_person,
