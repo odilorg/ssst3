@@ -1049,6 +1049,30 @@
     })();
 
     // ================================================================
+    // HTMX EVENT DEBUGGING
+    // ================================================================
+    (function() {
+      // Log all HTMX events to debug issues
+      document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        console.log('[HTMX] beforeRequest:', evt.detail);
+      });
+
+      document.body.addEventListener('htmx:afterRequest', function(evt) {
+        console.log('[HTMX] afterRequest - Status:', evt.detail.xhr.status, 'Response:', evt.detail.xhr.responseText.substring(0, 200));
+      });
+
+      document.body.addEventListener('htmx:responseError', function(evt) {
+        console.error('[HTMX] responseError:', evt.detail);
+      });
+
+      document.body.addEventListener('htmx:sendError', function(evt) {
+        console.error('[HTMX] sendError:', evt.detail);
+      });
+
+      console.log('[HTMX] Event listeners attached');
+    })();
+
+    // ================================================================
     // GUEST COUNT HANDLERS: Event delegation for +/- buttons
     // ================================================================
     (function() {
