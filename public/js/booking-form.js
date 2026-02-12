@@ -925,13 +925,8 @@
     // ================================================================
     (function() {
       function updateExtrasTotal() {
-        console.log('[Extras] updateExtrasTotal() called');
         var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
-        if (!checkboxes.length) {
-          console.log('[Extras] No checkbox elements found');
-          return;
-        }
-        console.log('[Extras] Found', checkboxes.length, 'extra checkboxes');
+        if (!checkboxes.length) return;
 
         var guestsInput = document.getElementById('guests_count');
         var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
@@ -986,22 +981,12 @@
       var userHasInteracted = false; // Track if user has changed guest count or selected extras
 
       function syncStickyPrice() {
-        console.log('[Sticky Price] syncStickyPrice() called');
         var stickyLabel = document.getElementById('sticky-price-label');
         var stickyAmount = document.getElementById('sticky-price-amount');
         var stickyUnit = document.getElementById('sticky-price-unit');
 
-        console.log('[Sticky Price] Elements found:', {
-          label: !!stickyLabel,
-          amount: !!stickyAmount,
-          unit: !!stickyUnit
-        });
-
         // If sticky elements don't exist, skip (not all pages have sticky price)
-        if (!stickyLabel || !stickyAmount || !stickyUnit) {
-          console.log('[Sticky Price] Elements not found - skipping');
-          return;
-        }
+        if (!stickyLabel || !stickyAmount || !stickyUnit) return;
 
         var computedTotal = null;
         var guestsInput = document.getElementById('guests_count');
@@ -1009,8 +994,6 @@
 
         // Try to get computed total from private form layout first
         var grandTotalEl = document.getElementById('price-grand-total');
-
-        console.log('[Sticky Price] Looking for #price-grand-total:', !!grandTotalEl);
 
         if (grandTotalEl) {
           // Private form: read data-base attribute + calculate with addons
@@ -1037,23 +1020,14 @@
             userHasInteracted = true;
           }
 
-          console.log('[Sticky Price] Calculated:', {
-            basePrice: basePrice,
-            addonsTotal: addonsTotal,
-            computedTotal: computedTotal,
-            guestCount: guestCount,
-            userHasInteracted: userHasInteracted
-          });
+          computedTotal = basePrice + addonsTotal;
         }
 
         // If we have a computed total and user has interacted, update sticky
         if (computedTotal !== null && computedTotal > 0 && userHasInteracted) {
-          console.log('[Sticky Price] Updating sticky to Selected total: $' + computedTotal.toFixed(2));
           stickyLabel.textContent = 'Selected total';
           stickyAmount.textContent = '$' + computedTotal.toFixed(2);
           stickyUnit.textContent = ''; // Remove "/person" suffix
-        } else {
-          console.log('[Sticky Price] NOT updating sticky - conditions not met');
         }
         // Otherwise, leave sticky in default "from $X.XX /person" state
       }
@@ -1077,30 +1051,6 @@
     })();
 
     // ================================================================
-    // HTMX EVENT DEBUGGING
-    // ================================================================
-    (function() {
-      // Log all HTMX events to debug issues
-      document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        console.log('[HTMX] beforeRequest:', evt.detail);
-      });
-
-      document.body.addEventListener('htmx:afterRequest', function(evt) {
-        console.log('[HTMX] afterRequest - Status:', evt.detail.xhr.status, 'Response:', evt.detail.xhr.responseText.substring(0, 200));
-      });
-
-      document.body.addEventListener('htmx:responseError', function(evt) {
-        console.error('[HTMX] responseError:', evt.detail);
-      });
-
-      document.body.addEventListener('htmx:sendError', function(evt) {
-        console.error('[HTMX] sendError:', evt.detail);
-      });
-
-      console.log('[HTMX] Event listeners attached');
-    })();
-
-    // ================================================================
     // GUEST COUNT HANDLERS: Event delegation for +/- buttons
     // ================================================================
     (function() {
@@ -1108,14 +1058,9 @@
       document.addEventListener('click', function(e) {
         // Check if clicked element is a guest count button
         if (e.target && (e.target.classList.contains('guest-decrease-btn') || e.target.classList.contains('guest-increase-btn'))) {
-          console.log('[Guest Count] Button clicked!', e.target.classList.toString());
           const btn = e.target;
           const input = document.getElementById('guests_count');
-          if (!input) {
-            console.error('[Guest Count] guests_count input not found!');
-            return;
-          }
-          console.log('[Guest Count] Current value:', input.value);
+          if (!input) return;
 
           let currentValue = parseInt(input.value) || 1;
           const action = btn.dataset.action;
@@ -1164,20 +1109,17 @@
           }
 
           // Trigger HTMX update
-          console.log('[Guest Count] About to call HTMX with values:', values);
           if (typeof htmx === 'undefined') {
             console.error('[Guest Count] HTMX not loaded - cannot update preview');
             alert('Booking system not loaded. Please refresh the page.');
             return;
           }
 
-          console.log('[Guest Count] Calling htmx.ajax...');
           htmx.ajax('POST', '/bookings/preview', {
             target: '#booking-form-container',
             swap: 'innerHTML',
             values: values
           });
-          console.log('[Guest Count] HTMX call completed');
 
           // Update button states
           const decreaseBtn = document.querySelector('.guest-decrease-btn');
