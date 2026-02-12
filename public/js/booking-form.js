@@ -1051,6 +1051,12 @@
           }
 
           // Trigger HTMX update
+          if (typeof htmx === 'undefined') {
+            console.error('[Guest Count] HTMX not loaded - cannot update preview');
+            alert('Booking system not loaded. Please refresh the page.');
+            return;
+          }
+
           htmx.ajax('POST', '/bookings/preview', {
             target: '#booking-form-container',
             swap: 'innerHTML',
