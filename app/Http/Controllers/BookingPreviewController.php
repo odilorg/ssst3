@@ -65,7 +65,19 @@ class BookingPreviewController extends Controller
 
                 // Calculate pricing
                 $priceData = null;
-                if ($tour->private_base_price) {
+
+                // Try to get pricing tier first (supports tiered pricing)
+                $pricingTier = $tour->getPricingTierForGuests($guestsCount);
+
+                if ($pricingTier) {
+                    // Use tiered pricing
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $pricingTier->price_per_person,
+                        'total_price' => (float) $pricingTier->price_total,
+                    ];
+                } elseif ($tour->private_base_price) {
+                    // Fallback to simple private_base_price
                     $priceData = [
                         'success' => true,
                         'price_per_person' => (float) $tour->private_base_price,
