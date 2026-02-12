@@ -862,4 +862,52 @@ return [
         'cta_button' => 'Ver tours artesanales',
     ],
 
+    // Default/Global FAQs (fallback when no tour-specific FAQs)
+    'faq_default' => [
+        'what_bring' => [
+            'question' => '¿Qué debo llevar?',
+            'answer' => 'Zapatos cómodos para caminar, protección solar (sombrero, protector solar, gafas de sol), cámara, botella de agua y moneda local (som uzbeko) para propinas y souvenirs. También recomendamos llevar un pañuelo para que las mujeres cubran sus hombros al entrar a sitios religiosos.',
+        ],
+        'not_allowed' => [
+            'question' => '¿Qué no está permitido en este tour?',
+            'answer' => 'Fumar dentro de monumentos históricos, tocar artefactos antiguos o paredes, fotografía con flash dentro de ciertos edificios (la fotografía externa siempre está permitida), y trepar a estructuras antiguas. Por favor, sea respetuoso con estos sitios del Patrimonio Mundial de la UNESCO.',
+        ],
+        'suitable_children' => [
+            'question' => '¿Es el tour adecuado para niños?',
+            'answer' => 'Sí, este tour es apto para familias y adecuado para niños de 6 años en adelante. El ritmo de caminata es moderado y podemos ajustar el contenido del tour para mantener a los visitantes más jóvenes interesados. Los niños menores de 12 años reciben un 50% de descuento.',
+        ],
+        'if_rains' => [
+            'question' => '¿Qué pasa si llueve?',
+            'answer' => 'El tour opera en la mayoría de las condiciones climáticas. Samarcanda tiene relativamente poca lluvia, pero si se pronostica lluvia intensa, nos comunicaremos con usted para reprogramar u ofrecer un reembolso completo. La lluvia ligera normalmente no afecta el tour ya que muchos sitios tienen áreas cubiertas.',
+        ],
+    ],
+
+    // Default/Global Requirements (fallback when no tour-specific requirements)
+    'requirements_default' => [
+        'walking' => [
+            'title' => 'Se requiere caminar moderadamente',
+            'text' => 'Este tour implica aproximadamente 3 km de caminata. Use zapatos cómodos para caminar.',
+        ],
+        'dress_code' => [
+            'title' => 'Código de vestimenta',
+            'text' => 'Los hombros y las rodillas deben estar cubiertos al entrar a sitios religiosos. Las mujeres pueden querer llevar un pañuelo para cubrir los hombros. Se recomienda ropa ligera y transpirable.',
+        ],
+        'cash' => [
+            'title' => 'Efectivo para compras',
+            'text' => 'Traiga som uzbeko (UZS) para propinas, souvenirs y refrigerios. Hay cajeros automáticos disponibles cerca de la Plaza Registan. Las tarjetas de crédito no son ampliamente aceptadas en pequeños vendedores.',
+        ],
+        'photography' => [
+            'title' => 'Fotografía',
+            'text' => 'Se permite fotografiar en todos los sitios. La fotografía con flash puede estar restringida dentro de ciertos edificios. Siempre pida permiso antes de fotografiar a las personas.',
+        ],
+        'weather' => [
+            'title' => 'Consideraciones climáticas',
+            'text' => 'Los veranos en Samarcanda son calurosos (35-40°C/95-104°F). Traiga protección solar, sombrero y agua. La primavera y el otoño son más cómodos (15-25°C/59-77°F).',
+        ],
+        'accessibility' => [
+            'title' => 'Accesibilidad',
+            'text' => 'Este tour no es accesible para sillas de ruedas debido a superficies históricas irregulares y escaleras. Contáctenos si tiene inquietudes específicas de movilidad y le sugeriremos alternativas.',
+        ],
+    ],
+
 ];
