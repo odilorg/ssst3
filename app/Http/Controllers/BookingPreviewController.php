@@ -30,6 +30,8 @@ class BookingPreviewController extends Controller
             'type' => 'required|in:private,group',
             'guests_count' => 'required|integer|min:1',
             'group_departure_id' => 'nullable|exists:tour_departures,id',
+            'extras' => 'nullable|array',
+            'extras.*' => 'integer|exists:tour_extras,id',
         ]);
 
         if ($validator->fails()) {
@@ -75,6 +77,7 @@ class BookingPreviewController extends Controller
                     'tour' => $tour,
                     'guestsCount' => $guestsCount,
                     'priceData' => $priceData,
+                    'selectedExtras' => $request->input('extras', []),
                 ]);
 
             } elseif ($type === 'group') {
@@ -112,6 +115,7 @@ class BookingPreviewController extends Controller
                     'selectedDepartureId' => $groupDepartureId,
                     'guestsCount' => $guestsCount,
                     'priceData' => $priceData,
+                    'selectedExtras' => $request->input('extras', []),
                 ]);
             }
 

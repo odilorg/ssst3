@@ -1035,6 +1035,13 @@
             guests_count: currentValue
           };
 
+          // Include selected extras to preserve state across swaps
+          const container = document.getElementById('booking-form-container') || document;
+          const selectedExtras = Array.from(container.querySelectorAll('.booking-extra-checkbox:checked')).map(cb => cb.value);
+          if (selectedExtras.length > 0) {
+            values.extras = selectedExtras;
+          }
+
           // For group tours, include selected departure ID
           if (tourType === 'group') {
             const selectedDepartureId = document.querySelector('input[name="group_departure_id"]:checked')?.value;

@@ -133,6 +133,7 @@
                                data-price="{{ $extra->price }}"
                                data-unit="{{ $extra->price_unit }}"
                                data-name="{{ $extra->name }}"
+                               {{ in_array($extra->id, array_map('intval', $selectedExtras ?? []), true) ? 'checked' : '' }}
                                style="width: 16px; height: 16px; accent-color: #0D4C92; flex-shrink: 0;"
                                onchange="if(this.checked){this.closest('label').style.borderColor='#0D4C92';this.closest('label').style.background='#EFF6FF';}else{this.closest('label').style.borderColor='{{ $isPopular ? '#FBBF24' : '#E5E7EB' }}';this.closest('label').style.background='{{ $isPopular ? '#FFFBEB' : 'white' }}';}">
                         <span style="flex: 1; font-size: 13px; font-weight: 500; color: #1F2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $extra->name }}</span>
