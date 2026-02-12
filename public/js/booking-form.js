@@ -925,8 +925,13 @@
     // ================================================================
     (function() {
       function updateExtrasTotal() {
+        console.log('[Extras] updateExtrasTotal() called');
         var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
-        if (!checkboxes.length) return;
+        if (!checkboxes.length) {
+          console.log('[Extras] No checkbox elements found');
+          return;
+        }
+        console.log('[Extras] Found', checkboxes.length, 'extra checkboxes');
 
         var guestsInput = document.getElementById('guests_count');
         var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
@@ -981,12 +986,22 @@
       var userHasInteracted = false; // Track if user has changed guest count or selected extras
 
       function syncStickyPrice() {
+        console.log('[Sticky Price] syncStickyPrice() called');
         var stickyLabel = document.getElementById('sticky-price-label');
         var stickyAmount = document.getElementById('sticky-price-amount');
         var stickyUnit = document.getElementById('sticky-price-unit');
 
+        console.log('[Sticky Price] Elements found:', {
+          label: !!stickyLabel,
+          amount: !!stickyAmount,
+          unit: !!stickyUnit
+        });
+
         // If sticky elements don't exist, skip (not all pages have sticky price)
-        if (!stickyLabel || !stickyAmount || !stickyUnit) return;
+        if (!stickyLabel || !stickyAmount || !stickyUnit) {
+          console.log('[Sticky Price] Elements not found - skipping');
+          return;
+        }
 
         var computedTotal = null;
         var guestsInput = document.getElementById('guests_count');
@@ -1019,13 +1034,24 @@
           if (addonsTotal > 0 || guestCount !== 1) {
             userHasInteracted = true;
           }
+
+          console.log('[Sticky Price] Calculated:', {
+            basePrice: basePrice,
+            addonsTotal: addonsTotal,
+            computedTotal: computedTotal,
+            guestCount: guestCount,
+            userHasInteracted: userHasInteracted
+          });
         }
 
         // If we have a computed total and user has interacted, update sticky
         if (computedTotal !== null && computedTotal > 0 && userHasInteracted) {
+          console.log('[Sticky Price] Updating sticky to Selected total: $' + computedTotal.toFixed(2));
           stickyLabel.textContent = 'Selected total';
           stickyAmount.textContent = '$' + computedTotal.toFixed(2);
           stickyUnit.textContent = ''; // Remove "/person" suffix
+        } else {
+          console.log('[Sticky Price] NOT updating sticky - conditions not met');
         }
         // Otherwise, leave sticky in default "from $X.XX /person" state
       }
