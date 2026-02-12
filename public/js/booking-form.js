@@ -1056,9 +1056,14 @@
       document.addEventListener('click', function(e) {
         // Check if clicked element is a guest count button
         if (e.target && (e.target.classList.contains('guest-decrease-btn') || e.target.classList.contains('guest-increase-btn'))) {
+          console.log('[Guest Count] Button clicked!', e.target.classList.toString());
           const btn = e.target;
           const input = document.getElementById('guests_count');
-          if (!input) return;
+          if (!input) {
+            console.error('[Guest Count] guests_count input not found!');
+            return;
+          }
+          console.log('[Guest Count] Current value:', input.value);
 
           let currentValue = parseInt(input.value) || 1;
           const action = btn.dataset.action;
@@ -1107,17 +1112,20 @@
           }
 
           // Trigger HTMX update
+          console.log('[Guest Count] About to call HTMX with values:', values);
           if (typeof htmx === 'undefined') {
             console.error('[Guest Count] HTMX not loaded - cannot update preview');
             alert('Booking system not loaded. Please refresh the page.');
             return;
           }
 
+          console.log('[Guest Count] Calling htmx.ajax...');
           htmx.ajax('POST', '/bookings/preview', {
             target: '#booking-form-container',
             swap: 'innerHTML',
             values: values
           });
+          console.log('[Guest Count] HTMX call completed');
 
           // Update button states
           const decreaseBtn = document.querySelector('.guest-decrease-btn');
