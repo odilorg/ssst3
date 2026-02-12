@@ -455,7 +455,13 @@
               @endif
             </div>
 
-            <!-- Tier Pricing Accordion -->
+            @php
+            // Hide legacy pricing displays - now using HTMX booking form pricing instead
+            $showLegacyPricingDropdowns = false;
+            @endphp
+
+            @if($showLegacyPricingDropdowns)
+            <!-- Tier Pricing Accordion (LEGACY - Hidden) -->
             @if($tour->shouldShowPrice() && $tour->pricingTiers && $tour->pricingTiers->count() > 0)
             <details class="booking-accordion">
               <summary class="booking-accordion__trigger">
@@ -480,7 +486,7 @@
             </details>
             @endif
 
-            <!-- Total Block (Prominent) -->
+            <!-- Total Block (Prominent) (LEGACY - Hidden) -->
             @if($tour->shouldShowPrice())
             <div class="booking-total-block" data-breakdown-visible="true">
               <div class="booking-total__row">
@@ -512,6 +518,7 @@
               </div>
             </div>
             @endif
+            @endif {{-- End showLegacyPricingDropdowns --}}
 
             <!-- Cancellation Policy Accordion -->
             <details class="booking-accordion booking-accordion--secondary">
