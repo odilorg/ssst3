@@ -972,6 +972,62 @@
           var grandTotal = basePrice + addonsTotal;
           grandTotalEl.textContent = '$' + grandTotal.toFixed(2);
         }
+
+        // Sync sticky price after updating extras
+        syncStickyPrice();
+      }
+
+      // Sync sticky price box with booking form computed total
+      var userHasInteracted = false; // Track if user has changed guest count or selected extras
+
+      function syncStickyPrice() {
+        var stickyLabel = document.getElementById('sticky-price-label');
+        var stickyAmount = document.getElementById('sticky-price-amount');
+        var stickyUnit = document.getElementById('sticky-price-unit');
+
+        // If sticky elements don't exist, skip (not all pages have sticky price)
+        if (!stickyLabel || !stickyAmount || !stickyUnit) return;
+
+        var computedTotal = null;
+        var guestsInput = document.getElementById('guests_count');
+        var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
+
+        // Try to get computed total from private form layout first
+        var grandTotalEl = document.getElementById('price-grand-total');
+
+        if (grandTotalEl) {
+          // Private form: read data-base attribute + calculate with addons
+          var basePrice = parseFloat(grandTotalEl.dataset.base) || 0;
+          var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
+          var addonsTotal = 0;
+
+          checkboxes.forEach(function(cb) {
+            if (cb.checked) {
+              var price = parseFloat(cb.dataset.price) || 0;
+              var unit = cb.dataset.unit || 'per_person';
+              if (unit === 'per_person') {
+                addonsTotal += price * guestCount;
+              } else {
+                addonsTotal += price;
+              }
+            }
+          });
+
+          computedTotal = basePrice + addonsTotal;
+
+          // Mark user has interacted if they changed from default or selected extras
+          if (addonsTotal > 0 || guestCount !== 1) {
+            userHasInteracted = true;
+          }
+        }
+
+        // If we have a computed total and user has interacted, update sticky
+        if (computedTotal !== null && computedTotal > 0 && userHasInteracted) {
+          stickyLabel.textContent = 'Selected total';
+          stickyAmount.textContent = '$' + computedTotal.toFixed(2);
+          stickyUnit.textContent = ''; // Remove "/person" suffix
+        }
+        // Otherwise, leave sticky in default "from $X.XX /person" state
       }
 
       // Event delegation: listen on document for checkbox changes inside booking form
@@ -985,7 +1041,7 @@
       document.addEventListener('htmx:afterSettle', function(event) {
         // Only recalculate if the swap target was the booking form
         if (event.detail.target && event.detail.target.id === 'booking-form-container') {
-          updateExtrasTotal();
+          updateExtrasTotal(); // This will call syncStickyPrice() internally
         }
       });
 

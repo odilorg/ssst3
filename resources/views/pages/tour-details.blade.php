@@ -407,10 +407,10 @@
                     $displayTotal = $tour->price_per_person * $defaultGuestCount;
                   }
                 @endphp
-                <div class="booking-price">
-                  <span class="price-label">{{ __('ui.booking.from_price') }}</span>
-                  <span class="price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
-                  <span class="price-unit">{{ __('ui.booking.per_person_short') }}</span>
+                <div class="booking-price" id="sticky-price-box">
+                  <span class="price-label" id="sticky-price-label">{{ __('ui.booking.from_price') }}</span>
+                  <span class="price-amount" id="sticky-price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
+                  <span class="price-unit" id="sticky-price-unit">{{ __('ui.booking.per_person_short') }}</span>
                 </div>
                 <!-- Price Includes Micro-line -->
                 @php
