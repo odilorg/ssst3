@@ -985,10 +985,7 @@
       document.addEventListener('htmx:afterSettle', function(event) {
         // Only recalculate if the swap target was the booking form
         if (event.detail.target && event.detail.target.id === 'booking-form-container') {
-          // Small delay to ensure DOM is fully settled
-          setTimeout(function() {
-            updateExtrasTotal();
-          }, 50);
+          updateExtrasTotal();
         }
       });
 

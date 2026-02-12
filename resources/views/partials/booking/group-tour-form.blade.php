@@ -179,5 +179,5 @@
     {{-- Hidden Fields --}}
     <input type="hidden" name="tour_type" value="group">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
-    <input type="hidden" name="tour_id_for_htmx" id="tour_id_for_htmx" value="{{ $tour->id }}">
+    <input type="hidden" id="tour_id_for_htmx" value="{{ $tour->id }}">
 </div>
