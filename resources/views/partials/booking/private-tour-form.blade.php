@@ -148,36 +148,35 @@
     {{-- Optional Extras / Add-ons --}}
     @if($tour->activeExtras && $tour->activeExtras->count() > 0)
         <div style="margin-top: 16px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px;">
-            <h4 style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+            <h4 style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">
                 {{ __('ui.booking.extras_title') }}
             </h4>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
                 @foreach($tour->activeExtras as $extra)
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 10px; border: 1px solid #E5E7EB; border-radius: 8px; background: white; transition: all 0.2s ease;"
-                           onmouseover="this.style.borderColor='#9CA3AF'; this.style.background='#F3F4F6';"
-                           onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='#E5E7EB'; this.style.background='white';}">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 7px 10px; border: 1px solid #E5E7EB; border-radius: 8px; background: white; transition: all 0.15s ease;"
+                           onmouseover="this.style.borderColor='#9CA3AF';"
+                           onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='#E5E7EB';this.style.background='white';}">
                         <input type="checkbox" name="extras[]" value="{{ $extra->id }}"
                                class="booking-extra-checkbox"
                                data-price="{{ $extra->price }}"
                                data-unit="{{ $extra->price_unit }}"
-                               style="width: 18px; height: 18px; accent-color: #0D4C92; flex-shrink: 0;"
+                               style="width: 16px; height: 16px; accent-color: #0D4C92; flex-shrink: 0;"
                                onchange="if(this.checked){this.closest('label').style.borderColor='#0D4C92';this.closest('label').style.background='#EFF6FF';}else{this.closest('label').style.borderColor='#E5E7EB';this.closest('label').style.background='white';}">
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="font-size: 14px; font-weight: 500; color: #1F2937;">{{ $extra->name }}</div>
-                            @if($extra->description)
-                                <div style="font-size: 12px; color: #6B7280; margin-top: 2px;">{{ $extra->description }}</div>
-                            @endif
-                        </div>
-                        <div style="font-size: 13px; font-weight: 600; color: #0D4C92; white-space: nowrap;">
-                            +${{ number_format($extra->price, 2) }}
-                            <span style="font-size: 11px; font-weight: 400; color: #6B7280;">/{{ __('ui.booking.extra_unit_' . $extra->price_unit) }}</span>
-                        </div>
+                        <span style="flex: 1; font-size: 13px; font-weight: 500; color: #1F2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $extra->name }}</span>
+                        @if($extra->description)
+                            <span style="position: relative; flex-shrink: 0; cursor: help;" title="{{ $extra->description }}">
+                                <svg style="width: 14px; height: 14px; color: #9CA3AF;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-width="2" d="M12 16v-4m0-4h.01"/></svg>
+                            </span>
+                        @endif
+                        <span style="font-size: 12px; font-weight: 600; color: #0D4C92; white-space: nowrap; flex-shrink: 0;">
+                            +${{ number_format($extra->price, 0) }}<span style="font-weight: 400; color: #6B7280;">/{{ __('ui.booking.extra_unit_' . $extra->price_unit) }}</span>
+                        </span>
                     </label>
                 @endforeach
             </div>
 
             {{-- Extras Subtotal --}}
-            <div id="extras-subtotal" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #E5E7EB;">
+            <div id="extras-subtotal" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #E5E7EB;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 13px; color: #6B7280;">{{ __('ui.booking.extras_subtotal') }}</span>
                     <span id="extras-total-amount" style="font-size: 14px; font-weight: 600; color: #0D4C92;">$0.00</span>
