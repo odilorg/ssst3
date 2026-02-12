@@ -289,6 +289,9 @@ return [
         // Extras / Add-ons
         'extras_title' => 'Complementos opcionales',
         'extras_subtotal' => 'Subtotal de complementos',
+        'extras_helper' => 'Haz tu experiencia aún más especial',
+        'extras_popular' => 'Popular',
+        'base_tour' => 'Tour base',
         'extra_unit_per_person' => 'por persona',
         'extra_unit_per_group' => 'por grupo',
         'extra_unit_per_session' => 'por sesión',

@@ -290,6 +290,9 @@ return [
         // Extras / Add-ons
         'extras_title' => 'Optional Add-ons',
         'extras_subtotal' => 'Add-ons subtotal',
+        'extras_helper' => 'Make your experience even more special',
+        'extras_popular' => 'Popular',
+        'base_tour' => 'Base tour',
         'extra_unit_per_person' => 'per person',
         'extra_unit_per_group' => 'per group',
         'extra_unit_per_session' => 'per session',

@@ -930,7 +930,7 @@
 
         var guestsInput = document.getElementById('guests_count');
         var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
-        var total = 0;
+        var addonsTotal = 0;
         var anyChecked = false;
 
         checkboxes.forEach(function(cb) {
@@ -939,20 +939,38 @@
             var price = parseFloat(cb.dataset.price) || 0;
             var unit = cb.dataset.unit || 'per_person';
             if (unit === 'per_person') {
-              total += price * guestCount;
+              addonsTotal += price * guestCount;
             } else {
-              total += price;
+              addonsTotal += price;
             }
           }
         });
 
+        // Group form layout (existing)
         var subtotalEl = document.getElementById('extras-subtotal');
         var amountEl = document.getElementById('extras-total-amount');
         if (subtotalEl) {
           subtotalEl.style.display = anyChecked ? 'block' : 'none';
         }
         if (amountEl) {
-          amountEl.textContent = '$' + total.toFixed(2);
+          amountEl.textContent = '$' + addonsTotal.toFixed(2);
+        }
+
+        // Private form layout (unified price summary)
+        var addonsRowEl = document.getElementById('price-addons-row');
+        var addonsAmountEl = document.getElementById('price-addons-amount');
+        var grandTotalEl = document.getElementById('price-grand-total');
+
+        if (addonsRowEl) {
+          addonsRowEl.style.display = anyChecked ? 'flex' : 'none';
+        }
+        if (addonsAmountEl) {
+          addonsAmountEl.textContent = '+$' + addonsTotal.toFixed(2);
+        }
+        if (grandTotalEl) {
+          var basePrice = parseFloat(grandTotalEl.dataset.base) || 0;
+          var grandTotal = basePrice + addonsTotal;
+          grandTotalEl.textContent = '$' + grandTotal.toFixed(2);
         }
       }
 

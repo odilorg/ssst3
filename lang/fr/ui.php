@@ -494,6 +494,9 @@ return array (
     // Extras / Add-ons
     'extras_title' => 'Options supplémentaires',
     'extras_subtotal' => 'Sous-total des options',
+    'extras_helper' => 'Rendez votre expérience encore plus spéciale',
+    'extras_popular' => 'Populaire',
+    'base_tour' => 'Tour de base',
     'extra_unit_per_person' => 'par personne',
     'extra_unit_per_group' => 'par groupe',
     'extra_unit_per_session' => 'par session',
