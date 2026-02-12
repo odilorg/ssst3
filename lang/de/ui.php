@@ -712,5 +712,15 @@ return [
         'modal_pay_now' => ':amount jetzt bezahlen',
         'modal_pay_later' => 'Ich zahle später',
         'modal_secure_payment' => '🔒 Sichere Zahlung • 💳 Visa/Mastercard',
+
+        // Extras / Add-ons
+        'extras_title' => 'Optionale Zusatzleistungen',
+        'extras_subtotal' => 'Zwischensumme Zusatzleistungen',
+        'extras_helper' => 'Machen Sie Ihr Erlebnis noch besonderer',
+        'extras_popular' => 'Beliebt',
+        'base_tour' => 'Basistour',
+        'extra_unit_per_person' => 'pro Person',
+        'extra_unit_per_group' => 'pro Gruppe',
+        'extra_unit_per_session' => 'pro Sitzung',
     ],
 ];

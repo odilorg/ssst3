@@ -30,6 +30,8 @@ class BookingPreviewController extends Controller
             'type' => 'required|in:private,group',
             'guests_count' => 'required|integer|min:1',
             'group_departure_id' => 'nullable|exists:tour_departures,id',
+            'extras' => 'nullable|array',
+            'extras.*' => 'integer|exists:tour_extras,id',
         ]);
 
         if ($validator->fails()) {
@@ -45,6 +47,7 @@ class BookingPreviewController extends Controller
 
         try {
             $tour = Tour::findOrFail($request->tour_id);
+            $tour->load('activeExtras');
             $type = $request->type;
             $guestsCount = (int) $request->guests_count;
             $groupDepartureId = $request->group_departure_id;
@@ -62,11 +65,40 @@ class BookingPreviewController extends Controller
 
                 // Calculate pricing
                 $priceData = null;
-                if ($tour->private_base_price) {
+
+                // Try to get pricing tier first (supports tiered pricing)
+                $pricingTier = $tour->getPricingTierForGuests($guestsCount);
+
+                if ($pricingTier) {
+                    // Use tiered pricing
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $pricingTier->price_per_person,
+                        'total_price' => (float) $pricingTier->price_total,
+                    ];
+                } elseif ($tour->private_base_price) {
+                    // Fallback to simple private_base_price
                     $priceData = [
                         'success' => true,
                         'price_per_person' => (float) $tour->private_base_price,
                         'total_price' => (float) $tour->private_base_price * $guestsCount,
+                    ];
+                } elseif ($tour->price_per_person) {
+                    // Final fallback to group price if private pricing not configured
+                    // SECURITY: Log warning about data inconsistency
+                    Log::warning('Tour pricing fallback triggered - private tour using group price', [
+                        'tour_id' => $tour->id,
+                        'tour_slug' => $tour->slug,
+                        'tour_type' => $tour->tour_type,
+                        'private_base_price' => $tour->private_base_price,
+                        'price_per_person' => $tour->price_per_person,
+                        'guests_count' => $guestsCount,
+                    ]);
+
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $tour->price_per_person,
+                        'total_price' => (float) $tour->price_per_person * $guestsCount,
                     ];
                 }
 
@@ -74,6 +106,7 @@ class BookingPreviewController extends Controller
                     'tour' => $tour,
                     'guestsCount' => $guestsCount,
                     'priceData' => $priceData,
+                    'selectedExtras' => $request->input('extras', []),
                 ]);
 
             } elseif ($type === 'group') {
@@ -111,6 +144,7 @@ class BookingPreviewController extends Controller
                     'selectedDepartureId' => $groupDepartureId,
                     'guestsCount' => $guestsCount,
                     'priceData' => $priceData,
+                    'selectedExtras' => $request->input('extras', []),
                 ]);
             }
 

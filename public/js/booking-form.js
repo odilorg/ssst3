@@ -920,3 +920,215 @@
       console.log('[Modal] Inquiry modal close handlers initialized');
     });
 
+    // ================================================================
+    // EXTRAS / ADD-ONS: Price calculation with event delegation
+    // ================================================================
+    (function() {
+      function updateExtrasTotal() {
+        var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
+        if (!checkboxes.length) return;
+
+        var guestsInput = document.getElementById('guests_count');
+        var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
+        var addonsTotal = 0;
+        var anyChecked = false;
+
+        checkboxes.forEach(function(cb) {
+          if (cb.checked) {
+            anyChecked = true;
+            var price = parseFloat(cb.dataset.price) || 0;
+            var unit = cb.dataset.unit || 'per_person';
+            if (unit === 'per_person') {
+              addonsTotal += price * guestCount;
+            } else {
+              addonsTotal += price;
+            }
+          }
+        });
+
+        // Group form layout (existing)
+        var subtotalEl = document.getElementById('extras-subtotal');
+        var amountEl = document.getElementById('extras-total-amount');
+        if (subtotalEl) {
+          subtotalEl.style.display = anyChecked ? 'block' : 'none';
+        }
+        if (amountEl) {
+          amountEl.textContent = '$' + addonsTotal.toFixed(2);
+        }
+
+        // Private form layout (unified price summary)
+        var addonsRowEl = document.getElementById('price-addons-row');
+        var addonsAmountEl = document.getElementById('price-addons-amount');
+        var grandTotalEl = document.getElementById('price-grand-total');
+
+        if (addonsRowEl) {
+          addonsRowEl.style.display = anyChecked ? 'flex' : 'none';
+        }
+        if (addonsAmountEl) {
+          addonsAmountEl.textContent = '+$' + addonsTotal.toFixed(2);
+        }
+        if (grandTotalEl) {
+          var basePrice = parseFloat(grandTotalEl.dataset.base) || 0;
+          var grandTotal = basePrice + addonsTotal;
+          grandTotalEl.textContent = '$' + grandTotal.toFixed(2);
+        }
+
+        // Sync sticky price after updating extras
+        syncStickyPrice();
+      }
+
+      // Sync sticky price box with booking form computed total
+      var userHasInteracted = false; // Track if user has changed guest count or selected extras
+
+      function syncStickyPrice() {
+        var stickyLabel = document.getElementById('sticky-price-label');
+        var stickyAmount = document.getElementById('sticky-price-amount');
+        var stickyUnit = document.getElementById('sticky-price-unit');
+
+        // If sticky elements don't exist, skip (not all pages have sticky price)
+        if (!stickyLabel || !stickyAmount || !stickyUnit) return;
+
+        var computedTotal = null;
+        var guestsInput = document.getElementById('guests_count');
+        var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
+
+        // Try to get computed total from private form layout first
+        var grandTotalEl = document.getElementById('price-grand-total');
+
+        if (grandTotalEl) {
+          // Private form: read data-base attribute + calculate with addons
+          var basePrice = parseFloat(grandTotalEl.dataset.base) || 0;
+          var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
+          var addonsTotal = 0;
+
+          checkboxes.forEach(function(cb) {
+            if (cb.checked) {
+              var price = parseFloat(cb.dataset.price) || 0;
+              var unit = cb.dataset.unit || 'per_person';
+              if (unit === 'per_person') {
+                addonsTotal += price * guestCount;
+              } else {
+                addonsTotal += price;
+              }
+            }
+          });
+
+          computedTotal = basePrice + addonsTotal;
+
+          // Mark user has interacted if they changed from default or selected extras
+          if (addonsTotal > 0 || guestCount !== 1) {
+            userHasInteracted = true;
+          }
+
+          computedTotal = basePrice + addonsTotal;
+        }
+
+        // If we have a computed total and user has interacted, update sticky
+        if (computedTotal !== null && computedTotal > 0 && userHasInteracted) {
+          stickyLabel.textContent = 'Selected total';
+          stickyAmount.textContent = '$' + computedTotal.toFixed(2);
+          stickyUnit.textContent = ''; // Remove "/person" suffix
+        }
+        // Otherwise, leave sticky in default "from $X.XX /person" state
+      }
+
+      // Event delegation: listen on document for checkbox changes inside booking form
+      document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('booking-extra-checkbox')) {
+          updateExtrasTotal();
+        }
+      });
+
+      // Recalculate after HTMX swaps (guest count change re-renders the form)
+      document.addEventListener('htmx:afterSettle', function(event) {
+        // Only recalculate if the swap target was the booking form
+        if (event.detail.target && event.detail.target.id === 'booking-form-container') {
+          updateExtrasTotal(); // This will call syncStickyPrice() internally
+        }
+      });
+
+      console.log('[Extras] Add-on price calculation initialized');
+    })();
+
+    // ================================================================
+    // GUEST COUNT HANDLERS: Event delegation for +/- buttons
+    // ================================================================
+    (function() {
+      // Event delegation: listen on document for guest count button clicks
+      document.addEventListener('click', function(e) {
+        // Check if clicked element is a guest count button
+        if (e.target && (e.target.classList.contains('guest-decrease-btn') || e.target.classList.contains('guest-increase-btn'))) {
+          const btn = e.target;
+          const input = document.getElementById('guests_count');
+          if (!input) return;
+
+          let currentValue = parseInt(input.value) || 1;
+          const action = btn.dataset.action;
+          const min = parseInt(btn.dataset.min || input.min || 1);
+          const max = parseInt(btn.dataset.max || input.max || 10);
+
+          // Update guest count
+          if (action === 'decrease' && currentValue > min) {
+            currentValue--;
+          } else if (action === 'increase' && currentValue < max) {
+            currentValue++;
+          } else {
+            return; // No change needed
+          }
+
+          input.value = currentValue;
+
+          // Get tour ID and type
+          const tourIdInput = document.getElementById('tour_id_for_htmx');
+          const tourTypeInput = document.querySelector('input[name="tour_type"]');
+          if (!tourIdInput || !tourTypeInput) return;
+
+          const tourId = tourIdInput.value;
+          const tourType = tourTypeInput.value;
+
+          // Prepare HTMX values
+          const values = {
+            tour_id: tourId,
+            type: tourType,
+            guests_count: currentValue
+          };
+
+          // Include selected extras to preserve state across swaps
+          const container = document.getElementById('booking-form-container') || document;
+          const selectedExtras = Array.from(container.querySelectorAll('.booking-extra-checkbox:checked')).map(cb => cb.value);
+          // Format extras as Laravel expects (extras[0]=id, extras[1]=id, etc.)
+          selectedExtras.forEach((id, index) => {
+            values[`extras[${index}]`] = id;
+          });
+
+          // For group tours, include selected departure ID
+          if (tourType === 'group') {
+            const selectedDepartureId = document.querySelector('input[name="group_departure_id"]:checked')?.value;
+            if (!selectedDepartureId) return; // Group tours require departure selection
+            values.group_departure_id = selectedDepartureId;
+          }
+
+          // Trigger HTMX update
+          if (typeof htmx === 'undefined') {
+            console.error('[Guest Count] HTMX not loaded - cannot update preview');
+            alert('Booking system not loaded. Please refresh the page.');
+            return;
+          }
+
+          htmx.ajax('POST', '/bookings/preview', {
+            target: '#booking-form-container',
+            swap: 'innerHTML',
+            values: values
+          });
+
+          // Update button states
+          const decreaseBtn = document.querySelector('.guest-decrease-btn');
+          const increaseBtn = document.querySelector('.guest-increase-btn');
+          if (decreaseBtn) decreaseBtn.disabled = currentValue <= min;
+          if (increaseBtn) increaseBtn.disabled = currentValue >= max;
+        }
+      });
+
+      console.log('[Guest Count] Event delegation initialized');
+    })();
+

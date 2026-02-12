@@ -113,30 +113,69 @@
         @endif
     </div>
 
-    {{-- Price Breakdown --}}
+    {{-- Enhance Your Experience (Extras) --}}
+    @if($tour->activeExtras && $tour->activeExtras->count() > 0)
+        <div style="margin-bottom: 16px;">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <svg style="width: 15px; height: 15px; color: #D97706;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span style="font-size: 13px; font-weight: 600; color: #374151; text-transform: uppercase; letter-spacing: 0.5px;">{{ __('ui.booking.extras_title') }}</span>
+            </div>
+            <p style="font-size: 12px; color: #6B7280; margin: 0 0 10px 0;">{{ __('ui.booking.extras_helper') }}</p>
+
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                @foreach($tour->activeExtras as $extra)
+                    @php $isPopular = stripos($extra->name, 'airport') !== false || stripos($extra->name, 'transfer') !== false; @endphp
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 10px; border: 1px solid {{ $isPopular ? '#FBBF24' : '#E5E7EB' }}; border-radius: 8px; background: {{ $isPopular ? '#FFFBEB' : 'white' }}; transition: all 0.15s ease; position: relative;"
+                           onmouseover="this.style.borderColor='{{ $isPopular ? '#F59E0B' : '#9CA3AF' }}';"
+                           onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='{{ $isPopular ? '#FBBF24' : '#E5E7EB' }}';this.style.background='{{ $isPopular ? '#FFFBEB' : 'white' }}';}">
+                        <input type="checkbox" name="extras[]" value="{{ $extra->id }}"
+                               class="booking-extra-checkbox"
+                               data-price="{{ $extra->price }}"
+                               data-unit="{{ $extra->price_unit }}"
+                               data-name="{{ $extra->name }}"
+                               {{ in_array($extra->id, array_map('intval', $selectedExtras ?? []), true) ? 'checked' : '' }}
+                               style="width: 16px; height: 16px; accent-color: #0D4C92; flex-shrink: 0;"
+                               onchange="if(this.checked){this.closest('label').style.borderColor='#0D4C92';this.closest('label').style.background='#EFF6FF';}else{this.closest('label').style.borderColor='{{ $isPopular ? '#FBBF24' : '#E5E7EB' }}';this.closest('label').style.background='{{ $isPopular ? '#FFFBEB' : 'white' }}';}">
+                        <span style="flex: 1; font-size: 13px; font-weight: 500; color: #1F2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $extra->name }}</span>
+                        @if($isPopular)
+                            <span style="font-size: 10px; font-weight: 700; color: #92400E; background: #FDE68A; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0;">{{ __('ui.booking.extras_popular') }}</span>
+                        @endif
+                        @if($extra->description)
+                            <span style="flex-shrink: 0; cursor: help;" title="{{ $extra->description }}">
+                                <svg style="width: 14px; height: 14px; color: #9CA3AF;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-width="2" d="M12 16v-4m0-4h.01"/></svg>
+                            </span>
+                        @endif
+                        <span style="font-size: 12px; font-weight: 600; color: #0D4C92; white-space: nowrap; flex-shrink: 0;">
+                            +${{ number_format($extra->price, 0) }}<span style="font-weight: 400; color: #6B7280; font-size: 11px;">/{{ __('ui.booking.extra_unit_' . $extra->price_unit) }}</span>
+                        </span>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- Unified Price Summary --}}
     @if(isset($priceData) && $priceData['success'])
-        <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px;">
-            <h4 style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                {{ __('ui.price_breakdown') }}
-            </h4>
-
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px; margin-bottom: 0;"
+             data-base-total="{{ $priceData['total_price'] }}">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                {{-- Base tour line --}}
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 14px; color: #6B7280;">{{ __('ui.price_per_person') }}</span>
-                    <span style="font-size: 14px; font-weight: 500; color: #1F2937;">
-                        ${{ number_format($priceData['price_per_person'], 2) }}
-                    </span>
+                    <span style="font-size: 13px; color: #6B7280;">{{ __('ui.booking.base_tour') }} ({{ $guestsCount }} {{ $guestsCount == 1 ? __('ui.booking.guest_singular') : __('ui.booking.guest_plural') }})</span>
+                    <span style="font-size: 13px; font-weight: 500; color: #1F2937;">${{ number_format($priceData['total_price'], 2) }}</span>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 14px; color: #6B7280;">{{ __('ui.number_of_guests') }}:</span>
-                    <span style="font-size: 14px; font-weight: 500; color: #1F2937;">{{ $guestsCount }}</span>
+                {{-- Add-ons line (hidden until extras selected) --}}
+                <div id="price-addons-row" style="display: none; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #6B7280;">{{ __('ui.booking.extras_subtotal') }}</span>
+                    <span id="price-addons-amount" style="font-size: 13px; font-weight: 500; color: #059669;">+$0.00</span>
                 </div>
 
-                <div style="border-top: 1px solid #E5E7EB; margin: 6px 0; padding-top: 10px;">
+                {{-- Total --}}
+                <div style="border-top: 1px solid #E5E7EB; margin-top: 4px; padding-top: 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-size: 15px; font-weight: 600; color: #1F2937;">{{ __('ui.total_price') }}</span>
-                        <span style="font-size: 20px; font-weight: 700; color: #0D4C92;">
+                        <span id="price-grand-total" data-base="{{ $priceData['total_price'] }}" style="font-size: 20px; font-weight: 700; color: #0D4C92;">
                             ${{ number_format($priceData['total_price'], 2) }}
                         </span>
                     </div>
@@ -148,40 +187,5 @@
     {{-- Hidden Fields --}}
     <input type="hidden" name="tour_type" value="private">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+    <input type="hidden" id="tour_id_for_htmx" value="{{ $tour->id }}">
 </div>
-
-<script>
-    // Guest count adjustment
-    document.querySelectorAll('.guest-decrease-btn, .guest-increase-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const input = document.getElementById('guests_count');
-            let currentValue = parseInt(input.value);
-            const action = this.dataset.action;
-            const min = parseInt(this.dataset.min || input.min);
-            const max = parseInt(this.dataset.max || input.max);
-
-            if (action === 'decrease' && currentValue > min) {
-                currentValue--;
-            } else if (action === 'increase' && currentValue < max) {
-                currentValue++;
-            }
-
-            input.value = currentValue;
-
-            // Update pricing via HTMX
-            htmx.ajax('POST', '/bookings/preview', {
-                target: '#booking-form-container',
-                swap: 'innerHTML',
-                values: {
-                    tour_id: {{ $tour->id }},
-                    type: 'private',
-                    guests_count: currentValue
-                }
-            });
-
-            // Update button states
-            document.querySelector('.guest-decrease-btn').disabled = currentValue <= min;
-            document.querySelector('.guest-increase-btn').disabled = currentValue >= max;
-        });
-    });
-</script>
