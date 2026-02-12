@@ -143,6 +143,9 @@ class BookingController extends Controller
             'special_requests' => 'nullable|string|max:1000',
             // SECURITY: Validate payment_method against whitelist
             'payment_method' => 'nullable|string|in:request,card,bank_transfer',
+            // Optional extras
+            'extras' => 'nullable|array',
+            'extras.*' => 'exists:tour_extras,id',
         ];
 
         if ($tourType === 'private') {
@@ -234,6 +237,29 @@ class BookingController extends Controller
                 'payment_method' => $paymentMethod,
                 'payment_status' => 'pending',
             ]);
+
+            // Attach optional extras to booking
+            if ($request->has('extras') && !empty($request->extras)) {
+                $tour->load('activeExtras');
+                $extrasTotal = 0;
+                foreach ($request->extras as $extraId) {
+                    $extra = $tour->activeExtras->find($extraId);
+                    if ($extra) {
+                        $extraPrice = $extra->price_unit === 'per_person'
+                            ? $extra->price * $numberOfGuests
+                            : $extra->price;
+                        $booking->extras()->attach($extraId, [
+                            'price_at_booking' => $extra->price,
+                            'quantity' => $extra->price_unit === 'per_person' ? $numberOfGuests : 1,
+                        ]);
+                        $extrasTotal += $extraPrice;
+                    }
+                }
+                if ($extrasTotal > 0) {
+                    $totalAmount += $extrasTotal;
+                    $booking->update(['total_price' => $totalAmount]);
+                }
+            }
 
             // SECURITY: Sanitized success logging - only reference and IDs
             Log::info('Booking created successfully', [

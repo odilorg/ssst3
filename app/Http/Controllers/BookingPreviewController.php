@@ -45,6 +45,7 @@ class BookingPreviewController extends Controller
 
         try {
             $tour = Tour::findOrFail($request->tour_id);
+            $tour->load('activeExtras');
             $type = $request->type;
             $guestsCount = (int) $request->guests_count;
             $groupDepartureId = $request->group_departure_id;

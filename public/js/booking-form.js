@@ -920,3 +920,54 @@
       console.log('[Modal] Inquiry modal close handlers initialized');
     });
 
+    // ================================================================
+    // EXTRAS / ADD-ONS: Price calculation with event delegation
+    // ================================================================
+    (function() {
+      function updateExtrasTotal() {
+        var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
+        if (!checkboxes.length) return;
+
+        var guestsInput = document.getElementById('guests_count');
+        var guestCount = guestsInput ? parseInt(guestsInput.value) || 1 : 1;
+        var total = 0;
+        var anyChecked = false;
+
+        checkboxes.forEach(function(cb) {
+          if (cb.checked) {
+            anyChecked = true;
+            var price = parseFloat(cb.dataset.price) || 0;
+            var unit = cb.dataset.unit || 'per_person';
+            if (unit === 'per_person') {
+              total += price * guestCount;
+            } else {
+              total += price;
+            }
+          }
+        });
+
+        var subtotalEl = document.getElementById('extras-subtotal');
+        var amountEl = document.getElementById('extras-total-amount');
+        if (subtotalEl) {
+          subtotalEl.style.display = anyChecked ? 'block' : 'none';
+        }
+        if (amountEl) {
+          amountEl.textContent = '$' + total.toFixed(2);
+        }
+      }
+
+      // Event delegation: listen on document for checkbox changes inside booking form
+      document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('booking-extra-checkbox')) {
+          updateExtrasTotal();
+        }
+      });
+
+      // Recalculate after HTMX swaps (guest count change re-renders the form)
+      document.addEventListener('htmx:afterSettle', function() {
+        updateExtrasTotal();
+      });
+
+      console.log('[Extras] Add-on price calculation initialized');
+    })();
+

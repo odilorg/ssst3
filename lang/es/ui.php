@@ -285,6 +285,13 @@ return [
         'modal_pay_now' => 'Pagar :amount ahora',
         'modal_pay_later' => 'Pagaré después',
         'modal_secure_payment' => '🔒 Pago seguro • 💳 Visa/Mastercard',
+
+        // Extras / Add-ons
+        'extras_title' => 'Complementos opcionales',
+        'extras_subtotal' => 'Subtotal de complementos',
+        'extra_unit_per_person' => 'por persona',
+        'extra_unit_per_group' => 'por grupo',
+        'extra_unit_per_session' => 'por sesión',
     ],
 
     // ============================================

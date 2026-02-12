@@ -128,6 +128,47 @@
         @endif
     @endif
 
+    {{-- Optional Extras / Add-ons --}}
+    @if($tour->activeExtras && $tour->activeExtras->count() > 0)
+        <div style="margin-top: 16px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px 16px;">
+            <h4 style="font-family: var(--font-heading); font-size: 13px; font-weight: 600; color: #374151; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                {{ __('ui.booking.extras_title') }}
+            </h4>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                @foreach($tour->activeExtras as $extra)
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px 10px; border: 1px solid #E5E7EB; border-radius: 8px; background: white; transition: all 0.2s ease;"
+                           onmouseover="this.style.borderColor='#9CA3AF'; this.style.background='#F3F4F6';"
+                           onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='#E5E7EB'; this.style.background='white';}">
+                        <input type="checkbox" name="extras[]" value="{{ $extra->id }}"
+                               class="booking-extra-checkbox"
+                               data-price="{{ $extra->price }}"
+                               data-unit="{{ $extra->price_unit }}"
+                               style="width: 18px; height: 18px; accent-color: #0D4C92; flex-shrink: 0;"
+                               onchange="if(this.checked){this.closest('label').style.borderColor='#0D4C92';this.closest('label').style.background='#EFF6FF';}else{this.closest('label').style.borderColor='#E5E7EB';this.closest('label').style.background='white';}">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 14px; font-weight: 500; color: #1F2937;">{{ $extra->name }}</div>
+                            @if($extra->description)
+                                <div style="font-size: 12px; color: #6B7280; margin-top: 2px;">{{ $extra->description }}</div>
+                            @endif
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #0D4C92; white-space: nowrap;">
+                            +${{ number_format($extra->price, 2) }}
+                            <span style="font-size: 11px; font-weight: 400; color: #6B7280;">/{{ __('ui.booking.extra_unit_' . $extra->price_unit) }}</span>
+                        </div>
+                    </label>
+                @endforeach
+            </div>
+
+            {{-- Extras Subtotal --}}
+            <div id="extras-subtotal" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #E5E7EB;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #6B7280;">{{ __('ui.booking.extras_subtotal') }}</span>
+                    <span id="extras-total-amount" style="font-size: 14px; font-weight: 600; color: #0D4C92;">$0.00</span>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- Hidden Fields --}}
     <input type="hidden" name="tour_type" value="group">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">

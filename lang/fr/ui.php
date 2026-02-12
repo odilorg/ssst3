@@ -490,6 +490,13 @@ return array (
     'modal_pay_now' => 'Payer :amount maintenant',
     'modal_pay_later' => 'Je paierai plus tard',
     'modal_secure_payment' => '🔒 Paiement sécurisé • 💳 Visa/Mastercard',
+
+    // Extras / Add-ons
+    'extras_title' => 'Options supplémentaires',
+    'extras_subtotal' => 'Sous-total des options',
+    'extra_unit_per_person' => 'par personne',
+    'extra_unit_per_group' => 'par groupe',
+    'extra_unit_per_session' => 'par session',
   ),
   'tour' => 
   array (
