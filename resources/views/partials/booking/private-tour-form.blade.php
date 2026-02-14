@@ -188,4 +188,34 @@
     <input type="hidden" name="tour_type" value="private">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
     <input type="hidden" id="tour_id_for_htmx" value="{{ $tour->id }}">
+
+    {{-- PERFORMANCE OPTIMIZATION: Embed pricing data for client-side calculation --}}
+    <script>
+    (function() {
+        // Embed pricing data once on page load (no need to fetch from server on every change)
+        window.bookingPriceData = {
+            tour_type: 'private',
+            base_price: {{ $tour->private_base_price ?? $tour->price_per_person ?? 0 }},
+            price_per_person: {{ $tour->price_per_person ?? 0 }},
+            @if($tour->pricingTiers && $tour->pricingTiers->count() > 0)
+            pricing_tiers: [
+                @foreach($tour->pricingTiers as $tier)
+                {
+                    min_guests: {{ $tier->min_guests }},
+                    max_guests: {{ $tier->max_guests }},
+                    price_per_person: {{ $tier->price_per_person }},
+                    price_total: {{ $tier->price_total }}
+                },
+                @endforeach
+            ],
+            @else
+            pricing_tiers: [],
+            @endif
+            min_guests: {{ $tour->private_min_guests ?? 1 }},
+            max_guests: {{ $tour->private_max_guests ?? 10 }}
+        };
+
+        console.log('[Performance] Pricing data embedded for instant client-side calculations');
+    })();
+    </script>
 </div>

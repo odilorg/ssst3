@@ -181,4 +181,30 @@
     <input type="hidden" name="tour_type" value="group">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
     <input type="hidden" id="tour_id_for_htmx" value="{{ $tour->id }}">
+
+    {{-- PERFORMANCE OPTIMIZATION: Embed pricing data for client-side calculation --}}
+    <script>
+    (function() {
+        // Embed pricing data once on page load
+        window.bookingPriceData = {
+            tour_type: 'group',
+            @if($priceData && isset($priceData['price_per_person']))
+            price_per_person: {{ $priceData['price_per_person'] }},
+            @elseif($selectedDepartureId && $departures)
+                @php
+                    $selectedDep = $departures->firstWhere('id', $selectedDepartureId);
+                @endphp
+                @if($selectedDep)
+                price_per_person: {{ $selectedDep->price_per_person }},
+                @else
+                price_per_person: {{ $tour->price_per_person ?? 0 }},
+                @endif
+            @else
+            price_per_person: {{ $tour->price_per_person ?? 0 }},
+            @endif
+        };
+
+        console.log('[Performance] Group pricing data embedded for instant calculations');
+    })();
+    </script>
 </div>
