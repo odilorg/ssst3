@@ -924,7 +924,8 @@
     // EXTRAS / ADD-ONS: Price calculation with event delegation
     // ================================================================
     (function() {
-      function updateExtrasTotal() {
+      // Make updateExtrasTotal globally accessible for guest count updates
+      window.updateExtrasTotal = function() {
         var checkboxes = document.querySelectorAll('.booking-extra-checkbox');
         if (!checkboxes.length) return;
 
@@ -974,13 +975,13 @@
         }
 
         // Sync sticky price after updating extras
-        syncStickyPrice();
-      }
+        window.syncStickyPrice();
+      };
 
       // Sync sticky price box with booking form computed total
       window.userHasInteracted = false; // Track if user has changed guest count or selected extras (accessible globally)
 
-      function syncStickyPrice() {
+      window.syncStickyPrice = function() {
         var stickyLabel = document.getElementById('sticky-price-label');
         var stickyAmount = document.getElementById('sticky-price-amount');
         var stickyUnit = document.getElementById('sticky-price-unit');
@@ -1035,7 +1036,7 @@
       // Event delegation: listen on document for checkbox changes inside booking form
       document.addEventListener('change', function(e) {
         if (e.target && e.target.classList.contains('booking-extra-checkbox')) {
-          updateExtrasTotal();
+          window.updateExtrasTotal();
         }
       });
 
@@ -1043,7 +1044,7 @@
       document.addEventListener('htmx:afterSettle', function(event) {
         // Only recalculate if the swap target was the booking form
         if (event.detail.target && event.detail.target.id === 'booking-form-container') {
-          updateExtrasTotal(); // This will call syncStickyPrice() internally
+          window.updateExtrasTotal(); // This will call syncStickyPrice() internally
         }
       });
 
@@ -1146,6 +1147,13 @@
             grandTotalEl.textContent = '$' + totalPrice.toFixed(2);
           }
 
+          // Update sticky price amount (sidebar)
+          const stickyPriceEl = document.getElementById('sticky-price-amount');
+          if (stickyPriceEl) {
+            stickyPriceEl.dataset.basePrice = totalPrice.toFixed(2);
+            stickyPriceEl.textContent = '$' + totalPrice.toFixed(2);
+          }
+
         } else if (tourType === 'group') {
           // Group tour: price is fixed per person from departure
           const pricePerPerson = parseFloat(data.price_per_person || 0);
@@ -1156,6 +1164,23 @@
           if (totalPriceEl) {
             totalPriceEl.textContent = '$' + totalPrice.toFixed(2);
           }
+
+          // Update sticky price amount (sidebar)
+          const stickyPriceEl = document.getElementById('sticky-price-amount');
+          if (stickyPriceEl) {
+            stickyPriceEl.dataset.basePrice = totalPrice.toFixed(2);
+            stickyPriceEl.textContent = '$' + totalPrice.toFixed(2);
+          }
+        }
+
+        // Recalculate extras total (which includes addons in final price)
+        if (typeof window.updateExtrasTotal === 'function') {
+          window.updateExtrasTotal();
+        }
+
+        // Sync sticky price box with updated totals
+        if (typeof window.syncStickyPrice === 'function') {
+          window.syncStickyPrice();
         }
 
         console.log('[Guest Count] Price updated instantly (client-side) for', guestCount, 'guests');
