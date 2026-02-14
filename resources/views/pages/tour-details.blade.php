@@ -4874,7 +4874,7 @@ window.bookingI18n = {
     modalPayNow: @json(__('ui.booking.modal_pay_now'))
 };
 </script>
-<script src="{{ asset('js/booking-form.js') }}"></script>
+<script src="{{ asset('js/booking-form.js') }}?v={{ filemtime(public_path('js/booking-form.js')) }}"></script>
 <script src="{{ asset('js/gallery-lightbox.js') }}"></script>
 <script>
 // Hamburger menu toggle functionality
