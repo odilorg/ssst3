@@ -235,6 +235,7 @@ return [
         'no_departures_text' => 'There are currently no group departures scheduled for this tour. Please contact us for private tour options.',
         'select_departure_hint' => 'Select a departure date from the calendar above.',
         'number_of_seats' => 'Number of Seats',
+        'seats' => 'seats',
         'max_seats' => '(Max :max seats)',
         'price_breakdown' => 'Price Breakdown',
         'price_per_person' => 'Price per person:',

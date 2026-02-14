@@ -234,6 +234,7 @@ return [
         'no_departures_text' => 'Actualmente no hay salidas de grupo programadas para este tour. Contactenos para opciones de tour privado.',
         'select_departure_hint' => 'Seleccione una fecha de salida del calendario de arriba.',
         'number_of_seats' => 'Numero de plazas',
+        'seats' => 'plazas',
         'max_seats' => '(Max :max plazas)',
         'price_breakdown' => 'Desglose del precio',
         'price_per_person' => 'Precio por persona:',

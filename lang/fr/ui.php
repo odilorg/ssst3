@@ -439,6 +439,7 @@ return array (
     'no_departures_text' => 'Il n\'y a actuellement aucun départ de groupe prévu pour ce circuit. Veuillez nous contacter pour les options de circuit privé.',
     'select_departure_hint' => 'Sélectionnez une date de départ dans le calendrier ci-dessus.',
     'number_of_seats' => 'Nombre de places',
+    'seats' => 'places',
     'max_seats' => '(Max :max places)',
     'price_breakdown' => 'Détail du prix',
     'price_per_person' => 'Prix par personne :',

@@ -661,6 +661,7 @@ return [
         'no_departures_text' => 'Derzeit sind keine Gruppenabfahrten für diese Tour geplant. Bitte kontaktieren Sie uns für private Touroptionen.',
         'select_departure_hint' => 'Wählen Sie ein Abreisedatum aus dem Kalender oben.',
         'number_of_seats' => 'Anzahl der Plätze',
+        'seats' => 'Plätze',
         'max_seats' => '(Max. :max Plätze)',
         'price_breakdown' => 'Preisaufschlüsselung',
         'price_per_person' => 'Preis pro Person:',

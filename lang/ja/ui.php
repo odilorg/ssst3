@@ -234,6 +234,7 @@ return [
         'no_departures_text' => '現在、このツアーのグループ出発は予定されておりません。プライベートツアーについてはお問い合わせください。',
         'select_departure_hint' => '上のカレンダーから出発日を選択してください。',
         'number_of_seats' => '座席数',
+        'seats' => '席',
         'max_seats' => '（最大:max席）',
         'price_breakdown' => '料金内訳',
         'price_per_person' => '1名あたりの料金：',

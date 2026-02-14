@@ -34,7 +34,7 @@ class GuidesTable
                     ->label('Адрес')
                     ->searchable()
                     ->limit(30),
-                TextColumn::make('city')
+                TextColumn::make('city.name')
                     ->label('Город')
                     ->searchable(),
                 ImageColumn::make('image')
