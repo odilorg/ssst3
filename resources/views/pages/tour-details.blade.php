@@ -4866,15 +4866,15 @@
 
 
 @push('scripts')
-<script src="{{ asset('js/htmx.min.js') }}"></script>
+<script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
 <script>
 // Configure HTMX to send CSRF token with all requests
 document.body.addEventListener('htmx:configRequest', function(event) {
     event.detail.headers['X-CSRF-TOKEN'] = '{{ csrf_token() }}';
 });
 </script>
-<script src="{{ asset('js/payment-integration.js') }}"></script>
-<script src="{{ asset('tour-details.js') }}"></script>
+<script src="{{ asset('js/payment-integration.js') }}?v={{ filemtime(public_path('js/payment-integration.js')) }}"></script>
+<script src="{{ asset('tour-details.js') }}?v={{ filemtime(public_path('tour-details.js')) }}"></script>
 <script>
 window.bookingI18n = {
     confirmBooking: @json(__('ui.booking.js_confirm_booking')),
@@ -4899,8 +4899,8 @@ window.bookingI18n = {
     modalPayNow: @json(__('ui.booking.modal_pay_now'))
 };
 </script>
-<script src="{{ asset('js/booking-form.js') }}"></script>
-<script src="{{ asset('js/gallery-lightbox.js') }}"></script>
+<script src="{{ asset('js/booking-form.js') }}?v={{ filemtime(public_path('js/booking-form.js')) }}"></script>
+<script src="{{ asset('js/gallery-lightbox.js') }}?v={{ filemtime(public_path('js/gallery-lightbox.js')) }}"></script>
 <script>
 // Hamburger menu toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -5702,5 +5702,5 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
-<script src="{{ asset('js/tour-reviews.js') }}"></script>
+<script src="{{ asset('js/tour-reviews.js') }}?v={{ filemtime(public_path('js/tour-reviews.js')) }}"></script>
 @endpush

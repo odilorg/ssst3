@@ -118,7 +118,7 @@
     </a>
     
     {{-- Main JavaScript --}}
-    <script src="{{ asset('js/main.js') }}" defer></script>
+    <script src="{{ asset('js/main.js') }}?v={{ filemtime(public_path('js/main.js')) }}" defer></script>
 
     {{-- Page-specific Scripts --}}
     @stack('scripts')

@@ -1163,6 +1163,6 @@ h3 {
 @endsection
 
 @push('scripts')
-<script src="{{ asset('contact.js') }}" defer></script>
-<script src="{{ asset('contact_form_handler.js') }}" defer></script>
+<script src="{{ asset('contact.js') }}?v={{ filemtime(public_path('contact.js')) }}" defer></script>
+<script src="{{ asset('contact_form_handler.js') }}?v={{ filemtime(public_path('contact_form_handler.js')) }}" defer></script>
 @endpush

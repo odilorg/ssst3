@@ -195,7 +195,7 @@
 {{-- Page-specific Scripts --}}
 @push('scripts')
 <!-- HTMX Library -->
-<script src="{{ asset('js/htmx.min.js') }}"></script>
+<script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
 
 <!-- HTMX Event Handlers -->
 <script>
@@ -218,6 +218,6 @@
 </script>
 
 <!-- Blog-specific JavaScript -->
-<script src="{{ asset('blog-article.js') }}" defer></script>
-<script src="{{ asset('js/blog-comments.js') }}" defer></script>
+<script src="{{ asset('blog-article.js') }}?v={{ filemtime(public_path('blog-article.js')) }}" defer></script>
+<script src="{{ asset('js/blog-comments.js') }}?v={{ filemtime(public_path('js/blog-comments.js')) }}" defer></script>
 @endpush
