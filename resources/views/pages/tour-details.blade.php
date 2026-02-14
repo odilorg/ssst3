@@ -496,6 +496,7 @@
                 </span>
                 <span class="booking-total__value" data-subtotal="{{ $displayTotal }}">${{ number_format($displayTotal, 2) }}</span>
               </div>
+              <div id="breakdown-extras-list" style="display: none;"></div>
               <div class="booking-total__divider"></div>
               <div class="booking-total__final">
                 <span class="booking-total__final-label">{{ __('ui.booking.total') }}</span>
@@ -545,7 +546,7 @@
             <form class="booking-form" id="booking-form" data-form-type="booking" action="/partials/bookings" method="POST">
               @csrf
               <!-- Hidden fields -->
-              <input type="hidden" name="tour_id" id="tour-id" value="">
+              <input type="hidden" name="tour_id" id="tour-id" value="{{ $tour->id }}">
               <input type="hidden" name="departure_id" id="departure_id">
               <input type="hidden" name="start_date" id="start_date">
 
@@ -800,7 +801,7 @@
               </p>
 
               <form id="inquiry-form" class="inquiry-form-fields">
-                <input type="hidden" name="tour_id" id="inquiry-tour-id" value="">
+                <input type="hidden" name="tour_id" id="inquiry-tour-id" value="{{ $tour->id }}">
                 <input type="hidden" name="action_type" value="inquiry">
 
                 <div class="form-group">

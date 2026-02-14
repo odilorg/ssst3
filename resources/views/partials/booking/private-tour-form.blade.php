@@ -133,7 +133,6 @@
                                data-price="{{ $extra->price }}"
                                data-unit="{{ $extra->price_unit }}"
                                data-name="{{ $extra->name }}"
-                               {{ in_array($extra->id, array_map('intval', $selectedExtras ?? []), true) ? 'checked' : '' }}
                                style="width: 16px; height: 16px; accent-color: #0D4C92; flex-shrink: 0;"
                                onchange="if(this.checked){this.closest('label').style.borderColor='#0D4C92';this.closest('label').style.background='#EFF6FF';}else{this.closest('label').style.borderColor='{{ $isPopular ? '#FBBF24' : '#E5E7EB' }}';this.closest('label').style.background='{{ $isPopular ? '#FFFBEB' : 'white' }}';}">
                         <span style="flex: 1; font-size: 13px; font-weight: 500; color: #1F2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $extra->name }}</span>
@@ -187,12 +186,12 @@
     {{-- Hidden Fields --}}
     <input type="hidden" name="tour_type" value="private">
     <input type="hidden" name="tour_id" value="{{ $tour->id }}">
-    <input type="hidden" id="tour_id_for_htmx" value="{{ $tour->id }}">
+    <input type="hidden" name="tour_id_for_htmx" id="tour_id_for_htmx" value="{{ $tour->id }}">
 
-    {{-- PERFORMANCE OPTIMIZATION: Embed pricing data for client-side calculation --}}
+    {{-- PERFORMANCE OPTIMIZATION: Embed pricing data for instant client-side calculation --}}
     <script>
     (function() {
-        // Embed pricing data once on page load (no need to fetch from server on every change)
+        // Embed pricing data once on page load (no server requests needed)
         window.bookingPriceData = {
             tour_type: 'private',
             base_price: {{ $tour->private_base_price ?? $tour->price_per_person ?? 0 }},
@@ -205,7 +204,7 @@
                     max_guests: {{ $tier->max_guests }},
                     price_per_person: {{ $tier->price_per_person }},
                     price_total: {{ $tier->price_total }}
-                },
+                }@if(!$loop->last),@endif
                 @endforeach
             ],
             @else
