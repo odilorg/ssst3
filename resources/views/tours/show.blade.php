@@ -1127,7 +1127,7 @@
   <script src="js/gallery-lightbox.js" defer></script>
 
   <!-- Tour Reviews JavaScript -->
-  <script src="{{ asset('js/tour-reviews.js') }}" defer></script>
+  <script src="{{ asset('js/tour-reviews.js') }}?v={{ filemtime(public_path('js/tour-reviews.js')) }}" defer></script>
 
   <!-- Main JavaScript -->
   <script src="js/main.js" defer></script>

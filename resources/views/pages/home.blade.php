@@ -2349,5 +2349,5 @@
 
 
   <!-- Reviews Carousel -->
-  <script src="{{ asset('js/reviews-carousel.js') }}" defer></script>
+  <script src="{{ asset('js/reviews-carousel.js') }}?v={{ filemtime(public_path('js/reviews-carousel.js')) }}" defer></script>
 @endpush

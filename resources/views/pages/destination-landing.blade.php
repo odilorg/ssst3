@@ -270,7 +270,7 @@
 
 @push('scripts')
 <!-- HTMX Library (Local) -->
-<script src="{{ asset('js/htmx.min.js') }}"></script>
+<script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
 <!-- Destination Landing Page Specific JS -->
-<script src="{{ asset('js/destination-landing.js') }}"></script>
+<script src="{{ asset('js/destination-landing.js') }}?v={{ filemtime(public_path('js/destination-landing.js')) }}"></script>
 @endpush

@@ -195,5 +195,5 @@
 <!-- HTMX Library -->
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 <!-- Category Landing Page Specific JS -->
-<script src="{{ asset('js/category-landing.js') }}"></script>
+<script src="{{ asset('js/category-landing.js') }}?v={{ filemtime(public_path('js/category-landing.js')) }}"></script>
 @endpush

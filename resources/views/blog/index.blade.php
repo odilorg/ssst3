@@ -268,6 +268,6 @@
 </section>@endsection
 
 @push('scripts')
-<script src="{{ asset('js/htmx.min.js') }}"></script>
-<script src="{{ asset('js/blog-listing.js') }}" defer></script>
+<script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
+<script src="{{ asset('js/blog-listing.js') }}?v={{ filemtime(public_path('js/blog-listing.js')) }}" defer></script>
 @endpush
