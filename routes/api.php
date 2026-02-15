@@ -148,4 +148,8 @@ Route::prefix('internal')->middleware('internal.api')->group(function () {
     // Tour upsert endpoint (create or update)
     Route::post('/tours/upsert', [\App\Http\Controllers\Api\Internal\TourUpsertController::class, 'upsert'])
         ->name('api.internal.tours.upsert');
+
+    // Tour delete endpoint
+    Route::post('/tours/delete', [\App\Http\Controllers\Api\Internal\TourDeleteController::class, 'delete'])
+        ->name('api.internal.tours.delete');
 });
