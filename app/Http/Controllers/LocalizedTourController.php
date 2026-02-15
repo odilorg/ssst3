@@ -92,9 +92,15 @@ class LocalizedTourController extends Controller
         // Canonical URL points to localized version
         $canonicalUrl = url("/{$locale}/tours/{$slug}");
 
-        // Generate structured data using Tour model method
+        // Generate structured data using Tour model methods (translation-aware)
+        $schemas = array_filter([
+            $tour->generateSchemaData($translation),
+            $tour->generateBreadcrumbSchema($translation),
+            $tour->generateFaqSchema($translation),
+        ]);
+
         $structuredData = json_encode(
-            $tour->generateSchemaData(),
+            count($schemas) === 1 ? $schemas[0] : array_values($schemas),
             JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
