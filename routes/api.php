@@ -157,6 +157,10 @@ Route::prefix('internal')->middleware('internal.api')->group(function () {
     Route::post('/tours/generate-ai', [\App\Http\Controllers\Api\Internal\TourAIGenerateController::class, 'generate'])
         ->name('api.internal.tours.generate-ai');
 
+    // Blog AI generation endpoint
+    Route::post('/blogs/generate-ai', [\App\Http\Controllers\Api\Internal\BlogAIGenerateController::class, 'generate'])
+        ->name('api.internal.blogs.generate-ai');
+
     // Booking CRUD endpoints
     Route::post('/bookings/create', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'create'])
         ->name('api.internal.bookings.create');

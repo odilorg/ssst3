@@ -29,9 +29,14 @@ class BlogAIService
 
             $data = $response->json();
 
-            if (!$response->successful() || !isset($data['choices'][0]['message']['content'])) {
+            if (!$response->successful()) {
+                $errorMsg = $data['error']['message'] ?? $data['message'] ?? 'Unknown API error';
+                throw new \Exception("DeepSeek API error (HTTP {$response->status()}): {$errorMsg}");
+            }
+
+            if (!isset($data['choices'][0]['message']['content'])) {
                 Log::error('DeepSeek API Response', ['status' => $response->status(), 'body' => $response->body()]);
-                throw new \Exception('Invalid API response from DeepSeek: ' . $response->body());
+                throw new \Exception('Invalid API response structure - no choices returned');
             }
 
             $content = $data['choices'][0]['message']['content'];
