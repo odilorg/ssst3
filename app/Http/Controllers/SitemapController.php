@@ -203,7 +203,7 @@ class SitemapController extends Controller
         if (config('multilang.phases.blog_translations')) {
             BlogPostTranslation::where('locale', $locale)
                 ->whereHas('blogPost', fn ($q) => $q->where('is_published', true))
-                ->with(['blogPost:id,updated_at', 'blogPost.translations:id,blog_post_id,locale,slug'])
+                ->with(['blogPost', 'blogPost.translations:id,blog_post_id,locale,slug'])
                 ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
@@ -229,7 +229,10 @@ class SitemapController extends Controller
                                 }
                             }
 
-                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.6', $alternates);
+                            // Collect blog post images for image sitemap
+                            $images = $this->getBlogPostImages($translation->blogPost, $translation->title ?? $translation->blogPost?->title);
+
+                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.6', $alternates, $images);
                         } catch (\Exception $e) {
                             // Skip invalid routes
                         }
@@ -401,6 +404,30 @@ class SitemapController extends Controller
                     'title' => $alt,
                 ];
             }
+        }
+
+        return $images;
+    }
+
+    /**
+     * Extract featured image from a BlogPost for image sitemap.
+     */
+    private function getBlogPostImages(?BlogPost $post, ?string $postTitle): array
+    {
+        if (!$post) {
+            return [];
+        }
+
+        $images = [];
+        $title = $postTitle ?? $post->title ?? '';
+
+        // Featured image
+        if ($post->featured_image) {
+            $imageUrl = $post->featured_image_url ?? url('storage/' . $post->featured_image);
+            $images[] = [
+                'loc' => str_starts_with($imageUrl, 'http') ? $imageUrl : url($imageUrl),
+                'title' => $title,
+            ];
         }
 
         return $images;
