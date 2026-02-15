@@ -154,9 +154,9 @@
                 <p class="tour-overview__excerpt">{{ $translation->excerpt }}</p>
               @endif
 
-              @if($translation->content)
+              @if($translation->content || $tour->long_description)
                 <div class="tour-overview__content">
-                  {!! $translation->content !!}
+                  {!! $translation->content ?? $tour->long_description !!}
                 </div>
               @endif
             @else
