@@ -579,6 +579,9 @@ Route::get('/trip-details/{token}', [\App\Http\Controllers\TripDetailController:
 Route::post('/trip-details/{token}', [\App\Http\Controllers\TripDetailController::class, 'store'])
     ->name('trip-details.store');
 
+Route::get('/trip-details/{token}/confirm', [\App\Http\Controllers\TripDetailController::class, 'confirm'])
+    ->name('trip-details.confirm');
+
 // ============================================
 // PAYMENT ROUTES
 // ============================================

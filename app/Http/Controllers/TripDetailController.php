@@ -61,8 +61,26 @@ class TripDetailController extends Controller
         $tripDetail->update($validated);
         $tripDetail->update(['completed_at' => now()]);
 
-        return redirect()
-            ->route('trip-details.show', ['token' => $token])
-            ->with('success', true);
+        return redirect()->route('trip-details.confirm', ['token' => $token]);
+    }
+
+    /**
+     * Show confirmation page after submitting trip details
+     */
+    public function confirm(string $token)
+    {
+        $booking = Booking::where('passenger_details_url_token', $token)
+            ->with(['tour', 'customer', 'tripDetail'])
+            ->firstOrFail();
+
+        $tripDetail = $booking->tripDetail;
+
+        if (!$tripDetail || !$tripDetail->isCompleted()) {
+            return redirect()->route('trip-details.show', ['token' => $token]);
+        }
+
+        $isMini = !$booking->needsFullTripDetails();
+
+        return view('pages.trip-details-confirm', compact('booking', 'tripDetail', 'isMini', 'token'));
     }
 }
