@@ -123,7 +123,7 @@ class SitemapController extends Controller
         if (config('multilang.phases.tour_translations')) {
             TourTranslation::where('locale', $locale)
                 ->whereHas('tour', fn ($q) => $q->where('is_active', true))
-                ->with(['tour:id,slug,title,gallery_images,featured_image,has_webp,updated_at', 'tour.translations:id,tour_id,locale,slug'])
+                ->with(['tour', 'tour.translations:id,tour_id,locale,slug'])
                 ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
