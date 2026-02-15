@@ -142,11 +142,12 @@
 
             <div id="tours-container" class="tours-grid__container">
                 @forelse($initialTours as $tour)
+                    @php $tr = $tour->translationOrDefault(); @endphp
                     <article class="tour-card-o" data-tour-id="{{ $tour->id }}">
                         {{-- Background Image --}}
                         <img
                             src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
-                            alt="{{ $tour->title }}"
+                            alt="{{ $tr->title ?? $tour->title }}"
                             class="tour-card-o__bg"
                             width="400"
                             height="500"
@@ -178,12 +179,12 @@
                             <div class="tour-card-o__bottom">
                                 <h3 class="tour-card-o__title">
                                     <a href="/tours/{{ $tour->slug }}">
-                                        {{ $tour->title }}
+                                        {{ $tr->title ?? $tour->title }}
                                     </a>
                                 </h3>
 
                                 <p class="tour-card-o__description">
-                                    {{ Str::limit($tour->short_description ?? strip_tags($tour->long_description ?? ''), 90) }}
+                                    {{ Str::limit($tr->excerpt ?? $tour->short_description ?? strip_tags($tour->long_description ?? ''), 90) }}
                                 </p>
 
                                 <div class="tour-card-o__footer">

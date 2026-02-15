@@ -150,8 +150,8 @@
               <!-- Translated Overview -->
               <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
 
-              @if($translation->excerpt)
-                <p class="tour-overview__excerpt">{{ $translation->excerpt }}</p>
+              @if($translation->excerpt || $tour->short_description)
+                <p class="tour-overview__excerpt">{{ $translation->excerpt ?? $tour->short_description }}</p>
               @endif
 
               @if($translation->content || $tour->long_description)

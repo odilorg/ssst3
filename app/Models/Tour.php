@@ -498,6 +498,7 @@ class Tour extends Model
         return $query->with([
             'city:id,name,slug,hero_image',
             'categories:id,name,slug',
+            'translations',
         ]);
     }
 
