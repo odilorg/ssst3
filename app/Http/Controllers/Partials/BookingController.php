@@ -236,6 +236,7 @@ class BookingController extends Controller
                 'status' => 'pending_payment',
                 'payment_method' => $paymentMethod,
                 'payment_status' => 'pending',
+                'locale' => app()->getLocale(),
             ]);
 
             // Attach optional extras to booking

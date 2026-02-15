@@ -43,6 +43,8 @@ class Booking extends Model
         'payment_type',
         'deposit_percentage',
         'payment_uuid',
+        // Guest locale (detected at booking time)
+        'locale',
         // OTA integration
         'source',
         'external_reference',
