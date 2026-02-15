@@ -585,6 +585,9 @@ return [
         'privacy_link' => 'Datenschutzrichtlinie',
         'send_booking_request' => 'Buchungsanfrage senden',
         'booking_reassurance' => 'Bestätigung innerhalb 24h &bull; Keine Zahlungsgebühren',
+        'trust_free_cancellation' => 'Kostenlose Stornierung gemäß Tour-Richtlinie',
+        'trust_response_time' => 'Wir antworten innerhalb von 1-2 Stunden',
+        'trust_no_hidden_fees' => 'Keine versteckten Gebühren — sicher online oder bar bezahlen',
 
         // Inquiry Form
         'inquiry_ask_title' => 'Fragen Sie uns zu dieser Tour',
@@ -703,6 +706,10 @@ return [
         'modal_guests' => 'GÄSTE',
         'modal_total' => 'GESAMT',
         'modal_sent_to' => 'Gesendet an',
+        'modal_what_next' => 'Wie geht es weiter?',
+        'modal_next_step1' => 'Prüfen Sie Ihre E-Mail für die Bestätigungsdetails.',
+        'modal_next_step2' => 'Wir senden Ihnen ein kurzes Formular zur Personalisierung Ihrer Reise.',
+        'modal_next_step3' => 'Guide- und Abholdetails erhalten Sie 48h vor der Tour.',
         'modal_choose_payment' => 'ZAHLUNG WÄHLEN',
         'modal_recommended' => 'EMPFOHLEN',
         'modal_pay_deposit' => ':percent% Anzahlung zahlen',

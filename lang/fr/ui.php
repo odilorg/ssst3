@@ -363,6 +363,9 @@ return array (
     'privacy_link' => 'Politique de confidentialité',
     'send_booking_request' => 'Envoyer la demande de réservation',
     'booking_reassurance' => 'Confirmation sous 24h &bull; Sans frais de paiement',
+    'trust_free_cancellation' => 'Annulation gratuite selon la politique du tour',
+    'trust_response_time' => 'Nous répondons sous 1 à 2 heures',
+    'trust_no_hidden_fees' => 'Aucun frais caché — payez en ligne ou en espèces',
 
     // Inquiry Form
     'inquiry_ask_title' => 'Posez-nous une question sur ce circuit',
@@ -481,6 +484,10 @@ return array (
     'modal_guests' => 'INVITÉS',
     'modal_total' => 'TOTAL',
     'modal_sent_to' => 'Envoyé à',
+    'modal_what_next' => 'Et maintenant ?',
+    'modal_next_step1' => 'Consultez votre email pour les détails de confirmation.',
+    'modal_next_step2' => 'Nous vous enverrons un court formulaire pour personnaliser votre voyage.',
+    'modal_next_step3' => 'Les détails de votre guide et du point de rendez-vous arrivent 48h avant le tour.',
     'modal_choose_payment' => 'CHOISIR LE PAIEMENT',
     'modal_recommended' => 'RECOMMANDÉ',
     'modal_pay_deposit' => 'Payer :percent% d\'acompte',

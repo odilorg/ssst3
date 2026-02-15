@@ -158,6 +158,9 @@ return [
         'privacy_link' => 'Политику конфиденциальности',
         'send_booking_request' => 'Отправить запрос на бронирование',
         'booking_reassurance' => 'Подтверждение в течение 24ч &bull; Без комиссий за оплату',
+        'trust_free_cancellation' => 'Бесплатная отмена согласно условиям тура',
+        'trust_response_time' => 'Мы отвечаем в течение 1-2 часов',
+        'trust_no_hidden_fees' => 'Без скрытых комиссий — оплата онлайн или наличными',
 
         // Inquiry Form
         'inquiry_ask_title' => 'Задайте вопрос об этом туре',
@@ -276,6 +279,10 @@ return [
         'modal_guests' => 'ГОСТЕЙ',
         'modal_total' => 'ИТОГО',
         'modal_sent_to' => 'Отправлено на',
+        'modal_what_next' => 'Что дальше?',
+        'modal_next_step1' => 'Проверьте вашу почту — мы отправили подтверждение.',
+        'modal_next_step2' => 'Мы пришлём короткую форму для подготовки вашего тура.',
+        'modal_next_step3' => 'Данные гида и место встречи — за 48 часов до тура.',
         'modal_choose_payment' => 'ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ',
         'modal_recommended' => 'РЕКОМЕНДУЕТСЯ',
         'modal_pay_deposit' => 'Оплатить :percent% депозит',
