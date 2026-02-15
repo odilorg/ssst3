@@ -152,7 +152,7 @@ class BookingInternalController extends Controller
                     'start_date' => $startDate,
                     'pax_total' => $guestsCount,
                     'guests_count' => $guestsCount,
-                    'status' => 'pending',
+                    'status' => 'pending_payment',
                     'payment_status' => 'pending',
                     'payment_method' => $request->input('payment_method', 'request'),
                     'currency' => $tour->currency ?? 'USD',
@@ -322,7 +322,7 @@ class BookingInternalController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'reference' => 'required|string',
-            'status' => 'nullable|in:draft,pending,confirmed,pending_payment,in_progress,completed,cancelled',
+            'status' => 'nullable|in:draft,inquiry,pending_payment,confirmed,in_progress,completed,cancelled,declined',
             'payment_status' => 'nullable|in:pending,paid,partial,refunded,failed',
             'start_date' => 'nullable|date',
             'guests_count' => 'nullable|integer|min:1|max:50',
@@ -494,13 +494,14 @@ class BookingInternalController extends Controller
     protected function getAllowedTransitions(string $current): array
     {
         return match ($current) {
-            'draft' => ['pending', 'pending_payment', 'confirmed', 'cancelled'],
-            'pending' => ['pending_payment', 'confirmed', 'cancelled'],
+            'draft' => ['inquiry', 'pending_payment', 'confirmed', 'cancelled'],
+            'inquiry' => ['pending_payment', 'confirmed', 'cancelled', 'declined'],
             'pending_payment' => ['confirmed', 'cancelled'],
             'confirmed' => ['in_progress', 'completed', 'cancelled'],
             'in_progress' => ['completed', 'cancelled'],
             'completed' => [],
-            'cancelled' => [],
+            'cancelled' => ['pending_payment'],
+            'declined' => ['pending_payment'],
             default => [],
         };
     }
