@@ -571,6 +571,15 @@ Route::get('/card-comparison', function () {
 })->name('card.comparison');
 
 // ============================================
+// TRIP DETAILS (Guest-facing, token-based access)
+// ============================================
+Route::get('/trip-details/{token}', [\App\Http\Controllers\TripDetailController::class, 'show'])
+    ->name('trip-details.show');
+
+Route::post('/trip-details/{token}', [\App\Http\Controllers\TripDetailController::class, 'store'])
+    ->name('trip-details.store');
+
+// ============================================
 // PAYMENT ROUTES
 // ============================================
 
