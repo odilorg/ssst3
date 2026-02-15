@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tour;
 use App\Models\TourCategory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -10,6 +11,9 @@ class CategoryLandingController extends Controller
 {
     /**
      * Display category landing page
+     *
+     * Loads initial tours server-side for SEO crawlability,
+     * while keeping HTMX for filter interactions.
      *
      * @param string $slug
      * @return View
@@ -39,13 +43,30 @@ class CategoryLandingController extends Controller
 
         $canonicalUrl = url('/tours/category/' . $category->slug);
 
+        // SSR: Load initial tours for this category (crawlable by search engines)
+        $initialTours = Tour::with(['city'])
+            ->where('is_active', true)
+            ->whereHas('categories', function ($q) use ($slug) {
+                $q->where('slug', $slug)->where('is_active', true);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        // SSR: Load related categories
+        $relatedCategories = TourCategory::active()
+            ->where('slug', '!=', $category->slug)
+            ->orderBy('display_order')
+            ->get();
+
         return view('pages.category-landing', compact(
             'category',
             'pageTitle',
             'metaDescription',
             'ogImage',
             'canonicalUrl',
-            'locale'
+            'locale',
+            'initialTours',
+            'relatedCategories'
         ));
     }
 }
