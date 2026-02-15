@@ -6,7 +6,7 @@
 
 @section('title', 'Uzbekistan Tours | Jahongir Travel')
 @section('meta_description', 'Explore all available tours in Uzbekistan. From cultural heritage tours to mountain adventures, find your perfect Silk Road journey with Jahongir Travel.')
-@section('canonical', url('/tours'))
+@section('canonical', url('/' . app()->getLocale() . '/tours'))
 
 @section('structured_data')
 {!! $structuredData !!}

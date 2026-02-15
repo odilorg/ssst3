@@ -74,7 +74,7 @@ class LocalizedTourController extends Controller
             if ($locale !== 'en') {
                 $enTranslation = $this->findEnglishTranslation($slug, $tourRelations);
                 if ($enTranslation) {
-                    return redirect("/en/tours/{$enTranslation->slug}", 302);
+                    return redirect("/en/tours/{$enTranslation->slug}", 301);
                 }
             }
             abort(404);

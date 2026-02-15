@@ -23,25 +23,26 @@
     Aspect ratio: ~1:1.3 (300px × 400px)
 --}}
 
+@php $tr = $tour->translationOrDefault(); @endphp
 <article class="tour-card-o" data-tour-id="{{ $tour->id }}">
-    
+
     {{-- Background Image --}}
     <img
         src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
-        alt="{{ $tour->title }}"
+        alt="{{ $tr->title ?? $tour->title }}"
         class="tour-card-o__bg"
         width="400"
         height="500"
         loading="lazy"
         decoding="async"
     >
-    
+
     {{-- Gradient Overlay --}}
     <div class="tour-card-o__overlay"></div>
 
     {{-- Content Overlaid --}}
     <div class="tour-card-o__content">
-        
+
         {{-- Top Badges --}}
         <div class="tour-card-o__top">
             <span class="tour-card-o__badge">
@@ -57,20 +58,20 @@
         {{-- Bottom Content --}}
         <div class="tour-card-o__bottom">
             <h3 class="tour-card-o__title">
-                <a href="/tours/{{ $tour->slug }}">
-                    {{ $tour->title }}
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}">
+                    {{ $tr->title ?? $tour->title }}
                 </a>
             </h3>
 
             <p class="tour-card-o__description">
-                {{ Str::limit($tour->meta_description ?? $tour->description, 90) }}
+                {{ Str::limit($tr->excerpt ?? $tour->meta_description ?? $tour->description, 90) }}
             </p>
 
             <div class="tour-card-o__footer">
                 <div class="tour-card-o__price">
                     <span class="tour-card-o__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
                 </div>
-                <a href="/tours/{{ $tour->slug }}" class="tour-card-o__btn">
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}" class="tour-card-o__btn">
                     View Tour
                     <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </a>

@@ -78,7 +78,7 @@
             </p>
             <div class="error-buttons">
                 <a href="{{ url('/') }}" class="btn btn-primary">Back to Home</a>
-                <a href="{{ url('/tours') }}" class="btn btn-secondary">Browse Tours</a>
+                <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn-secondary">Browse Tours</a>
             </div>
         </div>
     </div>

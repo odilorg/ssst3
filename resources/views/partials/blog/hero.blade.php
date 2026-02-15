@@ -4,7 +4,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="/">Home</a>
         <span class="breadcrumb-separator" aria-hidden="true">›</span>
-        <a href="/blog/">Blog</a>
+        <a href="/{{ app()->getLocale() }}/blog/">Blog</a>
         <span class="breadcrumb-separator" aria-hidden="true">›</span>
         @if($post->category)
             <a href="/blog?category={{ $post->category->slug }}">{{ $post->category->name }}</a>

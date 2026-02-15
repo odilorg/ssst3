@@ -15,7 +15,7 @@
   <!-- SEO Meta Tags -->
   <title>{{ $tour->getSeoTitle() }}</title>
   <meta name="description" content="{{ $tour->getSeoDescription() }}">
-  <link rel="canonical" href="{{ url('/tours/' . $tour->slug) }}">
+  <link rel="canonical" href="{{ url('/' . app()->getLocale() . '/tours/' . $tour->slug) }}">
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
 
@@ -29,7 +29,7 @@
   <meta property="og:title" content="{{ $tour->getSeoTitle() }}">
   <meta property="og:description" content="{{ $tour->getSeoDescription() }}">
   <meta property="og:image" content="{{ $tour->getOgImageUrl() }}">
-  <meta property="og:url" content="{{ url('/tours/' . $tour->slug) }}">
+  <meta property="og:url" content="{{ url('/' . app()->getLocale() . '/tours/' . $tour->slug) }}">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -458,11 +458,11 @@
         </a>
 
         <ul class="nav__menu" id="navMenu">
-          <li><a href="/">Home</a></li>
-          <li><a href="/tours/">Tours</a></li>
-          <li><a href="/destinations/">Destinations</a></li>
-          <li><a href="/about/">About Us</a></li>
-          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/{{ app()->getLocale() }}/">Home</a></li>
+          <li><a href="/{{ app()->getLocale() }}/tours/">Tours</a></li>
+          <li><a href="/{{ app()->getLocale() }}/destinations/">Destinations</a></li>
+          <li><a href="/{{ app()->getLocale() }}/about/">About Us</a></li>
+          <li><a href="/{{ app()->getLocale() }}/contact/">Contact</a></li>
         </ul>
 
         <a href="tel:+998915550808" class="btn btn--accent nav__cta">
@@ -986,18 +986,18 @@
       <nav class="footer-col footer-nav" aria-label="Company">
         <div class="footer-nav__title">Company</div>
         <ul class="footer-nav__list">
-          <li><a href="/about/">About us</a></li>
+          <li><a href="/{{ app()->getLocale() }}/about/">About us</a></li>
           <li><a href="/careers/">Careers</a></li>
-          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/{{ app()->getLocale() }}/blog/">Blog</a></li>
           <li><a href="/partners/">Partner</a></li>
-          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/{{ app()->getLocale() }}/contact/">Contact</a></li>
         </ul>
       </nav>
 
       <nav class="footer-col footer-nav" aria-label="Services">
         <div class="footer-nav__title">Services</div>
         <ul class="footer-nav__list">
-          <li><a href="/tours/">Tour booking</a></li>
+          <li><a href="/{{ app()->getLocale() }}/tours/">Tour booking</a></li>
           <li><a href="/visa/">Visa online</a></li>
           <li><a href="/guides/">Travel guide</a></li>
           <li><a href="/car-service/">Car service</a></li>

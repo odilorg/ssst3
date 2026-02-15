@@ -1,6 +1,6 @@
 <div class="related-categories-grid">
 @forelse($categories as $category)
-    <a href="/tours/category/{{ $category->slug }}" class="related-category-card">
+    <a href="/{{ app()->getLocale() }}/tours/category/{{ $category->slug }}" class="related-category-card">
         @if($category->icon)
         <div class="related-category-card__icon">
             @if(str_starts_with($category->icon, 'fa'))

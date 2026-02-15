@@ -302,7 +302,7 @@
             }
 
             const html = cities.map(city => `
-                <a href="/destinations/${city.slug}/" class="destination-card">
+                <a href="/{{ app()->getLocale() }}/destinations/${city.slug}/" class="destination-card">
                     <img src="${city.featured_image || city.hero_image || '/images/default-city.jpg'}"
                          alt="${city.name}"
                          class="destination-card__image"

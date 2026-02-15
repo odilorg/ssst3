@@ -747,7 +747,7 @@
       <div class="container">
         <h1 class="about-hero__title">{{ __('ui.about_page.hero_title') }}</h1>
         <div class="about-hero__cta">
-          <a href="{{ url('/tours') }}" class="btn--hero">
+          <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn--hero">
             <i class="fas fa-route" aria-hidden="true"></i> {{ __('ui.about_page.cta_explore') }}
           </a>
         </div>
@@ -1061,7 +1061,7 @@
         <p class="cta-section__text">
           {{ __('ui.about_page.cta_text') }}
         </p>
-        <a href="{{ url('/tours') }}" class="btn btn--white">{{ __('ui.about_page.cta_button') }}</a>
+        <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--white">{{ __('ui.about_page.cta_button') }}</a>
       </div>
     </section>
 @endsection

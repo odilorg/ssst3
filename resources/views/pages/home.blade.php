@@ -86,7 +86,7 @@
        MOBILE STICKY CTA
        ======================================== -->
   <div class="mobile-sticky-cta">
-    <a href="{{ url('/tours') }}" class="mobile-sticky-cta__button">
+    <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="mobile-sticky-cta__button">
       <i class="fas fa-calendar-check" aria-hidden="true"></i>
 {{ __('ui.mobile_cta.check_availability') }}
     </a>
@@ -579,7 +579,7 @@
 
           <div class="hero__cta">
             {{-- Primary CTA --}}
-            <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill hero__cta-primary">
+            <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--accent btn--large btn--pill hero__cta-primary">
               {{ __('ui.hero.cta_button') }}
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
@@ -720,7 +720,7 @@
 
           {{-- Single Primary CTA --}}
           <div class="why-us__cta-wrapper">
-            <a href="{{ url('/tours') }}" class="btn btn--primary btn--large btn--hero">
+            <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--primary btn--large btn--hero">
               {{ __('ui.why_choose_us.cta_button') }}
               <i class="fas fa-arrow-right" aria-hidden="true" style="margin-left: 8px;"></i>
             </a>
@@ -750,7 +750,7 @@
               <span class="pricing-value-savings">{{ __('ui.pricing.savings') }}</span>
             </p>
 
-            <a href="{{ url('/tours') }}" class="pricing-preview__link">{{ __('ui.pricing.view_all_packages') }}</a>
+            <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="pricing-preview__link">{{ __('ui.pricing.view_all_packages') }}</a>
           </div>
 
           <div class="why-us__divider"></div>
@@ -831,7 +831,7 @@
           "@@type": "ListItem",
           "position": {{ $index + 1 }},
           "name": "{{ $category->translated_name }}",
-          "url": "{{ url('/tours/category/' . $category->slug) }}"
+          "url": "{{ url('/' . app()->getLocale() . '/tours/category/' . $category->slug) }}"
         }{{ $loop->last ? '' : ',' }}
         @endforeach
       ]
@@ -876,7 +876,7 @@
           @endphp
 
           <!-- Card: {{ $category->translated_name }} -->
-          <a href="{{ url('/tours/category/' . $category->slug) }}" class="activity-card" aria-label="Explore {{ $category->translated_name }} tours">
+          <a href="{{ url('/' . app()->getLocale() . '/tours/category/' . $category->slug) }}" class="activity-card" aria-label="Explore {{ $category->translated_name }} tours">
             <div class="activity-card__media">
               <img src="{{ $imageUrl }}"
                    alt="{{ $category->translated_description }}"
@@ -903,7 +903,7 @@
 
       <!-- View All Tours Link -->
       <div class="activities__cta">
-        <a href="{{ url('/tours') }}" class="btn btn--primary btn--large" aria-label="View all Uzbekistan tours">
+        <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--primary btn--large" aria-label="View all Uzbekistan tours">
           <i class="fas fa-compass" aria-hidden="true"></i>
           See All Activities
         </a>
@@ -944,7 +944,7 @@
           @endif
           "offers": {
             "@@type": "Offer",
-            "url": "{{ url('/tours/' . $tour->slug) }}",
+            "url": "{{ url('/' . app()->getLocale() . '/tours/' . $tour->slug) }}",
             "price": "{{ $tour->price_per_person }}",
             "priceCurrency": "{{ $tour->currency ?? 'USD' }}",
             "availability": "{{ $tour->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
@@ -1044,7 +1044,7 @@
       <!-- View All CTA (IMPROVED) -->
       <div class="tours__cta tours__cta--enhanced">
         {{-- FIX 2 & 3: Better CTA Copy + Terracotta Color --}}
-        <a href="{{ url('/tours') }}" class="btn btn--craft-journey btn--large" aria-label="Explore available 2025 craft workshop calendar">
+        <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--craft-journey btn--large" aria-label="Explore available 2025 craft workshop calendar">
           <i class="fas fa-calendar-alt" aria-hidden="true"></i>
           Explore 2025 Workshop Calendar
         </a>
@@ -1150,7 +1150,7 @@
       <div class="places__grid">
         <!-- Master 1: Alisher Nazirov - Gijduvan Pottery -->
         <article class="city-card master-card">
-          <a href="{{ url('/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn pottery with Alisher Nazirov">
+          <a href="{{ url('/' . app()->getLocale() . '/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn pottery with Alisher Nazirov">
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&h=533&fit=crop&q=80"
@@ -1186,7 +1186,7 @@
 
         <!-- Master 2: Yodgorlik Silk Factory -->
         <article class="city-card master-card">
-          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn silk weaving at Yodgorlik Factory">
+          <a href="{{ url('/' . app()->getLocale() . '/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn silk weaving at Yodgorlik Factory">
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1616430285525-27165e1c45d8?w=400&h=533&fit=crop&q=80"
@@ -1222,7 +1222,7 @@
 
         <!-- Master 3: Suzani Embroidery -->
         <article class="city-card master-card">
-          <a href="{{ url('/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn suzani embroidery with local artisans">
+          <a href="{{ url('/' . app()->getLocale() . '/tours/textile-immersion-uzbekistan') }}" class="city-card__link" aria-label="Learn suzani embroidery with local artisans">
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=533&fit=crop&q=80"
@@ -1258,7 +1258,7 @@
 
         <!-- Master 4: Miniature Painting -->
         <article class="city-card master-card">
-          <a href="{{ url('/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn Persian miniature painting">
+          <a href="{{ url('/' . app()->getLocale() . '/tours/ceramics-miniature-painting-uzbekistan') }}" class="city-card__link" aria-label="Learn Persian miniature painting">
             <div class="city-card__media">
               <img
                 src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=533&fit=crop&q=80"
@@ -1290,7 +1290,7 @@
 
       <!-- View All Masters CTA -->
       <div class="places__cta">
-        <a href="{{ url('/tours') }}" class="btn btn--primary btn--large" aria-label="Explore craft immersion journeys">
+        <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--primary btn--large" aria-label="Explore craft immersion journeys">
           <i class="fas fa-users" aria-hidden="true"></i>
           See All Craft Visits
         </a>
@@ -1732,7 +1732,7 @@
       </div>
 
       <div class="itinerary-snapshot__cta">
-        <a href="{{ url('/tours') }}" class="btn btn--primary btn--large">
+        <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--primary btn--large">
           {{ __('ui.itinerary.see_full') }}
           <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
@@ -1920,7 +1920,7 @@
         <h2 class="final-cta__title">{{ __('ui.final_cta.title') }}</h2>
         <p class="final-cta__subtitle">{{ __('ui.final_cta.subtitle') }}</p>
         <div class="final-cta__buttons">
-          <a href="{{ url('/tours') }}" class="btn btn--accent btn--large btn--pill">
+          <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--accent btn--large btn--pill">
       {{ __('ui.mobile_cta.check_availability') }}
             <i class="fas fa-calendar-check" aria-hidden="true"></i>
           </a>
@@ -1947,7 +1947,7 @@
        MOBILE STICKY CTA
        ======================================== -->
   <div class="mobile-sticky-cta">
-    <a href="{{ url('/tours') }}" class="mobile-sticky-cta__button">
+    <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="mobile-sticky-cta__button">
       <i class="fas fa-calendar-check" aria-hidden="true"></i>
 {{ __('ui.mobile_cta.check_availability') }}
     </a>
