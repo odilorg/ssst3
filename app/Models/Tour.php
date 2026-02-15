@@ -1146,10 +1146,10 @@ class Tour extends Model
                 if ($question && $answer) {
                     $faqSchema['mainEntity'][] = [
                         "@type" => "Question",
-                        "name" => $question,
+                        "name" => is_string($question) ? $question : json_encode($question),
                         "acceptedAnswer" => [
                             "@type" => "Answer",
-                            "text" => strip_tags($answer)
+                            "text" => strip_tags(is_string($answer) ? $answer : json_encode($answer))
                         ]
                     ];
                 }
@@ -1174,12 +1174,13 @@ class Tour extends Model
         ];
 
         foreach ($faqs as $faq) {
+            $answer = $faq->answer;
             $faqSchema['mainEntity'][] = [
                 "@type" => "Question",
                 "name" => $faq->question,
                 "acceptedAnswer" => [
                     "@type" => "Answer",
-                    "text" => strip_tags($faq->answer)
+                    "text" => strip_tags(is_string($answer) ? $answer : json_encode($answer))
                 ]
             ];
         }
