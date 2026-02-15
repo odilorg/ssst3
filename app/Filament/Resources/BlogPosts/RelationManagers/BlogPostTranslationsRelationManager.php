@@ -28,6 +28,38 @@ class BlogPostTranslationsRelationManager extends RelationManager
 
     protected static ?string $pluralModelLabel = 'Переводы';
 
+    protected static function getLocaleOptions(): array
+    {
+        $flags = [
+            'en' => "\u{1F1EC}\u{1F1E7}", 'ru' => "\u{1F1F7}\u{1F1FA}", 'uz' => "\u{1F1FA}\u{1F1FF}",
+            'fr' => "\u{1F1EB}\u{1F1F7}", 'es' => "\u{1F1EA}\u{1F1F8}", 'de' => "\u{1F1E9}\u{1F1EA}",
+            'zh' => "\u{1F1E8}\u{1F1F3}", 'ar' => "\u{1F1F8}\u{1F1E6}", 'it' => "\u{1F1EE}\u{1F1F9}",
+            'pt' => "\u{1F1F5}\u{1F1F9}", 'ja' => "\u{1F1EF}\u{1F1F5}", 'ko' => "\u{1F1F0}\u{1F1F7}",
+            'tr' => "\u{1F1F9}\u{1F1F7}",
+        ];
+
+        $options = [];
+        foreach (config('ai-translation.locale_names', []) as $code => $name) {
+            $flag = $flags[$code] ?? '';
+            $options[$code] = "{$flag} {$name}";
+        }
+
+        return $options;
+    }
+
+    protected static function getLocaleFlag(string $locale): string
+    {
+        $flags = [
+            'en' => "\u{1F1EC}\u{1F1E7}", 'ru' => "\u{1F1F7}\u{1F1FA}", 'uz' => "\u{1F1FA}\u{1F1FF}",
+            'fr' => "\u{1F1EB}\u{1F1F7}", 'es' => "\u{1F1EA}\u{1F1F8}", 'de' => "\u{1F1E9}\u{1F1EA}",
+            'zh' => "\u{1F1E8}\u{1F1F3}", 'ar' => "\u{1F1F8}\u{1F1E6}", 'it' => "\u{1F1EE}\u{1F1F9}",
+            'pt' => "\u{1F1F5}\u{1F1F9}", 'ja' => "\u{1F1EF}\u{1F1F5}", 'ko' => "\u{1F1F0}\u{1F1F7}",
+            'tr' => "\u{1F1F9}\u{1F1F7}",
+        ];
+
+        return $flags[$locale] ?? '';
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -37,11 +69,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
                     ->schema([
                         Forms\Components\Select::make('locale')
                             ->label('Язык')
-                            ->options([
-                                'en' => '🇬🇧 English',
-                                'ru' => '🇷🇺 Русский',
-                                'fr' => '🇫🇷 Français',
-                            ])
+                            ->options(self::getLocaleOptions())
                             ->required()
                             ->native(false)
                             ->unique(
@@ -142,12 +170,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('locale')
                     ->label('Язык')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'en' => '🇬🇧 EN',
-                        'ru' => '🇷🇺 RU',
-                        'fr' => '🇫🇷 FR',
-                        default => $state,
-                    })
+                    ->formatStateUsing(fn (string $state): string => self::getLocaleFlag($state) . ' ' . strtoupper($state))
                     ->sortable()
                     ->width(80),
 
@@ -193,11 +216,7 @@ class BlogPostTranslationsRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('locale')
                     ->label('Язык')
-                    ->options([
-                        'en' => 'English',
-                        'ru' => 'Русский',
-                        'fr' => 'Français',
-                    ]),
+                    ->options(self::getLocaleOptions()),
             ])
             ->headerActions([
                 CreateAction::make()

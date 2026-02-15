@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\BlogPost;
-use App\Models\BlogPostTranslation;
+use App\Models\City;
+use App\Models\CityTranslation;
 use App\Models\TranslationLog;
 use App\Services\OpenAI\TranslationService;
 use Filament\Actions\Action;
@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
+class TranslateCityWithAI implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,22 +27,22 @@ class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
     public $uniqueFor = 1200;
 
     public function __construct(
-        public int $blogPostId,
+        public int $cityId,
         public int $translationId,
         public int $userId,
     ) {}
 
     public function uniqueId(): string
     {
-        return "translate:blog:{$this->blogPostId}:{$this->translationId}";
+        return "translate:city:{$this->cityId}:{$this->translationId}";
     }
 
     public function handle(TranslationService $translationService): void
     {
-        $lock = Cache::lock("translate:blog:{$this->blogPostId}:trans:{$this->translationId}", 1200);
+        $lock = Cache::lock("translate:city:{$this->cityId}:trans:{$this->translationId}", 1200);
         if (!$lock->get()) {
-            Log::info('Blog translation already in progress, skipping duplicate', [
-                'blog_post_id' => $this->blogPostId,
+            Log::info('City translation already in progress, skipping duplicate', [
+                'city_id' => $this->cityId,
                 'translation_id' => $this->translationId,
             ]);
             return;
@@ -55,27 +55,23 @@ class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
             $translationService->checkRateLimits($this->userId);
             $translationService->checkCostLimits();
 
-            $blogPost = BlogPost::findOrFail($this->blogPostId);
-            $translation = BlogPostTranslation::findOrFail($this->translationId);
+            $city = City::findOrFail($this->cityId);
+            $translation = CityTranslation::findOrFail($this->translationId);
 
-            Log::info('Starting blog AI translation', [
-                'blog_post_id' => $blogPost->id,
+            Log::info('Starting city AI translation', [
+                'city_id' => $city->id,
                 'translation_id' => $translation->id,
                 'locale' => $translation->locale,
                 'user_id' => $this->userId,
             ]);
 
-            $result = $translationService->translateBlogPost(
-                $blogPost,
-                $translation->locale,
-                $translation->id
-            );
+            $result = $translationService->translateCity($city, $translation->locale);
 
             $translation->update($result['translations']);
 
             $duration = round(microtime(true) - $startTime, 2);
 
-            TranslationLog::logFor($blogPost, [
+            TranslationLog::logFor($city, [
                 'user_id' => $this->userId,
                 'source_locale' => 'en',
                 'target_locale' => $translation->locale,
@@ -88,26 +84,30 @@ class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
 
             Notification::make()
                 ->success()
-                ->title('Blog Translation Completed!')
-                ->body("Blog post '{$blogPost->title}' translated to {$translation->locale}. Duration: {$duration}s")
+                ->title('City Translation Completed!')
+                ->body("City '{$city->name}' translated to {$translation->locale}. Duration: {$duration}s")
+                ->actions([
+                    Action::make('view')
+                        ->button()
+                        ->url(route('filament.admin.resources.cities.edit', ['record' => $city->id]))
+                ])
                 ->sendToDatabase(\App\Models\User::find($this->userId));
 
-            Log::info('Blog AI translation completed', [
-                'blog_post_id' => $blogPost->id,
+            Log::info('City AI translation completed', [
+                'city_id' => $city->id,
                 'locale' => $translation->locale,
                 'duration' => $duration,
-                'tokens_used' => $result['tokens_used'],
             ]);
 
         } catch (\Exception $e) {
             $duration = round(microtime(true) - $startTime, 2);
 
             try {
-                $blogPost = BlogPost::find($this->blogPostId);
-                $locale = BlogPostTranslation::find($this->translationId)?->locale ?? 'unknown';
+                $city = City::find($this->cityId);
+                $locale = CityTranslation::find($this->translationId)?->locale ?? 'unknown';
 
-                if ($blogPost) {
-                    TranslationLog::logFor($blogPost, [
+                if ($city) {
+                    TranslationLog::logFor($city, [
                         'user_id' => $this->userId,
                         'source_locale' => 'en',
                         'target_locale' => $locale,
@@ -120,17 +120,17 @@ class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
                     ]);
                 }
             } catch (\Exception $logException) {
-                Log::warning('Failed to log blog translation error', ['error' => $logException->getMessage()]);
+                Log::warning('Failed to log city translation error', ['error' => $logException->getMessage()]);
             }
 
             Notification::make()
                 ->danger()
-                ->title('Blog Translation Failed')
-                ->body("Failed to translate blog post. Error: {$e->getMessage()}")
+                ->title('City Translation Failed')
+                ->body("Failed to translate city. Error: {$e->getMessage()}")
                 ->sendToDatabase(\App\Models\User::find($this->userId));
 
-            Log::error('Blog AI translation failed', [
-                'blog_post_id' => $this->blogPostId,
+            Log::error('City AI translation failed', [
+                'city_id' => $this->cityId,
                 'translation_id' => $this->translationId,
                 'error' => $e->getMessage(),
             ]);
@@ -143,16 +143,16 @@ class TranslateBlogPostWithAI implements ShouldQueue, ShouldBeUnique
 
     public function failed(\Throwable $exception): void
     {
-        Log::error('Blog AI translation job failed permanently', [
-            'blog_post_id' => $this->blogPostId,
+        Log::error('City AI translation job failed permanently', [
+            'city_id' => $this->cityId,
             'translation_id' => $this->translationId,
             'error' => $exception->getMessage(),
         ]);
 
         Notification::make()
             ->danger()
-            ->title('Blog Translation Job Failed')
-            ->body('The blog AI translation job failed permanently. Please try again later.')
+            ->title('City Translation Job Failed')
+            ->body('The city AI translation job failed permanently. Please try again later.')
             ->sendToDatabase(\App\Models\User::find($this->userId));
     }
 }
