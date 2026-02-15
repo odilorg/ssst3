@@ -17,6 +17,69 @@ class BookingForm
     {
         return $schema
             ->components([
+                Section::make('Хронология бронирования')
+                    ->schema([
+                        Placeholder::make('booking_timeline')
+                            ->label('')
+                            ->content(function ($record) {
+                                if (!$record) return '';
+
+                                $steps = [
+                                    [
+                                        'label' => 'Создано',
+                                        'done' => true,
+                                        'date' => $record->created_at?->format('d.m.Y'),
+                                    ],
+                                    [
+                                        'label' => 'Подтверждено',
+                                        'done' => in_array($record->status, ['confirmed', 'in_progress', 'completed']),
+                                        'date' => in_array($record->status, ['confirmed', 'in_progress', 'completed']) ? '' : null,
+                                    ],
+                                    [
+                                        'label' => 'Детали поездки',
+                                        'done' => $record->hasTripDetails(),
+                                        'date' => $record->tripDetail?->completed_at?->format('d.m.Y'),
+                                    ],
+                                    [
+                                        'label' => 'Оплата',
+                                        'done' => in_array($record->payment_status, ['paid', 'partial']),
+                                        'date' => $record->deposit_paid_at?->format('d.m.Y'),
+                                    ],
+                                    [
+                                        'label' => $record->status === 'completed' ? 'Завершено' : 'В туре',
+                                        'done' => in_array($record->status, ['in_progress', 'completed']),
+                                        'date' => $record->status === 'completed' ? $record->end_date?->format('d.m.Y') : null,
+                                    ],
+                                ];
+
+                                $html = '<div style="display:flex;align-items:flex-start;flex-wrap:nowrap;">';
+                                foreach ($steps as $i => $step) {
+                                    $bg = $step['done'] ? '#059669' : '#d1d5db';
+                                    $text = $step['done'] ? '#fff' : '#6b7280';
+                                    $html .= '<div style="text-align:center;flex:1;min-width:0;">';
+                                    $html .= '<div style="width:28px;height:28px;border-radius:50%;background:'.$bg.';color:'.$text.';display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">'.($i+1).'</div>';
+                                    $html .= '<div style="font-size:11px;margin-top:4px;color:'.($step['done'] ? '#059669' : '#6b7280').';font-weight:'.($step['done'] ? '600' : '400').';white-space:nowrap;">'.$step['label'].'</div>';
+                                    if ($step['date']) {
+                                        $html .= '<div style="font-size:10px;color:#9ca3af;">'.$step['date'].'</div>';
+                                    }
+                                    $html .= '</div>';
+                                    if ($i < count($steps) - 1) {
+                                        $lineColor = $steps[$i+1]['done'] ? '#059669' : '#d1d5db';
+                                        $html .= '<div style="flex:0 0 30px;height:2px;background:'.$lineColor.';margin-top:14px;"></div>';
+                                    }
+                                }
+                                $html .= '</div>';
+
+                                if ($record->status === 'cancelled') {
+                                    $html .= '<div style="margin-top:8px;padding:6px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;color:#991b1b;font-size:12px;font-weight:500;">Бронирование отменено</div>';
+                                }
+
+                                return new HtmlString($html);
+                            })
+                            ->columnSpanFull(),
+                    ])
+                    ->hiddenOn('create'),
+
                 Section::make('Основная информация')
                     ->schema([
                         Select::make('customer_id')
