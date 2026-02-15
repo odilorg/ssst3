@@ -8,7 +8,7 @@
                 @foreach($relatedPosts as $related)
                     <article class="related-article-card">
                         @if($related->featured_image)
-                            <a href="/blog/{{ $related->slug }}" class="card-image-link">
+                            <a href="/{{ app()->getLocale() }}/blog/{{ $related->slug }}" class="card-image-link">
                                 @if($related->has_webp && $related->featured_image_webp_srcset)
                                     {{-- Serve WebP with responsive sizes --}}
                                     <picture>
@@ -33,7 +33,7 @@
 
                         <div class="card-content">
                             <h3 class="card-title">
-                                <a href="/blog/{{ $related->slug }}">{{ $related->title }}</a>
+                                <a href="/{{ app()->getLocale() }}/blog/{{ $related->slug }}">{{ $related->title }}</a>
                             </h3>
 
                             @if($related->excerpt)
@@ -42,7 +42,7 @@
                                 </p>
                             @endif
 
-                            <a href="/blog/{{ $related->slug }}" class="card-read-more">
+                            <a href="/{{ app()->getLocale() }}/blog/{{ $related->slug }}" class="card-read-more">
                                 Read More →
                             </a>
                         </div>

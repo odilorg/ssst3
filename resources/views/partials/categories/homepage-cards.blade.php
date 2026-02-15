@@ -1,5 +1,5 @@
 @foreach($categories as $category)
-<a href="/tours/category/{{ $category->slug }}" class="activity-card">
+<a href="/{{ app()->getLocale() }}/tours/category/{{ $category->slug }}" class="activity-card">
     <div class="activity-card__image" @if($category->image_path) style="background-image: url('{{ asset('storage/' . $category->image_path) }}');" @endif>
         <div class="activity-card__overlay"></div>
         <div class="activity-card__content">

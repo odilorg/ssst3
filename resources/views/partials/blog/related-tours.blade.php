@@ -82,7 +82,7 @@
 
         {{-- View All Tours Link --}}
         <div class="related-tours__footer">
-            <a href="{{ url('/tours') }}" class="btn btn--ghost">
+            <a href="{{ url('/' . app()->getLocale() . '/tours') }}" class="btn btn--ghost">
                 Browse All Tours
                 <i class="fas fa-arrow-right"></i>
             </a>

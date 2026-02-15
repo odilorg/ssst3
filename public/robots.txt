@@ -18,7 +18,10 @@ Allow: /images/*
 Allow: /storage/*
 
 # Sitemap location
-Sitemap: https://jahongirtravel.com/sitemap.xml
+Sitemap: https://staging.jahongir-travel.uz/sitemap.xml
+Sitemap: https://staging.jahongir-travel.uz/sitemap-en.xml
+Sitemap: https://staging.jahongir-travel.uz/sitemap-ru.xml
+Sitemap: https://staging.jahongir-travel.uz/sitemap-fr.xml
 
 # Crawl-delay for specific bots (optional - uncomment if needed)
 # User-agent: Googlebot

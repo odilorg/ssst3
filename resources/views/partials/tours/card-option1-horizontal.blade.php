@@ -4,13 +4,14 @@
     Aspect ratio: ~1:0.6 landscape (650px × 280px)
 --}}
 
+@php $tr = $tour->translationOrDefault(); @endphp
 <article class="tour-card-h" data-tour-id="{{ $tour->id }}">
-    
+
     {{-- Image (40% width on desktop) --}}
     <div class="tour-card-h__media">
         <img
             src="{{ $tour->featured_image_url ?? asset('images/default-tour.webp') }}"
-            alt="{{ $tour->title }}"
+            alt="{{ $tr->title ?? $tour->title }}"
             width="400"
             height="300"
             loading="lazy"
@@ -28,14 +29,14 @@
         <div class="tour-card-h__main">
             {{-- Title --}}
             <h3 class="tour-card-h__title">
-                <a href="/tours/{{ $tour->slug }}">
-                    {{ $tour->title }}
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}">
+                    {{ $tr->title ?? $tour->title }}
                 </a>
             </h3>
 
             {{-- Description --}}
             <p class="tour-card-h__description">
-                {{ Str::limit($tour->meta_description ?? $tour->description, 120) }}
+                {{ Str::limit($tr->excerpt ?? $tour->short_description ?? $tour->meta_description, 120) }}
             </p>
         </div>
 
@@ -52,7 +53,7 @@
                 <div class="tour-card-h__price">
                     <span class="tour-card-h__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
                 </div>
-                <a href="/tours/{{ $tour->slug }}" class="tour-card-h__btn">
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}" class="tour-card-h__btn">
                     View Tour
                     <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </a>

@@ -74,7 +74,7 @@ class LocalizedTourController extends Controller
             if ($locale !== 'en') {
                 $enTranslation = $this->findEnglishTranslation($slug, $tourRelations);
                 if ($enTranslation) {
-                    return redirect("/en/tours/{$enTranslation->slug}", 302);
+                    return redirect("/en/tours/{$enTranslation->slug}", 301);
                 }
             }
             abort(404);
@@ -92,9 +92,30 @@ class LocalizedTourController extends Controller
         // Canonical URL points to localized version
         $canonicalUrl = url("/{$locale}/tours/{$slug}");
 
-        // Generate structured data using Tour model method
+        // Detect thin/empty translations → noindex to prevent low-quality indexing
+        $hasContent = !empty($translation->content) || !empty($translation->excerpt);
+        $robotsDirective = $hasContent ? 'index, follow' : 'noindex, follow';
+
+        // Collect alternate locale URLs for og:locale:alternate
+        $ogLocaleAlternates = [];
+        if (!$tour->relationLoaded('translations')) {
+            $tour->load('translations:id,tour_id,locale,slug');
+        }
+        foreach ($tour->translations as $sibling) {
+            if ($sibling->locale !== $locale && $sibling->slug) {
+                $ogLocaleAlternates[] = $sibling->locale . '_' . strtoupper($sibling->locale);
+            }
+        }
+
+        // Generate structured data using Tour model methods (translation-aware)
+        $schemas = array_filter([
+            $tour->generateSchemaData($translation),
+            $tour->generateBreadcrumbSchema($translation),
+            $tour->generateFaqSchema($translation),
+        ]);
+
         $structuredData = json_encode(
-            $tour->generateSchemaData(),
+            count($schemas) === 1 ? $schemas[0] : array_values($schemas),
             JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
@@ -105,7 +126,9 @@ class LocalizedTourController extends Controller
             'metaDescription',
             'ogImage',
             'canonicalUrl',
-            'structuredData'
+            'structuredData',
+            'robotsDirective',
+            'ogLocaleAlternates'
         ));
     }
 

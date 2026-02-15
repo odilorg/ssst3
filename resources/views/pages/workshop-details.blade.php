@@ -286,7 +286,7 @@
             <p class="workshop-section__lead">This workshop can be part of these curated tours:</p>
             <div class="related-tours-grid">
               @foreach($relatedTours as $tour)
-              <a href="{{ url('/tours/' . $tour->slug) }}" class="related-tour-card">
+              <a href="{{ url('/' . app()->getLocale() . '/tours/' . $tour->slug) }}" class="related-tour-card">
                 @if($tour->hero_image)
                   <div class="related-tour-card__image">
                     <img src="{{ $tour->hero_image_url }}" alt="{{ $tour->title }}">

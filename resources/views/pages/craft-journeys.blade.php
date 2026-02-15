@@ -6,7 +6,7 @@
 
 @section('title', 'Craft Journeys - Multi-Day Boutique Tours | Uzbekistan Silk Road')
 @section('meta_description', 'Authentic craft tourism in Uzbekistan. Learn pottery, silk weaving, and suzani embroidery from master artisans. Small groups (max 6). Weekend to 2-week immersive journeys from $850.')
-@section('canonical', url('/tours'))
+@section('canonical', url('/' . app()->getLocale() . '/tours'))
 
 @section('structured_data')
 {!! $structuredData !!}

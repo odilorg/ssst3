@@ -498,6 +498,7 @@ class Tour extends Model
         return $query->with([
             'city:id,name,slug,hero_image',
             'categories:id,name,slug',
+            'translations',
         ]);
     }
 
@@ -969,7 +970,7 @@ class Tour extends Model
     /**
      * Generate Schema.org JSON-LD structured data for this tour
      */
-    public function generateSchemaData(): ?array
+    public function generateSchemaData(?TourTranslation $translation = null): ?array
     {
         if (!$this->schema_enabled) {
             return null;
@@ -980,12 +981,21 @@ class Tour extends Model
             return is_array($this->schema_override) ? $this->schema_override : json_decode($this->schema_override, true);
         }
 
+        // Determine locale for URL generation
+        $locale = $translation->locale ?? app()->getLocale();
+        $slug = $translation->slug ?? $this->slug;
+
+        // Use translated content when available, fallback to tour fields
+        $name = $translation->title ?? $this->title;
+        $description = strip_tags($translation->excerpt ?? $translation->content ?? $this->short_description ?? $this->long_description);
+
         // Auto-generate schema from tour data
         $schema = [
             "@context" => "https://schema.org",
             "@type" => "Tour",
-            "name" => $this->title,
-            "description" => strip_tags($this->short_description ?? $this->long_description),
+            "name" => $name,
+            "description" => $description,
+            "inLanguage" => $locale,
             "provider" => [
                 "@type" => "Organization",
                 "name" => "Jahongir Travel",
@@ -1014,7 +1024,7 @@ class Tour extends Model
                 "price" => number_format($this->price_per_person, 2, '.', ''),
                 "priceCurrency" => $this->currency,
                 "availability" => "https://schema.org/InStock",
-                "url" => url('/tours/' . $this->slug),
+                "url" => url("/{$locale}/tours/{$slug}"),
             ];
         }
 
@@ -1058,8 +1068,12 @@ class Tour extends Model
     /**
      * Generate BreadcrumbList schema for this tour
      */
-    public function generateBreadcrumbSchema(): array
+    public function generateBreadcrumbSchema(?TourTranslation $translation = null): array
     {
+        $locale = $translation->locale ?? app()->getLocale();
+        $slug = $translation->slug ?? $this->slug;
+        $tourName = $translation->title ?? $this->title;
+
         $breadcrumbs = [
             "@context" => "https://schema.org",
             "@type" => "BreadcrumbList",
@@ -1071,7 +1085,7 @@ class Tour extends Model
             "@type" => "ListItem",
             "position" => 1,
             "name" => "Home",
-            "item" => url('/')
+            "item" => url("/{$locale}")
         ];
 
         // 2. Tours
@@ -1079,7 +1093,7 @@ class Tour extends Model
             "@type" => "ListItem",
             "position" => 2,
             "name" => "Tours",
-            "item" => url('/tours')
+            "item" => url("/{$locale}/tours")
         ];
 
         // 3. City (if available)
@@ -1088,23 +1102,23 @@ class Tour extends Model
                 "@type" => "ListItem",
                 "position" => 3,
                 "name" => $this->city->name . " Tours",
-                "item" => url('/tours?city=' . $this->city->slug)
+                "item" => url("/{$locale}/tours?city=" . $this->city->slug)
             ];
 
             // 4. Current Tour
             $breadcrumbs['itemListElement'][] = [
                 "@type" => "ListItem",
                 "position" => 4,
-                "name" => $this->title,
-                "item" => url('/tours/' . $this->slug)
+                "name" => $tourName,
+                "item" => url("/{$locale}/tours/{$slug}")
             ];
         } else {
             // 3. Current Tour (no city)
             $breadcrumbs['itemListElement'][] = [
                 "@type" => "ListItem",
                 "position" => 3,
-                "name" => $this->title,
-                "item" => url('/tours/' . $this->slug)
+                "name" => $tourName,
+                "item" => url("/{$locale}/tours/{$slug}")
             ];
         }
 
@@ -1114,12 +1128,41 @@ class Tour extends Model
     /**
      * Generate FAQPage schema for this tour's FAQs
      */
-    public function generateFaqSchema(): ?array
+    public function generateFaqSchema(?TourTranslation $translation = null): ?array
     {
-        // Get FAQs for this tour
+        // Prefer translated FAQ data from translation's faq_json
+        $translatedFaqs = $translation?->faq_json;
+
+        if (!empty($translatedFaqs) && is_array($translatedFaqs)) {
+            $faqSchema = [
+                "@context" => "https://schema.org",
+                "@type" => "FAQPage",
+                "mainEntity" => []
+            ];
+
+            foreach ($translatedFaqs as $faq) {
+                $question = $faq['question'] ?? null;
+                $answer = $faq['answer'] ?? null;
+                if ($question && $answer) {
+                    $faqSchema['mainEntity'][] = [
+                        "@type" => "Question",
+                        "name" => is_string($question) ? $question : json_encode($question),
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => strip_tags(is_string($answer) ? $answer : json_encode($answer))
+                        ]
+                    ];
+                }
+            }
+
+            if (!empty($faqSchema['mainEntity'])) {
+                return $faqSchema;
+            }
+        }
+
+        // Fallback to tour's faqs() relationship
         $faqs = $this->faqs()->get();
 
-        // If no FAQs, return null
         if ($faqs->isEmpty()) {
             return null;
         }
@@ -1131,12 +1174,13 @@ class Tour extends Model
         ];
 
         foreach ($faqs as $faq) {
+            $answer = $faq->answer;
             $faqSchema['mainEntity'][] = [
                 "@type" => "Question",
                 "name" => $faq->question,
                 "acceptedAnswer" => [
                     "@type" => "Answer",
-                    "text" => strip_tags($faq->answer)
+                    "text" => strip_tags(is_string($answer) ? $answer : json_encode($answer))
                 ]
             ];
         }

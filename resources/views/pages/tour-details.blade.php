@@ -3,6 +3,9 @@
 @section('title', $pageTitle)
 @section('meta_description', $metaDescription)
 @section('canonical', $canonicalUrl)
+@if(isset($robotsDirective))
+@section('robots', $robotsDirective)
+@endif
 
 {{-- Open Graph / Facebook --}}
 @section('og_type', 'website')
@@ -10,6 +13,15 @@
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_image', $ogImage)
+
+{{-- og:locale:alternate for other available translations --}}
+@push('og_locale_alternate')
+    @if(isset($ogLocaleAlternates))
+        @foreach($ogLocaleAlternates as $altLocale)
+    <meta property="og:locale:alternate" content="{{ $altLocale }}">
+        @endforeach
+    @endif
+@endpush
 
 {{-- Twitter Card --}}
 @section('twitter_url', $canonicalUrl)
@@ -24,7 +36,7 @@
 
 {{-- Hreflang alternate links for multilingual SEO --}}
 @push('hreflang')
-    <x-seo.hreflang :entity="$tour" route-name="localized.tours.show" :x-default="url('/tours/' . $tour->slug)" />
+    <x-seo.hreflang :entity="$tour" route-name="localized.tours.show" :x-default="url('/en/tours/' . $tour->slug)" />
 @endpush
 
 @php
@@ -150,13 +162,13 @@
               <!-- Translated Overview -->
               <h2 class="section-title">{{ __('ui.sections.overview') }}</h2>
 
-              @if($translation->excerpt)
-                <p class="tour-overview__excerpt">{{ $translation->excerpt }}</p>
+              @if($translation->excerpt || $tour->short_description)
+                <p class="tour-overview__excerpt">{{ $translation->excerpt ?? $tour->short_description }}</p>
               @endif
 
-              @if($translation->content)
+              @if($translation->content || $tour->long_description)
                 <div class="tour-overview__content">
-                  {!! $translation->content !!}
+                  {!! $translation->content ?? $tour->long_description !!}
                 </div>
               @endif
             @else

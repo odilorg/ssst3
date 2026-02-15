@@ -85,8 +85,10 @@ class SitemapController extends Controller
      */
     protected function generateLocaleSitemap(string $locale): string
     {
+        $supportedLocales = config('multilang.locales', ['en', 'ru', 'fr']);
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
         // Static pages
         $staticPages = [
@@ -102,7 +104,16 @@ class SitemapController extends Controller
         foreach ($staticPages as $page) {
             try {
                 $url = route($page['route'], ['locale' => $locale]);
-                $xml .= $this->addUrl($url, now(), $page['changefreq'], $page['priority']);
+                // Build alternates for all locales
+                $alternates = [];
+                foreach ($supportedLocales as $altLocale) {
+                    try {
+                        $alternates[$altLocale] = route($page['route'], ['locale' => $altLocale]);
+                    } catch (\Exception $e) {
+                        // Skip if route doesn't exist for this locale
+                    }
+                }
+                $xml .= $this->addUrl($url, now(), $page['changefreq'], $page['priority'], $alternates);
             } catch (\Exception $e) {
                 // Route may not exist, skip
             }
@@ -112,8 +123,8 @@ class SitemapController extends Controller
         if (config('multilang.phases.tour_translations')) {
             TourTranslation::where('locale', $locale)
                 ->whereHas('tour', fn ($q) => $q->where('is_active', true))
-                ->with('tour:id,updated_at')
-                ->chunk(100, function ($translations) use (&$xml, $locale) {
+                ->with(['tour:id,updated_at', 'tour.translations:id,tour_id,locale,slug'])
+                ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
                             $url = route('localized.tours.show', [
@@ -121,7 +132,25 @@ class SitemapController extends Controller
                                 'slug' => $translation->slug,
                             ]);
                             $lastmod = $translation->tour?->updated_at ?? $translation->updated_at;
-                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.8');
+
+                            // Build alternates from sibling translations
+                            $alternates = [];
+                            if ($translation->tour) {
+                                foreach ($translation->tour->translations as $sibling) {
+                                    if ($sibling->slug && in_array($sibling->locale, $supportedLocales)) {
+                                        try {
+                                            $alternates[$sibling->locale] = route('localized.tours.show', [
+                                                'locale' => $sibling->locale,
+                                                'slug' => $sibling->slug,
+                                            ]);
+                                        } catch (\Exception $e) {
+                                            // Skip
+                                        }
+                                    }
+                                }
+                            }
+
+                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.8', $alternates);
                         } catch (\Exception $e) {
                             // Skip invalid routes
                         }
@@ -133,8 +162,8 @@ class SitemapController extends Controller
         if (config('multilang.phases.city_translations')) {
             CityTranslation::where('locale', $locale)
                 ->whereHas('city', fn ($q) => $q->where('is_active', true))
-                ->with('city:id,updated_at')
-                ->chunk(100, function ($translations) use (&$xml, $locale) {
+                ->with(['city:id,updated_at', 'city.translations:id,city_id,locale,slug'])
+                ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
                             $url = route('localized.city.show', [
@@ -142,7 +171,24 @@ class SitemapController extends Controller
                                 'slug' => $translation->slug,
                             ]);
                             $lastmod = $translation->city?->updated_at ?? $translation->updated_at;
-                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.7');
+
+                            $alternates = [];
+                            if ($translation->city) {
+                                foreach ($translation->city->translations as $sibling) {
+                                    if ($sibling->slug && in_array($sibling->locale, $supportedLocales)) {
+                                        try {
+                                            $alternates[$sibling->locale] = route('localized.city.show', [
+                                                'locale' => $sibling->locale,
+                                                'slug' => $sibling->slug,
+                                            ]);
+                                        } catch (\Exception $e) {
+                                            // Skip
+                                        }
+                                    }
+                                }
+                            }
+
+                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.7', $alternates);
                         } catch (\Exception $e) {
                             // Skip invalid routes
                         }
@@ -154,8 +200,8 @@ class SitemapController extends Controller
         if (config('multilang.phases.blog_translations')) {
             BlogPostTranslation::where('locale', $locale)
                 ->whereHas('blogPost', fn ($q) => $q->where('is_published', true))
-                ->with('blogPost:id,updated_at')
-                ->chunk(100, function ($translations) use (&$xml, $locale) {
+                ->with(['blogPost:id,updated_at', 'blogPost.translations:id,blog_post_id,locale,slug'])
+                ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
                             $url = route('localized.blog.show', [
@@ -163,7 +209,24 @@ class SitemapController extends Controller
                                 'slug' => $translation->slug,
                             ]);
                             $lastmod = $translation->blogPost?->updated_at ?? $translation->updated_at;
-                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.6');
+
+                            $alternates = [];
+                            if ($translation->blogPost) {
+                                foreach ($translation->blogPost->translations as $sibling) {
+                                    if ($sibling->slug && in_array($sibling->locale, $supportedLocales)) {
+                                        try {
+                                            $alternates[$sibling->locale] = route('localized.blog.show', [
+                                                'locale' => $sibling->locale,
+                                                'slug' => $sibling->slug,
+                                            ]);
+                                        } catch (\Exception $e) {
+                                            // Skip
+                                        }
+                                    }
+                                }
+                            }
+
+                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.6', $alternates);
                         } catch (\Exception $e) {
                             // Skip invalid routes
                         }
@@ -254,20 +317,28 @@ class SitemapController extends Controller
     }
 
     /**
-     * Add a URL entry to sitemap
+     * Add a URL entry to sitemap with optional hreflang alternates.
+     *
+     * @param array<string, string> $alternates Locale => URL map for xhtml:link alternates
      */
     private function addUrl(
         string $loc,
         $lastmod,
         string $changefreq = 'weekly',
-        string $priority = '0.5'
+        string $priority = '0.5',
+        array $alternates = []
     ): string {
-        $xml = '<url>';
-        $xml .= '<loc>' . htmlspecialchars($loc) . '</loc>';
-        $xml .= '<lastmod>' . $lastmod->toAtomString() . '</lastmod>';
-        $xml .= '<changefreq>' . $changefreq . '</changefreq>';
-        $xml .= '<priority>' . $priority . '</priority>';
-        $xml .= '</url>';
+        $xml = '  <url>' . "\n";
+        $xml .= '    <loc>' . htmlspecialchars($loc) . '</loc>' . "\n";
+        $xml .= '    <lastmod>' . $lastmod->toAtomString() . '</lastmod>' . "\n";
+        $xml .= '    <changefreq>' . $changefreq . '</changefreq>' . "\n";
+        $xml .= '    <priority>' . $priority . '</priority>' . "\n";
+
+        foreach ($alternates as $hreflang => $href) {
+            $xml .= '    <xhtml:link rel="alternate" hreflang="' . htmlspecialchars($hreflang) . '" href="' . htmlspecialchars($href) . '"/>' . "\n";
+        }
+
+        $xml .= '  </url>' . "\n";
 
         return $xml;
     }
