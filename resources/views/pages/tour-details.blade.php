@@ -797,12 +797,20 @@
                     <span class="btn__text" id="submit-text">{{ __('ui.booking.send_booking_request') }}</span>
                     <span class="spinner"></span>
                   </button>
-                  <p style="text-align: center; margin-top: 8px; font-size: 11px; color: #666;">
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="#10b981" style="vertical-align: middle; margin-right: 4px;">
-                      <path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/>
-                    </svg>
-                    {!! __('ui.booking.booking_reassurance') !!}
-                  </p>
+                  <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 4px;">
+                    <p style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: #059669;">
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="#059669" style="flex-shrink: 0;"><path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/></svg>
+                      {{ __('ui.booking.trust_free_cancellation') }}
+                    </p>
+                    <p style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: #059669;">
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="#059669" style="flex-shrink: 0;"><path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/></svg>
+                      {{ __('ui.booking.trust_response_time') }}
+                    </p>
+                    <p style="display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: #059669;">
+                      <svg width="14" height="14" viewBox="0 0 20 20" fill="#059669" style="flex-shrink: 0;"><path d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.7 7.7l-5 5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3l-3-3c-.4-.4-.4-1 0-1.4s1-.4 1.4 0L9 10.6l4.3-4.3c.4-.4 1-.4 1.4 0s.4 1 0 1.4z"/></svg>
+                      {{ __('ui.booking.trust_no_hidden_fees') }}
+                    </p>
+                  </div>
 
                   {{-- PDF Download Button (Secondary Action) --}}
                   @include("partials.tours.download-pdf-button", ["tour" => $tour, "variant" => "sidebar"])
@@ -1272,6 +1280,25 @@
             <path d="M2 4v8c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H3c-.6 0-1 .4-1 1zm12 0L8 8.5 2 4h12zM3 12V5.3l4.7 3.5c.2.1.4.2.6.2s.4-.1.6-.2L14 5.3V12H3z"/>
           </svg>
           <span>{{ __('ui.booking.modal_sent_to') }} <span id="modal-customer-email">your email</span></span>
+        </div>
+
+        <!-- What Happens Next -->
+        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 12px 14px; margin: 12px 0;">
+          <p style="font-size: 12px; font-weight: 600; color: #166534; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.3px;">{{ __('ui.booking.modal_what_next') }}</p>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <p style="display: flex; align-items: flex-start; gap: 8px; margin: 0; font-size: 12px; color: #15803D; line-height: 1.4;">
+              <span style="font-weight: 600; flex-shrink: 0;">1.</span>
+              {{ __('ui.booking.modal_next_step1') }}
+            </p>
+            <p style="display: flex; align-items: flex-start; gap: 8px; margin: 0; font-size: 12px; color: #15803D; line-height: 1.4;">
+              <span style="font-weight: 600; flex-shrink: 0;">2.</span>
+              {{ __('ui.booking.modal_next_step2') }}
+            </p>
+            <p style="display: flex; align-items: flex-start; gap: 8px; margin: 0; font-size: 12px; color: #15803D; line-height: 1.4;">
+              <span style="font-weight: 600; flex-shrink: 0;">3.</span>
+              {{ __('ui.booking.modal_next_step3') }}
+            </p>
+          </div>
         </div>
 
         <!-- Payment Options Compact -->

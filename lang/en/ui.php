@@ -159,6 +159,9 @@ return [
         'privacy_link' => 'Privacy Policy',
         'send_booking_request' => 'Send Booking Request',
         'booking_reassurance' => 'Booking confirmed within 24h &bull; No payment fees',
+        'trust_free_cancellation' => 'Free cancellation per tour policy',
+        'trust_response_time' => 'We respond within 1-2 hours',
+        'trust_no_hidden_fees' => 'No hidden fees — pay securely online or in cash',
 
         // Inquiry Form
         'inquiry_ask_title' => 'Ask Us About This Tour',
@@ -277,6 +280,10 @@ return [
         'modal_guests' => 'GUESTS',
         'modal_total' => 'TOTAL',
         'modal_sent_to' => 'Sent to',
+        'modal_what_next' => 'What happens next?',
+        'modal_next_step1' => 'Check your email for the confirmation details.',
+        'modal_next_step2' => 'We\'ll send you a short form to personalize your trip.',
+        'modal_next_step3' => 'Your guide and pickup details arrive 48h before the tour.',
         'modal_choose_payment' => 'CHOOSE PAYMENT',
         'modal_recommended' => 'RECOMMENDED',
         'modal_pay_deposit' => 'Pay :percent% Deposit',

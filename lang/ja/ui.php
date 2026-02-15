@@ -158,6 +158,9 @@ return [
         'privacy_link' => 'プライバシーポリシー',
         'send_booking_request' => '予約リクエストを送信',
         'booking_reassurance' => '24時間以内に予約確定 &bull; 手数料無料',
+        'trust_free_cancellation' => 'ツアーポリシーに基づく無料キャンセル',
+        'trust_response_time' => '1〜2時間以内に返信いたします',
+        'trust_no_hidden_fees' => '隠れた手数料なし — オンラインまたは現金でお支払い',
 
         // Inquiry Form
         'inquiry_ask_title' => 'このツアーについてお問い合わせ',
@@ -276,6 +279,10 @@ return [
         'modal_guests' => '人数',
         'modal_total' => '合計',
         'modal_sent_to' => '送信先',
+        'modal_what_next' => '次のステップ',
+        'modal_next_step1' => '確認メールをご確認ください。',
+        'modal_next_step2' => 'ツアー準備のための簡単なフォームをお送りします。',
+        'modal_next_step3' => 'ガイドと集合場所の詳細はツアー48時間前にお届けします。',
         'modal_choose_payment' => 'お支払い方法を選択',
         'modal_recommended' => '推奨',
         'modal_pay_deposit' => ':percent%の予約金を支払う',
