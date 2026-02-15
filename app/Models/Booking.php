@@ -168,6 +168,11 @@ class Booking extends Model
         return $this->hasMany(Passenger::class);
     }
 
+    public function tripDetail()
+    {
+        return $this->hasOne(TripDetail::class);
+    }
+
     public function passengerReminderLogs()
     {
         return $this->hasMany(PassengerReminderLog::class);
@@ -396,6 +401,22 @@ class Booking extends Model
     // ============================================
     // BOOKING TYPE HELPER METHODS
     // ============================================
+
+    /**
+     * Check if this booking needs full trip details (long tour: 3+ days)
+     */
+    public function needsFullTripDetails(): bool
+    {
+        return $this->tour && $this->tour->duration_days > 2;
+    }
+
+    /**
+     * Check if trip details have been submitted
+     */
+    public function hasTripDetails(): bool
+    {
+        return $this->tripDetail && $this->tripDetail->isCompleted();
+    }
 
     /**
      * Check if this is a private tour booking
