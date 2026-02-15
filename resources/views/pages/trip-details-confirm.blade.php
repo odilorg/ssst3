@@ -312,7 +312,13 @@
                 </ul>
             </div>
 
-            <a href="{{ route('trip-details.show', ['token' => $token]) }}" class="btn-edit">Edit Details</a>
+            <div style="display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap;">
+                <a href="{{ route('trip-details.itinerary-pdf', ['token' => $token]) }}" class="btn-edit" style="background: #1d4ed8; color: white; border-color: #1d4ed8;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -3px; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Itinerary PDF
+                </a>
+                <a href="{{ route('trip-details.show', ['token' => $token]) }}" class="btn-edit">Edit Details</a>
+            </div>
         </div>
 
         <div class="footer">

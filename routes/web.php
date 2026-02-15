@@ -582,6 +582,9 @@ Route::post('/trip-details/{token}', [\App\Http\Controllers\TripDetailController
 Route::get('/trip-details/{token}/confirm', [\App\Http\Controllers\TripDetailController::class, 'confirm'])
     ->name('trip-details.confirm');
 
+Route::get('/trip-details/{token}/itinerary.pdf', [\App\Http\Controllers\ItineraryPdfController::class, 'download'])
+    ->name('trip-details.itinerary-pdf');
+
 // ============================================
 // PAYMENT ROUTES
 // ============================================
