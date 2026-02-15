@@ -318,6 +318,7 @@
                     Download Itinerary PDF
                 </a>
                 <a href="{{ route('trip-details.show', ['token' => $token]) }}" class="btn-edit">Edit Details</a>
+                <a href="{{ url('/en/tours') }}" class="btn-edit" style="border-color: #059669; color: #059669;">Browse More Tours</a>
             </div>
         </div>
 
