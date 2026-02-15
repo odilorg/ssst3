@@ -152,4 +152,20 @@ Route::prefix('internal')->middleware('internal.api')->group(function () {
     // Tour delete endpoint
     Route::post('/tours/delete', [\App\Http\Controllers\Api\Internal\TourDeleteController::class, 'delete'])
         ->name('api.internal.tours.delete');
+
+    // Tour AI generation endpoint
+    Route::post('/tours/generate-ai', [\App\Http\Controllers\Api\Internal\TourAIGenerateController::class, 'generate'])
+        ->name('api.internal.tours.generate-ai');
+
+    // Booking CRUD endpoints
+    Route::post('/bookings/create', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'create'])
+        ->name('api.internal.bookings.create');
+    Route::post('/bookings/get', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'get'])
+        ->name('api.internal.bookings.get');
+    Route::post('/bookings/list', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'list'])
+        ->name('api.internal.bookings.list');
+    Route::post('/bookings/update', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'update'])
+        ->name('api.internal.bookings.update');
+    Route::post('/bookings/cancel', [\App\Http\Controllers\Api\Internal\BookingInternalController::class, 'cancel'])
+        ->name('api.internal.bookings.cancel');
 });
