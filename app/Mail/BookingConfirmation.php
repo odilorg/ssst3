@@ -14,6 +14,7 @@ class BookingConfirmation extends Mailable
 
     public $booking;
     public $customer;
+    public $tripDetailsUrl;
 
     /**
      * Create a new message instance.
@@ -22,6 +23,7 @@ class BookingConfirmation extends Mailable
     {
         $this->booking = $booking;
         $this->customer = $customer;
+        $this->tripDetailsUrl = $booking->getTripDetailsUrl();
     }
 
     /**

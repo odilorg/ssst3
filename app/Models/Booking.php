@@ -403,6 +403,16 @@ class Booking extends Model
     // ============================================
 
     /**
+     * Get trip details form URL (for post-booking email)
+     */
+    public function getTripDetailsUrl(): string
+    {
+        $token = $this->generatePassengerDetailsToken();
+
+        return route('trip-details.show', ['token' => $token]);
+    }
+
+    /**
      * Check if this booking needs full trip details (long tour: 3+ days)
      */
     public function needsFullTripDetails(): bool
