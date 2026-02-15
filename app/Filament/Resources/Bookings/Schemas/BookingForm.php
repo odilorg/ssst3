@@ -139,7 +139,6 @@ class BookingForm
                     ])
                     ->columns(3),
 
-Section::make('Назначения')                    ->description('Водитель, гид и транспорт для этого бронирования')                    ->schema([                        TextInput::make('driver_name')                            ->label('Имя водителя')                            ->placeholder('Например: Азиз'),                        TextInput::make('driver_phone')                            ->label('Телефон водителя')                            ->tel()                            ->placeholder('+998 90 123 4567'),                        TextInput::make('guide_name')                            ->label('Имя гида')                            ->placeholder('Например: Малика'),                        TextInput::make('guide_phone')                            ->label('Телефон гида')                            ->tel()                            ->placeholder('+998 91 234 5678'),                        TextInput::make('vehicle_info')                            ->label('Транспорт')                            ->placeholder('Toyota Land Cruiser, номер UZ-123-AB')                            ->columnSpanFull(),                    ])                    ->columns(2)                    ->collapsible(),
                 Section::make('Детали поездки (от гостя)')
                     ->description('Информация, заполненная гостем через форму trip details')
                     ->schema([
