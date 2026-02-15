@@ -8,8 +8,9 @@
     {{-- SEO Meta Tags --}}
     <meta name="description" content="@yield('meta_description', 'Discover Uzbekistan with Jahongir Travel - Expert guided tours of the ancient Silk Road, featuring Samarkand, Bukhara, Khiva, and more.')">
     <meta name="keywords" content="@yield('meta_keywords', 'Uzbekistan tours, Silk Road travel, Samarkand tours, Bukhara, Khiva, Central Asia travel')">
+    <meta name="robots" content="@yield('robots', 'index, follow')">
     <title>@yield('title', 'Jahongir Travel - Discover the Magic of Uzbekistan | Silk Road Tours')</title>
-    
+
     {{-- Canonical URL --}}
     @hasSection('canonical')
         <link rel="canonical" href="@yield('canonical')">
@@ -19,10 +20,11 @@
 
     {{-- Hreflang Tags (for multilingual SEO) --}}
     @stack('hreflang')
-    
+
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:locale" content="@yield('og_locale', app()->getLocale() . '_' . strtoupper(app()->getLocale()))">
+    @stack('og_locale_alternate')
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:title" content="@yield('og_title', config('app.name'))">
     <meta property="og:description" content="@yield('og_description', 'Expert guided tours in Uzbekistan and the Silk Road')">

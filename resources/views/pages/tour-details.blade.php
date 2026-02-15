@@ -3,6 +3,9 @@
 @section('title', $pageTitle)
 @section('meta_description', $metaDescription)
 @section('canonical', $canonicalUrl)
+@if(isset($robotsDirective))
+@section('robots', $robotsDirective)
+@endif
 
 {{-- Open Graph / Facebook --}}
 @section('og_type', 'website')
@@ -10,6 +13,15 @@
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_image', $ogImage)
+
+{{-- og:locale:alternate for other available translations --}}
+@push('og_locale_alternate')
+    @if(isset($ogLocaleAlternates))
+        @foreach($ogLocaleAlternates as $altLocale)
+    <meta property="og:locale:alternate" content="{{ $altLocale }}">
+        @endforeach
+    @endif
+@endpush
 
 {{-- Twitter Card --}}
 @section('twitter_url', $canonicalUrl)

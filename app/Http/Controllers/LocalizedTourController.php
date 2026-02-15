@@ -92,6 +92,21 @@ class LocalizedTourController extends Controller
         // Canonical URL points to localized version
         $canonicalUrl = url("/{$locale}/tours/{$slug}");
 
+        // Detect thin/empty translations → noindex to prevent low-quality indexing
+        $hasContent = !empty($translation->content) || !empty($translation->excerpt);
+        $robotsDirective = $hasContent ? 'index, follow' : 'noindex, follow';
+
+        // Collect alternate locale URLs for og:locale:alternate
+        $ogLocaleAlternates = [];
+        if (!$tour->relationLoaded('translations')) {
+            $tour->load('translations:id,tour_id,locale,slug');
+        }
+        foreach ($tour->translations as $sibling) {
+            if ($sibling->locale !== $locale && $sibling->slug) {
+                $ogLocaleAlternates[] = $sibling->locale . '_' . strtoupper($sibling->locale);
+            }
+        }
+
         // Generate structured data using Tour model methods (translation-aware)
         $schemas = array_filter([
             $tour->generateSchemaData($translation),
@@ -111,7 +126,9 @@ class LocalizedTourController extends Controller
             'metaDescription',
             'ogImage',
             'canonicalUrl',
-            'structuredData'
+            'structuredData',
+            'robotsDirective',
+            'ogLocaleAlternates'
         ));
     }
 
