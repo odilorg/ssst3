@@ -39,6 +39,16 @@ Schedule::command('reminders:trip-details')
     ->appendOutputTo(storage_path('logs/trip-details-reminders.log'));
 
 // ============================================
+// PRE-TRIP NOTIFICATION (DAY BEFORE TOUR)
+// ============================================
+
+Schedule::command('reminders:pre-trip')
+    ->dailyAt('16:00')
+    ->timezone('Asia/Tashkent')
+    ->emailOutputOnFailure(config('mail.from.address'))
+    ->appendOutputTo(storage_path('logs/pre-trip-notifications.log'));
+
+// ============================================
 // TOUR OPERATOR REMINDER SCHEDULER
 // ============================================
 
