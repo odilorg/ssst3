@@ -4,6 +4,8 @@ namespace App\Services\OpenAI;
 
 use App\Models\BlogPost;
 use App\Models\BlogPostTranslation;
+use App\Models\City;
+use App\Models\CityTranslation;
 use App\Models\Tour;
 use App\Models\TourTranslation;
 use App\Models\TranslationLog;
@@ -405,6 +407,135 @@ class TranslationService
     public function estimateTokens(string $text): int
     {
         return (int) ceil(strlen($text) / 4);
+    }
+
+    /**
+     * Translate entire city to target locale
+     */
+    public function translateCity(City $city, string $targetLocale): array
+    {
+        $sourceLocale = 'en';
+        $sourceTranslation = $city->translations()->where('locale', $sourceLocale)->first();
+
+        // Use EN translation row if exists, otherwise fall back to city's own fields
+        $source = $sourceTranslation ?? $city;
+
+        $translations = [];
+        $fields = ['name', 'tagline', 'short_description', 'description', 'seo_title', 'seo_description'];
+
+        foreach ($fields as $field) {
+            $sourceValue = $source->{$field};
+
+            if (empty($sourceValue)) {
+                continue;
+            }
+
+            $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
+        }
+
+        // Generate slug
+        $englishName = $source->name ?? $city->name;
+        $translations['slug'] = $this->generateCitySlug(
+            $translations['name'] ?? $englishName,
+            $englishName,
+            $targetLocale,
+            $city->id
+        );
+
+        return [
+            'translations' => $translations,
+            'tokens_used' => 0,
+        ];
+    }
+
+    /**
+     * Generate unique city slug with non-Latin fallback.
+     */
+    protected function generateCitySlug(string $translatedName, string $englishName, string $locale, int $cityId): string
+    {
+        $baseSlug = Str::slug($translatedName);
+
+        if (empty($baseSlug)) {
+            $baseSlug = Str::slug($englishName);
+        }
+
+        if (empty($baseSlug)) {
+            $baseSlug = "city-{$cityId}";
+        }
+
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while (CityTranslation::where('locale', $locale)
+            ->where('slug', $slug)
+            ->where('city_id', '!=', $cityId)
+            ->exists()) {
+            if ($counter <= 10) {
+                $slug = "{$baseSlug}-{$counter}";
+                $counter++;
+            } else {
+                $slug = "{$baseSlug}-{$cityId}";
+                break;
+            }
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Check rate limits for a user. Throws exception if exceeded.
+     */
+    public function checkRateLimits(int $userId): void
+    {
+        $maxPerHour = config('ai-translation.rate_limit.max_per_hour', 10);
+        $maxPerDay = config('ai-translation.rate_limit.max_per_day', 50);
+
+        $hourlyCount = TranslationLog::where('user_id', $userId)
+            ->where('created_at', '>=', now()->subHour())
+            ->count();
+
+        if ($hourlyCount >= $maxPerHour) {
+            throw new \Exception("Rate limit exceeded: {$maxPerHour} translations per hour. Please wait before translating again.");
+        }
+
+        $dailyCount = TranslationLog::where('user_id', $userId)
+            ->whereDate('created_at', today())
+            ->count();
+
+        if ($dailyCount >= $maxPerDay) {
+            throw new \Exception("Daily limit exceeded: {$maxPerDay} translations per day. Please try again tomorrow.");
+        }
+    }
+
+    /**
+     * Check cost limits. Throws exception if exceeded.
+     */
+    public function checkCostLimits(): void
+    {
+        $dailyLimit = config('ai-translation.cost_limits.daily_usd', 10.00);
+        $monthlyLimit = config('ai-translation.cost_limits.monthly_usd', 100.00);
+
+        $dailyCost = TranslationLog::getTotalCost('day');
+        if ($dailyCost >= $dailyLimit) {
+            throw new \Exception("Daily cost limit reached (\${$dailyLimit}). Translation paused until tomorrow.");
+        }
+
+        $monthlyCost = TranslationLog::getTotalCost('month');
+        if ($monthlyCost >= $monthlyLimit) {
+            throw new \Exception("Monthly cost limit reached (\${$monthlyLimit}). Contact admin to increase the limit.");
+        }
+    }
+
+    /**
+     * Estimate cost for translating content based on character count and current model.
+     */
+    public function estimateCostForContent(string $content): float
+    {
+        $inputTokens = $this->estimateTokens($content);
+        // Output roughly equals input for translations
+        $outputTokens = $inputTokens;
+
+        return $this->estimateCost($inputTokens, $outputTokens);
     }
 
     /**

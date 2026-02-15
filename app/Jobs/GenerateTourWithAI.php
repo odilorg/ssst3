@@ -76,7 +76,7 @@ class GenerateTourWithAI implements ShouldQueue, ShouldBeUnique
                 // Create tour with all required fields for wizard compatibility
                 $tour = Tour::create([
                     'title' => $tourData['title'],
-                    'slug' => Str::slug($tourData['title']) . '-' . time(),
+                    'slug' => $this->generateUniqueSlug($tourData['title']),
                     'duration_days' => $tourData['duration_days'],
                     'duration_text' => ($tourData['duration_days'] == 1)
                         ? '1 day'
@@ -226,6 +226,23 @@ class GenerateTourWithAI implements ShouldQueue, ShouldBeUnique
         } finally {
             $lock->release();
         }
+    }
+
+    /**
+     * Generate a unique, SEO-friendly slug without timestamp suffix.
+     */
+    protected function generateUniqueSlug(string $title): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $counter = 1;
+
+        while (Tour::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 
     /**

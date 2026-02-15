@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Cities\RelationManagers;
 
+use App\Jobs\TranslateCityWithAI;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -25,6 +28,38 @@ class CityTranslationsRelationManager extends RelationManager
 
     protected static ?string $pluralModelLabel = 'Переводы';
 
+    protected static function getLocaleOptions(): array
+    {
+        $flags = [
+            'en' => "\u{1F1EC}\u{1F1E7}", 'ru' => "\u{1F1F7}\u{1F1FA}", 'uz' => "\u{1F1FA}\u{1F1FF}",
+            'fr' => "\u{1F1EB}\u{1F1F7}", 'es' => "\u{1F1EA}\u{1F1F8}", 'de' => "\u{1F1E9}\u{1F1EA}",
+            'zh' => "\u{1F1E8}\u{1F1F3}", 'ar' => "\u{1F1F8}\u{1F1E6}", 'it' => "\u{1F1EE}\u{1F1F9}",
+            'pt' => "\u{1F1F5}\u{1F1F9}", 'ja' => "\u{1F1EF}\u{1F1F5}", 'ko' => "\u{1F1F0}\u{1F1F7}",
+            'tr' => "\u{1F1F9}\u{1F1F7}",
+        ];
+
+        $options = [];
+        foreach (config('ai-translation.locale_names', []) as $code => $name) {
+            $flag = $flags[$code] ?? '';
+            $options[$code] = "{$flag} {$name}";
+        }
+
+        return $options;
+    }
+
+    protected static function getLocaleFlag(string $locale): string
+    {
+        $flags = [
+            'en' => "\u{1F1EC}\u{1F1E7}", 'ru' => "\u{1F1F7}\u{1F1FA}", 'uz' => "\u{1F1FA}\u{1F1FF}",
+            'fr' => "\u{1F1EB}\u{1F1F7}", 'es' => "\u{1F1EA}\u{1F1F8}", 'de' => "\u{1F1E9}\u{1F1EA}",
+            'zh' => "\u{1F1E8}\u{1F1F3}", 'ar' => "\u{1F1F8}\u{1F1E6}", 'it' => "\u{1F1EE}\u{1F1F9}",
+            'pt' => "\u{1F1F5}\u{1F1F9}", 'ja' => "\u{1F1EF}\u{1F1F5}", 'ko' => "\u{1F1F0}\u{1F1F7}",
+            'tr' => "\u{1F1F9}\u{1F1F7}",
+        ];
+
+        return $flags[$locale] ?? '';
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -34,11 +69,7 @@ class CityTranslationsRelationManager extends RelationManager
                     ->schema([
                         Forms\Components\Select::make('locale')
                             ->label('Язык')
-                            ->options([
-                                'en' => '🇬🇧 English',
-                                'ru' => '🇷🇺 Русский',
-                                'fr' => '🇫🇷 Français',
-                            ])
+                            ->options(self::getLocaleOptions())
                             ->required()
                             ->native(false)
                             ->unique(
@@ -146,12 +177,7 @@ class CityTranslationsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('locale')
                     ->label('Язык')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'en' => '🇬🇧 EN',
-                        'ru' => '🇷🇺 RU',
-                        'fr' => '🇫🇷 FR',
-                        default => $state,
-                    })
+                    ->formatStateUsing(fn (string $state): string => self::getLocaleFlag($state) . ' ' . strtoupper($state))
                     ->sortable()
                     ->width(80),
 
@@ -197,17 +223,38 @@ class CityTranslationsRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('locale')
                     ->label('Язык')
-                    ->options([
-                        'en' => 'English',
-                        'ru' => 'Русский',
-                        'fr' => 'Français',
-                    ]),
+                    ->options(self::getLocaleOptions()),
             ])
             ->headerActions([
                 CreateAction::make()
                     ->label('Добавить перевод'),
             ])
             ->actions([
+                Action::make('ai_translate')
+                    ->label('AI Translate')
+                    ->icon('heroicon-o-language')
+                    ->color('info')
+                    ->visible(fn ($record): bool => $record->locale !== 'en' && config('ai-translation.enabled', true))
+                    ->requiresConfirmation()
+                    ->modalHeading('AI Translation')
+                    ->modalDescription(fn ($record) => 'Translate this city to ' . strtoupper($record->locale) . ' using AI? Existing content will be overwritten.')
+                    ->modalSubmitActionLabel('Translate')
+                    ->action(function ($record) {
+                        $city = $this->ownerRecord;
+                        $targetLocale = strtoupper($record->locale);
+
+                        TranslateCityWithAI::dispatch(
+                            $city->id,
+                            $record->id,
+                            auth()->id()
+                        );
+
+                        Notification::make()
+                            ->title('Translation Queued')
+                            ->body("Translation to {$targetLocale} has been queued. You will be notified when it's complete (typically 30-60 seconds).")
+                            ->info()
+                            ->send();
+                    }),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

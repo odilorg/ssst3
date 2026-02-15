@@ -401,7 +401,16 @@ class TourTranslationsRelationManager extends RelationManager
                     ->visible(fn ($record): bool => config('ai-translation.enabled', true))
                     ->requiresConfirmation()
                     ->modalHeading('AI Translation')
-                    ->modalDescription(fn ($record) => 'Translate this tour to ' . strtoupper($record->locale) . ' using AI? This will cost approximately $0.16 USD.')
+                    ->modalDescription(function ($record) {
+                        $tour = $this->ownerRecord;
+                        $contentLength = strlen($tour->title ?? '') + strlen($tour->long_description ?? '') + strlen($tour->short_description ?? '');
+                        // Rough estimate: 4 chars = 1 token, input + output, model pricing
+                        $tokens = (int) ceil($contentLength / 4);
+                        $costs = config('ai-translation.cost_per_1k_tokens.deepseek-chat', ['input' => 0.00014, 'output' => 0.00028]);
+                        $estimated = round(($tokens / 1000) * ($costs['input'] + $costs['output']) * 12, 4); // ~12 sections
+                        $estimatedDisplay = $estimated < 0.01 ? '< $0.01' : '$' . number_format($estimated, 2);
+                        return "Translate this tour to " . strtoupper($record->locale) . " using AI? Estimated cost: {$estimatedDisplay} USD.";
+                    })
                     ->modalSubmitActionLabel('Translate')
                     ->action(function ($record) {
                         $tour = $this->ownerRecord;

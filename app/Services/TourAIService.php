@@ -215,12 +215,73 @@ class TourAIService
             throw new \Exception('Invalid JSON response from AI: ' . json_last_error_msg());
         }
 
-        // Validate structure
-        if (!isset($data['title']) || !isset($data['days']) || !is_array($data['days'])) {
-            throw new \Exception('AI response missing required fields');
-        }
+        $this->validateTourData($data);
 
         return $data;
+    }
+
+    /**
+     * Validate the AI-generated tour data structure thoroughly.
+     */
+    protected function validateTourData(array $data): void
+    {
+        // Required top-level fields
+        $requiredFields = ['title', 'days'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                throw new \Exception("AI response missing required field: {$field}");
+            }
+        }
+
+        if (!is_string($data['title']) || strlen($data['title']) < 5) {
+            throw new \Exception('AI response has invalid title (too short or not a string)');
+        }
+
+        if (!is_array($data['days']) || count($data['days']) === 0) {
+            throw new \Exception('AI response has no itinerary days');
+        }
+
+        // Validate each day
+        foreach ($data['days'] as $i => $day) {
+            $dayNum = $i + 1;
+
+            if (!is_array($day)) {
+                throw new \Exception("Day {$dayNum} is not a valid object");
+            }
+
+            if (empty($day['title']) || !is_string($day['title'])) {
+                throw new \Exception("Day {$dayNum} missing title");
+            }
+
+            // Validate stops if present
+            if (isset($day['stops'])) {
+                if (!is_array($day['stops'])) {
+                    throw new \Exception("Day {$dayNum} stops is not an array");
+                }
+
+                foreach ($day['stops'] as $j => $stop) {
+                    $stopNum = $j + 1;
+                    if (!is_array($stop)) {
+                        throw new \Exception("Day {$dayNum}, Stop {$stopNum} is not a valid object");
+                    }
+                    if (empty($stop['title']) || !is_string($stop['title'])) {
+                        throw new \Exception("Day {$dayNum}, Stop {$stopNum} missing title");
+                    }
+                }
+            }
+        }
+
+        // Validate array fields are actually arrays (not strings)
+        foreach (['highlights', 'included', 'excluded', 'languages'] as $arrayField) {
+            if (isset($data[$arrayField]) && !is_array($data[$arrayField])) {
+                throw new \Exception("Field '{$arrayField}' must be an array, got " . gettype($data[$arrayField]));
+            }
+        }
+
+        // Validate estimated_price is numeric if present
+        if (isset($data['estimated_price']) && !is_numeric($data['estimated_price'])) {
+            throw new \Exception("estimated_price must be numeric, got: " . $data['estimated_price']);
+        }
     }
 
     /**

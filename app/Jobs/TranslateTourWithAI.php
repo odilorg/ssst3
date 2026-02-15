@@ -62,6 +62,10 @@ class TranslateTourWithAI implements ShouldQueue, ShouldBeUnique
         $startTime = microtime(true);
 
         try {
+            // Enforce rate and cost limits before proceeding
+            $translationService->checkRateLimits($this->userId);
+            $translationService->checkCostLimits();
+
             // Fetch models fresh from database
             $tour = Tour::findOrFail($this->tourId);
             $translation = TourTranslation::findOrFail($this->translationId);
