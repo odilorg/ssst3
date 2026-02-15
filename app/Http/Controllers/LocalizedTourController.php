@@ -24,13 +24,23 @@ class LocalizedTourController extends Controller
      */
     public function show(string $locale, string $slug): View|RedirectResponse
     {
-        // Eager load relations for tour
+        // Eager load relations for tour (includes SSR sections data)
         $tourRelations = [
             'pricingTiers' => function ($q) {
                 $q->active()->ordered();
             },
             'upcomingDepartures' => function ($q) {
                 $q->limit(6);
+            },
+            'city:id,name',
+            'faqs' => function ($q) {
+                $q->orderBy('sort_order');
+            },
+            'topLevelItems' => function ($q) {
+                $q->orderBy('sort_order');
+            },
+            'topLevelItems.children' => function ($q) {
+                $q->orderBy('sort_order');
             },
         ];
 
@@ -119,6 +129,19 @@ class LocalizedTourController extends Controller
             JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
         );
 
+        // Load global FAQs and requirements for SSR sections
+        $faqSettingKey = $locale === 'en' ? 'global_faqs' : "global_faqs_{$locale}";
+        $globalFaqs = \App\Models\Setting::get($faqSettingKey, []);
+        if (empty($globalFaqs) && $locale !== 'en') {
+            $globalFaqs = \App\Models\Setting::get('global_faqs', []);
+        }
+
+        $reqSettingKey = $locale === 'en' ? 'global_requirements' : "global_requirements_{$locale}";
+        $globalRequirements = \App\Models\Setting::get($reqSettingKey, []);
+        if (empty($globalRequirements) && $locale !== 'en') {
+            $globalRequirements = \App\Models\Setting::get('global_requirements', []);
+        }
+
         return view('pages.tour-details', compact(
             'tour',
             'translation',
@@ -128,7 +151,9 @@ class LocalizedTourController extends Controller
             'canonicalUrl',
             'structuredData',
             'robotsDirective',
-            'ogLocaleAlternates'
+            'ogLocaleAlternates',
+            'globalFaqs',
+            'globalRequirements'
         ));
     }
 

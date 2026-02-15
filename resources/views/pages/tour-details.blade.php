@@ -113,6 +113,7 @@
     <div class="container">
 
       <!-- Skeleton Loader (hidden once loaded) -->
+      @if(!isset($translation))
       <div class="tour-hero__skeleton" aria-hidden="true">
         <div class="skeleton skeleton--hero"></div>
         <div class="skeleton skeleton--thumbnails">
@@ -122,15 +123,21 @@
           <div class="skeleton skeleton--thumb"></div>
         </div>
       </div>
+      @endif
 
       <!-- Actual Gallery -->
-      <!-- Actual Gallery - Loaded via HTMX -->
-      <div class="tour-hero__gallery is-hidden"
-           hx-get="{{ url($partialBase . '/gallery' . $localeParam) }}"
-           hx-trigger="load"
-           hx-swap="innerHTML"
-           data-tour-slug="{{ $tour->slug }}">
-      </div>
+      @if(isset($translation))
+        <div class="tour-hero__gallery" data-tour-slug="{{ $tour->slug }}">
+          @include('partials.tours.show.gallery', ['tour' => $tour])
+        </div>
+      @else
+        <div class="tour-hero__gallery is-hidden"
+             hx-get="{{ url($partialBase . '/gallery' . $localeParam) }}"
+             hx-trigger="load"
+             hx-swap="innerHTML"
+             data-tour-slug="{{ $tour->slug }}">
+        </div>
+      @endif
     </div>
   </section>
 
@@ -184,114 +191,156 @@
 
           <!-- Highlights Section -->
           <section class="tour-highlights" id="highlights"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/highlights' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">{{ __('ui.sections.highlights') }}</h2>
-            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @if(isset($translation))
+              @include('partials.tours.show.highlights', ['tour' => $tour, 'translation' => $translation])
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.highlights') }}</h2>
+              <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @endif
 
           </section>
 
           <!-- Includes/Excludes Section -->
           <section class="tour-includes-excludes" id="includes"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/included-excluded' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">{{ __('ui.sections.included_excluded') }}</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-              <div>
-                <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
-                <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
-                <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @if(isset($translation))
+              @include('partials.tours.show.included-excluded', ['tour' => $tour, 'translation' => $translation])
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.included_excluded') }}</h2>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                  <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+                </div>
+                <div>
+                  <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton--text" style="width: 93%; height: 16px; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton--text" style="width: 87%; height: 16px; margin-bottom: 0.5rem;"></div>
+                </div>
               </div>
-              <div>
-                <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
-                <div class="skeleton skeleton--text" style="width: 93%; height: 16px; margin-bottom: 0.5rem;"></div>
-                <div class="skeleton skeleton--text" style="width: 87%; height: 16px; margin-bottom: 0.5rem;"></div>
-              </div>
-            </div>
+            @endif
 
           </section>
 
           <!-- Cancellation Policy Section -->
           <section class="tour-cancellation" id="cancellation"
                    data-tour-slug="{{ $tour->slug }}"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/cancellation' . $localeParam) }}"
                    hx-trigger="load"
-                   hx-swap="innerHTML">
-            <div class="loading-spinner">Loading cancellation policy...</div>
+                   hx-swap="innerHTML"
+                   @endif>
+            @if(isset($translation))
+              @include('partials.tours.show.cancellation', ['tour' => $tour, 'translation' => $translation])
+            @else
+              <div class="loading-spinner">Loading cancellation policy...</div>
+            @endif
           </section>
 
           <!-- Itinerary Section -->
           <section class="tour-itinerary" id="itinerary"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/itinerary' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    aria-label="Tour itinerary"
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <div class="itinerary-header">
-              <h2 class="section-title">{{ __('ui.itinerary.day_by_day') }}</h2>
-            </div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @if(isset($translation))
+              @include('partials.tours.show.itinerary', ['tour' => $tour, 'translation' => $translation])
+            @else
+              <!-- Loading Skeleton -->
+              <div class="itinerary-header">
+                <h2 class="section-title">{{ __('ui.itinerary.day_by_day') }}</h2>
+              </div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 0.5rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 85%; height: 16px; margin-bottom: 0.5rem;"></div>
+            @endif
 
           </section>
 
           <!-- Meeting Point & Pickup Section -->
           <section class="tour-meeting" id="meeting-point"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/meeting-point' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">{{ __('ui.sections.meeting_point') }}</h2>
-            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
-            {{-- Map skeleton removed --}}
+            @if(isset($translation))
+              @include('partials.tours.show.meeting-point', ['tour' => $tour, 'translation' => $translation])
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.meeting_point') }}</h2>
+              <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+              {{-- Map skeleton removed --}}
+            @endif
           </section>
 
           <!-- Know Before You Go Section -->
           <section class="tour-know-before" id="know-before"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/requirements' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">{{ __('ui.sections.know_before') }}</h2>
-            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+            @if(isset($translation))
+              @include('partials.tours.show.requirements', ['tour' => $tour, 'translation' => $translation, 'globalRequirements' => $globalRequirements])
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.know_before') }}</h2>
+              <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+            @endif
 
           </section>
 
           <!-- FAQ Section -->
           <section class="tour-faq" id="faq"
+                   @if(!isset($translation))
                    hx-get="{{ url($partialBase . '/faqs' . $localeParam) }}"
                    hx-trigger="load"
                    hx-swap="innerHTML"
+                   @endif
                    data-tour-slug="{{ $tour->slug }}">
 
-            <!-- Loading Skeleton -->
-            <h2 class="section-title">{{ __('ui.sections.frequently_asked') }}</h2>
-            <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
-            <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+            @if(isset($translation))
+              @include('partials.tours.show.faqs', ['tour' => $tour, 'translation' => $translation, 'globalFaqs' => $globalFaqs])
+            @else
+              <!-- Loading Skeleton -->
+              <h2 class="section-title">{{ __('ui.sections.frequently_asked') }}</h2>
+              <div class="skeleton skeleton--text" style="width: 95%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 92%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 90%; height: 16px; margin-bottom: 1rem;"></div>
+              <div class="skeleton skeleton--text" style="width: 88%; height: 16px; margin-bottom: 1rem;"></div>
+            @endif
 
           </section>
 
