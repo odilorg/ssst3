@@ -37,17 +37,17 @@ class TripDetailController extends Controller
         $rules = [
             'hotel_name' => 'nullable|string|max:255',
             'hotel_address' => 'nullable|string|max:500',
-            'whatsapp_number' => 'nullable|string|max:50',
+            'whatsapp_number' => 'required|string|max:50',
             'language_preference' => 'nullable|string|max:50',
             'referral_source' => 'nullable|string|max:100',
             'additional_notes' => 'nullable|string|max:2000',
         ];
 
-        // Add flight fields for long tours
+        // Add flight fields for long tours (arrival date + flight required)
         if ($booking->needsFullTripDetails()) {
             $rules = array_merge($rules, [
-                'arrival_date' => 'nullable|date',
-                'arrival_flight' => 'nullable|string|max:50',
+                'arrival_date' => 'required|date',
+                'arrival_flight' => 'required|string|max:50',
                 'arrival_time' => 'nullable|string|max:20',
                 'departure_date' => 'nullable|date',
                 'departure_flight' => 'nullable|string|max:50',
