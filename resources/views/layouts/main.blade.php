@@ -22,6 +22,7 @@
     
     {{-- Open Graph / Facebook --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:locale" content="@yield('og_locale', app()->getLocale() . '_' . strtoupper(app()->getLocale()))">
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:title" content="@yield('og_title', config('app.name'))">
     <meta property="og:description" content="@yield('og_description', 'Expert guided tours in Uzbekistan and the Silk Road')">

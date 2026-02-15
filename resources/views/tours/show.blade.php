@@ -19,16 +19,13 @@
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
 
-  <!-- Hreflang Alternates -->
-  <link rel="alternate" hreflang="en" href="{{ url('/tours/' . $tour->slug) }}">
-  <link rel="alternate" hreflang="ru" href="{{ url('/ru/tours/' . $tour->slug) }}">
-  <link rel="alternate" hreflang="fr" href="{{ url('/fr/tours/' . $tour->slug) }}">
-  <link rel="alternate" hreflang="x-default" href="{{ url('/tours/' . $tour->slug) }}">
+  <!-- Hreflang: Use dynamic component on localized pages. This view is legacy. -->
+  <x-seo.hreflang :entity="$tour" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Jahongir Travel">
-  <meta property="og:locale" content="en_US">
+  <meta property="og:locale" content="{{ app()->getLocale() }}_{{ strtoupper(app()->getLocale()) }}">
   <meta property="og:title" content="{{ $tour->getSeoTitle() }}">
   <meta property="og:description" content="{{ $tour->getSeoDescription() }}">
   <meta property="og:image" content="{{ $tour->getOgImageUrl() }}">

@@ -178,7 +178,7 @@
 
                             <div class="tour-card-o__bottom">
                                 <h3 class="tour-card-o__title">
-                                    <a href="/tours/{{ $tour->slug }}">
+                                    <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}">
                                         {{ $tr->title ?? $tour->title }}
                                     </a>
                                 </h3>
@@ -197,7 +197,7 @@
                                             @endif
                                         </span>
                                     </div>
-                                    <a href="/tours/{{ $tour->slug }}" class="tour-card-o__btn">
+                                    <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}" class="tour-card-o__btn">
                                         View Tour
                                         <i class="fas fa-arrow-right"></i>
                                     </a>

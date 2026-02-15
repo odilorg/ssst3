@@ -29,7 +29,7 @@
         <div class="tour-card-h__main">
             {{-- Title --}}
             <h3 class="tour-card-h__title">
-                <a href="/tours/{{ $tour->slug }}">
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}">
                     {{ $tr->title ?? $tour->title }}
                 </a>
             </h3>
@@ -53,7 +53,7 @@
                 <div class="tour-card-h__price">
                     <span class="tour-card-h__price-amount">${{ number_format($tour->price_per_person, 0) }}</span>
                 </div>
-                <a href="/tours/{{ $tour->slug }}" class="tour-card-h__btn">
+                <a href="/{{ app()->getLocale() }}/tours/{{ $tr->slug ?? $tour->slug }}" class="tour-card-h__btn">
                     View Tour
                     <i class="fas fa-arrow-right" aria-hidden="true"></i>
                 </a>
