@@ -22,8 +22,8 @@ class SendTripDetailReminders extends Command
             $this->info('DRY RUN MODE - No emails will be sent');
         }
 
-        // Find confirmed bookings with future dates where trip details aren't completed
-        $bookings = Booking::where('status', 'confirmed')
+        // Find confirmed/pending_payment bookings with future dates where trip details aren't completed
+        $bookings = Booking::whereIn('status', ['confirmed', 'pending_payment'])
             ->whereDate('start_date', '>', now())
             ->whereDate('start_date', '<=', now()->addDays(30))
             ->with(['customer', 'tour', 'tripDetail'])

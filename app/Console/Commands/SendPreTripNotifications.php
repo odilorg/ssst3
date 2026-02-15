@@ -24,7 +24,7 @@ class SendPreTripNotifications extends Command
 
         $tomorrow = now()->addDay()->toDateString();
 
-        $bookings = Booking::where('status', 'confirmed')
+        $bookings = Booking::whereIn('status', ['confirmed', 'pending_payment'])
             ->whereDate('start_date', $tomorrow)
             ->with(['customer', 'tour', 'tripDetail'])
             ->get();
