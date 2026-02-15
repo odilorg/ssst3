@@ -53,19 +53,17 @@ class TripDetail extends Model
 
     /**
      * Get required fields based on tour type
-     * Mini tours: hotel + whatsapp + referral
-     * Long tours: all fields
+     * Mini tours: whatsapp only
+     * Long tours: whatsapp + arrival date + arrival flight
      */
     public function getRequiredFields(): array
     {
-        $base = ['hotel_name', 'whatsapp_number'];
+        $base = ['whatsapp_number'];
 
         if (!$this->isMiniTour()) {
             $base = array_merge($base, [
                 'arrival_date',
                 'arrival_flight',
-                'departure_date',
-                'departure_flight',
             ]);
         }
 

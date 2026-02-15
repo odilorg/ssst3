@@ -132,6 +132,30 @@
             font-weight: 400;
         }
 
+        label .required {
+            color: #ef4444;
+        }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #ef4444;
+            margin-top: 0.2rem;
+        }
+
+        input.is-invalid, select.is-invalid, textarea.is-invalid {
+            border-color: #ef4444;
+        }
+
+        .error-banner {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #991b1b;
+            font-size: 0.9rem;
+        }
+
         input, select, textarea {
             width: 100%;
             padding: 0.65rem 0.85rem;
@@ -225,6 +249,12 @@
             </div>
             @endif
 
+            @if($errors->any())
+            <div class="error-banner">
+                Please fill in the required fields below.
+            </div>
+            @endif
+
             <p class="intro-text">
                 @if($isMini)
                     Just a few quick details so we can arrange your pickup and stay in touch.
@@ -261,8 +291,9 @@
                         Communication
                     </div>
                     <div class="field-group">
-                        <label>WhatsApp Number</label>
-                        <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number', $tripDetail->whatsapp_number) }}" placeholder="+1 234 567 8900">
+                        <label>WhatsApp Number <span class="required">*</span></label>
+                        <input type="tel" name="whatsapp_number" value="{{ old('whatsapp_number', $tripDetail->whatsapp_number) }}" placeholder="+1 234 567 8900" required class="{{ $errors->has('whatsapp_number') ? 'is-invalid' : '' }}">
+                        @error('whatsapp_number') <p class="field-error">{{ $message }}</p> @enderror
                         <p class="field-hint">We'll send your guide details and pickup info via WhatsApp</p>
                     </div>
                 </div>
@@ -276,12 +307,14 @@
                     </div>
                     <div class="row">
                         <div class="field-group">
-                            <label>Arrival Date</label>
-                            <input type="date" name="arrival_date" value="{{ old('arrival_date', $tripDetail->arrival_date?->format('Y-m-d')) }}">
+                            <label>Arrival Date <span class="required">*</span></label>
+                            <input type="date" name="arrival_date" value="{{ old('arrival_date', $tripDetail->arrival_date?->format('Y-m-d')) }}" required class="{{ $errors->has('arrival_date') ? 'is-invalid' : '' }}">
+                            @error('arrival_date') <p class="field-error">{{ $message }}</p> @enderror
                         </div>
                         <div class="field-group">
-                            <label>Arrival Flight <span class="optional">(e.g. TK 364)</span></label>
-                            <input type="text" name="arrival_flight" value="{{ old('arrival_flight', $tripDetail->arrival_flight) }}" placeholder="Airline + flight number">
+                            <label>Arrival Flight <span class="required">*</span> <span class="optional">(e.g. TK 364)</span></label>
+                            <input type="text" name="arrival_flight" value="{{ old('arrival_flight', $tripDetail->arrival_flight) }}" placeholder="Airline + flight number" required class="{{ $errors->has('arrival_flight') ? 'is-invalid' : '' }}">
+                            @error('arrival_flight') <p class="field-error">{{ $message }}</p> @enderror
                         </div>
                     </div>
                     <div class="row">
