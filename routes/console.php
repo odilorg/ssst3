@@ -29,6 +29,16 @@ Schedule::command('reminders:balance-payment')
     ->appendOutputTo(storage_path('logs/balance-reminders.log'));
 
 // ============================================
+// TRIP DETAILS REMINDER SCHEDULER
+// ============================================
+
+Schedule::command('reminders:trip-details')
+    ->dailyAt('14:00')
+    ->timezone('Asia/Tashkent')
+    ->emailOutputOnFailure(config('mail.from.address'))
+    ->appendOutputTo(storage_path('logs/trip-details-reminders.log'));
+
+// ============================================
 // TOUR OPERATOR REMINDER SCHEDULER
 // ============================================
 
