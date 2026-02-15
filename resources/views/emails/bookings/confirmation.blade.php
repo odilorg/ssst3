@@ -29,6 +29,16 @@ We have successfully received your booking request and our team is now reviewing
 {{ $booking->special_requests }}
 @endif
 
+## Help Us Personalize Your Trip
+
+To ensure everything runs smoothly, please take a moment to share your travel details — hotel info, WhatsApp number{{ $booking->needsFullTripDetails() ? ', flight details' : '' }}, and preferences.
+
+@component('mail::button', ['url' => $tripDetailsUrl, 'color' => 'primary'])
+Fill In Trip Details
+@endcomponent
+
+*This takes about 2 minutes and helps us arrange {{ $booking->needsFullTripDetails() ? 'airport pickup, hotel transfers, and guide coordination' : 'pickup and guide coordination' }}.*
+
 ## What Happens Next?
 
 Our travel experts will review your booking and get back to you within **24 hours** to:
