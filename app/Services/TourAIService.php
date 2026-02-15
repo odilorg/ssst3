@@ -42,8 +42,15 @@ class TourAIService
 
             $data = $response->json();
 
+            // Handle API errors (401, 402, 429, etc.)
+            if (!$response->successful()) {
+                $errorMsg = $data['error']['message'] ?? $data['message'] ?? 'Unknown API error';
+                throw new \Exception("DeepSeek API error (HTTP {$response->status()}): {$errorMsg}");
+            }
+
             if (!isset($data['choices'][0]['message']['content'])) {
-                throw new \Exception('Invalid API response structure');
+                Log::error('DeepSeek unexpected response', ['response' => $data]);
+                throw new \Exception('Invalid API response structure - no choices returned');
             }
 
             $content = $data['choices'][0]['message']['content'];
