@@ -1,21 +1,21 @@
 @extends('layouts.main')
 
-{{-- SEO Meta Tags --}}
-@section('title', ($post->meta_title ?? $post->title) . ' | Jahongir Travel Blog')
-@section('meta_description', $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160))
+{{-- SEO Meta Tags - use translation data when available --}}
+@section('title', (isset($translation) ? ($translation->seo_title ?? $translation->title) : ($post->meta_title ?? $post->title)) . ' | Jahongir Travel Blog')
+@section('meta_description', isset($translation) ? ($translation->seo_description ?? $translation->excerpt ?? $post->meta_description ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)) : ($post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)))
 @section('meta_keywords', implode(', ', array_merge(['Uzbekistan travel blog', 'travel tips', $post->category->name ?? 'travel'], $post->tags->pluck('name')->toArray())))
-@section('canonical', url('/blog/' . $post->slug))
+@section('canonical', isset($canonicalUrl) ? $canonicalUrl : url('/blog/' . $post->slug))
 
 {{-- Open Graph Tags --}}
 @section('og_type', 'article')
-@section('og_title', $post->meta_title ?? $post->title)
-@section('og_description', $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160))
+@section('og_title', isset($translation) ? ($translation->seo_title ?? $translation->title) : ($post->meta_title ?? $post->title))
+@section('og_description', isset($translation) ? ($translation->seo_description ?? $translation->excerpt ?? $post->meta_description ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)) : ($post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)))
 @section('og_image', $post->featured_image_url ?? asset('images/og-default.jpg'))
-@section('og_url', url('/blog/' . $post->slug))
+@section('og_url', isset($canonicalUrl) ? $canonicalUrl : url('/blog/' . $post->slug))
 
 {{-- Twitter Card Tags --}}
-@section('twitter_title', $post->meta_title ?? $post->title)
-@section('twitter_description', $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160))
+@section('twitter_title', isset($translation) ? ($translation->seo_title ?? $translation->title) : ($post->meta_title ?? $post->title))
+@section('twitter_description', isset($translation) ? ($translation->seo_description ?? $translation->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)) : ($post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)))
 @section('twitter_image', $post->featured_image_url ?? asset('images/og-default.jpg'))
 
 {{-- Schema.org Structured Data --}}
@@ -23,7 +23,7 @@
 {
   "@@context": "https://schema.org",
   "@@type": "BlogPosting",
-  "headline": "{{ $post->title }}",
+  "headline": "{{ isset($translation) ? $translation->title : $post->title }}",
   "image": "{{ $post->featured_image_url ?? asset('images/og-default.jpg') }}",
   "author": {
     "@@type": "Person",
@@ -39,7 +39,7 @@
   },
   "datePublished": "{{ $post->published_at ? $post->published_at->toIso8601String() : '' }}",
   "dateModified": "{{ $post->updated_at ? $post->updated_at->toIso8601String() : '' }}",
-  "description": "{{ $post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160) }}",
+  "description": "{{ isset($translation) ? ($translation->seo_description ?? $translation->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)) : ($post->meta_description ?? $post->excerpt ?? Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 160)) }}",
   @if($post->tags->isNotEmpty())
   "keywords": "{{ $post->tags->pluck('name')->implode(', ') }}",
   @endif
@@ -69,8 +69,8 @@
     {
       "@@type": "ListItem",
       "position": 3,
-      "name": "{{ $post->title }}",
-      "item": "{{ url('/blog/' . $post->slug) }}"
+      "name": "{{ isset($translation) ? $translation->title : $post->title }}",
+      "item": "{{ isset($canonicalUrl) ? $canonicalUrl : url('/blog/' . $post->slug) }}"
     }
   ]
 }
@@ -86,24 +86,29 @@
 @section('content')
 
   <!-- =====================================================
-       ARTICLE HERO SECTION (Dynamic with HTMX)
+       ARTICLE HERO SECTION
        ===================================================== -->
   <section class="article-hero">
-    <div class="container"
-         hx-get="{{ url('/partials/blog/' . $post->slug . '/hero') }}"
-         hx-trigger="load once"
-         hx-swap="innerHTML"
-         data-blog-section="hero">
-
-      <!-- Loading Skeleton -->
-      <div class="skeleton-loader">
-        <div class="skeleton skeleton--breadcrumb"></div>
-        <div class="skeleton skeleton--meta"></div>
-        <div class="skeleton skeleton--title"></div>
-        <div class="skeleton skeleton--image"></div>
+    @if(isset($translation))
+      {{-- SSR: Render hero directly for crawler visibility --}}
+      <div class="container" data-blog-section="hero">
+        @include('partials.blog.hero', ['post' => $post])
       </div>
-
-    </div>
+    @else
+      <div class="container"
+           hx-get="{{ url('/partials/blog/' . $post->slug . '/hero') }}"
+           hx-trigger="load once"
+           hx-swap="innerHTML"
+           data-blog-section="hero">
+        <!-- Loading Skeleton -->
+        <div class="skeleton-loader">
+          <div class="skeleton skeleton--breadcrumb"></div>
+          <div class="skeleton skeleton--meta"></div>
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--image"></div>
+        </div>
+      </div>
+    @endif
   </section>
 
   <!-- =====================================================
@@ -113,74 +118,107 @@
     <div class="container">
       <div class="article-layout-grid">
 
-        <!-- Main Article Content (Dynamic with HTMX) -->
-        <main class="article-main"
-              hx-get="{{ url('/partials/blog/' . $post->slug . '/content') }}"
-              hx-trigger="load once"
-              hx-swap="outerHTML"
-              data-blog-section="content">
+        @if(isset($translation))
+          {{-- SSR: Render article content directly --}}
+          @include('partials.blog.content', ['post' => $post])
+        @else
+          <!-- Main Article Content (Dynamic with HTMX) -->
+          <main class="article-main"
+                hx-get="{{ url('/partials/blog/' . $post->slug . '/content') }}"
+                hx-trigger="load once"
+                hx-swap="outerHTML"
+                data-blog-section="content">
+            <!-- Loading Skeleton -->
+            <div class="skeleton-loader">
+              <div class="skeleton skeleton--text-large"></div>
+              <div class="skeleton skeleton--text"></div>
+              <div class="skeleton skeleton--text"></div>
+              <div class="skeleton skeleton--text"></div>
+            </div>
+          </main>
+        @endif
 
-          <!-- Loading Skeleton -->
-          <div class="skeleton-loader">
-            <div class="skeleton skeleton--text-large"></div>
-            <div class="skeleton skeleton--text"></div>
-            <div class="skeleton skeleton--text"></div>
-            <div class="skeleton skeleton--text"></div>
-          </div>
-
-        </main>
-
-        <!-- Sidebar (Dynamic with HTMX) -->
-        <aside class="article-sidebar"
-               hx-get="{{ url('/partials/blog/' . $post->slug . '/sidebar') }}"
-               hx-trigger="load once"
-               hx-swap="innerHTML"
-               data-blog-section="sidebar">
-
-          <!-- Loading Skeleton -->
-          <div class="skeleton-loader">
-            <div class="skeleton skeleton--widget"></div>
-            <div class="skeleton skeleton--widget"></div>
-            <div class="skeleton skeleton--widget"></div>
-          </div>
-
-        </aside>
+        @if(isset($translation) && isset($recentPosts))
+          {{-- SSR: Render sidebar directly --}}
+          <aside class="article-sidebar" data-blog-section="sidebar">
+            @include('partials.blog.sidebar', ['recentPosts' => $recentPosts])
+          </aside>
+        @else
+          <!-- Sidebar (Dynamic with HTMX) -->
+          <aside class="article-sidebar"
+                 hx-get="{{ url('/partials/blog/' . $post->slug . '/sidebar') }}"
+                 hx-trigger="load once"
+                 hx-swap="innerHTML"
+                 data-blog-section="sidebar">
+            <!-- Loading Skeleton -->
+            <div class="skeleton-loader">
+              <div class="skeleton skeleton--widget"></div>
+              <div class="skeleton skeleton--widget"></div>
+              <div class="skeleton skeleton--widget"></div>
+            </div>
+          </aside>
+        @endif
 
       </div>
     </div>
   </div>
 
   <!-- =====================================================
-       RELATED ARTICLES SECTION (Dynamic with HTMX)
+       RELATED ARTICLES SECTION
        ===================================================== -->
-  <section class="related-articles"
-           hx-get="{{ url('/partials/blog/' . $post->slug . '/related') }}"
-           hx-trigger="load once"
-           hx-swap="outerHTML"
-           data-blog-section="related">
-
-    <!-- Loading Skeleton -->
-    <div class="container">
-      <h2 class="section-title">Related Articles</h2>
-      <div class="related-articles-grid">
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
-        <div class="skeleton skeleton--card"></div>
+  @if(isset($translation) && isset($relatedPosts))
+    {{-- SSR: Render related articles directly --}}
+    @include('partials.blog.related', ['relatedPosts' => $relatedPosts])
+  @else
+    <section class="related-articles"
+             hx-get="{{ url('/partials/blog/' . $post->slug . '/related') }}"
+             hx-trigger="load once"
+             hx-swap="outerHTML"
+             data-blog-section="related">
+      <!-- Loading Skeleton -->
+      <div class="container">
+        <h2 class="section-title">Related Articles</h2>
+        <div class="related-articles-grid">
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
       </div>
-    </div>
+    </section>
+  @endif
 
-  </section>
-
-<!-- =====================================================       RELATED TOURS SECTION (Dynamic with HTMX)       ===================================================== -->  <section class="related-tours-section"           hx-get="{{ url('/partials/blog/' . $post->slug . '/related-tours') }}"           hx-trigger="load once"           hx-swap="outerHTML"           data-blog-section="related-tours">    <!-- Loading Skeleton -->    <div class="container">      <h2 class="section-title">Experience These Tours</h2>      <div class="tour-grid">        <div class="skeleton skeleton--card"></div>        <div class="skeleton skeleton--card"></div>        <div class="skeleton skeleton--card"></div>      </div>    </div>  </section>
   <!-- =====================================================
-       COMMENTS SECTION (Dynamic with HTMX)
+       RELATED TOURS SECTION
+       ===================================================== -->
+  @if(isset($translation) && isset($relatedTours))
+    {{-- SSR: Render related tours directly --}}
+    @include('partials.blog.related-tours', ['tours' => $relatedTours])
+  @else
+    <section class="related-tours-section"
+             hx-get="{{ url('/partials/blog/' . $post->slug . '/related-tours') }}"
+             hx-trigger="load once"
+             hx-swap="outerHTML"
+             data-blog-section="related-tours">
+      <!-- Loading Skeleton -->
+      <div class="container">
+        <h2 class="section-title">Experience These Tours</h2>
+        <div class="tour-grid">
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+      </div>
+    </section>
+  @endif
+
+  <!-- =====================================================
+       COMMENTS SECTION (Always HTMX - interactive, low SEO value)
        ===================================================== -->
   <div class="article-comments"
        hx-get="{{ url('/partials/blog/' . $post->slug . '/comments') }}"
        hx-trigger="load once"
        hx-swap="outerHTML"
        data-blog-section="comments">
-
     <!-- Loading Skeleton -->
     <div class="container">
       <div class="skeleton-loader">
@@ -189,13 +227,18 @@
         <div class="skeleton skeleton--text"></div>
       </div>
     </div>
-
-  </div>@endsection
+  </div>
+@endsection
 
 {{-- Page-specific Scripts --}}
 @push('scripts')
-<!-- HTMX Library -->
+@if(!isset($translation))
+<!-- HTMX Library (only needed for non-SSR routes) -->
 <script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
+@else
+<!-- HTMX Library (needed for comments section) -->
+<script src="{{ asset('js/htmx.min.js') }}?v={{ filemtime(public_path('js/htmx.min.js')) }}"></script>
+@endif
 
 <!-- HTMX Event Handlers -->
 <script>

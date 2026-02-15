@@ -211,7 +211,7 @@
                     <!-- Results Header -->
                     <div class="results-header">
                         <div class="results-header__count">
-                            <h2 id="results-count">Loading tours...</h2>
+                            <h2 id="results-count">{{ isset($initialTours) ? $initialTours->total() . ' tours found' : 'Loading tours...' }}</h2>
                         </div>
                         <!-- Mobile Filter Toggle -->
                         <button class="btn btn--secondary mobile-filter-toggle" id="mobile-filter-toggle" type="button">
@@ -220,20 +220,28 @@
                         </button>
                     </div>
 
-                    <!-- Tour Grid (HTMX loads here) -->
+                    <!-- Tour Grid -->
                     <div id="tour-results"
+                         @if(!isset($initialTours) || $initialTours->isEmpty())
                          hx-get="{{ url('/partials/tours/search?city=' . $city->id) }}"
                          hx-trigger="load"
-                         hx-swap="innerHTML">
-                        <!-- Loading Skeleton -->
-                        <div class="loading-skeleton">
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                            <div class="skeleton-card"></div>
-                        </div>
+                         hx-swap="innerHTML"
+                         @endif
+                         >
+                        @if(isset($initialTours) && $initialTours->isNotEmpty())
+                            {{-- SSR: Render initial tours for crawler visibility --}}
+                            @include('partials.tours.list', ['tours' => $initialTours, 'isAppend' => false])
+                        @else
+                            <!-- Loading Skeleton -->
+                            <div class="loading-skeleton">
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                                <div class="skeleton-card"></div>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -253,17 +261,25 @@
             </div>
 
             <div id="related-categories"
+                 @if(!isset($relatedCities))
                  hx-get="{{ url('/partials/categories/related?current=' . $city->id . '&limit=5') }}"
                  hx-trigger="load"
-                 hx-swap="innerHTML">
-                <!-- Loading skeleton -->
-                <div class="related-categories-grid">
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                </div>
+                 hx-swap="innerHTML"
+                 @endif
+                 >
+                @if(isset($relatedCities))
+                    {{-- SSR: Render related cities for crawler visibility --}}
+                    @include('partials.cities.related-cards', ['cities' => $relatedCities])
+                @else
+                    <!-- Loading skeleton -->
+                    <div class="related-categories-grid">
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                    </div>
+                @endif
             </div>
         </div>
     </section>@endsection

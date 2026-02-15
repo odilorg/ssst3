@@ -140,24 +140,32 @@
             <!-- RESULTS HEADER -->
             <div class="results-header">
                 <div class="results-header__count">
-                    <h2 id="results-count">Loading tours...</h2>
+                    <h2 id="results-count">{{ isset($initialTours) ? $initialTours->total() . ' tours found' : 'Loading tours...' }}</h2>
                 </div>
             </div>
 
-            <!-- TOUR GRID (HTMX loads here) -->
+            <!-- TOUR GRID -->
             <div id="tour-results"
+                 @if(!isset($initialTours) || $initialTours->isEmpty())
                  hx-get="{{ url('/partials/tours/search?category=' . $category->slug) }}"
                  hx-trigger="load"
-                 hx-swap="innerHTML">
-                <!-- Loading Skeleton -->
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
+                 hx-swap="innerHTML"
+                 @endif
+                 >
+                @if(isset($initialTours) && $initialTours->isNotEmpty())
+                    {{-- SSR: Render initial tours for crawler visibility --}}
+                    @include('partials.tours.list', ['tours' => $initialTours, 'isAppend' => false])
+                @else
+                    <!-- Loading Skeleton -->
+                    <div class="loading-skeleton">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                @endif
             </div>
 
         </div>
@@ -174,18 +182,26 @@
             </div>
 
             <div id="related-categories"
+                 @if(!isset($relatedCategories))
                  hx-get="{{ url('/partials/categories/related?current=' . $category->slug) }}"
                  hx-trigger="load"
-                 hx-swap="innerHTML">
-                <!-- Loading skeleton -->
-                <div class="related-categories-grid">
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                    <div class="skeleton-card skeleton-card--small"></div>
-                </div>
+                 hx-swap="innerHTML"
+                 @endif
+                 >
+                @if(isset($relatedCategories))
+                    {{-- SSR: Render related categories for crawler visibility --}}
+                    @include('partials.categories.related-cards', ['categories' => $relatedCategories])
+                @else
+                    <!-- Loading skeleton -->
+                    <div class="related-categories-grid">
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                        <div class="skeleton-card skeleton-card--small"></div>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
