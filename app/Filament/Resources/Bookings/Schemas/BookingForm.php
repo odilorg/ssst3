@@ -52,20 +52,20 @@ class BookingForm
                                     ],
                                 ];
 
-                                $html = '<div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">';
+                                $html = '<div style="display:flex;align-items:flex-start;flex-wrap:nowrap;">';
                                 foreach ($steps as $i => $step) {
                                     $bg = $step['done'] ? '#059669' : '#d1d5db';
                                     $text = $step['done'] ? '#fff' : '#6b7280';
-                                    $html .= '<div style="text-align:center;flex:1;min-width:100px;">';
+                                    $html .= '<div style="text-align:center;flex:1;min-width:0;">';
                                     $html .= '<div style="width:28px;height:28px;border-radius:50%;background:'.$bg.';color:'.$text.';display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">'.($i+1).'</div>';
-                                    $html .= '<div style="font-size:11px;margin-top:4px;color:'.($step['done'] ? '#059669' : '#6b7280').';font-weight:'.($step['done'] ? '600' : '400').';">'.$step['label'].'</div>';
+                                    $html .= '<div style="font-size:11px;margin-top:4px;color:'.($step['done'] ? '#059669' : '#6b7280').';font-weight:'.($step['done'] ? '600' : '400').';white-space:nowrap;">'.$step['label'].'</div>';
                                     if ($step['date']) {
                                         $html .= '<div style="font-size:10px;color:#9ca3af;">'.$step['date'].'</div>';
                                     }
                                     $html .= '</div>';
                                     if ($i < count($steps) - 1) {
                                         $lineColor = $steps[$i+1]['done'] ? '#059669' : '#d1d5db';
-                                        $html .= '<div style="flex:0 0 40px;height:2px;background:'.$lineColor.';margin-top:-18px;"></div>';
+                                        $html .= '<div style="flex:0 0 30px;height:2px;background:'.$lineColor.';margin-top:14px;"></div>';
                                     }
                                 }
                                 $html .= '</div>';
