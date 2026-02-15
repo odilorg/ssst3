@@ -14,13 +14,16 @@
         return str_starts_with($path, 'http') ? $path : asset('storage/' . $path);
     };
     $totalImages = count($galleryImages);
+
+    // Use translated title for alt text if available
+    $tourTitle = (isset($translation) && $translation->title) ? $translation->title : $tour->title;
 @endphp
 
 <!-- Main Image (Left) -->
 <div class="tour-hero__main">
     <img
         src="{{ $heroImageUrl }}"
-        alt="{{ $tour->title }}"
+        alt="{{ $tourTitle }} - Featured tour photo"
         width="1200"
         height="800"
         loading="eager"
@@ -47,7 +50,7 @@
             @php
                 // Handle both old format (array with path/alt) and new format (simple string)
                 $imagePath = is_array($image) ? $image['path'] : $image;
-                $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tour->title;
+                $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tourTitle . ' - Photo ' . ($index + 1);
             @endphp
             @if($index < 3)
                 {{-- Show first 3 thumbnails normally --}}
@@ -86,9 +89,9 @@
 <script id="gallery-data" type="application/json">
 {!! json_encode([
     'heroImage' => $heroImageUrl,
-    'images' => collect($galleryImages)->map(function($image) use ($tour, $imageUrl) {
+    'images' => collect($galleryImages)->map(function($image, $index) use ($tourTitle, $imageUrl) {
         $imagePath = is_array($image) ? $image['path'] : $image;
-        $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tour->title;
+        $imageAlt = is_array($image) && isset($image['alt']) ? $image['alt'] : $tourTitle . ' - Photo ' . ($index + 1);
         return [
             'src' => $imageUrl($imagePath),
             'alt' => $imageAlt

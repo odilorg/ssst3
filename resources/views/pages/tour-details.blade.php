@@ -113,6 +113,7 @@
     <div class="container">
 
       <!-- Skeleton Loader (hidden once loaded) -->
+      @if(!isset($translation))
       <div class="tour-hero__skeleton" aria-hidden="true">
         <div class="skeleton skeleton--hero"></div>
         <div class="skeleton skeleton--thumbnails">
@@ -122,15 +123,21 @@
           <div class="skeleton skeleton--thumb"></div>
         </div>
       </div>
+      @endif
 
       <!-- Actual Gallery -->
-      <!-- Actual Gallery - Loaded via HTMX -->
-      <div class="tour-hero__gallery is-hidden"
-           hx-get="{{ url($partialBase . '/gallery' . $localeParam) }}"
-           hx-trigger="load"
-           hx-swap="innerHTML"
-           data-tour-slug="{{ $tour->slug }}">
-      </div>
+      @if(isset($translation))
+        <div class="tour-hero__gallery" data-tour-slug="{{ $tour->slug }}">
+          @include('partials.tours.show.gallery', ['tour' => $tour])
+        </div>
+      @else
+        <div class="tour-hero__gallery is-hidden"
+             hx-get="{{ url($partialBase . '/gallery' . $localeParam) }}"
+             hx-trigger="load"
+             hx-swap="innerHTML"
+             data-tour-slug="{{ $tour->slug }}">
+        </div>
+      @endif
     </div>
   </section>
 

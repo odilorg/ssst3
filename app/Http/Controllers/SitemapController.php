@@ -88,7 +88,7 @@ class SitemapController extends Controller
         $supportedLocales = config('multilang.locales', ['en', 'ru', 'fr']);
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
         // Static pages
         $staticPages = [
@@ -123,7 +123,7 @@ class SitemapController extends Controller
         if (config('multilang.phases.tour_translations')) {
             TourTranslation::where('locale', $locale)
                 ->whereHas('tour', fn ($q) => $q->where('is_active', true))
-                ->with(['tour:id,updated_at', 'tour.translations:id,tour_id,locale,slug'])
+                ->with(['tour:id,slug,title,gallery_images,featured_image,has_webp,updated_at', 'tour.translations:id,tour_id,locale,slug'])
                 ->chunk(100, function ($translations) use (&$xml, $locale, $supportedLocales) {
                     foreach ($translations as $translation) {
                         try {
@@ -150,7 +150,10 @@ class SitemapController extends Controller
                                 }
                             }
 
-                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.8', $alternates);
+                            // Collect tour images for image sitemap
+                            $images = $this->getTourImages($translation->tour, $translation->title ?? $translation->tour?->title);
+
+                            $xml .= $this->addUrl($url, $lastmod, 'weekly', '0.8', $alternates, $images);
                         } catch (\Exception $e) {
                             // Skip invalid routes
                         }
@@ -321,12 +324,17 @@ class SitemapController extends Controller
      *
      * @param array<string, string> $alternates Locale => URL map for xhtml:link alternates
      */
+    /**
+     * @param array<string, string> $alternates Locale => URL map for xhtml:link alternates
+     * @param array<int, array{loc: string, title?: string}> $images Image entries for image sitemap
+     */
     private function addUrl(
         string $loc,
         $lastmod,
         string $changefreq = 'weekly',
         string $priority = '0.5',
-        array $alternates = []
+        array $alternates = [],
+        array $images = []
     ): string {
         $xml = '  <url>' . "\n";
         $xml .= '    <loc>' . htmlspecialchars($loc) . '</loc>' . "\n";
@@ -338,8 +346,63 @@ class SitemapController extends Controller
             $xml .= '    <xhtml:link rel="alternate" hreflang="' . htmlspecialchars($hreflang) . '" href="' . htmlspecialchars($href) . '"/>' . "\n";
         }
 
+        foreach ($images as $image) {
+            $xml .= '    <image:image>' . "\n";
+            $xml .= '      <image:loc>' . htmlspecialchars($image['loc']) . '</image:loc>' . "\n";
+            if (!empty($image['title'])) {
+                $xml .= '      <image:title>' . htmlspecialchars($image['title']) . '</image:title>' . "\n";
+            }
+            $xml .= '    </image:image>' . "\n";
+        }
+
         $xml .= '  </url>' . "\n";
 
         return $xml;
+    }
+
+    /**
+     * Extract image URLs and titles from a Tour for image sitemap.
+     */
+    private function getTourImages(?Tour $tour, ?string $tourTitle): array
+    {
+        if (!$tour) {
+            return [];
+        }
+
+        $images = [];
+        $title = $tourTitle ?? $tour->title ?? '';
+
+        // Hero/featured image
+        $heroUrl = $tour->has_webp
+            ? $tour->hero_image_webp_url
+            : ($tour->featured_image_url ?? null);
+
+        if ($heroUrl) {
+            $images[] = [
+                'loc' => str_starts_with($heroUrl, 'http') ? $heroUrl : url($heroUrl),
+                'title' => $title,
+            ];
+        }
+
+        // Gallery images
+        $rawGallery = $tour->getRawOriginal('gallery_images');
+        $gallery = is_string($rawGallery) ? json_decode($rawGallery, true) : $rawGallery;
+
+        if (is_array($gallery)) {
+            foreach ($gallery as $index => $image) {
+                $path = is_array($image) ? ($image['path'] ?? null) : $image;
+                if (!$path) continue;
+
+                $imageUrl = str_starts_with($path, 'http') ? $path : url('storage/' . $path);
+                $alt = is_array($image) && isset($image['alt']) ? $image['alt'] : $title . ' - Photo ' . ($index + 1);
+
+                $images[] = [
+                    'loc' => $imageUrl,
+                    'title' => $alt,
+                ];
+            }
+        }
+
+        return $images;
     }
 }
