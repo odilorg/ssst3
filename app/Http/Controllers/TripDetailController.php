@@ -14,8 +14,16 @@ class TripDetailController extends Controller
     public function show(string $token)
     {
         $booking = Booking::where('passenger_details_url_token', $token)
-            ->with(['tour', 'customer'])
+            ->with(['tour', 'customer', 'tripDetail'])
             ->firstOrFail();
+
+        // After tour ends: redirect to read-only confirm page (or show expired message)
+        if ($booking->start_date && $booking->start_date->isPast()) {
+            if ($booking->tripDetail && $booking->tripDetail->isCompleted()) {
+                return redirect()->route('trip-details.confirm', ['token' => $token]);
+            }
+            return view('pages.trip-details-expired', compact('booking', 'token'));
+        }
 
         // Create trip detail record if it doesn't exist
         $tripDetail = $booking->tripDetail ?? $booking->tripDetail()->create([]);
@@ -33,6 +41,10 @@ class TripDetailController extends Controller
         $booking = Booking::where('passenger_details_url_token', $token)
             ->with(['tour'])
             ->firstOrFail();
+
+        if ($booking->start_date && $booking->start_date->isPast()) {
+            return redirect()->route('trip-details.show', ['token' => $token]);
+        }
 
         $rules = [
             'hotel_name' => 'nullable|string|max:255',
