@@ -16,46 +16,60 @@ class DestinationController extends Controller
      */
     public function index(): View
     {
-        return view('pages.destinations');
+        // SSR: Load cities for crawler visibility
+        $cities = City::where('country', 'Uzbekistan')
+            ->active()
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('display_order')
+            ->get();
+
+        return view('pages.destinations', compact('cities'));
     }
 
     /**
-     * Display destination landing page for a specific city
+     * Display destination city guide page
      *
-     * Loads initial tours server-side for SEO crawlability,
-     * while keeping HTMX for filter interactions.
+     * Informational page about the city with overview, sights,
+     * and featured tours (not filtered by city_id).
      *
      * @param string $slug
      * @return View
      */
     public function show(string $slug): View
     {
-        // Find city or 404
         $city = City::where('slug', $slug)
             ->where('is_active', true)
+            ->with(['monuments', 'translations'])
             ->firstOrFail();
 
-        // Prepare SEO-friendly data
-        $pageTitle = $city->meta_title ?? ($city->name . ' Tours & Travel Guide | Jahongir Travel');
-        $metaDescription = $city->meta_description ?? ($city->short_description ?? '');
+        // SEO
+        $pageTitle = $city->meta_title ?? ($city->name . ' Travel Guide | Jahongir Travel');
+        $metaDescription = $city->meta_description ?? ($city->short_description ?? 'Explore ' . $city->name . ' with Jahongir Travel');
         $metaDescription = substr($metaDescription, 0, 160);
-
         $ogImage = $city->hero_image_url ?? $city->featured_image_url ?? asset('images/default-city.jpg');
         $canonicalUrl = url('/destinations/' . $city->slug);
 
-        // SSR: Load initial tours for this city (crawlable by search engines)
-        $initialTours = Tour::with(['city'])
-            ->where('is_active', true)
-            ->where('city_id', $city->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        // Featured tours (show a few active tours, not filtered by city)
+        $featuredTours = Tour::where('is_active', true)
+            ->with(['city', 'translations'])
+            ->orderBy('rating', 'desc')
+            ->limit(6)
+            ->get();
 
-        // SSR: Load related cities (excluding current)
-        $relatedCities = City::active()
+        // Related cities (excluding current)
+        $relatedCities = City::where('country', 'Uzbekistan')
+            ->active()
             ->where('id', '!=', $city->id)
+            ->where(function ($q) {
+                $q->whereNotNull('short_description')
+                  ->orWhere('is_featured', true);
+            })
             ->orderBy('display_order')
             ->limit(5)
             ->get();
+
+        // Top sights from monuments
+        $topSights = $city->monuments()->limit(6)->get();
 
         return view('pages.destination-landing', compact(
             'city',
@@ -63,8 +77,9 @@ class DestinationController extends Controller
             'metaDescription',
             'ogImage',
             'canonicalUrl',
-            'initialTours',
-            'relatedCities'
+            'featuredTours',
+            'relatedCities',
+            'topSights'
         ));
     }
 }
