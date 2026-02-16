@@ -48,18 +48,30 @@
         </div>
 
         {{-- Legend --}}
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-left: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-left: 1rem; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.25rem;">
-                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
-                <span style="font-size: 0.75rem; color: #9ca3af;">Confirmed</span>
+                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #94a3b8; display: inline-block;"></span>
+                <span style="font-size: 0.75rem; color: #9ca3af;">Draft</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #a78bfa; display: inline-block;"></span>
+                <span style="font-size: 0.75rem; color: #9ca3af;">Inquiry</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.25rem;">
                 <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #f97316; display: inline-block;"></span>
                 <span style="font-size: 0.75rem; color: #9ca3af;">Payment</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                <span style="font-size: 0.75rem; color: #9ca3af;">Confirmed</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
                 <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>
                 <span style="font-size: 0.75rem; color: #9ca3af;">In Progress</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                <span style="font-size: 0.75rem; color: #9ca3af;">Completed</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.25rem;">
                 <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #ef4444; display: inline-block;"></span>

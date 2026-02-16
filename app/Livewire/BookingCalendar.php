@@ -404,14 +404,15 @@ class BookingCalendar extends Component
     protected function getStatusColor(string $status): string
     {
         return match ($status) {
-            'confirmed' => '#22c55e',
-            'pending' => '#eab308',
-            'pending_payment' => '#f97316',
-            'cancelled' => '#ef4444',
-            'in_progress' => '#3b82f6',
-            'completed' => '#10b981',
-            'declined' => '#991b1b',
-            default => '#6b7280',
+            'draft' => '#94a3b8',           // slate
+            'inquiry' => '#a78bfa',         // violet
+            'pending_payment' => '#f97316', // orange
+            'confirmed' => '#22c55e',       // green
+            'in_progress' => '#3b82f6',     // blue
+            'completed' => '#10b981',       // emerald
+            'cancelled' => '#ef4444',       // red
+            'declined' => '#991b1b',        // dark red
+            default => '#6b7280',           // gray (shouldn't happen)
         };
     }
 
