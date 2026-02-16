@@ -79,6 +79,7 @@
 
     {{-- Grid View --}}
     <div x-show="viewMode === 'grid'" x-cloak
+         x-data="gridDragDrop()"
          style="background: #1f2937; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1rem;">
 
         {{-- Grid Navigation --}}
@@ -127,12 +128,19 @@
                             </td>
                             {{-- Date Cells --}}
                             @foreach($gridDates as $date)
-                                <td style="padding: 0.25rem; border-bottom: 1px solid #374151; vertical-align: top;
-                                    {{ $date['isToday'] ? 'background: rgba(79, 70, 229, 0.1);' : ($date['isWeekend'] ? 'background: #1f2937;' : 'background: #111827;') }}">
+                                <td style="padding: 0.25rem; border-bottom: 1px solid #374151; vertical-align: top; min-height: 2rem; transition: background 0.15s;
+                                    {{ $date['isToday'] ? 'background: rgba(79, 70, 229, 0.1);' : ($date['isWeekend'] ? 'background: #1f2937;' : 'background: #111827;') }}"
+                                    x-on:dragover.prevent="onDragOver($event)"
+                                    x-on:dragleave="onDragLeave($event)"
+                                    x-on:drop.prevent="onDrop($event, '{{ $date['date'] }}')"
+                                    data-grid-date="{{ $date['date'] }}">
                                     @if(!empty($tourData['bookings'][$date['date']]))
                                         @foreach($tourData['bookings'][$date['date']] as $booking)
                                             <div wire:click="handleEventClick({{ $booking['id'] }})"
-                                                 style="padding: 0.25rem 0.375rem; margin-bottom: 0.25rem; border-radius: 0.25rem; font-size: 0.7rem; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                                                 draggable="true"
+                                                 x-on:dragstart="onDragStart($event, {{ $booking['id'] }}, '{{ $booking['customerName'] }}')"
+                                                 x-on:dragend="onDragEnd($event)"
+                                                 style="padding: 0.25rem 0.375rem; margin-bottom: 0.25rem; border-radius: 0.25rem; font-size: 0.7rem; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s;
                                                  @if($booking['status'] === 'confirmed') background: #22c55e; color: #fff;
                                                  @elseif($booking['status'] === 'pending_payment') background: #f97316; color: #fff;
                                                  @elseif($booking['status'] === 'in_progress') background: #3b82f6; color: #fff;
@@ -140,7 +148,7 @@
                                                  @elseif($booking['status'] === 'cancelled' || $booking['status'] === 'declined') background: #ef4444; color: #fff;
                                                  @else background: #6b7280; color: #fff;
                                                  @endif"
-                                                 title="{{ $booking['customerName'] }} ({{ $booking['guests'] }}p)">
+                                                 title="{{ $booking['customerName'] }} ({{ $booking['guests'] }}p) — drag to reschedule">
                                                 {{ Str::limit($booking['customerName'], 10) }} ({{ $booking['guests'] }}p)
                                             </div>
                                         @endforeach
@@ -267,6 +275,66 @@
         </div>
     @endif
 
+    {{-- Custom Confirm Dialog (replaces browser confirm()) --}}
+    <div x-data="confirmDialog()" x-cloak>
+        <template x-teleport="body">
+            <div x-show="open" x-transition.opacity style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+                <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.5);" @click="cancel()"></div>
+                <div x-show="open" x-transition style="position: relative; background: #1f2937; border: 1px solid #374151; border-radius: 0.75rem; padding: 1.5rem; max-width: 28rem; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.4);">
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                        <div style="flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: rgba(79, 70, 229, 0.15); display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 1.25rem; height: 1.25rem; color: #818cf8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 0.95rem; font-weight: 600; color: #f3f4f6; margin: 0 0 0.25rem;">Reschedule Booking</h3>
+                            <p x-text="message" style="font-size: 0.85rem; color: #9ca3af; margin: 0; line-height: 1.4;"></p>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem;">
+                        <button @click="cancel()" style="padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 500; background: #374151; border: 1px solid #4b5563; color: #d1d5db; border-radius: 0.375rem; cursor: pointer;">Cancel</button>
+                        <button @click="ok()" style="padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 500; background: #4f46e5; border: none; color: #fff; border-radius: 0.375rem; cursor: pointer;">Reschedule</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    {{-- Toast Notifications (replaces browser alert()) --}}
+    <div x-data="toastNotifications()" x-cloak>
+        <template x-teleport="body">
+            <div style="position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;">
+                <template x-for="toast in toasts" :key="toast.id">
+                    <div x-show="toast.visible"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:leave="transition ease-in duration-200"
+                         style="pointer-events: auto; min-width: 20rem; max-width: 24rem; border-radius: 0.5rem; padding: 0.75rem 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: flex-start; gap: 0.625rem;"
+                         :style="toast.type === 'success'
+                             ? 'background: #065f46; border: 1px solid #059669;'
+                             : 'background: #7f1d1d; border: 1px solid #dc2626;'">
+                        <div style="flex-shrink: 0; margin-top: 0.125rem;">
+                            <template x-if="toast.type === 'success'">
+                                <svg style="width: 1.125rem; height: 1.125rem; color: #34d399;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </template>
+                            <template x-if="toast.type !== 'success'">
+                                <svg style="width: 1.125rem; height: 1.125rem; color: #f87171;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+                                </svg>
+                            </template>
+                        </div>
+                        <p x-text="toast.message" style="font-size: 0.825rem; color: #f3f4f6; margin: 0; line-height: 1.3; flex: 1;"></p>
+                        <button @click="dismiss(toast.id)" style="flex-shrink: 0; background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0; line-height: 1;">
+                            <svg style="width: 1rem; height: 1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
     {{-- FullCalendar Scripts --}}
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
@@ -275,6 +343,115 @@
     let calendar;
     let lastDropInfo = null;
 
+    // ── Custom confirm dialog ──
+    let _confirmResolve = null;
+
+    function confirmDialog() {
+        return {
+            open: false,
+            message: '',
+            show(msg) {
+                this.message = msg;
+                this.open = true;
+                return new Promise(resolve => { _confirmResolve = resolve; });
+            },
+            ok()     { this.open = false; if (_confirmResolve) _confirmResolve(true);  _confirmResolve = null; },
+            cancel() { this.open = false; if (_confirmResolve) _confirmResolve(false); _confirmResolve = null; },
+        };
+    }
+
+    async function showConfirm(msg) {
+        const el = document.querySelector('[x-data="confirmDialog()"]');
+        if (el && el.__x) {
+            return el.__x.$data.show(msg);
+        }
+        // Alpine v3 - access via _x_dataStack
+        if (el && el._x_dataStack) {
+            const data = el._x_dataStack[0];
+            return data.show(msg);
+        }
+        return confirm(msg);
+    }
+
+    // ── Toast notifications ──
+    let _toastData = null;
+
+    function toastNotifications() {
+        return {
+            toasts: [],
+            init() { _toastData = this; },
+            add(type, message) {
+                const id = Date.now();
+                this.toasts.push({ id, type, message, visible: true });
+                setTimeout(() => this.dismiss(id), 4000);
+            },
+            dismiss(id) {
+                const t = this.toasts.find(x => x.id === id);
+                if (t) t.visible = false;
+                setTimeout(() => { this.toasts = this.toasts.filter(x => x.id !== id); }, 300);
+            }
+        };
+    }
+
+    function showToast(type, message) {
+        if (_toastData) {
+            _toastData.add(type, message);
+        }
+    }
+
+    // ── Grid drag-drop ──
+    function gridDragDrop() {
+        return {
+            dragBookingId: null,
+            dragLabel: '',
+
+            onDragStart(e, bookingId, customerName) {
+                this.dragBookingId = bookingId;
+                this.dragLabel = customerName;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', bookingId);
+                e.target.style.opacity = '0.4';
+            },
+
+            onDragEnd(e) {
+                e.target.style.opacity = '1';
+                this.dragBookingId = null;
+                // Remove all highlights
+                document.querySelectorAll('[data-grid-date]').forEach(td => {
+                    td.style.outline = '';
+                    td.style.outlineOffset = '';
+                });
+            },
+
+            onDragOver(e) {
+                e.dataTransfer.dropEffect = 'move';
+                e.currentTarget.style.outline = '2px solid #818cf8';
+                e.currentTarget.style.outlineOffset = '-2px';
+            },
+
+            onDragLeave(e) {
+                e.currentTarget.style.outline = '';
+                e.currentTarget.style.outlineOffset = '';
+            },
+
+            async onDrop(e, newDate) {
+                e.currentTarget.style.outline = '';
+                e.currentTarget.style.outlineOffset = '';
+                const bookingId = parseInt(e.dataTransfer.getData('text/plain'));
+                if (!bookingId) return;
+
+                const dateObj = new Date(newDate + 'T12:00:00');
+                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                const ok = await showConfirm('Move "' + this.dragLabel + '" to ' + dateStr + '?');
+                if (!ok) return;
+
+                @this.call('handleEventDrop', bookingId, newDate, null);
+            }
+        };
+    }
+
+    // ── FullCalendar ──
     function bookingCalendar() {
         return {
             init() {
@@ -294,24 +471,21 @@
                     dayMaxEvents: 3,
                     nowIndicator: true,
 
-                    // Event click - show details
                     eventClick: function(info) {
                         @this.call('handleEventClick', parseInt(info.event.id));
                     },
 
-                    // Event drop with confirmation
-                    eventDrop: function(info) {
+                    eventDrop: async function(info) {
                         const title = info.event.title;
                         const newDate = info.event.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-                        if (!confirm('Reschedule "' + title + '" to ' + newDate + '?')) {
+                        const ok = await showConfirm('Reschedule "' + title + '" to ' + newDate + '?');
+                        if (!ok) {
                             info.revert();
                             return;
                         }
 
-                        // Save revert function in case server-side fails
                         lastDropInfo = info;
-
                         const newEnd = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
@@ -320,18 +494,17 @@
                         );
                     },
 
-                    // Event resize with confirmation
-                    eventResize: function(info) {
+                    eventResize: async function(info) {
                         const title = info.event.title;
                         const newEnd = info.event.end ? info.event.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
-                        if (!confirm('Change end date of "' + title + '" to ' + newEnd + '?')) {
+                        const ok = await showConfirm('Change end date of "' + title + '" to ' + newEnd + '?');
+                        if (!ok) {
                             info.revert();
                             return;
                         }
 
                         lastDropInfo = info;
-
                         const newEndISO = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
@@ -340,7 +513,6 @@
                         );
                     },
 
-                    // Date range change - reload events for new month
                     datesSet: function(info) {
                         @this.call('handleDateRangeChanged',
                             info.start.toISOString().split('T')[0],
@@ -348,22 +520,12 @@
                         );
                     },
 
-                    // Event rendering
                     eventContent: function(arg) {
                         return {
-                            html: `
-                                <div class="fc-event-main-frame" style="padding: 2px 4px;">
-                                    <div class="fc-event-title-container">
-                                        <div class="fc-event-title fc-sticky" style="font-size: 11px; line-height: 1.2;">
-                                            ${arg.event.title}
-                                        <\/div>
-                                    <\/div>
-                                <\/div>
-                            `
+                            html: '<div class="fc-event-main-frame" style="padding: 2px 4px;"><div class="fc-event-title-container"><div class="fc-event-title fc-sticky" style="font-size: 11px; line-height: 1.2;">' + arg.event.title + '<\/div><\/div><\/div>'
                         };
                     },
 
-                    // Loading state
                     loading: function(isLoading) {
                         calendarEl.style.opacity = isLoading ? '0.5' : '1';
                     }
@@ -371,7 +533,6 @@
 
                 calendar.render();
 
-                // Reload events on month navigation
                 Livewire.on('eventsLoaded', (data) => {
                     calendar.removeAllEvents();
                     if (data && data.events) {
@@ -381,28 +542,20 @@
                     }
                 });
 
-                // Revert drag on server error
                 Livewire.on('rescheduleError', (data) => {
                     if (lastDropInfo) {
                         lastDropInfo.revert();
                         lastDropInfo = null;
                     }
                     const msg = (data && data.message) ? data.message : (typeof data === 'string' ? data : 'Reschedule failed');
-                    alert(msg);
+                    showToast('error', msg);
                 });
 
-                // Success notification
                 Livewire.on('notify', (data) => {
                     lastDropInfo = null;
                     const msg = (data && data.message) ? data.message : '';
                     const type = (data && data.type) ? data.type : 'success';
-                    if (typeof Filament !== 'undefined' && Filament.notifications) {
-                        Filament.notifications.notify({
-                            title: type === 'success' ? 'Success' : 'Error',
-                            body: msg,
-                            type: type
-                        });
-                    }
+                    showToast(type, msg);
                 });
             }
         }
@@ -410,9 +563,8 @@
     </script>
 
     <style>
-        [x-cloak] { display: none !important; }
+    [x-cloak] { display: none !important; }
 
-    /* Calendar dark mode support */
     .fc {
         --fc-border-color: #374151;
         --fc-page-bg-color: #1f2937;
@@ -422,55 +574,30 @@
     }
 
     .fc-theme-standard td,
-    .fc-theme-standard th {
-        border-color: #374151;
-    }
+    .fc-theme-standard th { border-color: #374151; }
 
     .fc-col-header-cell-cushion,
-    .fc-daygrid-day-number {
-        color: #d1d5db;
-    }
+    .fc-daygrid-day-number { color: #d1d5db; }
 
     .fc-button {
         background-color: #374151 !important;
         border-color: #4b5563 !important;
         color: #fff !important;
     }
+    .fc-button:hover { background-color: #4b5563 !important; }
+    .fc-button-active { background-color: #4f46e5 !important; }
 
-    .fc-button:hover {
-        background-color: #4b5563 !important;
-    }
+    .fc-event { cursor: pointer; border-radius: 4px; font-size: 11px; }
+    .fc-daygrid-event { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .fc-button-active {
-        background-color: #4f46e5 !important;
-    }
+    /* Grid drag cursor */
+    [draggable="true"] { cursor: grab; }
+    [draggable="true"]:active { cursor: grabbing; }
 
-    /* Event styling */
-    .fc-event {
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 11px;
-    }
-
-    .fc-daygrid-event {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Grid table scrollbar */
-    ::-webkit-scrollbar {
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #1f2937;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #4b5563;
-        border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #6b7280;
-    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { height: 8px; }
+    ::-webkit-scrollbar-track { background: #1f2937; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
     </style>
 </div>
