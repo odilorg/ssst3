@@ -107,11 +107,11 @@
                 {{-- Header Row with Dates --}}
                 <thead>
                     <tr>
-                        <th style="position: sticky; left: 0; z-index: 10; background: #111827; padding: 0.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #9ca3af; border-bottom: 1px solid #374151; min-width: 150px;">
+                        <th style="position: sticky; left: 0; z-index: 10; background: #111827; padding: 0.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #9ca3af; border-bottom: 1px solid #374151; border-right: 1px solid #374151; min-width: 150px;">
                             Tour
                         </th>
                         @foreach($gridDates as $date)
-                            <th style="padding: 0.5rem; text-align: center; font-size: 0.75rem; font-weight: 500; border-bottom: 1px solid #374151; min-width: 80px;
+                            <th style="padding: 0.5rem; text-align: center; font-size: 0.75rem; font-weight: 500; border-bottom: 1px solid #374151; border-right: 1px solid #2d3748; min-width: 80px;
                                 {{ $date['isToday'] ? 'background: rgba(79, 70, 229, 0.2); color: #a5b4fc;' : ($date['isWeekend'] ? 'background: #1f2937; color: #6b7280;' : 'background: #111827; color: #9ca3af;') }}">
                                 <div>{{ $date['dayName'] }}</div>
                                 <div style="font-size: 1rem; font-weight: 600;">{{ $date['dayNum'] }}</div>
@@ -123,12 +123,12 @@
                     @forelse($gridData as $tourId => $tourData)
                         <tr style="position: relative;">
                             {{-- Tour Name --}}
-                            <td style="position: sticky; left: 0; z-index: 5; background: #1f2937; padding: 0.5rem; font-size: 0.8rem; font-weight: 500; color: #d1d5db; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" title="{{ $tourData['title'] }}">
+                            <td style="position: sticky; left: 0; z-index: 5; background: #1f2937; padding: 0.5rem; font-size: 0.8rem; font-weight: 500; color: #d1d5db; border-bottom: 1px solid #374151; border-right: 1px solid #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" title="{{ $tourData['title'] }}">
                                 {{ Str::limit($tourData['title'], 25) }}
                             </td>
                             {{-- Date Cells (empty, used for background + drop targets) --}}
                             @foreach($gridDates as $dateIdx => $date)
-                                <td style="padding: 0; border-bottom: 1px solid #374151; height: {{ max(count($tourData['bars'] ?? []), 1) * 2.2 }}rem; position: relative;
+                                <td style="padding: 0; border-bottom: 1px solid #374151; border-right: 1px solid #2d3748; height: {{ max(count($tourData['bars'] ?? []), 1) * 2.2 }}rem; position: relative;
                                     {{ $date['isToday'] ? 'background: rgba(79, 70, 229, 0.1);' : ($date['isWeekend'] ? 'background: #1f2937;' : 'background: #111827;') }}"
                                     x-on:dragover.prevent="onDragOver($event)"
                                     x-on:dragleave="onDragLeave($event)"
