@@ -1752,7 +1752,7 @@
   left: 0;
   right: 0;
   background: var(--color-surface, #fff);
-  padding: 1rem 1.5rem;
+  padding: 0;
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
   z-index: 90;
   pointer-events: none; /* Don't intercept page scroll */
@@ -1934,7 +1934,7 @@
 
   /* Add padding to body to account for fixed CTA */
   body {
-    padding-bottom: 80px;
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
   }
 
   /* Single column layout - tour-layout is just a block on mobile */

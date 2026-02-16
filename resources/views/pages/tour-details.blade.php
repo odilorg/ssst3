@@ -1442,14 +1442,14 @@
 
   /* Optimized typography */
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif !important;
-  font-size: 15px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
   letter-spacing: 0.02em !important;
   text-transform: none !important;
   line-height: 1 !important;
 
   /* Balanced padding */
-  padding: 13px 24px !important;
+  padding: 10px 16px !important;
 
   /* Subtle rounded corners */
   border-radius: 10px !important;
@@ -1464,15 +1464,17 @@
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 7px !important;
+  gap: 6px !important;
 
   /* Clean edges */
   outline: none !important;
   position: relative !important;
   overflow: hidden !important;
   white-space: nowrap !important;
-  min-width: 130px !important;
-  height: 44px !important;
+  min-width: unset !important;
+  height: 40px !important;
+  flex: 1 !important;
+  max-width: none !important;
 }
 
 /* Hover effect */
@@ -1488,14 +1490,15 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
 }
 
-/* Icon alignment */
+/* Icon alignment - hide on small screens to save space */
 .mobile-cta__button svg {
-  width: 17px !important;
-  height: 17px !important;
+  width: 15px !important;
+  height: 15px !important;
   fill: currentColor !important;
   opacity: 0.95 !important;
   margin-top: -1px !important;
   flex-shrink: 0 !important;
+  display: none !important;
 }
 
 /* Modern price styling */
@@ -1527,14 +1530,15 @@
 /* Container improvements - Better layout */
 .mobile-cta__container {
   display: grid !important;
-  grid-template-columns: 1fr auto auto !important;
+  grid-template-columns: auto 1fr !important;
   align-items: center !important;
-  gap: 12px !important;
-  padding: 12px 16px !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
   background: rgba(255, 255, 255, 0.98) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  pointer-events: auto !important;
 }
 
 /* WhatsApp button styling */
@@ -1548,8 +1552,8 @@
   color: #FFFFFF !important;
 
   /* Size and shape */
-  width: 44px !important;
-  height: 44px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50% !important;
   padding: 0 !important;
 
@@ -1592,11 +1596,13 @@
     display: none !important;
   }
 
-  /* Optional: Create button group for Book + WhatsApp */
+  /* Button group for Book + WhatsApp */
   .mobile-cta__actions {
     display: flex !important;
-    gap: 10px !important;
+    gap: 8px !important;
     align-items: center !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
   }
 }
 
@@ -3525,8 +3531,8 @@
 .mobile-cta__trust {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 4px;
+  padding: 3px 10px;
   background: rgba(16, 185, 129, 0.08);
   border-radius: 6px;
   margin-left: auto;
@@ -3543,11 +3549,12 @@
 @media (max-width: 767px) {
   .mobile-cta__container {
     display: grid !important;
-    grid-template-columns: auto 1fr auto !important;
+    grid-template-columns: auto 1fr !important;
     grid-template-rows: auto auto !important;
     align-items: center !important;
-    gap: 8px 12px !important;
-    padding: 10px 14px !important;
+    gap: 4px 10px !important;
+    padding: 10px 16px !important;
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
   }
 
   .mobile-cta__price {
@@ -3556,16 +3563,20 @@
   }
 
   .mobile-cta__actions {
-    grid-column: 2 / 4;
+    grid-column: 2;
     grid-row: 1;
     justify-self: end;
+    align-items: center;
   }
 
   .mobile-cta__trust {
-    grid-column: 1 / 4;
+    grid-column: 1 / 3;
     grid-row: 2;
-    justify-self: center;
-    margin: 0;
+    justify-self: center !important;
+    margin: 0 auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 3px 10px !important;
   }
 }
 
