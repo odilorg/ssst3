@@ -1002,11 +1002,8 @@
                     <label for="quote-date" class="form-label">
                       <span>{{ __('ui.booking.preferred_date') }}</span>
                     </label>
-                    <div class="input-wrapper input-wrapper--icon">
+                    <div class="input-wrapper">
                       <input type="date" id="quote-date" name="quote-date" class="form-input" required aria-required="true" min="" data-min-date-offset="1">
-                      <span class="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                      </span>
                     </div>
                   </div>
 
@@ -1014,15 +1011,12 @@
                     <label for="quote-guests" class="form-label">
                       <span>{{ __('ui.booking.number_of_guests') }}</span>
                     </label>
-                    <div class="input-wrapper input-wrapper--icon">
+                    <div class="input-wrapper">
                       <select id="quote-guests" name="quote-guests" class="form-input" required aria-required="true">
                         @for($i = 1; $i <= ($tour->max_guests ?? 15); $i++)
                           <option value="{{ $i }}" {{ $i == 2 ? 'selected' : '' }}>{{ $i }} {{ $i == 1 ? __('ui.booking.guest_singular') : __('ui.booking.guest_plural') }}</option>
                         @endfor
                       </select>
-                      <span class="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                      </span>
                     </div>
                   </div>
                 </form>
