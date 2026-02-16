@@ -2,15 +2,20 @@
     {{-- Filters --}}
     <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1rem; background: #1f2937; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         {{-- Status Filter --}}
+        {{-- FIX #10: Added all missing booking statuses --}}
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <label style="font-size: 0.875rem; font-weight: 500; color: #d1d5db;">Status:</label>
             <select wire:model.live="statusFilter"
                     style="border-radius: 0.375rem; border: 1px solid #4b5563; background: #374151; color: #fff; font-size: 0.875rem; padding: 0.375rem 0.75rem;">
                 <option value="">All Statuses</option>
-                <option value="pending">Pending</option>
+                <option value="draft">Draft</option>
+                <option value="inquiry">Inquiry</option>
                 <option value="pending_payment">Pending Payment</option>
                 <option value="confirmed">Confirmed</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="declined">Declined</option>
             </select>
         </div>
 
@@ -27,6 +32,7 @@
         </div>
 
         {{-- View Type Buttons --}}
+        {{-- FIX #5: Trigger lazy grid load when switching to grid view --}}
         <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: auto;">
             <span style="font-size: 0.875rem; font-weight: 500; color: #d1d5db;">View:</span>
             <div style="display: inline-flex; border-radius: 0.375rem; overflow: hidden;">
@@ -34,7 +40,7 @@
                         :style="viewMode === 'calendar' ? 'padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: #4f46e5; border: 1px solid #4f46e5; color: #fff; cursor: pointer; border-radius: 0.375rem 0 0 0.375rem;' : 'padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: #374151; border: 1px solid #4b5563; color: #fff; cursor: pointer; border-radius: 0.375rem 0 0 0.375rem;'">
                     Calendar
                 </button>
-                <button type="button" @click="viewMode = 'grid'"
+                <button type="button" @click="viewMode = 'grid'; $wire.call('switchToGrid')"
                         :style="viewMode === 'grid' ? 'padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: #4f46e5; border: 1px solid #4f46e5; border-left: none; color: #fff; cursor: pointer; border-radius: 0 0.375rem 0.375rem 0;' : 'padding: 0.375rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: #374151; border: 1px solid #4b5563; border-left: none; color: #fff; cursor: pointer; border-radius: 0 0.375rem 0.375rem 0;'">
                     Grid
                 </button>
@@ -48,12 +54,12 @@
                 <span style="font-size: 0.75rem; color: #9ca3af;">Confirmed</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.25rem;">
-                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #eab308; display: inline-block;"></span>
-                <span style="font-size: 0.75rem; color: #9ca3af;">Pending</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.25rem;">
                 <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #f97316; display: inline-block;"></span>
                 <span style="font-size: 0.75rem; color: #9ca3af;">Payment</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>
+                <span style="font-size: 0.75rem; color: #9ca3af;">In Progress</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.25rem;">
                 <span style="width: 0.75rem; height: 0.75rem; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
@@ -128,9 +134,11 @@
                                             <div wire:click="handleEventClick({{ $booking['id'] }})"
                                                  style="padding: 0.25rem 0.375rem; margin-bottom: 0.25rem; border-radius: 0.25rem; font-size: 0.7rem; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
                                                  @if($booking['status'] === 'confirmed') background: #22c55e; color: #fff;
-                                                 @elseif($booking['status'] === 'pending') background: #eab308; color: #000;
                                                  @elseif($booking['status'] === 'pending_payment') background: #f97316; color: #fff;
-                                                 @else background: #ef4444; color: #fff;
+                                                 @elseif($booking['status'] === 'in_progress') background: #3b82f6; color: #fff;
+                                                 @elseif($booking['status'] === 'completed') background: #10b981; color: #fff;
+                                                 @elseif($booking['status'] === 'cancelled' || $booking['status'] === 'declined') background: #ef4444; color: #fff;
+                                                 @else background: #6b7280; color: #fff;
                                                  @endif"
                                                  title="{{ $booking['customerName'] }} ({{ $booking['guests'] }}p)">
                                                 {{ Str::limit($booking['customerName'], 10) }} ({{ $booking['guests'] }}p)
@@ -215,11 +223,13 @@
                                 <span style="font-size: 0.875rem; color: #9ca3af;">Status</span>
                                 <span style="padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 500; border-radius: 9999px;
                                     @if($selectedBooking['status'] === 'confirmed') background: #dcfce7; color: #166534;
-                                    @elseif($selectedBooking['status'] === 'pending') background: #fef9c3; color: #854d0e;
                                     @elseif($selectedBooking['status'] === 'pending_payment') background: #ffedd5; color: #9a3412;
-                                    @else background: #fee2e2; color: #991b1b;
+                                    @elseif($selectedBooking['status'] === 'in_progress') background: #dbeafe; color: #1e40af;
+                                    @elseif($selectedBooking['status'] === 'completed') background: #d1fae5; color: #065f46;
+                                    @elseif($selectedBooking['status'] === 'cancelled' || $selectedBooking['status'] === 'declined') background: #fee2e2; color: #991b1b;
+                                    @else background: #f3f4f6; color: #374151;
                                     @endif">
-                                    {{ ucfirst($selectedBooking['status']) }}
+                                    {{ str_replace('_', ' ', ucfirst($selectedBooking['status'])) }}
                                 </span>
                             </div>
 
@@ -241,8 +251,9 @@
                         </div>
                     </div>
 
+                    {{-- FIX #3: Use dynamic editUrl from Filament instead of hardcoded path --}}
                     <div style="background: #374151; padding: 0.75rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
-                        <a href="/admin/bookings/{{ $selectedBooking['id'] }}/edit"
+                        <a href="{{ $selectedBooking['editUrl'] }}"
                            style="display: inline-flex; justify-content: center; border-radius: 0.375rem; padding: 0.5rem 1rem; background: #4f46e5; color: #fff; font-size: 0.875rem; font-weight: 500; text-decoration: none;">
                             Edit Booking
                         </a>
@@ -293,8 +304,16 @@
                         @this.call('handleEventClick', parseInt(info.event.id));
                     },
 
-                    // Event drop - reschedule
+                    // FIX #13: Event drop with confirmation dialog
                     eventDrop: function(info) {
+                        const title = info.event.title;
+                        const newDate = info.event.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                        if (!confirm('Reschedule "' + title + '" to ' + newDate + '?')) {
+                            info.revert();
+                            return;
+                        }
+
                         const newEnd = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
@@ -303,13 +322,21 @@
                         );
                     },
 
-                    // Event resize
+                    // FIX #13: Event resize with confirmation dialog
                     eventResize: function(info) {
-                        const newEnd = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
+                        const title = info.event.title;
+                        const newEnd = info.event.end ? info.event.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+
+                        if (!confirm('Change end date of "' + title + '" to ' + newEnd + '?')) {
+                            info.revert();
+                            return;
+                        }
+
+                        const newEndISO = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
                             info.event.start.toISOString().split('T')[0],
-                            newEnd
+                            newEndISO
                         );
                     },
 

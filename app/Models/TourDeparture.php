@@ -109,7 +109,7 @@ class TourDeparture extends Model
      */
     public function scopeGuaranteed($query)
     {
-        return $query->where('departure_type', self::TYPE_GUARANTEED);
+        return $query->where('status', self::STATUS_GUARANTEED);
     }
 
     // ==========================================
@@ -233,7 +233,9 @@ class TourDeparture extends Model
      */
     public function updateBookedPax(): void
     {
-        $this->booked_pax = $this->confirmedBookings()->sum('pax_total');
+        $this->booked_pax = $this->confirmedBookings()
+            ->selectRaw('COALESCE(SUM(COALESCE(guests_count, pax_total, 1)), 0) as total')
+            ->value('total');
         $this->updateStatus();
         $this->save();
     }
