@@ -648,29 +648,29 @@ h3 {
                      ======================================== -->
                 <div class="contact-form-wrapper animate-on-scroll" id="contact-form">
                     <h2 class="contact-form__title">{{ __('ui.contact.form_title') }}</h2>
-                    <p class="contact-form__intro">We typically respond within 24 hours. Let's start planning your perfect Uzbekistan adventure!</p>
+                    <p class="contact-form__intro">{{ __('ui.contact.form_intro') }}</p>
 
                     <!-- Benefits Section -->
                     <div class="form-benefits">
                         <div class="form-benefit">
                             <i class="fas fa-headset"></i>
-                            <span>Expert local guidance</span>
+                            <span>{{ __('ui.contact.benefit_expert') }}</span>
                         </div>
                         <div class="form-benefit">
                             <i class="fas fa-clock"></i>
-                            <span>24-hour response</span>
+                            <span>{{ __('ui.contact.benefit_response') }}</span>
                         </div>
                         <div class="form-benefit">
                             <i class="fas fa-shield-alt"></i>
-                            <span>Secure & confidential</span>
+                            <span>{{ __('ui.contact.benefit_secure') }}</span>
                         </div>
                     </div>
 
-                                        
+
                 <!-- P0 FIX: Response time commitment -->
                 <div class="response-commitment">
                     <i class="fas fa-clock"></i>
-                    <span><strong>{{ __('ui.contact.benefit_response_title') }}:</strong> We typically respond within 2 hours during business hours</span>
+                    <span><strong>{{ __('ui.contact.benefit_response_title') }}:</strong> {{ __('ui.contact.response_business_hours') }}</span>
                 </div>
 
 
@@ -717,7 +717,7 @@ h3 {
                         <!-- {{ __('ui.contact.phone') }} Field (Optional) -->
                         <div class="form-group">
                             <label for="phone" class="form-label">
-                                {{ __('ui.contact.phone') }} <span class="optional">(optional)</span>
+                                {{ __('ui.contact.phone') }} <span class="optional">{{ __('ui.contact.phone_optional') }}</span>
                             </label>
                             <input
                                 type="tel"
@@ -741,7 +741,7 @@ h3 {
                                 name="message"
                                 class="form-input form-textarea"
                                 rows="4"
-                                placeholder="Tell us about your travel plans..."
+                                placeholder="{{ __('ui.contact.placeholder_message') }}"
                                 required
                                 aria-required="true"
                                 aria-describedby="message-error"
@@ -757,13 +757,13 @@ h3 {
 
                         <!-- Trust Signal -->
                         <p class="form-trust-signal">
-                            <i class="fas fa-lock"></i> Your information is secure & private
+                            <i class="fas fa-lock"></i> {{ __('ui.contact.trust_secure_private') }}
                         </p>
                     </form>
 
                     <!-- Alternative Contact Methods -->
                     <div class="alternative-contact">
-                        <p class="alt-contact-title">Need immediate help?</p>
+                        <p class="alt-contact-title">{{ __('ui.contact.need_immediate_help') }}</p>
                         <div class="alt-contact-methods">
                             <a href="https://wa.me/998915550808" class="alt-contact-link" target="_blank" rel="noopener">
                                 <i class="fab fa-whatsapp"></i> +998 91 555 0808
@@ -812,8 +812,7 @@ h3 {
                     <div class="contact-card animate-on-scroll">
                         <h3 class="contact-card__title">{{ __('ui.contact.get_in_touch_title') }}</h3>
                         <p class="contact-card__description">
-                            We love to chat about your travel plans and
-                            are ready to help in any way we can.
+                            {{ __('ui.contact.get_in_touch_description') }}
                         </p>
 
                         <!-- Trust Badge -->
@@ -834,7 +833,7 @@ h3 {
                         <div class="contact-card__item">
                             <i class="fas fa-phone contact-card__icon"></i>
                             <div class="contact-card__content">
-                                <span class="contact-card__label">Call us</span>
+                                <span class="contact-card__label">{{ __('ui.contact.call_us') }}</span>
                                 <a href="tel:+998915550808" class="contact-card__link">
                                     +998 91 555 08 08
                                 </a>
@@ -844,7 +843,7 @@ h3 {
                         <div class="contact-card__item">
                             <i class="fas fa-envelope contact-card__icon"></i>
                             <div class="contact-card__content">
-                                <span class="contact-card__label">{{ __('ui.contact.email') }} us</span>
+                                <span class="contact-card__label">{{ __('ui.contact.email_us') }}</span>
                                 <a href="mailto:info@jahongir-travel.uz" class="contact-card__link">
                                     info@jahongir-travel.uz
                                 </a>
@@ -860,20 +859,20 @@ h3 {
                         </h3>
 
                         <div class="hours-block">
-                            <p class="hours-block__season">Monday through Friday</p>
+                            <p class="hours-block__season">{{ __('ui.contact.monday_friday') }}</p>
                             <p class="hours-block__time">9:00 – 18:00</p>
                             <p class="hours-block__time">Sat – Sun: {{ __('ui.contact.closed') }}</p>
                         </div>
 
                         <div class="hours-block">
-                            <p class="hours-block__season">Peak Season (Apr – Sep)</p>
-                            <p class="hours-block__time">Mon – Fri: 8:00 – 20:00</p>
-                            <p class="hours-block__time">Sat: 9:00 – 15:00</p>
+                            <p class="hours-block__season">{{ __('ui.contact.peak_season') }}</p>
+                            <p class="hours-block__time">{{ __('ui.contact.mon_fri_hours') }}</p>
+                            <p class="hours-block__time">{{ __('ui.contact.sat_hours') }}</p>
                         </div>
 
                         <p class="contact-card__timezone">
                             <i class="fas fa-info-circle"></i>
-                            All times are in Uzbekistan Standard Time (UTC+5)
+                            {{ __('ui.contact.timezone_note') }}
                         </p>
                     </div>
 
@@ -884,14 +883,13 @@ h3 {
                             {{ __('ui.contact.head_office_title') }}
                         </h3>
                         <p class="contact-card__description">
-                            Visit our cozy office in the heart of Samarkand, right near the historic Registan Square.
-                            We'd love to meet you in person!
+                            {{ __('ui.contact.office_description') }}
                         </p>
 
                         <address class="contact-address">
                             <i class="fas fa-map-marker-alt contact-card__icon"></i>
                             <div class="contact-card__content">
-                                Samarkand, Chirokchi street 4
+                                {{ __('ui.contact.office_address') }}
                             </div>
                         </address>
 
@@ -899,7 +897,7 @@ h3 {
                            target="_blank"
                            rel="noopener noreferrer"
                            class="btn btn--outline btn--small contact-card__map-btn">
-                            <i class="fas fa-map"></i> Open in Google Maps
+                            <i class="fas fa-map"></i> {{ __('ui.contact.open_google_maps') }}
                         </a>
                     </div>
                 </div>
@@ -925,9 +923,9 @@ h3 {
             </figure>
             <div class="cp-copy">
                 <h2 id="contact-personality-title" class="cp-title">{{ __('ui.contact.personality_title') }}</h2>
-                <p class="cp-sub">We're a small local team based in Samarkand — the same people who greet travelers, plan routes, and make every trip feel like family.</p>
-                <p class="cp-body">Whether it's crafting your first Silk Road itinerary or helping you choose the best guest house, you'll always talk to someone who knows Uzbekistan by heart.</p>
-                <a href="/about-us" class="btn btn--outline cp-cta">Meet the Team</a>
+                <p class="cp-sub">{{ __('ui.contact.personality_subtitle') }}</p>
+                <p class="cp-body">{{ __('ui.contact.personality_body') }}</p>
+                <a href="/about-us" class="btn btn--outline cp-cta">{{ __('ui.contact.meet_the_team') }}</a>
             </div>
         </div>
     </section>
@@ -937,21 +935,19 @@ h3 {
          ======================================== -->
     <section class="faq-section">
         <div class="container">
-            <h2 class="faq-section__title">Frequently asked questions</h2>
-            <p class="faq-section__subtitle">Quick answers to common questions about touring Uzbekistan</p>
+            <h2 class="faq-section__title">{{ __('ui.contact.faq_title') }}</h2>
+            <p class="faq-section__subtitle">{{ __('ui.contact.faq_subtitle') }}</p>
 
             <div class="faq-grid">
                 <!-- FAQ Item 1 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>How can I book a tour?</span>
+                        <span>{{ __('ui.contact.faq_q1') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            You can book a tour by browsing our tours page, selecting your preferred tour,
-                            and clicking the "Book Now" button. Alternatively, you can contact us directly
-                            via phone or email, and our team will assist you with the booking process.
+                            {{ __('ui.contact.faq_a1') }}
                         </p>
                     </div>
                 </details>
@@ -959,14 +955,12 @@ h3 {
                 <!-- FAQ Item 2 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>Are there any age restrictions for the tour?</span>
+                        <span>{{ __('ui.contact.faq_q2') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            Most of our tours are suitable for all ages. However, some adventure tours
-                            may have minimum age requirements for safety reasons. Please check the specific
-                            tour details or contact us for more information about age restrictions.
+                            {{ __('ui.contact.faq_a2') }}
                         </p>
                     </div>
                 </details>
@@ -974,15 +968,12 @@ h3 {
                 <!-- FAQ Item 3 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>What should I pack for the tour?</span>
+                        <span>{{ __('ui.contact.faq_q3') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            We recommend packing comfortable walking shoes, weather-appropriate clothing,
-                            sunscreen, a hat, and a reusable water bottle. For specific tours, we'll send
-                            you a detailed packing list after booking. Don't forget your camera to capture
-                            the beautiful sights of Uzbekistan!
+                            {{ __('ui.contact.faq_a3') }}
                         </p>
                     </div>
                 </details>
@@ -990,14 +981,12 @@ h3 {
                 <!-- FAQ Item 4 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>How can I contact customer support after the tour?</span>
+                        <span>{{ __('ui.contact.faq_q4') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            You can reach our customer support team anytime via email at
-                            info@jahongir-travel.uz or by calling +998 91 555 08 08. We're here to help
-                            with any questions or feedback you may have about your tour experience.
+                            {{ __('ui.contact.faq_a4') }}
                         </p>
                     </div>
                 </details>
@@ -1005,15 +994,12 @@ h3 {
                 <!-- FAQ Item 5 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>Can I cancel or reschedule my booking?</span>
+                        <span>{{ __('ui.contact.faq_q5') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            Yes, you can cancel or reschedule your booking according to our cancellation
-                            policy. Cancellations made 30+ days before the tour start date receive a full
-                            refund. For cancellations within 30 days, please contact us to discuss available
-                            options and any applicable fees.
+                            {{ __('ui.contact.faq_a5') }}
                         </p>
                     </div>
                 </details>
@@ -1021,14 +1007,12 @@ h3 {
                 <!-- FAQ Item 6 -->
                 <details class="faq-item animate-on-scroll">
                     <summary class="faq-item__question">
-                        <span>Do you offer group discounts?</span>
+                        <span>{{ __('ui.contact.faq_q6') }}</span>
                         <i class="fas fa-chevron-down faq-item__icon"></i>
                     </summary>
                     <div class="faq-item__answer">
                         <p>
-                            Yes, we offer special discounts for group bookings of 6 or more people.
-                            The discount varies depending on the tour and group size. Contact us with
-                            your travel details, and we'll provide you with a customized group rate.
+                            {{ __('ui.contact.faq_a6') }}
                         </p>
                     </div>
                 </details>
@@ -1036,9 +1020,9 @@ h3 {
 
             <!-- FAQ Help Link -->
             <div class="faq-help">
-                <p class="faq-help__text">Didn't find your answer?</p>
+                <p class="faq-help__text">{{ __('ui.contact.faq_help_text') }}</p>
                 <a href="#contact-form" class="faq-help__link">
-                    Contact us
+                    {{ __('ui.contact.faq_contact_us') }}
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -1062,46 +1046,46 @@ h3 {
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
-                <h2 class="modal-title">Message Sent Successfully!</h2>
-                <p class="modal-subtitle">Thank you for contacting us. We will get back to you within 24 hours.</p>
+                <h2 class="modal-title">{{ __('ui.contact.modal_success_title') }}</h2>
+                <p class="modal-subtitle">{{ __('ui.contact.modal_success_subtitle') }}</p>
             </div>
 
             <div class="modal-body">
                 <div class="confirmation-reference">
-                    <span class="label">Your Reference Number</span>
+                    <span class="label">{{ __('ui.contact.modal_reference_number') }}</span>
                     <span class="reference-number" id="contact-modal-reference">N/A</span>
                 </div>
 
                 <div class="confirmation-details">
-                    <h3>Your Contact Information</h3>
+                    <h3>{{ __('ui.contact.modal_your_info') }}</h3>
                     <div class="detail-row">
-                        <span class="detail-label">Name:</span>
+                        <span class="detail-label">{{ __('ui.contact.modal_name') }}</span>
                         <span class="detail-value" id="contact-modal-name">N/A</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">{{ __('ui.contact.email') }}:</span>
+                        <span class="detail-label">{{ __('ui.contact.modal_email') }}</span>
                         <span class="detail-value" id="contact-modal-email">N/A</span>
                     </div>
                 </div>
 
                 <div class="modal-message">
                     <i class="fas fa-info-circle"></i>
-                    <p>We have sent a confirmation email to your address. Please check your inbox (and spam folder).</p>
+                    <p>{{ __('ui.contact.modal_confirmation_sent') }}</p>
                 </div>
 
                 <div class="modal-next-steps">
-                    <h3>What happens next?</h3>
+                    <h3>{{ __('ui.contact.modal_what_next') }}</h3>
                     <ul>
-                        <li>Our team will review your message</li>
-                        <li>We'll respond within 24 hours</li>
-                        <li>Keep your reference number for future correspondence</li>
+                        <li>{{ __('ui.contact.modal_step1') }}</li>
+                        <li>{{ __('ui.contact.modal_step2') }}</li>
+                        <li>{{ __('ui.contact.modal_step3') }}</li>
                     </ul>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn--primary" id="contact-success-close">
-                    Close
+                    {{ __('ui.contact.modal_close') }}
                 </button>
             </div>
         </div>
@@ -1126,14 +1110,14 @@ h3 {
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
                 </div>
-                <h2 class="modal-title">Submission Failed</h2>
-                <p class="modal-subtitle" id="contact-error-message">An error occurred. Please try again.</p>
+                <h2 class="modal-title">{{ __('ui.contact.modal_error_title') }}</h2>
+                <p class="modal-subtitle" id="contact-error-message">{{ __('ui.contact.modal_error_subtitle') }}</p>
             </div>
 
             <div class="modal-body">
                 <div class="modal-message">
                     <i class="fas fa-lightbulb"></i>
-                    <p>You can also reach us through these alternative methods:</p>
+                    <p>{{ __('ui.contact.modal_alternative_methods') }}</p>
                 </div>
 
                 <div class="alternative-contact-methods">
@@ -1147,14 +1131,14 @@ h3 {
                     </a>
                     <a href="tel:+998915550808" class="alt-method">
                         <i class="fas fa-phone"></i>
-                        <span>Call: +998 91 555 08 08</span>
+                        <span>{{ __('ui.contact.modal_call') }}</span>
                     </a>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn--outline" id="contact-error-close">
-                    Close
+                    {{ __('ui.contact.modal_close') }}
                 </button>
             </div>
         </div>
