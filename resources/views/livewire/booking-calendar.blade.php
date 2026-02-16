@@ -508,12 +508,12 @@
                 calendar.render();
 
                 Livewire.on('eventsLoaded', (data) => {
-                    calendar.removeAllEvents();
-                    if (data && data.events) {
-                        calendar.addEventSource(data.events);
-                    } else if (Array.isArray(data)) {
-                        calendar.addEventSource(data);
-                    }
+                    // Remove ALL event sources first (not just events) to prevent
+                    // duplicate sources from accumulating on each datesSet cycle
+                    calendar.removeAllEventSources();
+
+                    const events = (data && data.events) ? data.events : (Array.isArray(data) ? data : []);
+                    calendar.addEventSource(events);
                 });
 
                 Livewire.on('rescheduleError', (data) => {
