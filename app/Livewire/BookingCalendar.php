@@ -299,7 +299,7 @@ class BookingCalendar extends Component
         // FIX #1: Verify user is authenticated admin
         $user = auth()->user();
         if (!$user) {
-            $this->dispatch('notify', type: 'error', message: 'Unauthorized: You must be logged in.');
+            $this->dispatch('rescheduleError', message: 'Unauthorized: You must be logged in.');
             return;
         }
 
@@ -307,18 +307,18 @@ class BookingCalendar extends Component
         try {
             $newStartDate = Carbon::parse($newDate);
             if ($newStartDate->year < 2020 || $newStartDate->year > 2030) {
-                $this->dispatch('notify', type: 'error', message: 'Invalid date range.');
+                $this->dispatch('rescheduleError', message: 'Invalid date range.');
                 return;
             }
         } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: 'Invalid date format.');
+            $this->dispatch('rescheduleError', message: 'Invalid date format.');
             return;
         }
 
         $booking = Booking::find($bookingId);
 
         if (!$booking) {
-            $this->dispatch('notify', type: 'error', message: 'Booking not found.');
+            $this->dispatch('rescheduleError', message: 'Booking not found.');
             return;
         }
 
@@ -359,9 +359,12 @@ class BookingCalendar extends Component
             'rescheduled_by' => $user->name ?? $user->email ?? $user->id,
         ]);
 
-        // Reload data
+        // Don't reload calendar events here -- FullCalendar already shows the
+        // event at the new position after drag-drop.  Reloading triggers
+        // removeAllEvents + addEventSource which causes a visual "snap back".
+        // Events refresh automatically when the user navigates months (datesSet).
+        // Only reload grid data (grid view doesn't have its own drag state).
         $this->loadGridData();
-        $this->loadEvents();
 
         $this->dispatch('notify', type: 'success', message: "Booking #{$booking->reference} rescheduled to " . $newStartDate->format('d M Y'));
     }

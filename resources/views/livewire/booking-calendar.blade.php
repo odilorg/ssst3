@@ -273,12 +273,12 @@
 
     <script>
     let calendar;
+    let lastDropInfo = null;
 
     function bookingCalendar() {
         return {
             init() {
                 const calendarEl = document.getElementById('booking-calendar');
-                const component = this;
 
                 calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
@@ -289,22 +289,17 @@
                     },
                     events: @json($events),
                     editable: true,
-                    droppable: true,
                     eventStartEditable: true,
                     eventDurationEditable: true,
-                    selectable: true,
-                    selectMirror: true,
                     dayMaxEvents: 3,
                     nowIndicator: true,
-                    slotMinTime: '06:00:00',
-                    slotMaxTime: '22:00:00',
 
                     // Event click - show details
                     eventClick: function(info) {
                         @this.call('handleEventClick', parseInt(info.event.id));
                     },
 
-                    // FIX #13: Event drop with confirmation dialog
+                    // Event drop with confirmation
                     eventDrop: function(info) {
                         const title = info.event.title;
                         const newDate = info.event.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -314,6 +309,9 @@
                             return;
                         }
 
+                        // Save revert function in case server-side fails
+                        lastDropInfo = info;
+
                         const newEnd = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
@@ -322,7 +320,7 @@
                         );
                     },
 
-                    // FIX #13: Event resize with confirmation dialog
+                    // Event resize with confirmation
                     eventResize: function(info) {
                         const title = info.event.title;
                         const newEnd = info.event.end ? info.event.end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
@@ -332,6 +330,8 @@
                             return;
                         }
 
+                        lastDropInfo = info;
+
                         const newEndISO = info.event.end ? info.event.end.toISOString().split('T')[0] : null;
                         @this.call('handleEventDrop',
                             parseInt(info.event.id),
@@ -340,7 +340,7 @@
                         );
                     },
 
-                    // Date range change
+                    // Date range change - reload events for new month
                     datesSet: function(info) {
                         @this.call('handleDateRangeChanged',
                             info.start.toISOString().split('T')[0],
@@ -350,7 +350,6 @@
 
                     // Event rendering
                     eventContent: function(arg) {
-                        const props = arg.event.extendedProps;
                         return {
                             html: `
                                 <div class="fc-event-main-frame" style="padding: 2px 4px;">
@@ -366,32 +365,43 @@
 
                     // Loading state
                     loading: function(isLoading) {
-                        if (isLoading) {
-                            calendarEl.style.opacity = '0.5';
-                        } else {
-                            calendarEl.style.opacity = '1';
-                        }
+                        calendarEl.style.opacity = isLoading ? '0.5' : '1';
                     }
                 });
 
                 calendar.render();
 
-                // Listen for Livewire events
+                // Reload events on month navigation
                 Livewire.on('eventsLoaded', (data) => {
                     calendar.removeAllEvents();
-                    calendar.addEventSource(data.events);
+                    if (data && data.events) {
+                        calendar.addEventSource(data.events);
+                    } else if (Array.isArray(data)) {
+                        calendar.addEventSource(data);
+                    }
                 });
 
-                // Notification handler
+                // Revert drag on server error
+                Livewire.on('rescheduleError', (data) => {
+                    if (lastDropInfo) {
+                        lastDropInfo.revert();
+                        lastDropInfo = null;
+                    }
+                    const msg = (data && data.message) ? data.message : (typeof data === 'string' ? data : 'Reschedule failed');
+                    alert(msg);
+                });
+
+                // Success notification
                 Livewire.on('notify', (data) => {
+                    lastDropInfo = null;
+                    const msg = (data && data.message) ? data.message : '';
+                    const type = (data && data.type) ? data.type : 'success';
                     if (typeof Filament !== 'undefined' && Filament.notifications) {
                         Filament.notifications.notify({
-                            title: data.type === 'success' ? 'Success' : 'Error',
-                            body: data.message,
-                            type: data.type
+                            title: type === 'success' ? 'Success' : 'Error',
+                            body: msg,
+                            type: type
                         });
-                    } else {
-                        alert(data.message);
                     }
                 });
             }
