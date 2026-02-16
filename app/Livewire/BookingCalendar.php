@@ -334,18 +334,16 @@ class BookingCalendar extends Component
                 $newEndDate = null;
             }
         } else {
-            // Preserve original duration for drag-drop
+            // Preserve original duration for drag-drop (0 for single-day bookings)
             $duration = 0;
             if ($booking->start_date && $booking->end_date) {
                 $duration = $booking->start_date->diffInDays($booking->end_date);
             }
-            $newEndDate = $duration > 0 ? $newStartDate->copy()->addDays($duration) : null;
+            $newEndDate = $newStartDate->copy()->addDays($duration);
         }
 
         $booking->start_date = $newStartDate;
-        if ($newEndDate) {
-            $booking->end_date = $newEndDate;
-        }
+        $booking->end_date = $newEndDate ?? $newStartDate->copy();
         $booking->save();
 
         // FIX #1: Audit log
