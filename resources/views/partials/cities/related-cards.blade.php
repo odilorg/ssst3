@@ -1,6 +1,6 @@
 <div class="related-categories-grid">
 @forelse($cities as $city)
-    <a href="/{{ app()->getLocale() }}/destinations/{{ $city->slug }}" class="related-category-card">
+    <a href="/destinations/{{ $city->slug }}" class="related-category-card">
         <div class="related-category-card__icon">
             <i class="fas fa-map-marker-alt"></i>
         </div>
