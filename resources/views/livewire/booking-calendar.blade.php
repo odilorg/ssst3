@@ -275,65 +275,8 @@
         </div>
     @endif
 
-    {{-- Custom Confirm Dialog (replaces browser confirm()) --}}
-    <div x-data="confirmDialog()" x-cloak>
-        <template x-teleport="body">
-            <div x-show="open" x-transition.opacity style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem;">
-                <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.5);" @click="cancel()"></div>
-                <div x-show="open" x-transition style="position: relative; background: #1f2937; border: 1px solid #374151; border-radius: 0.75rem; padding: 1.5rem; max-width: 28rem; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.4);">
-                    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                        <div style="flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: rgba(79, 70, 229, 0.15); display: flex; align-items: center; justify-content: center;">
-                            <svg style="width: 1.25rem; height: 1.25rem; color: #818cf8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 0.95rem; font-weight: 600; color: #f3f4f6; margin: 0 0 0.25rem;">Reschedule Booking</h3>
-                            <p x-text="message" style="font-size: 0.85rem; color: #9ca3af; margin: 0; line-height: 1.4;"></p>
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem;">
-                        <button @click="cancel()" style="padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 500; background: #374151; border: 1px solid #4b5563; color: #d1d5db; border-radius: 0.375rem; cursor: pointer;">Cancel</button>
-                        <button @click="ok()" style="padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 500; background: #4f46e5; border: none; color: #fff; border-radius: 0.375rem; cursor: pointer;">Reschedule</button>
-                    </div>
-                </div>
-            </div>
-        </template>
-    </div>
-
-    {{-- Toast Notifications (replaces browser alert()) --}}
-    <div x-data="toastNotifications()" x-cloak>
-        <template x-teleport="body">
-            <div style="position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;">
-                <template x-for="toast in toasts" :key="toast.id">
-                    <div x-show="toast.visible"
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:leave="transition ease-in duration-200"
-                         style="pointer-events: auto; min-width: 20rem; max-width: 24rem; border-radius: 0.5rem; padding: 0.75rem 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: flex-start; gap: 0.625rem;"
-                         :style="toast.type === 'success'
-                             ? 'background: #065f46; border: 1px solid #059669;'
-                             : 'background: #7f1d1d; border: 1px solid #dc2626;'">
-                        <div style="flex-shrink: 0; margin-top: 0.125rem;">
-                            <template x-if="toast.type === 'success'">
-                                <svg style="width: 1.125rem; height: 1.125rem; color: #34d399;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </template>
-                            <template x-if="toast.type !== 'success'">
-                                <svg style="width: 1.125rem; height: 1.125rem; color: #f87171;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>
-                                </svg>
-                            </template>
-                        </div>
-                        <p x-text="toast.message" style="font-size: 0.825rem; color: #f3f4f6; margin: 0; line-height: 1.3; flex: 1;"></p>
-                        <button @click="dismiss(toast.id)" style="flex-shrink: 0; background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0; line-height: 1;">
-                            <svg style="width: 1rem; height: 1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-                </template>
-            </div>
-        </template>
-    </div>
+    {{-- Confirm dialog + Toast container (wire:ignore so Livewire doesn't morph them) --}}
+    <div wire:ignore id="calendar-ui-overlays"></div>
 
     {{-- FullCalendar Scripts --}}
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
@@ -343,60 +286,91 @@
     let calendar;
     let lastDropInfo = null;
 
-    // ── Custom confirm dialog ──
+    // ── Custom confirm dialog (pure DOM, no Alpine) ──
     let _confirmResolve = null;
+    let _confirmOverlay = null;
 
-    function confirmDialog() {
-        return {
-            open: false,
-            message: '',
-            show(msg) {
-                this.message = msg;
-                this.open = true;
-                return new Promise(resolve => { _confirmResolve = resolve; });
-            },
-            ok()     { this.open = false; if (_confirmResolve) _confirmResolve(true);  _confirmResolve = null; },
-            cancel() { this.open = false; if (_confirmResolve) _confirmResolve(false); _confirmResolve = null; },
-        };
+    function _ensureConfirmDOM() {
+        if (_confirmOverlay) return;
+        _confirmOverlay = document.createElement('div');
+        _confirmOverlay.id = 'jt-confirm';
+        _confirmOverlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:1rem;';
+        _confirmOverlay.innerHTML =
+            '<div id="jt-confirm-bg" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);"><\/div>' +
+            '<div style="position:relative;background:#1f2937;border:1px solid #374151;border-radius:0.75rem;padding:1.5rem;max-width:28rem;width:100%;box-shadow:0 25px 50px rgba(0,0,0,0.4);">' +
+                '<div style="display:flex;align-items:flex-start;gap:0.75rem;">' +
+                    '<div style="flex-shrink:0;width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(79,70,229,0.15);display:flex;align-items:center;justify-content:center;">' +
+                        '<svg style="width:1.25rem;height:1.25rem;color:#818cf8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/><\/svg>' +
+                    '<\/div>' +
+                    '<div>' +
+                        '<h3 style="font-size:0.95rem;font-weight:600;color:#f3f4f6;margin:0 0 0.25rem;">Reschedule Booking<\/h3>' +
+                        '<p id="jt-confirm-msg" style="font-size:0.85rem;color:#9ca3af;margin:0;line-height:1.4;"><\/p>' +
+                    '<\/div>' +
+                '<\/div>' +
+                '<div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1.25rem;">' +
+                    '<button id="jt-confirm-cancel" style="padding:0.5rem 1rem;font-size:0.8rem;font-weight:500;background:#374151;border:1px solid #4b5563;color:#d1d5db;border-radius:0.375rem;cursor:pointer;">Cancel<\/button>' +
+                    '<button id="jt-confirm-ok" style="padding:0.5rem 1rem;font-size:0.8rem;font-weight:500;background:#4f46e5;border:none;color:#fff;border-radius:0.375rem;cursor:pointer;">Reschedule<\/button>' +
+                '<\/div>' +
+            '<\/div>';
+        document.body.appendChild(_confirmOverlay);
+
+        document.getElementById('jt-confirm-bg').addEventListener('click', function() { _resolveConfirm(false); });
+        document.getElementById('jt-confirm-cancel').addEventListener('click', function() { _resolveConfirm(false); });
+        document.getElementById('jt-confirm-ok').addEventListener('click', function() { _resolveConfirm(true); });
     }
 
-    async function showConfirm(msg) {
-        const el = document.querySelector('[x-data="confirmDialog()"]');
-        if (el && el.__x) {
-            return el.__x.$data.show(msg);
-        }
-        // Alpine v3 - access via _x_dataStack
-        if (el && el._x_dataStack) {
-            const data = el._x_dataStack[0];
-            return data.show(msg);
-        }
-        return confirm(msg);
+    function _resolveConfirm(val) {
+        if (_confirmOverlay) _confirmOverlay.style.display = 'none';
+        if (_confirmResolve) { _confirmResolve(val); _confirmResolve = null; }
     }
 
-    // ── Toast notifications ──
-    let _toastData = null;
+    function showConfirm(msg) {
+        _ensureConfirmDOM();
+        document.getElementById('jt-confirm-msg').textContent = msg;
+        _confirmOverlay.style.display = 'flex';
+        return new Promise(function(resolve) { _confirmResolve = resolve; });
+    }
 
-    function toastNotifications() {
-        return {
-            toasts: [],
-            init() { _toastData = this; },
-            add(type, message) {
-                const id = Date.now();
-                this.toasts.push({ id, type, message, visible: true });
-                setTimeout(() => this.dismiss(id), 4000);
-            },
-            dismiss(id) {
-                const t = this.toasts.find(x => x.id === id);
-                if (t) t.visible = false;
-                setTimeout(() => { this.toasts = this.toasts.filter(x => x.id !== id); }, 300);
-            }
-        };
+    // ── Toast notifications (pure DOM, no Alpine) ──
+    let _toastContainer = null;
+
+    function _ensureToastDOM() {
+        if (_toastContainer) return;
+        _toastContainer = document.createElement('div');
+        _toastContainer.id = 'jt-toasts';
+        _toastContainer.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:0.5rem;pointer-events:none;';
+        document.body.appendChild(_toastContainer);
     }
 
     function showToast(type, message) {
-        if (_toastData) {
-            _toastData.add(type, message);
-        }
+        _ensureToastDOM();
+        var toast = document.createElement('div');
+        toast.style.cssText = 'pointer-events:auto;min-width:20rem;max-width:24rem;border-radius:0.5rem;padding:0.75rem 1rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;align-items:flex-start;gap:0.625rem;opacity:0;transform:translateX(1rem);transition:opacity 0.3s,transform 0.3s;';
+        toast.style.background = type === 'success' ? '#065f46' : '#7f1d1d';
+        toast.style.border = '1px solid ' + (type === 'success' ? '#059669' : '#dc2626');
+
+        var iconSvg = type === 'success'
+            ? '<svg style="width:1.125rem;height:1.125rem;color:#34d399;flex-shrink:0;margin-top:1px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/><\/svg>'
+            : '<svg style="width:1.125rem;height:1.125rem;color:#f87171;flex-shrink:0;margin-top:1px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/><\/svg>';
+
+        toast.innerHTML = iconSvg +
+            '<p style="font-size:0.825rem;color:#f3f4f6;margin:0;line-height:1.3;flex:1;"><\/p>' +
+            '<button style="flex-shrink:0;background:none;border:none;color:#9ca3af;cursor:pointer;padding:0;line-height:1;">' +
+                '<svg style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/><\/svg>' +
+            '<\/button>';
+
+        toast.querySelector('p').textContent = message;
+        toast.querySelector('button').addEventListener('click', function() { dismissToast(toast); });
+
+        _toastContainer.appendChild(toast);
+        requestAnimationFrame(function() { toast.style.opacity = '1'; toast.style.transform = 'translateX(0)'; });
+        setTimeout(function() { dismissToast(toast); }, 4000);
+    }
+
+    function dismissToast(el) {
+        if (!el || !el.parentNode) return;
+        el.style.opacity = '0'; el.style.transform = 'translateX(1rem)';
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
     }
 
     // ── Grid drag-drop ──
