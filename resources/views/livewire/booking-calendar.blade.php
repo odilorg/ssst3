@@ -121,38 +121,45 @@
                 </thead>
                 <tbody>
                     @forelse($gridData as $tourId => $tourData)
-                        <tr>
+                        <tr style="position: relative;">
                             {{-- Tour Name --}}
                             <td style="position: sticky; left: 0; z-index: 5; background: #1f2937; padding: 0.5rem; font-size: 0.8rem; font-weight: 500; color: #d1d5db; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" title="{{ $tourData['title'] }}">
                                 {{ Str::limit($tourData['title'], 25) }}
                             </td>
-                            {{-- Date Cells --}}
-                            @foreach($gridDates as $date)
-                                <td style="padding: 0.25rem; border-bottom: 1px solid #374151; vertical-align: top; min-height: 2rem; transition: background 0.15s;
+                            {{-- Date Cells (empty, used for background + drop targets) --}}
+                            @foreach($gridDates as $dateIdx => $date)
+                                <td style="padding: 0; border-bottom: 1px solid #374151; height: {{ max(count($tourData['bars'] ?? []), 1) * 2.2 }}rem; position: relative;
                                     {{ $date['isToday'] ? 'background: rgba(79, 70, 229, 0.1);' : ($date['isWeekend'] ? 'background: #1f2937;' : 'background: #111827;') }}"
                                     x-on:dragover.prevent="onDragOver($event)"
                                     x-on:dragleave="onDragLeave($event)"
                                     x-on:drop.prevent="onDrop($event, '{{ $date['date'] }}')"
-                                    data-grid-date="{{ $date['date'] }}">
-                                    @if(!empty($tourData['bookings'][$date['date']]))
-                                        @foreach($tourData['bookings'][$date['date']] as $booking)
-                                            <div wire:click="handleEventClick({{ $booking['id'] }})"
+                                    data-grid-date="{{ $date['date'] }}"
+                                    data-col-index="{{ $dateIdx }}">
+                                    {{-- Render bars that START on this column --}}
+                                    @foreach(($tourData['bars'] ?? []) as $barIdx => $bar)
+                                        @if($bar['startCol'] === $dateIdx)
+                                            <div wire:click="handleEventClick({{ $bar['id'] }})"
                                                  draggable="true"
-                                                 x-on:dragstart="onDragStart($event, {{ $booking['id'] }}, '{{ $booking['customerName'] }}')"
+                                                 x-on:dragstart="onDragStart($event, {{ $bar['id'] }}, '{{ addslashes($bar['customerName']) }}')"
                                                  x-on:dragend="onDragEnd($event)"
-                                                 style="padding: 0.25rem 0.375rem; margin-bottom: 0.25rem; border-radius: 0.25rem; font-size: 0.7rem; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity 0.15s;
-                                                 @if($booking['status'] === 'confirmed') background: #22c55e; color: #fff;
-                                                 @elseif($booking['status'] === 'pending_payment') background: #f97316; color: #fff;
-                                                 @elseif($booking['status'] === 'in_progress') background: #3b82f6; color: #fff;
-                                                 @elseif($booking['status'] === 'completed') background: #10b981; color: #fff;
-                                                 @elseif($booking['status'] === 'cancelled' || $booking['status'] === 'declined') background: #ef4444; color: #fff;
-                                                 @else background: #6b7280; color: #fff;
-                                                 @endif"
-                                                 title="{{ $booking['customerName'] }} ({{ $booking['guests'] }}p) — drag to reschedule">
-                                                {{ Str::limit($booking['customerName'], 10) }} ({{ $booking['guests'] }}p)
+                                                 style="position: absolute; top: {{ $barIdx * 2.2 }}rem; left: 2px; height: 1.8rem; z-index: 2;
+                                                        width: calc({{ $bar['span'] * 100 }}% - 4px);
+                                                        display: flex; align-items: center; padding: 0 0.5rem;
+                                                        border-radius: {{ $bar['clippedLeft'] ? '0' : '0.375rem' }} {{ $bar['clippedRight'] ? '0' : '0.375rem' }} {{ $bar['clippedRight'] ? '0' : '0.375rem' }} {{ $bar['clippedLeft'] ? '0' : '0.375rem' }};
+                                                        font-size: 0.75rem; font-weight: 500; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                                                        @if($bar['status'] === 'confirmed') background: #22c55e; color: #fff;
+                                                        @elseif($bar['status'] === 'pending_payment') background: #f97316; color: #fff;
+                                                        @elseif($bar['status'] === 'in_progress') background: #3b82f6; color: #fff;
+                                                        @elseif($bar['status'] === 'completed') background: #10b981; color: #fff;
+                                                        @elseif($bar['status'] === 'cancelled' || $bar['status'] === 'declined') background: #ef4444; color: #fff;
+                                                        @else background: #6b7280; color: #fff;
+                                                        @endif
+                                                        box-shadow: 0 1px 3px rgba(0,0,0,0.3);"
+                                                 title="{{ $bar['customerName'] }} ({{ $bar['guests'] }}p) | {{ $bar['startDate'] }} → {{ $bar['endDate'] }} | {{ ucfirst(str_replace('_', ' ', $bar['status'])) }}">
+                                                {{ $bar['customerName'] }} ({{ $bar['guests'] }}p)
                                             </div>
-                                        @endforeach
-                                    @endif
+                                        @endif
+                                    @endforeach
                                 </td>
                             @endforeach
                         </tr>

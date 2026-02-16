@@ -81,20 +81,26 @@ class BookingCalendar extends Component
 
     public function loadGridData(): void
     {
-        // Generate date columns
+        // Generate date columns with index lookup
         $this->gridDates = [];
+        $dateIndex = []; // date string => column index
         $period = CarbonPeriod::create($this->gridStartDate, $this->gridEndDate);
         $today = Carbon::today()->format('Y-m-d');
+        $i = 0;
 
         foreach ($period as $date) {
+            $dateStr = $date->format('Y-m-d');
             $this->gridDates[] = [
-                'date' => $date->format('Y-m-d'),
+                'date' => $dateStr,
                 'dayName' => $date->format('D'),
                 'dayNum' => $date->format('j'),
-                'isToday' => $date->format('Y-m-d') === $today,
+                'isToday' => $dateStr === $today,
                 'isWeekend' => $date->isWeekend(),
             ];
+            $dateIndex[$dateStr] = $i++;
         }
+
+        $totalCols = count($this->gridDates);
 
         // FIX #4: Single query instead of N+1 (one query per tour)
         $query = Booking::with(['customer', 'tour'])
@@ -130,31 +136,42 @@ class BookingCalendar extends Component
                 continue;
             }
 
-            $dateBookings = [];
+            // Build booking bars: each bar has startCol, span, and booking info
+            $bars = [];
+            foreach ($tourBookings as $booking) {
+                $bookingStart = $booking->start_date->format('Y-m-d');
+                $bookingEnd = $booking->end_date ? $booking->end_date->format('Y-m-d') : $bookingStart;
 
-            foreach ($this->gridDates as $dateInfo) {
-                $date = $dateInfo['date'];
-                $dateBookings[$date] = [];
+                // Clamp to visible range
+                $visibleStart = max($bookingStart, $this->gridStartDate);
+                $visibleEnd = min($bookingEnd, $this->gridEndDate);
 
-                foreach ($tourBookings as $booking) {
-                    $bookingStart = $booking->start_date->format('Y-m-d');
-                    $bookingEnd = $booking->end_date ? $booking->end_date->format('Y-m-d') : $bookingStart;
-
-                    if ($date >= $bookingStart && $date <= $bookingEnd) {
-                        $dateBookings[$date][] = [
-                            'id' => $booking->id,
-                            'reference' => $booking->reference ?? '',
-                            'customerName' => $booking->customer?->name ?? 'Unknown',
-                            'guests' => $booking->guests_count ?? 0,
-                            'status' => $booking->status ?? 'pending',
-                        ];
-                    }
+                if (!isset($dateIndex[$visibleStart])) {
+                    continue;
                 }
+
+                $startCol = $dateIndex[$visibleStart];
+                $endCol = isset($dateIndex[$visibleEnd]) ? $dateIndex[$visibleEnd] : ($totalCols - 1);
+                $span = $endCol - $startCol + 1;
+
+                $bars[] = [
+                    'id' => $booking->id,
+                    'reference' => $booking->reference ?? '',
+                    'customerName' => $booking->customer?->name ?? 'Unknown',
+                    'guests' => $booking->guests_count ?? 0,
+                    'status' => $booking->status ?? 'pending',
+                    'startCol' => $startCol,
+                    'span' => $span,
+                    'startDate' => $bookingStart,
+                    'endDate' => $bookingEnd,
+                    'clippedLeft' => $bookingStart < $this->gridStartDate,
+                    'clippedRight' => $bookingEnd > $this->gridEndDate,
+                ];
             }
 
             $this->gridData[$tourId] = [
                 'title' => $tour->title,
-                'bookings' => $dateBookings,
+                'bars' => $bars,
             ];
         }
 
