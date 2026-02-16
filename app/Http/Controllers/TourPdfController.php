@@ -11,39 +11,33 @@ class TourPdfController extends Controller
 {
     public function download(string $slug)
     {
-        $tour = Tour::where('slug', $slug)
-            ->where('is_active', true)
-            ->with(['itineraryItems' => function($query) {
-                $query->where('type', 'day')
-                    ->orderBy('sort_order')
-                    ->with('children');
-            }])
-            ->firstOrFail();
+        [$tour, $data] = $this->preparePdfData($slug);
 
-        $companySettings = CompanySetting::current();
-
-        $pdf = Pdf::loadView('pdf.tour-itinerary', [
-            'tour' => $tour,
-            'companySettings' => $companySettings,
-        ]);
-
+        $pdf = Pdf::loadView('pdf.tour-itinerary', $data);
         $pdf->setPaper('A4', 'portrait');
-        
-        // Enable compression to reduce file size
         $pdf->setOption('compress', true);
-        $pdf->setOption('dpi', 72);
+        $pdf->setOption('dpi', 96);
 
-        // Sanitize filename
-        $filename = 'itinerary-' . $tour->slug . '.pdf';
-
-        return $pdf->download($filename);
+        return $pdf->download('itinerary-' . $tour->slug . '.pdf');
     }
 
     public function stream(string $slug)
     {
+        [$tour, $data] = $this->preparePdfData($slug);
+
+        $pdf = Pdf::loadView('pdf.tour-itinerary', $data);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('compress', true);
+        $pdf->setOption('dpi', 96);
+
+        return $pdf->stream('itinerary-' . $tour->slug . '.pdf');
+    }
+
+    private function preparePdfData(string $slug): array
+    {
         $tour = Tour::where('slug', $slug)
             ->where('is_active', true)
-            ->with(['itineraryItems' => function($query) {
+            ->with(['translations', 'city', 'itineraryItems' => function ($query) {
                 $query->where('type', 'day')
                     ->orderBy('sort_order')
                     ->with('children');
@@ -52,17 +46,37 @@ class TourPdfController extends Controller
 
         $companySettings = CompanySetting::current();
 
-        $pdf = Pdf::loadView('pdf.tour-itinerary', [
+        // Prefer English translation, fallback to tour's own fields
+        $translation = $tour->translationOrDefault('en');
+
+        $itinerary = $this->resolveJson($translation?->itinerary_json);
+        $highlights = $this->resolveJson($translation?->highlights_json) ?: $this->resolveJson($tour->highlights);
+        $included = $this->resolveJson($translation?->included_json) ?: $this->resolveJson($tour->included_items);
+        $excluded = $this->resolveJson($translation?->excluded_json) ?: $this->resolveJson($tour->excluded_items);
+        $description = $translation?->excerpt ?: $tour->short_description;
+
+        return [$tour, [
             'tour' => $tour,
             'companySettings' => $companySettings,
-        ]);
+            'itinerary' => $itinerary,
+            'highlights' => $highlights,
+            'included' => $included,
+            'excluded' => $excluded,
+            'description' => $description,
+        ]];
+    }
 
-        $pdf->setPaper('A4', 'portrait');
-        
-        // Enable compression to reduce file size
-        $pdf->setOption('compress', true);
-        $pdf->setOption('dpi', 72);
-
-        return $pdf->stream('itinerary-' . $tour->slug . '.pdf');
+    private function resolveJson($value): ?array
+    {
+        if (is_array($value) && count($value) > 0) {
+            return $value;
+        }
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                return $decoded;
+            }
+        }
+        return null;
     }
 }
