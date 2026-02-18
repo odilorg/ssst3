@@ -7,6 +7,12 @@ use App\Services\SupplierRequestService;
 use App\Models\Tour;
 
 // ============================================
+// SEO REDIRECTS: Old site → New site (301)
+// ============================================
+// Must load BEFORE main routes so old URLs get caught first
+require __DIR__ . '/redirects.php';
+
+// ============================================
 // LOCALIZED ROUTES (Phase 1 - Parallel Routes)
 // ============================================
 // Only load when multilang is enabled AND routes phase is active
