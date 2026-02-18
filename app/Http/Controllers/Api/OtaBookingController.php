@@ -106,7 +106,7 @@ class OtaBookingController extends Controller
                 'total_price' => $validated['total_price'] ?? 0,
                 'currency' => $validated['currency'] ?? 'USD',
                 'special_requests' => $validated['special_requests'] ?? null,
-                'booking_type' => $bookingType,
+                'type' => $bookingType,
                 'status' => ($autoConfirm && $tourId) ? 'confirmed' : 'inquiry',
                 'payment_status' => 'paid',
             ]);
