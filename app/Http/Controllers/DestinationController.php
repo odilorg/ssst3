@@ -37,6 +37,8 @@ class DestinationController extends Controller
      */
     public function show(string $slug): View
     {
+        $slug = request()->route('slug', $slug);
+
         $city = City::where('slug', $slug)
             ->where('is_active', true)
             ->with(['monuments', 'translations'])

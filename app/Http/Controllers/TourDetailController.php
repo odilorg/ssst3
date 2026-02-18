@@ -16,6 +16,8 @@ class TourDetailController extends Controller
      */
     public function show(string $slug): View|RedirectResponse
     {
+        $slug = request()->route('slug', $slug);
+
         if (config('multilang.enabled') && config('multilang.phases.routes')) {
             $defaultLocale = config('multilang.default_locale', 'en');
             return redirect("/{$defaultLocale}/tours/{$slug}", 301);

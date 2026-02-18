@@ -20,6 +20,8 @@ class CategoryLandingController extends Controller
      */
     public function show(string $slug): View
     {
+        $slug = request()->route('slug', $slug);
+
         // Find category or 404
         $category = TourCategory::where('slug', $slug)
             ->where('is_active', true)

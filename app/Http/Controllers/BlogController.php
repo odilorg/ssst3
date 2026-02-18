@@ -64,6 +64,11 @@ class BlogController extends Controller
      */
     public function show(string $slug): Response
     {
+        // For localized routes ({locale}/blog/{slug}), the $slug parameter
+        // may receive the locale prefix due to positional injection.
+        // Always use the named route parameter to get the correct slug.
+        $slug = request()->route('slug', $slug);
+
         // Validate slug format
         if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
             abort(404, 'Invalid blog post URL');
@@ -181,6 +186,8 @@ class BlogController extends Controller
      */
     public function relatedTours(string $slug): View
     {
+        $slug = request()->route('slug', $slug);
+
         // Validate slug format
         if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
             abort(404, 'Invalid blog post URL');
@@ -212,6 +219,8 @@ class BlogController extends Controller
      */
     public function tagPage(string $slug): View
     {
+        $slug = request()->route('slug', $slug);
+
         // Validate slug format
         if (!preg_match('/^[a-z0-9-]+$/', $slug)) {
             abort(404, 'Invalid tag URL');
