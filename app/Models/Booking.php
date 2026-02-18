@@ -28,7 +28,15 @@ class Booking extends Model
         'total_price',
         'price_per_person',
         'notes',
+        'internal_notes',
         'special_requests',
+        'cancelled_at',
+        // Assignment fields (set via admin panel)
+        'driver_name',
+        'driver_phone',
+        'guide_name',
+        'guide_phone',
+        'vehicle_info',
         // Passenger details tracking
         'passenger_details_submitted_at',
         'passenger_details_url_token',
@@ -69,6 +77,7 @@ class Booking extends Model
         'deposit_paid_at' => 'datetime',
         'balance_paid_at' => 'datetime',
         'balance_due_date' => 'date',
+        'cancelled_at' => 'datetime',
         'external_platform_data' => 'array',
         'imported_at' => 'datetime',
     ];
@@ -217,7 +226,7 @@ class Booking extends Model
     {
         if ($this->tour && $this->start_date) {
             $duration = max(1, $this->tour->duration_days); // Minimum 1 day
-            $this->end_date = $this->start_date->addDays($duration - 1);
+            $this->end_date = $this->start_date->copy()->addDays($duration - 1);
         }
     }
 
