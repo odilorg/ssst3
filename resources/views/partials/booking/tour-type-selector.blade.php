@@ -143,6 +143,13 @@
                 if (calendarSection) {
                     calendarSection.style.display = (type === 'group') ? 'block' : 'none';
                 }
+
+                // Hide sidebar total block when form has its own inline price summary (avoid duplicate)
+                var sidebarTotal = document.getElementById('sidebar-total-block');
+                var inlinePrice = document.getElementById('price-grand-total');
+                if (sidebarTotal) {
+                    sidebarTotal.style.display = inlinePrice ? 'none' : '';
+                }
             })
             .catch(function(error) {
                 console.error('Error switching tour type:', error);

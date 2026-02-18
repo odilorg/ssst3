@@ -642,7 +642,7 @@
 
               <!-- Total Block (Prominent) - placed after guest count for visibility -->
               @if($tour->shouldShowPrice())
-              <div class="booking-total-block" data-breakdown-visible="true" style="margin-top: 16px;">
+              <div id="sidebar-total-block" class="booking-total-block" data-breakdown-visible="true" style="margin-top: 16px;">
                 <div class="booking-total__row">
                   <span class="booking-total__label">
                     <span class="breakdown-guests" data-guests="{{ $defaultGuestCount }}">{{ $defaultGuestCount }} {{ __('ui.booking.guest_plural') }}</span> ×
@@ -658,7 +658,7 @@
                 </div>
               </div>
               @else
-              <div class="booking-total-block" data-breakdown-visible="true" style="margin-top: 16px;">
+              <div id="sidebar-total-block" class="booking-total-block" data-breakdown-visible="true" style="margin-top: 16px;">
                 <div class="booking-total__row">
                   <span class="booking-total__label">
                     <span class="breakdown-guests" data-guests="2">2 {{ __('ui.booking.guest_plural') }}</span> ×
