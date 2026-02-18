@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TourDepartures\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -46,7 +47,7 @@ class TourDepartureForm
                             ->required()
                             ->helperText('Group departures are shown in calendar, private are on-demand'),
 
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 DatePicker::make('start_date')
                                     ->label('Start Date')
@@ -67,7 +68,13 @@ class TourDepartureForm
                                             }
                                         }
                                     })
-                                    ->helperText('First day of the tour (end date will auto-calculate)'),
+                                    ->helperText('First day of the tour'),
+
+                                TimePicker::make('departure_time')
+                                    ->label('Departure Time')
+                                    ->seconds(false)
+                                    ->native(false)
+                                    ->helperText('When the tour starts (e.g. 09:00)'),
 
                                 DatePicker::make('end_date')
                                     ->label('End Date')
@@ -75,7 +82,7 @@ class TourDepartureForm
                                     ->native(false)
                                     ->displayFormat('M d, Y')
                                     ->after('start_date')
-                                    ->helperText('Auto-calculated from start date + tour duration'),
+                                    ->helperText('Auto-calculated from tour duration'),
                             ]),
                     ]),
 

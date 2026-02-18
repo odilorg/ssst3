@@ -38,6 +38,12 @@ class TourDeparturesTable
                         $record->start_date->diffInDays($record->end_date) + 1 . ' days'
                     ),
 
+                TextColumn::make('departure_time')
+                    ->label('Time')
+                    ->formatStateUsing(fn ($state) => $state ? substr($state, 0, 5) : '—')
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('end_date')
                     ->label('End Date')
                     ->date('M d, Y')

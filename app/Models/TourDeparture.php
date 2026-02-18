@@ -22,6 +22,7 @@ class TourDeparture extends Model
         'price_per_person',
         'status',
         'departure_type',
+        'departure_time',
         'notes',
     ];
 
@@ -93,7 +94,8 @@ class TourDeparture extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('start_date', '>=', now())
-                     ->orderBy('start_date', 'asc');
+                     ->orderBy('start_date', 'asc')
+                     ->orderByRaw('departure_time IS NULL, departure_time ASC');
     }
 
     /**
@@ -194,7 +196,19 @@ class TourDeparture extends Model
      */
     public function getDateRangeAttribute(): string
     {
-        return $this->start_date->format('M d') . ' - ' . $this->end_date->format('M d, Y');
+        $start = $this->start_date->format('M d');
+        if ($this->departure_time) {
+            $start .= ' at ' . substr($this->departure_time, 0, 5);
+        }
+        return $start . ' - ' . $this->end_date->format('M d, Y');
+    }
+
+    /**
+     * Get formatted departure time (H:i or null)
+     */
+    public function getFormattedTimeAttribute(): ?string
+    {
+        return $this->departure_time ? substr($this->departure_time, 0, 5) : null;
     }
 
     /**

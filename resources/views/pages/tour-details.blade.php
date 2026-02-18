@@ -415,6 +415,7 @@
       'id' => $departure->id,
       'startDate' => $departure->start_date->format('Y-m-d'),
       'endDate' => $departure->end_date->format('Y-m-d'),
+      'departureTime' => $departure->formatted_time,
       'dateRange' => $departure->date_range,
       'bookedPax' => $departure->booked_pax,
       'maxPax' => $departure->max_pax,
@@ -1534,11 +1535,11 @@
   align-items: center !important;
   gap: 10px !important;
   padding: 8px 12px !important;
+  pointer-events: auto !important;
   background: rgba(255, 255, 255, 0.98) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
-  pointer-events: auto !important;
 }
 
 /* WhatsApp button styling */
@@ -2689,6 +2690,17 @@
   }
 }
 
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .checkmark-circle {
   stroke-dasharray: 166;
   stroke-dashoffset: 166;
@@ -3531,8 +3543,8 @@
 .mobile-cta__trust {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
+  gap: 6px;
+  padding: 6px 12px;
   background: rgba(16, 185, 129, 0.08);
   border-radius: 6px;
   margin-left: auto;
@@ -5387,12 +5399,20 @@ document.addEventListener('DOMContentLoaded', function() {
       dayCell.textContent = day;
 
       if (hasDeparture && !isPast && !isTooSoon) {
-        // Available date with departure - MODERN DESIGN
-        const departure = hasDeparture[0];
-        const isSoldOut = departure.statusBadge.color === 'red';
+        // Sort departures: by time ascending, nulls last
+        const sortedDeps = [...hasDeparture].sort((a, b) => {
+          if (!a.departureTime && !b.departureTime) return 0;
+          if (!a.departureTime) return 1;
+          if (!b.departureTime) return -1;
+          return a.departureTime.localeCompare(b.departureTime);
+        });
 
-        if (isSoldOut) {
-          // Sold Out - minimalistic with strikethrough
+        // Filter available (not sold out) departures
+        const availableDeps = sortedDeps.filter(d => d.statusBadge.color !== 'red');
+        const allSoldOut = availableDeps.length === 0;
+
+        if (allSoldOut) {
+          // All departures sold out
           dayCell.style.cssText = `
             padding: 12px 8px;
             min-height: 44px;
@@ -5424,17 +5444,44 @@ document.addEventListener('DOMContentLoaded', function() {
             background: #10b981;
             color: white;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: relative;
           `;
 
+          // Multi-departure badge
+          if (sortedDeps.length > 1) {
+            const badge = document.createElement('span');
+            badge.textContent = sortedDeps.length;
+            badge.style.cssText = `
+              position: absolute;
+              top: 2px;
+              left: 2px;
+              background: #667eea;
+              color: white;
+              font-size: 9px;
+              font-weight: 700;
+              width: 15px;
+              height: 15px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              line-height: 1;
+            `;
+            dayCell.appendChild(badge);
+          }
+
           dayCell.addEventListener('mouseenter', function() {
-            this.style.background = '#059669';
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 4px 6px rgba(16, 185, 129, 0.2)';
+            const anySelected = sortedDeps.some(d => departureIdInput.value === String(d.id));
+            if (!anySelected) {
+              this.style.background = '#059669';
+              this.style.transform = 'translateY(-2px)';
+              this.style.boxShadow = '0 4px 6px rgba(16, 185, 129, 0.2)';
+            }
           });
 
           dayCell.addEventListener('mouseleave', function() {
-            const isSelected = departureIdInput.value === String(departure.id);
-            if (!isSelected) {
+            const anySelected = sortedDeps.some(d => departureIdInput.value === String(d.id));
+            if (!anySelected) {
               this.style.background = '#10b981';
               this.style.transform = 'translateY(0)';
               this.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
@@ -5442,7 +5489,13 @@ document.addEventListener('DOMContentLoaded', function() {
           });
 
           dayCell.addEventListener('click', function() {
-            toggleDeparture(departure, this);
+            if (availableDeps.length === 1) {
+              // Single departure: toggle directly
+              toggleDeparture(availableDeps[0], this);
+            } else {
+              // Multiple departures: show time picker popover
+              showTimePicker(sortedDeps, this);
+            }
           });
         }
       } else if (hasDeparture && !isPast && isTooSoon) {
@@ -5494,6 +5547,106 @@ document.addEventListener('DOMContentLoaded', function() {
       // Check - select the date
       selectDeparture(departure, cellEl);
     }
+  }
+
+  // Show time picker popover for multi-departure days
+  function showTimePicker(departures, cellEl) {
+    // Remove any existing popover
+    const existing = document.getElementById('departure-time-picker');
+    if (existing) existing.remove();
+
+    const popover = document.createElement('div');
+    popover.id = 'departure-time-picker';
+    popover.style.cssText = `
+      position: absolute;
+      z-index: 50;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      padding: 8px;
+      min-width: 200px;
+      max-width: 260px;
+      animation: popoverFadeIn 0.2s ease;
+    `;
+
+    // Position relative to calendar section
+    const calendarRect = document.querySelector('.calendar-grid').getBoundingClientRect();
+    const cellRect = cellEl.getBoundingClientRect();
+    popover.style.left = Math.min(cellRect.left - calendarRect.left, calendarRect.width - 220) + 'px';
+    popover.style.top = (cellRect.bottom - calendarRect.top + 6) + 'px';
+
+    // Header
+    const header = document.createElement('div');
+    header.style.cssText = 'font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px 8px; border-bottom: 1px solid #f3f4f6; margin-bottom: 4px;';
+    header.textContent = departures[0].startDate ? new Date(departures[0].startDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' — Choose time' : 'Choose departure';
+    popover.appendChild(header);
+
+    // Departure options
+    departures.forEach(dep => {
+      const isSoldOut = dep.statusBadge.color === 'red';
+      const isSelected = departureIdInput.value === String(dep.id);
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.disabled = isSoldOut;
+      option.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid ${isSelected ? '#667eea' : '#f3f4f6'};
+        background: ${isSelected ? '#f0f4ff' : isSoldOut ? '#fafafa' : 'white'};
+        border-radius: 8px;
+        cursor: ${isSoldOut ? 'not-allowed' : 'pointer'};
+        margin-bottom: 4px;
+        transition: all 0.15s ease;
+        opacity: ${isSoldOut ? '0.5' : '1'};
+        font-size: 13px;
+      `;
+
+      const timeLabel = dep.departureTime || '—';
+      const spotsText = isSoldOut ? 'Sold out' : dep.spotsRemaining + ' spot' + (dep.spotsRemaining !== 1 ? 's' : '') + ' left';
+      const spotsColor = isSoldOut ? '#ef4444' : dep.spotsRemaining <= 3 ? '#f59e0b' : '#10b981';
+
+      option.innerHTML = `
+        <span style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-weight: 600; color: ${isSoldOut ? '#9ca3af' : '#111827'};">${timeLabel}</span>
+          ${isSelected ? '<span style="color: #667eea; font-size: 11px;">✓</span>' : ''}
+        </span>
+        <span style="font-size: 11px; color: ${spotsColor}; font-weight: 500;">${spotsText}</span>
+      `;
+
+      if (!isSoldOut) {
+        option.addEventListener('mouseenter', () => {
+          if (!isSelected) option.style.borderColor = '#d1d5db';
+        });
+        option.addEventListener('mouseleave', () => {
+          if (!isSelected) option.style.borderColor = '#f3f4f6';
+        });
+        option.addEventListener('click', (e) => {
+          e.stopPropagation();
+          popover.remove();
+          selectDeparture(dep, cellEl);
+        });
+      }
+
+      popover.appendChild(option);
+    });
+
+    // Position popover within calendar grid (relative parent)
+    const calendarGrid = document.querySelector('.calendar-grid');
+    calendarGrid.style.position = 'relative';
+    calendarGrid.appendChild(popover);
+
+    // Close on click outside
+    const closeHandler = (e) => {
+      if (!popover.contains(e.target) && e.target !== cellEl) {
+        popover.remove();
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', closeHandler), 10);
   }
 
   // Unselect departure
@@ -5592,7 +5745,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Show selected departure info with highlight flash
-    selectedText.textContent = departure.dateRange;
+    let displayText = departure.dateRange;
+    if (departure.departureTime) {
+      displayText += ' \u00b7 Departure: ' + departure.departureTime;
+    }
+    selectedText.textContent = displayText;
 
     const badge = departure.statusBadge;
     const badgeColors = {
