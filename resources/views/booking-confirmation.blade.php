@@ -308,7 +308,7 @@
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Start Date</span>
-                        <span class="detail-value">{{ $booking->start_date->format('l, F j, Y') }}</span>
+                        <span class="detail-value">{{ $booking->start_date->format('l, F j, Y') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }}</span>
                     </div>
                     @if($booking->end_date)
                     <div class="detail-row">

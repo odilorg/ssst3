@@ -3,11 +3,11 @@
 
 Dear {{ $booking->customer->name }},
 
-We're excited — your tour **{{ $booking->tour->title }}** begins tomorrow, **{{ $booking->start_date->format('F j, Y') }}**!
+We're excited — your tour **{{ $booking->tour->title }}** begins tomorrow, **{{ $booking->start_date->format('F j, Y') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }}**!
 
 @component('mail::panel')
 **Booking Reference:** {{ $booking->reference }}<br>
-**Tour Date:** {{ $booking->start_date->format('F j, Y') }}<br>
+**Tour Date:** {{ $booking->start_date->format('F j, Y') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }}<br>
 **Guests:** {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'guest' : 'guests' }}
 @if($booking->guide_name)
 <br>**Your Guide:** {{ $booking->guide_name }}{{ $booking->guide_phone ? ' ('.$booking->guide_phone.')' : '' }}

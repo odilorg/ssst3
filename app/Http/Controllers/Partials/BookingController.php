@@ -302,7 +302,7 @@ class BookingController extends Controller
             }
 
             // Refresh to get latest data with relationships
-            $booking->load(['tour', 'customer']);
+            $booking->load(['tour', 'customer', 'departure']);
 
             return response()->json([
                 'success' => true,
@@ -314,6 +314,7 @@ class BookingController extends Controller
                         'title' => $booking->tour->title,
                     ],
                     'start_date' => $booking->start_date->format('Y-m-d'),
+                    'departure_time' => $booking->departure?->formatted_time,
                     'pax_total' => $booking->pax_total,
                     'total_price' => number_format($booking->total_price, 2, '.', ''),
                     'customer' => [
@@ -499,7 +500,7 @@ class BookingController extends Controller
     {
         // Find booking by reference with relationships
         $booking = Booking::where('reference', $reference)
-            ->with(['tour', 'customer'])
+            ->with(['tour', 'customer', 'departure'])
             ->firstOrFail();
 
         return view('booking-confirmation', compact('booking'));

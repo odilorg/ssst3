@@ -3,7 +3,7 @@
 
 Dear {{ $customer->name }},
 
-**This is urgent!** Your tour starts in just **14 days** ({{ $booking->start_date->format('F j, Y') }}), and we still haven't received passenger details for your booking.
+**This is urgent!** Your tour starts in just **14 days** ({{ $booking->start_date->format('F j, Y') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }}), and we still haven't received passenger details for your booking.
 
 **Without this information, we cannot:**
 - ❌ Book your train tickets
@@ -17,7 +17,7 @@ Dear {{ $customer->name }},
 | Detail | Information |
 | :--- | :--- |
 | **Tour** | {{ $tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
+| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }} |
 | **Guests** | {{ $booking->pax_total }} {{ $booking->pax_total === 1 ? 'guest' : 'guests' }} |
 | **Status** | ⚠️ PASSENGER DETAILS MISSING |
 </x-mail::table>

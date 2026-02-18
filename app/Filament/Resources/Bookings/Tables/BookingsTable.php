@@ -40,7 +40,8 @@ class BookingsTable
                 TextColumn::make('start_date')
                     ->label('Дата начала')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->description(fn ($record) => $record->departure?->formatted_time),
                 TextColumn::make('end_date')
                     ->label('Дата окончания')
                     ->date()

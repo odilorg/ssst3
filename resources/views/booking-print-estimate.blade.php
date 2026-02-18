@@ -438,7 +438,7 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Дата начала</div>
-                    <div class="info-value">{{ $record->start_date?->format('d.m.Y') ?? '—' }}</div>
+                    <div class="info-value">{{ $record->start_date?->format('d.m.Y') ?? '—' }}{{ $record->departure?->formatted_time ? ' ' . $record->departure->formatted_time : '' }}</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Дата окончания</div>

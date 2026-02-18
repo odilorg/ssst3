@@ -12,7 +12,7 @@ We hope you're getting excited about your upcoming tour with Jahongir Travel! Yo
 | :--- | :--- |
 | **Reference Number** | {{ $booking->reference }} |
 | **Tour** | {{ $tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
+| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }} |
 @if($booking->end_date && $booking->start_date->ne($booking->end_date))
 | **End Date** | {{ $booking->end_date->format('F j, Y (l)') }} |
 @endif

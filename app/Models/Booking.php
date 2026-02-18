@@ -15,6 +15,7 @@ class Booking extends Model
         'customer_id',
         'tour_id',
         'type',
+        'departure_id',
         'group_departure_id',
         'start_date',
         'end_date',

@@ -97,6 +97,10 @@ class BookingForm
                         DatePicker::make('start_date')
                             ->label('Дата начала')
                             ->required(),
+                        Placeholder::make('departure_time_display')
+                            ->label('Время отправления')
+                            ->content(fn ($record) => $record?->departure?->formatted_time ?? '—')
+                            ->hiddenOn('create'),
                         DatePicker::make('end_date')
                             ->label('Дата окончания')
                             ->disabled(),

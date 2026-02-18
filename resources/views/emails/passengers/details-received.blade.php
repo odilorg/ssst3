@@ -12,7 +12,7 @@ Dear {{ $customer->name }},
 | :--- | :--- |
 | **Reference Number** | {{ $booking->reference }} |
 | **Tour** | {{ $tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
+| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }} |
 | **Passengers** | {{ $booking->passengers->count() }} of {{ $booking->pax_total }} submitted |
 | **Submitted** | {{ $booking->passenger_details_submitted_at->format('F j, Y g:i A') }} |
 </x-mail::table>

@@ -14,7 +14,7 @@ We have successfully received your booking request and our team is now reviewing
 | :--- | :--- |
 | **Reference Number** | {{ $booking->reference }} |
 | **Tour** | {{ $booking->tour->title }} |
-| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }} |
+| **Start Date** | {{ $booking->start_date->format('F j, Y (l)') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }} |
 @if($booking->end_date && $booking->start_date->ne($booking->end_date))
 | **End Date** | {{ $booking->end_date->format('F j, Y (l)') }} |
 | **Duration** | {{ $booking->start_date->diffInDays($booking->end_date) + 1 }} {{ $booking->start_date->diffInDays($booking->end_date) === 0 ? 'day' : 'days' }} |

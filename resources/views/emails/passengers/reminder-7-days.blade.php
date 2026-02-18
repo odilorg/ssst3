@@ -3,7 +3,7 @@
 
 Dear {{ $customer->name }},
 
-**FINAL REMINDER:** Your tour "{{ $tour->title }}" begins in **{{ $booking->daysUntilTour() }} days** on {{ $booking->start_date->format('F j, Y') }}.
+**FINAL REMINDER:** Your tour "{{ $tour->title }}" begins in **{{ $booking->daysUntilTour() }} days** on {{ $booking->start_date->format('F j, Y') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }}.
 
 We **STILL HAVE NOT RECEIVED** passenger details for your booking {{ $booking->reference }}.
 
@@ -30,7 +30,7 @@ SUBMIT NOW - LAST CHANCE
 | :--- | :--- |
 | **Reference** | {{ $booking->reference }} |
 | **Tour** | {{ $tour->title }} |
-| **Starts** | {{ $booking->start_date->format('F j, Y (l)') }} - **{{ $booking->daysUntilTour() }} days away** |
+| **Starts** | {{ $booking->start_date->format('F j, Y (l)') }}{{ $booking->departure?->formatted_time ? ' at ' . $booking->departure->formatted_time : '' }} - **{{ $booking->daysUntilTour() }} days away** |
 | **Guests** | {{ $booking->pax_total }} |
 | **Status** | 🚨 CRITICAL - DETAILS OVERDUE |
 </x-mail::table>
