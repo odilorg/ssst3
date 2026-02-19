@@ -591,38 +591,53 @@ class TourForm
                 Section::make('Настройки бронирования')
                     ->description('Параметры бронирования и отмены')
                     ->schema([
-                        TextInput::make('min_booking_hours')
-                            ->label('Минимум дней до бронирования')
-                            ->numeric()
-                            ->required()
-                            ->default(1)
-                            ->suffix('дней')
-                            ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
-                            ->dehydrateStateUsing(fn ($state) => $state * 24)
-                            ->helperText('За сколько дней нужно бронировать тур'),
+                        Fieldset::make('Сроки бронирования')
+                            ->schema([
+                                TextInput::make('min_booking_hours')
+                                    ->label('Минимум дней до бронирования')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(1)
+                                    ->suffix('дней')
+                                    ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                                    ->dehydrateStateUsing(fn ($state) => $state * 24)
+                                    ->helperText('За сколько дней нужно бронировать тур'),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
 
-                        Toggle::make('has_hotel_pickup')
-                            ->label('Есть трансфер из отеля')
-                            ->default(true),
+                        Fieldset::make('Трансфер из отеля')
+                            ->schema([
+                                Toggle::make('has_hotel_pickup')
+                                    ->label('Есть трансфер из отеля')
+                                    ->default(true),
 
-                        TextInput::make('pickup_radius_km')
-                            ->label('Радиус трансфера (км)')
-                            ->numeric()
-                            ->default(5)
-                            ->helperText('В пределах какого радиуса доступен трансфер'),
+                                TextInput::make('pickup_radius_km')
+                                    ->label('Радиус трансфера (км)')
+                                    ->numeric()
+                                    ->default(5)
+                                    ->helperText('В пределах какого радиуса доступен трансфер'),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
 
-                        TextInput::make('cancellation_hours')
-                            ->label('Часов до отмены')
-                            ->numeric()
-                            ->required()
-                            ->default(24)
-                            ->helperText('За сколько часов можно отменить бесплатно'),
+                        Fieldset::make('Политика отмены')
+                            ->schema([
+                                TextInput::make('cancellation_hours')
+                                    ->label('Часов до отмены')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(24)
+                                    ->helperText('За сколько часов можно отменить бесплатно'),
 
-                        Textarea::make('cancellation_policy')
-                            ->label('Политика отмены')
-                            ->rows(4)
-                            ->columnSpanFull()
-                            ->helperText('Полное описание политики отмены'),
+                                Textarea::make('cancellation_policy')
+                                    ->label('Политика отмены')
+                                    ->rows(4)
+                                    ->columnSpanFull()
+                                    ->helperText('Полное описание политики отмены'),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->collapsible(),
@@ -1012,74 +1027,93 @@ class TourForm
                 ->icon('heroicon-o-map-pin')
                 ->completedIcon('heroicon-s-check-circle')
                 ->schema([
-                    Textarea::make('meeting_point_address')
-                        ->label('Адрес места встречи')
-                        ->rows(2)
-                        ->placeholder('Площадь Регистан, возле главного входа')
+                    Fieldset::make('Место встречи')
+                        ->schema([
+                            Textarea::make('meeting_point_address')
+                                ->label('Адрес места встречи')
+                                ->rows(2)
+                                ->placeholder('Площадь Регистан, возле главного входа')
+                                ->columnSpanFull(),
+
+                            Textarea::make('meeting_instructions')
+                                ->label('Инструкции для встречи')
+                                ->rows(3)
+                                ->placeholder('Наш гид будет ждать вас с табличкой...')
+                                ->columnSpanFull(),
+
+                            TextInput::make('meeting_lat')
+                                ->label('Широта')
+                                ->numeric()
+                                ->helperText('Например: 39.6542'),
+
+                            TextInput::make('meeting_lng')
+                                ->label('Долгота')
+                                ->numeric()
+                                ->helperText('Например: 66.9597'),
+                        ])
+                        ->columns(2)
                         ->columnSpanFull(),
 
-                    Textarea::make('meeting_instructions')
-                        ->label('Инструкции для встречи')
-                        ->rows(3)
-                        ->placeholder('Наш гид будет ждать вас с табличкой...')
+                    Fieldset::make('Сроки бронирования')
+                        ->schema([
+                            TextInput::make('minimum_advance_days')
+                                ->label('Минимум дней до бронирования')
+                                ->numeric()
+                                ->required()
+                                ->default(30)
+                                ->minValue(1)
+                                ->maxValue(365)
+                                ->suffix('дней')
+                                ->helperText('За сколько дней нужно бронировать тур (используется в календаре на сайте)'),
+
+                            TextInput::make('min_booking_hours')
+                                ->label('Минимум часов до бронирования')
+                                ->numeric()
+                                ->required()
+                                ->default(24)
+                                ->suffix('часов')
+                                ->helperText('Минимальное время до начала тура для бронирования'),
+                        ])
+                        ->columns(2)
                         ->columnSpanFull(),
 
-                    TextInput::make('meeting_lat')
-                        ->label('Широта')
-                        ->numeric()
-                        ->helperText('Например: 39.6542'),
+                    Fieldset::make('Трансфер из отеля')
+                        ->schema([
+                            Toggle::make('has_hotel_pickup')
+                                ->label('Есть трансфер из отеля')
+                                ->default(true)
+                                ->inline(false),
 
-                    TextInput::make('meeting_lng')
-                        ->label('Долгота')
-                        ->numeric()
-                        ->helperText('Например: 66.9597'),
-
-                    TextInput::make('minimum_advance_days')
-                        ->label('Минимум дней до бронирования')
-                        ->numeric()
-                        ->required()
-                        ->default(30)
-                        ->minValue(1)
-                        ->maxValue(365)
-                        ->suffix('дней')
-                        ->helperText('За сколько дней нужно бронировать тур (используется в календаре на сайте)')
+                            TextInput::make('pickup_radius_km')
+                                ->label('Радиус трансфера (км)')
+                                ->numeric()
+                                ->default(5)
+                                ->helperText('В пределах какого радиуса доступен трансфер'),
+                        ])
+                        ->columns(2)
                         ->columnSpanFull(),
 
-                    TextInput::make('min_booking_hours')
-                        ->label('Минимум часов до бронирования')
-                        ->numeric()
-                        ->required()
-                        ->default(24)
-                        ->suffix('часов')
-                        ->helperText('Минимальное время до начала тура для бронирования'),
+                    Fieldset::make('Политика отмены')
+                        ->schema([
+                            TextInput::make('cancellation_hours')
+                                ->label('Бесплатная отмена за (дней)')
+                                ->numeric()
+                                ->required()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(365)
+                                ->helperText('За сколько дней до тура можно отменить бесплатно')
+                                ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
+                                ->dehydrateStateUsing(fn ($state) => $state ? $state * 24 : 24),
 
-                    Toggle::make('has_hotel_pickup')
-                        ->label('Есть трансфер из отеля')
-                        ->default(true)
-                        ->inline(false),
-
-                    TextInput::make('pickup_radius_km')
-                        ->label('Радиус трансфера (км)')
-                        ->numeric()
-                        ->default(5)
-                        ->helperText('В пределах какого радиуса доступен трансфер'),
-
-                    TextInput::make('cancellation_hours')
-                        ->label('Бесплатная отмена за (дней)')
-                        ->numeric()
-                        ->required()
-                        ->default(1)
-                        ->minValue(1)
-                        ->maxValue(365)
-                        ->helperText('За сколько дней до тура можно отменить бесплатно')
-                        ->formatStateUsing(fn ($state) => $state ? round($state / 24) : 1)
-                        ->dehydrateStateUsing(fn ($state) => $state ? $state * 24 : 24),
-
-                    Textarea::make('cancellation_policy')
-                        ->label('Политика отмены')
-                        ->rows(4)
-                        ->placeholder('Полное описание политики отмены бронирования...')
-                        ->helperText('Детальные условия отмены')
+                            Textarea::make('cancellation_policy')
+                                ->label('Политика отмены')
+                                ->rows(4)
+                                ->placeholder('Полное описание политики отмены бронирования...')
+                                ->helperText('Детальные условия отмены')
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2)
                         ->columnSpanFull(),
                 ])
                 ->columns(2),
