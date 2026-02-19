@@ -457,9 +457,12 @@
             <div class="booking-card__header">
               @if($tour->shouldShowPrice())
                 @php
-                  // Get tier pricing for default 2 guests, or fallback to base price
-                  $defaultGuestCount = 2;
-                  $defaultTier = $tour->getPricingTierForGuests($defaultGuestCount);
+                  // Get tier pricing for default guest count, or fallback to base price
+                  $defaultBookingType = $tour->getDefaultBookingType();
+                  $defaultGuestCount = $defaultBookingType === 'group'
+                      ? ($tour->group_tour_min_participants ?? $tour->min_guests ?? 2)
+                      : ($tour->private_min_guests ?? 2);
+                  $defaultTier = $tour->getPricingTierForGuests($defaultGuestCount, $defaultBookingType);
 
                   if ($defaultTier) {
                     $displayPricePerPerson = $defaultTier->price_per_person;
@@ -627,7 +630,7 @@
                     'tour' => $tour,
                     'departures' => $tour->getAvailableGroupDepartures(),
                     'selectedDepartureId' => null,
-                    'guestsCount' => 1,
+                    'guestsCount' => $tour->group_tour_min_participants ?? $tour->min_guests ?? 1,
                     'priceData' => null
                   ])
                 @else
