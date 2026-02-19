@@ -120,6 +120,11 @@ class BookingPreviewController extends Controller
                 // Get available departures
                 $departures = $tour->getAvailableGroupDepartures();
 
+                // Validate guest count within group-specific range
+                $groupMin = $tour->group_tour_min_participants ?? $tour->min_guests ?? 1;
+                $groupMax = $tour->group_tour_max_participants ?? $tour->max_guests ?? 15;
+                $guestsCount = max($groupMin, min($guestsCount, $groupMax));
+
                 // Calculate pricing: group tiers first, departure price as fallback
                 $priceData = null;
                 $seatsLeft = null;

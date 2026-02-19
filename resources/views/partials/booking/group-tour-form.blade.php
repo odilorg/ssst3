@@ -49,7 +49,8 @@
                 type="button"
                 class="guest-decrease-btn"
                 data-action="decrease"
-                disabled
+                data-min="{{ $minGuests }}"
+                {{ $minGuests <= 1 ? 'disabled' : '' }}
                 style="width: 40px; height: 40px; border-radius: 8px; border: 1px solid #D1D5DB; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"
                 onmouseover="this.style.background='#F3F4F6'; this.style.borderColor='#9CA3AF';"
                 onmouseout="this.style.background='white'; this.style.borderColor='#D1D5DB';"
