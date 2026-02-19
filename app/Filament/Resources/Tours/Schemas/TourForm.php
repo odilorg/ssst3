@@ -14,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -803,83 +804,83 @@ class TourForm
                         ->maxLength(3)
                         ->helperText('Код валюты (USD, EUR, etc.)'),
 
-                    // Private tour guest limits + pricing tiers
-                    TextInput::make('private_min_guests')
-                        ->label('Мин. гостей (частный)')
-                        ->numeric()
-                        ->default(1)
-                        ->minValue(1)
-                        ->required(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
-                        ->helperText('Минимум гостей для частного тура')
-                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid'])),
+                    // Private tour section
+                    Fieldset::make('Частные туры')
+                        ->schema([
+                            TextInput::make('private_min_guests')
+                                ->label('Мин. гостей')
+                                ->numeric()
+                                ->default(1)
+                                ->minValue(1)
+                                ->required(),
 
-                    TextInput::make('private_max_guests')
-                        ->label('Макс. гостей (частный)')
-                        ->numeric()
-                        ->default(6)
-                        ->minValue(1)
-                        ->required(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
-                        ->helperText('Максимум гостей для частного тура')
-                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid'])),
+                            TextInput::make('private_max_guests')
+                                ->label('Макс. гостей')
+                                ->numeric()
+                                ->default(6)
+                                ->minValue(1)
+                                ->required(),
 
-                    Repeater::make('privatePricingTiers')
-                        ->relationship('privatePricingTiers')
-                        ->label('Ценовые уровни (Частные туры)')
-                        ->schema(static::getPricingTierSchema())
+                            Repeater::make('privatePricingTiers')
+                                ->relationship('privatePricingTiers')
+                                ->label('Ценовые уровни')
+                                ->schema(static::getPricingTierSchema())
+                                ->columns(2)
+                                ->collapsible()
+                                ->collapsed(false)
+                                ->itemLabel(fn (array $state): ?string =>
+                                    $state['label'] ??
+                                    (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
+                                )
+                                ->addActionLabel('Добавить ценовой уровень')
+                                ->reorderable('sort_order')
+                                ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                                    $data['booking_type'] = 'private';
+                                    return $data;
+                                })
+                                ->columnSpanFull(),
+                        ])
                         ->columns(2)
-                        ->collapsible()
-                        ->collapsed(false)
-                        ->itemLabel(fn (array $state): ?string =>
-                            $state['label'] ??
-                            (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
-                        )
-                        ->addActionLabel('Добавить ценовой уровень')
-                        ->reorderable('sort_order')
-                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
-                            $data['booking_type'] = 'private';
-                            return $data;
-                        })
-                        ->helperText('Цены для частных туров по количеству гостей.')
                         ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
                         ->columnSpanFull(),
 
-                    // Group tour guest limits + pricing tiers
-                    TextInput::make('group_tour_min_participants')
-                        ->label('Мин. гостей (групповой)')
-                        ->numeric()
-                        ->default(1)
-                        ->minValue(1)
-                        ->required(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
-                        ->helperText('Минимум гостей для группового тура')
-                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid'])),
+                    // Group tour section
+                    Fieldset::make('Групповые туры')
+                        ->schema([
+                            TextInput::make('group_tour_min_participants')
+                                ->label('Мин. гостей')
+                                ->numeric()
+                                ->default(1)
+                                ->minValue(1)
+                                ->required(),
 
-                    TextInput::make('group_tour_max_participants')
-                        ->label('Макс. гостей (групповой)')
-                        ->numeric()
-                        ->default(15)
-                        ->minValue(1)
-                        ->required(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
-                        ->helperText('Максимум гостей для группового тура')
-                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid'])),
+                            TextInput::make('group_tour_max_participants')
+                                ->label('Макс. гостей')
+                                ->numeric()
+                                ->default(15)
+                                ->minValue(1)
+                                ->required(),
 
-                    Repeater::make('groupPricingTiers')
-                        ->relationship('groupPricingTiers')
-                        ->label('Ценовые уровни (Групповые туры)')
-                        ->schema(static::getPricingTierSchema())
+                            Repeater::make('groupPricingTiers')
+                                ->relationship('groupPricingTiers')
+                                ->label('Ценовые уровни')
+                                ->schema(static::getPricingTierSchema())
+                                ->columns(2)
+                                ->collapsible()
+                                ->collapsed(false)
+                                ->itemLabel(fn (array $state): ?string =>
+                                    $state['label'] ??
+                                    (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
+                                )
+                                ->addActionLabel('Добавить ценовой уровень')
+                                ->reorderable('sort_order')
+                                ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                                    $data['booking_type'] = 'group';
+                                    return $data;
+                                })
+                                ->columnSpanFull(),
+                        ])
                         ->columns(2)
-                        ->collapsible()
-                        ->collapsed(false)
-                        ->itemLabel(fn (array $state): ?string =>
-                            $state['label'] ??
-                            (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
-                        )
-                        ->addActionLabel('Добавить ценовой уровень')
-                        ->reorderable('sort_order')
-                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
-                            $data['booking_type'] = 'group';
-                            return $data;
-                        })
-                        ->helperText('Цены для групповых туров по количеству гостей. Используются вместо цены на отправлении.')
                         ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
                         ->columnSpanFull(),
                 ])
