@@ -135,7 +135,17 @@
                 return response.text();
             })
             .then(function(html) {
-                document.getElementById('booking-form-container').innerHTML = html;
+                var container = document.getElementById('booking-form-container');
+                container.innerHTML = html;
+
+                // innerHTML does NOT execute <script> tags - manually run them
+                var scripts = container.querySelectorAll('script');
+                scripts.forEach(function(oldScript) {
+                    var newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+
                 document.getElementById('tour-type-loading').style.display = 'none';
 
                 // Toggle departure calendar visibility based on tour type
