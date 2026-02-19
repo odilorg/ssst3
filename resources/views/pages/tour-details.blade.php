@@ -393,14 +393,29 @@
 {!! json_encode([
   'id' => $tour->slug,
   'name' => html_entity_decode($tour->title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-  'pricePerPerson' => floatval($tour->price_per_person ?? 0),
+  'pricePerPerson' => floatval($displayPricePerPerson ?? $tour->price_per_person ?? 0),
   'showPrice' => boolval($tour->show_price ?? true),
   'currency' => $tour->currency ?? 'USD',
   'maxGuests' => intval($tour->max_guests ?? 15),
   'minGuests' => intval($tour->min_guests ?? 1),
+  'privateMinGuests' => intval($tour->private_min_guests ?? 1),
+  'privateMaxGuests' => intval($tour->private_max_guests ?? 10),
+  'groupMinGuests' => intval($tour->group_tour_min_participants ?? $tour->min_guests ?? 1),
+  'groupMaxGuests' => intval($tour->group_tour_max_participants ?? $tour->max_guests ?? 15),
   'duration' => $tour->duration_text ?? ($tour->duration_days . ' days'),
   'minimumAdvanceDays' => intval($tour->minimum_advance_days ?? 45),
-  'pricingTiers' => $tour->pricingTiers->map(function($tier) {
+  'defaultBookingType' => $tour->getDefaultBookingType(),
+  'privatePricingTiers' => $tour->privatePricingTiers->map(function($tier) {
+    return [
+      'id' => $tier->id,
+      'minGuests' => $tier->min_guests,
+      'maxGuests' => $tier->max_guests,
+      'pricePerPerson' => floatval($tier->price_per_person),
+      'priceTotal' => floatval($tier->price_total),
+      'label' => $tier->display_label,
+    ];
+  }),
+  'groupPricingTiers' => $tour->groupPricingTiers->map(function($tier) {
     return [
       'id' => $tier->id,
       'minGuests' => $tier->min_guests,
@@ -474,7 +489,7 @@
                 @endphp
                 <div class="booking-price" id="sticky-price-box">
                   <span class="price-label" id="sticky-price-label">{{ __('ui.booking.from_price') }}</span>
-                  <span class="price-amount" id="sticky-price-amount" data-base-price="{{ $tour->price_per_person }}">${{ number_format($displayPricePerPerson, 2) }}</span>
+                  <span class="price-amount" id="sticky-price-amount" data-base-price="{{ $displayPricePerPerson }}">${{ number_format($displayPricePerPerson, 2) }}</span>
                   <span class="price-unit" id="sticky-price-unit">{{ __('ui.booking.per_person_short') }}</span>
                 </div>
                 <!-- Price Includes Micro-line -->
@@ -1169,12 +1184,16 @@
     <div class="mobile-cta__container">
       @if($tour->shouldShowPrice())
         @php
-          // Use same tier pricing calculation as desktop
-          $mobileTier = $tour->getPricingTierForGuests(2);
+          // Use same tier pricing calculation as desktop (booking-type-aware)
+          $mobileBookingType = $tour->getDefaultBookingType();
+          $mobileGuestCount = $mobileBookingType === 'group'
+              ? ($tour->group_tour_min_participants ?? $tour->min_guests ?? 2)
+              : ($tour->private_min_guests ?? 2);
+          $mobileTier = $tour->getPricingTierForGuests($mobileGuestCount, $mobileBookingType);
           $mobilePricePerPerson = $mobileTier ? $mobileTier->price_per_person : $tour->price_per_person;
         @endphp
         <div class="mobile-cta__price">
-          <span class="mobile-cta__amount" data-mobile-price="{{ $tour->price_per_person }}">${{ number_format($mobilePricePerPerson, 2) }}</span>
+          <span class="mobile-cta__amount" data-mobile-price="{{ $mobilePricePerPerson }}">${{ number_format($mobilePricePerPerson, 2) }}</span>
           <span class="mobile-cta__unit">{{ __('ui.booking.per_person') }}</span>
         </div>
       @else
