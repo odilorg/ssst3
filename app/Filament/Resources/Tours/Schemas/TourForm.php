@@ -211,7 +211,7 @@ class TourForm
                     ])
                     ->columns(4),
 
-                Section::make('Цены для частных туров (устарело)')
+                Section::make('Легаси: Частные туры (устарело)')
                     ->description('Используйте "Ценовые уровни" в мастере для настройки цен. Эти поля — запасной вариант.')
                     ->schema([
                         TextInput::make('private_base_price')
@@ -219,7 +219,6 @@ class TourForm
                             ->numeric()
                             ->minValue(0)
                             ->prefix('$')
-                            ->disabled(fn (callable $get) => !$get('supports_private'))
                             ->helperText('Запасной вариант: используется, если ценовые уровни не настроены'),
 
                         TextInput::make('currency')
@@ -228,30 +227,16 @@ class TourForm
                             ->default('USD')
                             ->maxLength(3),
 
-                        TextInput::make('private_min_guests')
-                            ->label('Минимум гостей')
-                            ->numeric()
-                            ->default(1)
-                            ->minValue(1)
-                            ->required(fn (callable $get) => $get('supports_private'))
-                            ->disabled(fn (callable $get) => !$get('supports_private')),
-
-                        TextInput::make('private_max_guests')
-                            ->label('Максимум гостей')
-                            ->numeric()
-                            ->default(15)
-                            ->minValue(1)
-                            ->required(fn (callable $get) => $get('supports_private'))
-                            ->disabled(fn (callable $get) => !$get('supports_private')),
-
                         Toggle::make('show_price')
                             ->label('Показывать цену на сайте')
                             ->helperText('Если выключено, вместо цены будет "Price on request"')
                             ->default(true)
                             ->inline(false)
-                            ->columnSpan(4),
+                            ->columnSpan(2),
                     ])
                     ->columns(4)
+                    ->collapsible()
+                    ->collapsed()
                     ->visible(fn (callable $get) => $get('supports_private')),
 
                 Section::make('Легаси: Старые поля цен')
@@ -818,23 +803,25 @@ class TourForm
                         ->maxLength(3)
                         ->helperText('Код валюты (USD, EUR, etc.)'),
 
-                    TextInput::make('min_guests')
-                        ->label('Минимум гостей')
+                    // Private tour guest limits + pricing tiers
+                    TextInput::make('private_min_guests')
+                        ->label('Мин. гостей (частный)')
                         ->numeric()
-                        ->required()
                         ->default(1)
                         ->minValue(1)
-                        ->helperText('Минимальное количество для проведения тура'),
+                        ->required(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
+                        ->helperText('Минимум гостей для частного тура')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid'])),
 
-                    TextInput::make('max_guests')
-                        ->label('Максимум гостей')
+                    TextInput::make('private_max_guests')
+                        ->label('Макс. гостей (частный)')
                         ->numeric()
-                        ->required()
+                        ->default(6)
                         ->minValue(1)
-                        ->default(15)
-                        ->helperText('Максимальный размер группы'),
+                        ->required(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
+                        ->helperText('Максимум гостей для частного тура')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid'])),
 
-                    // Private Pricing Tiers
                     Repeater::make('privatePricingTiers')
                         ->relationship('privatePricingTiers')
                         ->label('Ценовые уровни (Частные туры)')
@@ -856,7 +843,25 @@ class TourForm
                         ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
                         ->columnSpanFull(),
 
-                    // Group Pricing Tiers
+                    // Group tour guest limits + pricing tiers
+                    TextInput::make('group_tour_min_participants')
+                        ->label('Мин. гостей (групповой)')
+                        ->numeric()
+                        ->default(1)
+                        ->minValue(1)
+                        ->required(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
+                        ->helperText('Минимум гостей для группового тура')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid'])),
+
+                    TextInput::make('group_tour_max_participants')
+                        ->label('Макс. гостей (групповой)')
+                        ->numeric()
+                        ->default(15)
+                        ->minValue(1)
+                        ->required(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
+                        ->helperText('Максимум гостей для группового тура')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid'])),
+
                     Repeater::make('groupPricingTiers')
                         ->relationship('groupPricingTiers')
                         ->label('Ценовые уровни (Групповые туры)')

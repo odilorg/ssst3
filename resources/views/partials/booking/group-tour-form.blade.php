@@ -35,7 +35,8 @@
 
     {{-- Guest Count Selector (always visible) --}}
     @php
-        $maxGuests = $tour->max_guests ?? 15;
+        $minGuests = $tour->group_tour_min_participants ?? $tour->min_guests ?? 1;
+        $maxGuests = $tour->group_tour_max_participants ?? $tour->max_guests ?? 15;
     @endphp
 
     <div style="margin-bottom: 16px;">
@@ -62,8 +63,8 @@
                 type="number"
                 id="guests_count"
                 name="number_of_guests"
-                value="1"
-                min="1"
+                value="{{ $minGuests }}"
+                min="{{ $minGuests }}"
                 max="{{ $maxGuests }}"
                 readonly
                 style="width: 60px; height: 40px; text-align: center; font-size: 18px; font-weight: 600; color: #1F2937; border: 1px solid #D1D5DB; border-radius: 8px; background: #F9FAFB;"
@@ -84,7 +85,7 @@
             </button>
 
             <span style="font-size: 13px; color: #6B7280; margin-left: 4px;">
-                (1-{{ $maxGuests }} {{ __('ui.booking.seats') ?? 'seats' }})
+                ({{ $minGuests }}-{{ $maxGuests }} {{ __('ui.booking.seats') ?? 'seats' }})
             </span>
         </div>
     </div>
@@ -131,8 +132,8 @@
             pricing_tiers: [],
             @endif
             base_price: {{ $tour->price_per_person ?? 0 }},
-            min_guests: 1,
-            max_guests: {{ $tour->max_guests ?? 15 }}
+            min_guests: {{ $minGuests }},
+            max_guests: {{ $maxGuests }}
         };
 
         console.log('[Performance] Group pricing data embedded for instant calculations');
