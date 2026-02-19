@@ -12,6 +12,7 @@ class TourPricingTier extends Model
 
     protected $fillable = [
         'tour_id',
+        'booking_type',
         'min_guests',
         'max_guests',
         'price_total',
@@ -69,6 +70,14 @@ class TourPricingTier extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope to filter by booking type (private or group)
+     */
+    public function scopeForBookingType($query, string $bookingType)
+    {
+        return $query->where('booking_type', $bookingType);
     }
 
     /**

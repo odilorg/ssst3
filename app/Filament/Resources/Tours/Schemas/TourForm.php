@@ -211,17 +211,16 @@ class TourForm
                     ])
                     ->columns(4),
 
-                Section::make('Цены для частных туров')
-                    ->description('Настройки цен для частных туров (когда supports_private включено)')
+                Section::make('Цены для частных туров (устарело)')
+                    ->description('Используйте "Ценовые уровни" в мастере для настройки цен. Эти поля — запасной вариант.')
                     ->schema([
                         TextInput::make('private_base_price')
-                            ->label('Базовая цена за человека')
+                            ->label('Базовая цена за человека (устарело)')
                             ->numeric()
                             ->minValue(0)
                             ->prefix('$')
-                            ->required(fn (callable $get) => $get('supports_private'))
                             ->disabled(fn (callable $get) => !$get('supports_private'))
-                            ->helperText('Цена за одного гостя в частном туре'),
+                            ->helperText('Запасной вариант: используется, если ценовые уровни не настроены'),
 
                         TextInput::make('currency')
                             ->label('Валюта')
@@ -835,79 +834,48 @@ class TourForm
                         ->default(15)
                         ->helperText('Максимальный размер группы'),
 
-                    // Tiered Pricing Section
-                    Repeater::make('pricingTiers')
-                        ->relationship('pricingTiers')
-                        ->label('Ценовые уровни (Групповые цены)')
-                        ->schema([
-                            TextInput::make('label')
-                                ->label('Название уровня')
-                                ->placeholder('например: Индивидуальный тур, Пара, Группа')
-                                ->maxLength(100)
-                                ->columnSpanFull(),
-
-                            TextInput::make('min_guests')
-                                ->label('Мин. гостей')
-                                ->numeric()
-                                ->required()
-                                ->default(1)
-                                ->minValue(1)
-                                ->maxValue(100),
-
-                            TextInput::make('max_guests')
-                                ->label('Макс. гостей')
-                                ->numeric()
-                                ->required()
-                                ->default(1)
-                                ->minValue(1)
-                                ->maxValue(100),
-
-                            TextInput::make('price_total')
-                                ->label('Общая цена (USD)')
-                                ->numeric()
-                                ->required()
-                                ->minValue(0)
-                                ->suffix('USD')
-                                ->helperText('Общая стоимость за группу')
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $set, $get) {
-                                    $minGuests = (int) $get('min_guests') ?: 1;
-                                    $maxGuests = (int) $get('max_guests') ?: 1;
-                                    $avgGuests = ($minGuests + $maxGuests) / 2;
-                                    if ($state && $avgGuests > 0) {
-                                        $set('price_per_person', round($state / $avgGuests, 2));
-                                    }
-                                }),
-
-                            TextInput::make('price_per_person')
-                                ->label('Цена за человека')
-                                ->numeric()
-                                ->suffix('USD')
-                                ->disabled()
-                                ->dehydrated(true)
-                                ->helperText('Рассчитывается автоматически'),
-
-                            Toggle::make('is_active')
-                                ->label('Активен')
-                                ->default(true)
-                                ->inline(false),
-
-                            TextInput::make('sort_order')
-                                ->label('Порядок')
-                                ->numeric()
-                                ->default(0)
-                                ->helperText('Меньше = выше'),
-                        ])
+                    // Private Pricing Tiers
+                    Repeater::make('privatePricingTiers')
+                        ->relationship('privatePricingTiers')
+                        ->label('Ценовые уровни (Частные туры)')
+                        ->schema(static::getPricingTierSchema())
                         ->columns(2)
                         ->collapsible()
                         ->collapsed(false)
-                        ->itemLabel(fn (array $state): ?string => 
-                            $state['label'] ?? 
+                        ->itemLabel(fn (array $state): ?string =>
+                            $state['label'] ??
                             (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
                         )
                         ->addActionLabel('Добавить ценовой уровень')
                         ->reorderable('sort_order')
-                        ->helperText('Настройте разные цены в зависимости от количества гостей. Если не указано, используется Цена за человека выше.')
+                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                            $data['booking_type'] = 'private';
+                            return $data;
+                        })
+                        ->helperText('Цены для частных туров по количеству гостей.')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['private_only', 'hybrid']))
+                        ->columnSpanFull(),
+
+                    // Group Pricing Tiers
+                    Repeater::make('groupPricingTiers')
+                        ->relationship('groupPricingTiers')
+                        ->label('Ценовые уровни (Групповые туры)')
+                        ->schema(static::getPricingTierSchema())
+                        ->columns(2)
+                        ->collapsible()
+                        ->collapsed(false)
+                        ->itemLabel(fn (array $state): ?string =>
+                            $state['label'] ??
+                            (($state['min_guests'] ?? '') . '-' . ($state['max_guests'] ?? '') . ' гостей')
+                        )
+                        ->addActionLabel('Добавить ценовой уровень')
+                        ->reorderable('sort_order')
+                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                            $data['booking_type'] = 'group';
+                            return $data;
+                        })
+                        ->helperText('Цены для групповых туров по количеству гостей. Используются вместо цены на отправлении.')
+                        ->visible(fn (callable $get) => in_array($get('tour_type'), ['group_only', 'hybrid']))
                         ->columnSpanFull(),
                 ])
                 ->columns(2),
@@ -1158,6 +1126,72 @@ class TourForm
                         ->columnSpanFull(),
                 ])
                 ->columns(2),
+        ];
+    }
+
+    /**
+     * Shared schema for pricing tier repeater items (used by both private and group)
+     */
+    protected static function getPricingTierSchema(): array
+    {
+        return [
+            TextInput::make('label')
+                ->label('Название уровня')
+                ->placeholder('например: Индивидуальный тур, Пара, Группа')
+                ->maxLength(100)
+                ->columnSpanFull(),
+
+            TextInput::make('min_guests')
+                ->label('Мин. гостей')
+                ->numeric()
+                ->required()
+                ->default(1)
+                ->minValue(1)
+                ->maxValue(100),
+
+            TextInput::make('max_guests')
+                ->label('Макс. гостей')
+                ->numeric()
+                ->required()
+                ->default(1)
+                ->minValue(1)
+                ->maxValue(100),
+
+            TextInput::make('price_total')
+                ->label('Общая цена (USD)')
+                ->numeric()
+                ->required()
+                ->minValue(0)
+                ->suffix('USD')
+                ->helperText('Общая стоимость за группу')
+                ->reactive()
+                ->afterStateUpdated(function ($state, $set, $get) {
+                    $minGuests = (int) $get('min_guests') ?: 1;
+                    $maxGuests = (int) $get('max_guests') ?: 1;
+                    $avgGuests = ($minGuests + $maxGuests) / 2;
+                    if ($state && $avgGuests > 0) {
+                        $set('price_per_person', round($state / $avgGuests, 2));
+                    }
+                }),
+
+            TextInput::make('price_per_person')
+                ->label('Цена за человека')
+                ->numeric()
+                ->suffix('USD')
+                ->disabled()
+                ->dehydrated(true)
+                ->helperText('Рассчитывается автоматически'),
+
+            Toggle::make('is_active')
+                ->label('Активен')
+                ->default(true)
+                ->inline(false),
+
+            TextInput::make('sort_order')
+                ->label('Порядок')
+                ->numeric()
+                ->default(0)
+                ->helperText('Меньше = выше'),
         ];
     }
 }
