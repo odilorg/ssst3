@@ -66,8 +66,8 @@ class BookingPreviewController extends Controller
                 // Calculate pricing
                 $priceData = null;
 
-                // Try to get pricing tier first (supports tiered pricing)
-                $pricingTier = $tour->getPricingTierForGuests($guestsCount);
+                // Try to get private pricing tier first
+                $pricingTier = $tour->getPricingTierForGuests($guestsCount, 'private');
 
                 if ($pricingTier) {
                     // Use tiered pricing
@@ -120,22 +120,44 @@ class BookingPreviewController extends Controller
                 // Get available departures
                 $departures = $tour->getAvailableGroupDepartures();
 
-                // Calculate pricing if departure is selected
+                // Calculate pricing: group tiers first, departure price as fallback
                 $priceData = null;
+                $seatsLeft = null;
+
                 if ($groupDepartureId) {
                     $departure = TourDeparture::find($groupDepartureId);
                     if ($departure && $departure->tour_id === $tour->id) {
-                        // Validate guest count against available seats
                         $seatsLeft = $departure->spots_remaining;
                         $guestsCount = min($guestsCount, $seatsLeft);
-
-                        $priceData = [
-                            'success' => true,
-                            'price_per_person' => (float) $departure->price_per_person,
-                            'total_price' => (float) $departure->price_per_person * $guestsCount,
-                            'seats_left' => $seatsLeft,
-                        ];
                     }
+                }
+
+                // Try group pricing tiers first
+                $pricingTier = $tour->getPricingTierForGuests($guestsCount, 'group');
+
+                if ($pricingTier) {
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $pricingTier->price_per_person,
+                        'total_price' => (float) $pricingTier->price_total,
+                        'seats_left' => $seatsLeft,
+                    ];
+                } elseif (isset($departure) && $departure && $departure->price_per_person) {
+                    // Fallback to departure price (legacy/backward compat)
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $departure->price_per_person,
+                        'total_price' => (float) $departure->price_per_person * $guestsCount,
+                        'seats_left' => $seatsLeft,
+                    ];
+                } elseif ($tour->price_per_person) {
+                    // Final fallback to tour base price
+                    $priceData = [
+                        'success' => true,
+                        'price_per_person' => (float) $tour->price_per_person,
+                        'total_price' => (float) $tour->price_per_person * $guestsCount,
+                        'seats_left' => $seatsLeft,
+                    ];
                 }
 
                 return view('partials.booking.group-tour-form', [

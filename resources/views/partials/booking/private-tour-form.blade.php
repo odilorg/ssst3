@@ -196,9 +196,9 @@
             tour_type: 'private',
             base_price: {{ $tour->private_base_price ?? $tour->price_per_person ?? 0 }},
             price_per_person: {{ $tour->price_per_person ?? 0 }},
-            @if($tour->pricingTiers && $tour->pricingTiers->count() > 0)
+            @if($tour->privatePricingTiers && $tour->privatePricingTiers->count() > 0)
             pricing_tiers: [
-                @foreach($tour->pricingTiers as $tier)
+                @foreach($tour->privatePricingTiers as $tier)
                 {
                     min_guests: {{ $tier->min_guests }},
                     max_guests: {{ $tier->max_guests }},

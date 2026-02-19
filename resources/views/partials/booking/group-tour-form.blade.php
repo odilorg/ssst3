@@ -116,9 +116,9 @@
             @else
             price_per_person: {{ $tour->price_per_person ?? 0 }},
             @endif
-            @if($tour->pricingTiers && $tour->pricingTiers->count() > 0)
+            @if($tour->groupPricingTiers && $tour->groupPricingTiers->count() > 0)
             pricing_tiers: [
-                @foreach($tour->pricingTiers as $tier)
+                @foreach($tour->groupPricingTiers as $tier)
                 {
                     min_guests: {{ $tier->min_guests }},
                     max_guests: {{ $tier->max_guests }},

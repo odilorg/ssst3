@@ -121,12 +121,17 @@ class BookingInternalController extends Controller
                     ]
                 );
 
-                // Calculate pricing
-                $pricingTier = $tour->getPricingTierForGuests($guestsCount);
+                // Calculate pricing using booking-type-specific tiers
+                $pricingTier = $tour->getPricingTierForGuests($guestsCount, $bookingType);
                 if ($pricingTier) {
                     $totalPrice = $pricingTier->price_total ?? ($pricingTier->price_per_person * $guestsCount);
                     $pricePerPerson = $pricingTier->price_per_person;
+                } elseif ($bookingType === 'private' && $tour->private_base_price) {
+                    // Fallback for private: private_base_price
+                    $pricePerPerson = $tour->private_base_price;
+                    $totalPrice = $pricePerPerson * $guestsCount;
                 } else {
+                    // Final fallback: tour base price
                     $pricePerPerson = $tour->price_per_person ?? 0;
                     $totalPrice = $pricePerPerson * $guestsCount;
                 }
@@ -383,10 +388,13 @@ class BookingInternalController extends Controller
                 if (isset($changes['guests_count']) && $booking->tour) {
                     $newGuests = (int) $changes['guests_count']['to'];
                     $booking->pax_total = $newGuests;
-                    $pricingTier = $booking->tour->getPricingTierForGuests($newGuests);
+                    $pricingTier = $booking->tour->getPricingTierForGuests($newGuests, $booking->type ?? 'private');
                     if ($pricingTier) {
                         $booking->total_price = $pricingTier->price_total ?? ($pricingTier->price_per_person * $newGuests);
                         $booking->price_per_person = $pricingTier->price_per_person;
+                    } elseif ($booking->type === 'private' && $booking->tour->private_base_price) {
+                        $booking->price_per_person = $booking->tour->private_base_price;
+                        $booking->total_price = $booking->tour->private_base_price * $newGuests;
                     } else {
                         $pricePerPerson = $booking->tour->price_per_person ?? 0;
                         $booking->total_price = $pricePerPerson * $newGuests;

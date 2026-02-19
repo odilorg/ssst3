@@ -375,7 +375,7 @@ class Tour extends Model
     }
 
     /**
-     * Get all pricing tiers for this tour
+     * Get all pricing tiers for this tour (both private and group)
      */
     public function pricingTiers()
     {
@@ -383,25 +383,47 @@ class Tour extends Model
     }
 
     /**
-     * Get active pricing tiers only
+     * Get private pricing tiers only
      */
-    public function activePricingTiers()
+    public function privatePricingTiers()
     {
-        return $this->pricingTiers()->active();
+        return $this->hasMany(TourPricingTier::class)
+            ->where('booking_type', 'private')
+            ->ordered();
+    }
+
+    /**
+     * Get group pricing tiers only
+     */
+    public function groupPricingTiers()
+    {
+        return $this->hasMany(TourPricingTier::class)
+            ->where('booking_type', 'group')
+            ->ordered();
+    }
+
+    /**
+     * Get active pricing tiers, optionally filtered by booking type
+     */
+    public function activePricingTiers(?string $bookingType = null)
+    {
+        $query = $this->pricingTiers()->active();
+        if ($bookingType) {
+            $query->forBookingType($bookingType);
+        }
+        return $query;
     }
 
     /**
      * Get price for a specific number of guests
      *
      * @param int $guestCount Number of guests
+     * @param string $bookingType 'private' or 'group'
      * @return float|null Total price for that guest count, or null if no tier matches
      */
-    public function getPriceForGuests(int $guestCount): ?float
+    public function getPriceForGuests(int $guestCount, string $bookingType = 'private'): ?float
     {
-        $tier = $this->pricingTiers()
-            ->forGuestCount($guestCount)
-            ->first();
-
+        $tier = $this->getPricingTierForGuests($guestCount, $bookingType);
         return $tier?->price_total;
     }
 
@@ -409,11 +431,13 @@ class Tour extends Model
      * Get the pricing tier for a specific number of guests
      *
      * @param int $guestCount Number of guests
+     * @param string $bookingType 'private' or 'group'
      * @return TourPricingTier|null
      */
-    public function getPricingTierForGuests(int $guestCount): ?TourPricingTier
+    public function getPricingTierForGuests(int $guestCount, string $bookingType = 'private'): ?TourPricingTier
     {
         return $this->pricingTiers()
+            ->forBookingType($bookingType)
             ->forGuestCount($guestCount)
             ->first();
     }
@@ -421,19 +445,19 @@ class Tour extends Model
     /**
      * Check if tour has tiered pricing configured
      */
-    public function hasTieredPricing(): bool
+    public function hasTieredPricing(?string $bookingType = null): bool
     {
-        return $this->activePricingTiers()->exists();
+        return $this->activePricingTiers($bookingType)->exists();
     }
 
     /**
      * Get starting price (lowest tier price) for display
      */
-    public function getStartingPrice(): ?float
+    public function getStartingPrice(?string $bookingType = null): ?float
     {
-        if ($this->hasTieredPricing()) {
-            return $this->activePricingTiers()
-                ->orderBy(price_total)
+        if ($this->hasTieredPricing($bookingType)) {
+            return $this->activePricingTiers($bookingType)
+                ->orderBy('price_total')
                 ->first()
                 ?->price_total;
         }
