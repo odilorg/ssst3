@@ -48,6 +48,8 @@ class Tour extends Model
         // Capacity
         'max_guests',
         'min_guests',
+        'group_tour_min_participants',
+        'group_tour_max_participants',
 
         // Images
         'hero_image',
