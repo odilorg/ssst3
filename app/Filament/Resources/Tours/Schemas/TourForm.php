@@ -42,21 +42,32 @@ class TourForm
         string $sourceField,
         ?string $tourContext = null,
     ): void {
+        \Log::info('ImageAltText: generateAltText called', [
+            'stateType' => get_debug_type($imageState),
+            'stateValue' => is_string($imageState) ? $imageState : '(non-string)',
+            'altField' => $altField,
+        ]);
+
         // Resolve the image to a URL string
         $imageUrl = self::resolveImageState($imageState);
         if (! $imageUrl) {
+            \Log::info('ImageAltText: resolveImageState returned null');
             return;
         }
+
+        \Log::info('ImageAltText: resolved URL', ['url' => $imageUrl]);
 
         // Guard: don't overwrite user-typed alt text
         $currentAlt = $get($altField);
         if (filled($currentAlt)) {
+            \Log::info('ImageAltText: skipping - alt already filled', ['currentAlt' => $currentAlt]);
             return;
         }
 
         // Guard: skip if same image source already processed
         $lastSource = $get($sourceField);
         if ($lastSource === $imageUrl) {
+            \Log::info('ImageAltText: skipping - same source already processed');
             return;
         }
 
@@ -65,11 +76,12 @@ class TourForm
 
         try {
             $altText = app(ImageAltTextService::class)->generate($imageUrl, $tourContext);
+            \Log::info('ImageAltText: service returned', ['altText' => $altText]);
             if (filled($altText)) {
                 $set($altField, $altText);
             }
-        } catch (\Throwable) {
-            // Non-blocking: leave alt empty for manual input
+        } catch (\Throwable $e) {
+            \Log::warning('ImageAltText: exception', ['message' => $e->getMessage()]);
         }
     }
 
