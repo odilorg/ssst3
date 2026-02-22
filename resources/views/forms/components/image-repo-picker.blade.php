@@ -254,11 +254,6 @@
             @endif
         </div>
 
-        {{-- Debug: show state path for troubleshooting --}}
-        @if($targetField === 'path')
-            <div class="text-xs text-gray-500 break-all">statePath: {{ $statePath }} | currentUrl: {{ $currentUrl ?? 'null' }}</div>
-        @endif
-
         {{-- Button --}}
         <button
             type="button"
