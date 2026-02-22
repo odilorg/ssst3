@@ -77,7 +77,7 @@ return [
 
     'ai_alt_text' => [
         'enabled' => env('AI_ALT_TEXT_ENABLED', false),
-        'api_key' => env('OPENAI_VISION_API_KEY'),
+        'api_key' => env('MOONSHOT_VISION_API_KEY'),
     ],
 
 ];

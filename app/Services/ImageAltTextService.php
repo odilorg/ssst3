@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class ImageAltTextService
 {
     /**
-     * Generate SEO-friendly alt text for an image using GPT-4o-mini vision.
+     * Generate SEO-friendly alt text for an image using Moonshot vision.
      *
      * @param  string       $imageUrl   Full URL or storage path of the image
      * @param  string|null  $context    Tour context (e.g. "Samarkand Day Tour in Samarkand")
@@ -24,7 +24,7 @@ class ImageAltTextService
 
         $apiKey = config('services.ai_alt_text.api_key');
         if (! $apiKey) {
-            Log::warning('ImageAltText: OPENAI_VISION_API_KEY not configured');
+            Log::warning('ImageAltText: API key not configured');
             return '';
         }
 
@@ -34,7 +34,7 @@ class ImageAltTextService
             return '';
         }
 
-        // Use thumb variant for repo images (cheaper, faster)
+        // Use thumb variant for repo images (cheaper, faster, smaller download)
         $fetchUrl = $this->useThumbVariant($fetchUrl);
 
         // Cache by stable key (storage path or URL path without query string)
@@ -46,10 +46,16 @@ class ImageAltTextService
     }
 
     /**
-     * Call GPT-4o-mini vision API.
+     * Call Moonshot vision API with base64-encoded image.
      */
     private function callVisionApi(string $imageUrl, ?string $context, string $apiKey): string
     {
+        // Download the image and base64 encode it
+        $imageData = $this->downloadAndEncode($imageUrl);
+        if (! $imageData) {
+            return '';
+        }
+
         $contextLine = $context
             ? "Context: this image is from a tour called \"{$context}\". "
             : '';
@@ -61,7 +67,7 @@ class ImageAltTextService
             . "Max 125 characters, plain text only, no quotes.";
 
         $payload = [
-            'model' => 'gpt-4o-mini',
+            'model' => 'moonshot-v1-8k-vision-preview',
             'messages' => [
                 [
                     'role' => 'user',
@@ -70,8 +76,7 @@ class ImageAltTextService
                         [
                             'type' => 'image_url',
                             'image_url' => [
-                                'url' => $imageUrl,
-                                'detail' => 'low',
+                                'url' => $imageData,
                             ],
                         ],
                     ],
@@ -85,17 +90,17 @@ class ImageAltTextService
 
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             try {
-                $response = Http::timeout(10)
+                $response = Http::timeout(15)
                     ->withHeaders([
                         'Authorization' => "Bearer {$apiKey}",
                         'Content-Type' => 'application/json',
                     ])
-                    ->post('https://api.openai.com/v1/chat/completions', $payload);
+                    ->post('https://api.moonshot.ai/v1/chat/completions', $payload);
 
                 if ($response->status() === 429 || $response->status() === 503) {
                     if ($attempt < $maxAttempts) {
                         Log::info("ImageAltText: {$response->status()} on attempt {$attempt}, retrying...");
-                        usleep(500_000); // 0.5s backoff
+                        usleep(500_000);
                         continue;
                     }
                     Log::warning("ImageAltText: {$response->status()} after {$maxAttempts} attempts");
@@ -105,7 +110,7 @@ class ImageAltTextService
                 if ($response->failed()) {
                     Log::warning('ImageAltText: API error', [
                         'status' => $response->status(),
-                        'reason' => $response->reason(),
+                        'body' => $response->body(),
                     ]);
                     return '';
                 }
@@ -124,26 +129,60 @@ class ImageAltTextService
     }
 
     /**
+     * Download an image and return as base64 data URI.
+     */
+    private function downloadAndEncode(string $imageUrl): ?string
+    {
+        try {
+            // For local storage paths, read directly from disk
+            if (! str_starts_with($imageUrl, 'http://') && ! str_starts_with($imageUrl, 'https://')) {
+                $disk = Storage::disk('public');
+                if ($disk->exists($imageUrl)) {
+                    $contents = $disk->get($imageUrl);
+                    $mime = $disk->mimeType($imageUrl) ?: 'image/webp';
+                    return "data:{$mime};base64," . base64_encode($contents);
+                }
+                return null;
+            }
+
+            // For URLs, download the image
+            $response = Http::timeout(10)->get($imageUrl);
+            if ($response->failed()) {
+                Log::warning('ImageAltText: failed to download image', ['url' => $imageUrl, 'status' => $response->status()]);
+                return null;
+            }
+
+            $contents = $response->body();
+            $contentType = $response->header('Content-Type') ?: 'image/webp';
+
+            // Limit to 5MB to avoid excessive memory/token usage
+            if (strlen($contents) > 5 * 1024 * 1024) {
+                Log::warning('ImageAltText: image too large', ['url' => $imageUrl, 'size' => strlen($contents)]);
+                return null;
+            }
+
+            return "data:{$contentType};base64," . base64_encode($contents);
+
+        } catch (\Throwable $e) {
+            Log::warning('ImageAltText: download failed', ['url' => $imageUrl, 'message' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
      * Sanitize the AI output to clean, plain alt text.
      */
     private function sanitize(string $text): string
     {
-        // Remove quotes wrapping the text
         $text = trim($text, " \t\n\r\0\x0B\"'");
-
-        // Remove newlines and collapse whitespace
         $text = preg_replace('/\s+/', ' ', $text);
-
-        // Remove emojis (Unicode emoticons, symbols, etc.)
         $text = preg_replace('/[\x{1F600}-\x{1F64F}|\x{1F300}-\x{1F5FF}|\x{1F680}-\x{1F6FF}|\x{1F1E0}-\x{1F1FF}|\x{2600}-\x{26FF}|\x{2700}-\x{27BF}|\x{FE00}-\x{FE0F}|\x{1F900}-\x{1F9FF}|\x{200D}|\x{20E3}|\x{FE0F}]/u', '', $text);
 
-        // Trim and truncate to 125 chars
         $text = trim($text);
         if (mb_strlen($text) > 125) {
             $text = mb_substr($text, 0, 122) . '...';
         }
 
-        // Return empty if result is too short to be useful
         if (mb_strlen($text) < 5) {
             return '';
         }
@@ -152,20 +191,19 @@ class ImageAltTextService
     }
 
     /**
-     * Resolve a storage path or URL to a publicly accessible URL.
+     * Resolve a storage path or URL to a fetchable URL.
      */
     private function resolveUrl(string $imageUrl): ?string
     {
-        // Already a full URL
         if (str_starts_with($imageUrl, 'http://') || str_starts_with($imageUrl, 'https://')) {
             return $imageUrl;
         }
 
-        // Local storage path — resolve to public URL
+        // For storage paths, check existence but return path (downloadAndEncode reads directly)
         try {
             $disk = Storage::disk('public');
             if ($disk->exists($imageUrl)) {
-                return $disk->url($imageUrl);
+                return $imageUrl;
             }
         } catch (\Throwable $e) {
             Log::warning('ImageAltText: cannot resolve storage path', ['path' => $imageUrl]);
@@ -175,7 +213,7 @@ class ImageAltTextService
     }
 
     /**
-     * For repo images, swap large.webp → thumb.webp to reduce cost.
+     * For repo images, swap large.webp → thumb.webp to reduce download size.
      */
     private function useThumbVariant(string $url): string
     {
@@ -191,12 +229,10 @@ class ImageAltTextService
      */
     private function stableCacheIdentifier(string $imageUrl): string
     {
-        // For full URLs, strip query string
         if (str_starts_with($imageUrl, 'http://') || str_starts_with($imageUrl, 'https://')) {
             return strtok($imageUrl, '?') ?: $imageUrl;
         }
 
-        // For storage paths, use as-is (already stable)
         return $imageUrl;
     }
 }
