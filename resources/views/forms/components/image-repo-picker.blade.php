@@ -8,15 +8,17 @@
         $targetField = $field->getTargetField();
         $currentUrl = null;
         if ($targetField) {
-            // For top-level fields like hero_image, read from record
-            $record = $field->getRecord();
-            if ($record && property_exists($record, $targetField)) {
-                $val = $record->{$targetField} ?? null;
-                if ($val && is_string($val) && str_starts_with($val, 'http')) {
-                    $currentUrl = $val;
+            try {
+                $record = $field->getRecord();
+                if ($record) {
+                    $val = $record->getAttribute($targetField);
+                    if ($val && is_string($val) && str_starts_with($val, 'http')) {
+                        $currentUrl = $val;
+                    }
                 }
-            }
-            // For repeater items (path field), try to get from parent state
+            } catch (\Throwable $e) {}
+
+            // For repeater items (path field), try container state
             if (!$currentUrl && $targetField === 'path') {
                 try {
                     $parentState = $field->getContainer()->getState();
@@ -24,9 +26,7 @@
                     if ($val && is_string($val) && str_starts_with($val, 'http')) {
                         $currentUrl = $val;
                     }
-                } catch (\Throwable $e) {
-                    // Silently ignore
-                }
+                } catch (\Throwable $e) {}
             }
         }
     @endphp
