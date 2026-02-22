@@ -13,6 +13,8 @@ class ImageRepoPicker extends Field
 
     protected string $defaultSize = 'large.webp';
 
+    protected ?string $targetField = null;
+
     public function multiple(bool $condition = true): static
     {
         $this->isMultiple = $condition;
@@ -50,5 +52,17 @@ class ImageRepoPicker extends Field
     public function getRepoOrigin(): string
     {
         return app(ImageRepositoryService::class)->getBaseUrl();
+    }
+
+    public function targetField(string $field): static
+    {
+        $this->targetField = $field;
+
+        return $this;
+    }
+
+    public function getTargetField(): ?string
+    {
+        return $this->targetField;
     }
 }

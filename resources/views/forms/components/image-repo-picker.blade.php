@@ -5,6 +5,30 @@
         $pickerUrl = $field->getImageRepoUrl();
         $repoOrigin = $field->getRepoOrigin();
         $statePath = $field->getStatePath();
+        $targetField = $field->getTargetField();
+        $currentUrl = null;
+        if ($targetField) {
+            // For top-level fields like hero_image, read from record
+            $record = $field->getRecord();
+            if ($record && property_exists($record, $targetField)) {
+                $val = $record->{$targetField} ?? null;
+                if ($val && is_string($val) && str_starts_with($val, 'http')) {
+                    $currentUrl = $val;
+                }
+            }
+            // For repeater items (path field), try to get from parent state
+            if (!$currentUrl && $targetField === 'path') {
+                try {
+                    $parentState = $field->getContainer()->getState();
+                    $val = $parentState['path'] ?? null;
+                    if ($val && is_string($val) && str_starts_with($val, 'http')) {
+                        $currentUrl = $val;
+                    }
+                } catch (\Throwable $e) {
+                    // Silently ignore
+                }
+            }
+        }
     @endphp
 
     <div
@@ -14,6 +38,7 @@
             pickerUrl: @js($pickerUrl),
             repoOrigin: @js($repoOrigin),
             isMultiple: @js($isMultiple),
+            currentUrl: @js($currentUrl),
             nonce: null,
             modalEl: null,
             iframeEl: null,
@@ -201,6 +226,13 @@
                         >
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
+                    </div>
+                </template>
+                {{-- Show current external URL from record when picker state is empty --}}
+                <template x-if="(!state || typeof state !== 'string') && currentUrl">
+                    <div class="relative w-48 h-32 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <img :src="getThumb(currentUrl)" class="w-full h-full object-cover" alt="Current image from repository">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-2 py-1">Current image</div>
                     </div>
                 </template>
             @endif

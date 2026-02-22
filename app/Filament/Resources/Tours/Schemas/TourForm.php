@@ -6,7 +6,6 @@ use App\Forms\Components\ImageRepoPicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -19,7 +18,6 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class TourForm
@@ -279,10 +277,10 @@ class TourForm
                             ->imageEditor()
                             ->columnSpanFull(),
 
-                        self::heroImagePreview(),
-
+                        
                         ImageRepoPicker::make('hero_image_from_repo')
                             ->label('Или выберите из репозитория изображений')
+                            ->targetField('hero_image')
                             ->live()
                             ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
                             ->dehydrated(false)
@@ -307,10 +305,9 @@ class TourForm
                                     ->maxSize(5120)
                                     ->required(),
 
-                                self::galleryImagePreview(),
-
                                 ImageRepoPicker::make('path_from_repo')
                                     ->label('Или выберите из репозитория')
+                                    ->targetField('path')
                                     ->live()
                                     ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
                                     ->dehydrated(false),
@@ -913,10 +910,10 @@ class TourForm
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
 
-                    self::heroImagePreview(),
-
+                    
                     ImageRepoPicker::make('hero_image_from_repo')
                         ->label('Или выберите из репозитория изображений')
+                        ->targetField('hero_image')
                         ->live()
                         ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
                         ->dehydrated(false)
@@ -941,10 +938,9 @@ class TourForm
                                 ->maxSize(5120)
                                 ->required(),
 
-                            self::galleryImagePreview(),
-
                             ImageRepoPicker::make('path_from_repo')
                                 ->label('Или выберите из репозитория')
+                                ->targetField('path')
                                 ->live()
                                 ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
                                 ->dehydrated(false),
@@ -1335,50 +1331,4 @@ class TourForm
         ];
     }
 
-    private static function isExternalUrl(?string $value): bool
-    {
-        return $value && str_starts_with($value, 'http');
-    }
-
-    private static function heroImagePreview(): Placeholder
-    {
-        return Placeholder::make('hero_image_preview')
-            ->label('Текущее изображение (из репозитория)')
-            ->content(function ($record): HtmlString {
-                $url = $record?->hero_image;
-                if ($url && str_starts_with($url, 'http')) {
-                    return new HtmlString(
-                        '<img src="' . e($url) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" loading="lazy" />'
-                    );
-                }
-                return new HtmlString('');
-            })
-            ->visible(fn ($record) => self::isExternalUrl($record?->hero_image))
-            ->columnSpanFull()
-            ->dehydrated(false);
-    }
-
-    private static function galleryImagePreview(): Placeholder
-    {
-        return Placeholder::make('path_preview')
-            ->label('Текущее изображение')
-            ->content(function ($state, Get $get): HtmlString {
-                // Try multiple ways to get the URL
-                $url = $get('path');
-
-                // FileUpload may transform the value - try raw state
-                if (is_array($url)) {
-                    $url = array_values($url)[0] ?? null;
-                }
-
-                if ($url && is_string($url) && str_starts_with($url, 'http')) {
-                    return new HtmlString(
-                        '<img src="' . e($url) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" loading="lazy" />'
-                    );
-                }
-                return new HtmlString('');
-            })
-            ->columnSpanFull()
-            ->dehydrated(false);
-    }
 }
