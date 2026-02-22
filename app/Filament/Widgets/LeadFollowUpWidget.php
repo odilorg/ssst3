@@ -7,6 +7,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 
 class LeadFollowUpWidget extends BaseWidget
 {
@@ -64,7 +65,7 @@ class LeadFollowUpWidget extends BaseWidget
             ->paginated([5, 10, 25]);
     }
 
-    protected function getTableHeading(): ?string
+    protected function getTableHeading(): string|HtmlString|null
     {
         $overdueCount = Lead::overdueFollowup()->count();
         $thisWeekCount = Lead::whereNotNull('next_followup_at')
@@ -86,6 +87,6 @@ class LeadFollowUpWidget extends BaseWidget
             return '📅 Follow-up Required';
         }
 
-        return '📅 Follow-up Required: ' . implode(' • ', $parts);
+        return new HtmlString('📅 Follow-up Required: ' . implode(' • ', $parts));
     }
 }
