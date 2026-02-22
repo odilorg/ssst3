@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources\TourCategories\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Forms\Components\ImageRepoPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -64,35 +65,13 @@ class TourCategoryForm
                             ->placeholder('fas fa-landmark')
                             ->columnSpanFull(),
 
-                        FileUpload::make('image_path')
+                        ImageRepoPicker::make('image_path')
                             ->label('Card Background Image')
-                            ->image()
-                            ->directory('categories')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '16:9',
-                                '4:3',
-                                '1:1',
-                            ])
-                            ->maxSize(5120) // 5MB
                             ->helperText('Used on homepage category cards. Recommended: 800x600px (4:3 ratio)')
                             ->columnSpanFull(),
 
-                        FileUpload::make('hero_image')
+                        ImageRepoPicker::make('hero_image')
                             ->label('Hero Image (Category Landing Page)')
-                            ->image()
-                            ->directory('categories/heroes')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '21:9',
-                                '16:9',
-                                null, // Free aspect ratio
-                            ])
-                            ->maxSize(8192) // 8MB
                             ->helperText('Used as background on category landing pages. Recommended: 1920x1080px (16:9 ratio)')
                             ->columnSpanFull(),
                     ]),
