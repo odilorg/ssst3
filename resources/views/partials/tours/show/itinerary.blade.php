@@ -50,6 +50,55 @@
                             @endif
                         </p>
                     @endif
+
+                    @php
+                        // Get stops/children: Eloquent children or JSON activities/stops
+                        $stops = [];
+                        if (is_object($day) && method_exists($day, 'getRelation')) {
+                            // Eloquent model — use eager-loaded children
+                            $stops = $day->children ?? [];
+                        } elseif (is_array($day)) {
+                            $stops = $day['activities'] ?? $day['stops'] ?? $day['children'] ?? [];
+                        }
+                    @endphp
+
+                    @if(!empty($stops) && count($stops) > 0)
+                        <ul class="day-stops">
+                            @foreach($stops as $stop)
+                                @php
+                                    $stopTitle = is_array($stop) ? ($stop['title'] ?? $stop['name'] ?? '') : ($stop->title ?? '');
+                                    $stopDesc = is_array($stop) ? ($stop['description'] ?? $stop['text'] ?? '') : ($stop->description ?? '');
+                                    $stopDuration = is_array($stop) ? ($stop['duration_minutes'] ?? $stop['duration'] ?? null) : ($stop->duration_minutes ?? null);
+                                    $stopTime = is_array($stop) ? ($stop['default_start_time'] ?? $stop['time'] ?? null) : ($stop->default_start_time ?? null);
+                                @endphp
+                                <li class="itinerary-stop">
+                                    <details>
+                                        <summary class="stop-summary">
+                                            @if($stopTime)
+                                                <span class="stop-time">{{ $stopTime }}</span>
+                                            @endif
+                                            <span class="stop-title">{{ $stopTitle }}</span>
+                                            @if($stopDuration)
+                                                <span class="stop-duration-badge">
+                                                    <i class="far fa-clock" aria-hidden="true"></i>
+                                                    @if($stopDuration >= 60)
+                                                        {{ floor($stopDuration / 60) }}h{{ $stopDuration % 60 > 0 ? ' ' . ($stopDuration % 60) . 'min' : '' }}
+                                                    @else
+                                                        {{ $stopDuration }} min
+                                                    @endif
+                                                </span>
+                                            @endif
+                                        </summary>
+                                        @if($stopDesc)
+                                            <div class="stop-body">
+                                                <p>{!! $stopDesc !!}</p>
+                                            </div>
+                                        @endif
+                                    </details>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             </details>
         @endforeach
