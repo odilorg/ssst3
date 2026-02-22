@@ -6,6 +6,7 @@ use App\Forms\Components\ImageRepoPicker;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -18,6 +19,7 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class TourForm
@@ -277,6 +279,8 @@ class TourForm
                             ->imageEditor()
                             ->columnSpanFull(),
 
+                        self::externalImagePreview('hero_image', 'Текущее изображение (из репозитория)'),
+
                         ImageRepoPicker::make('hero_image_from_repo')
                             ->label('Или выберите из репозитория изображений')
                             ->live()
@@ -302,6 +306,8 @@ class TourForm
                                     ])
                                     ->maxSize(5120)
                                     ->required(),
+
+                                self::externalImagePreview('path', 'Текущее изображение'),
 
                                 ImageRepoPicker::make('path_from_repo')
                                     ->label('Или выберите из репозитория')
@@ -907,6 +913,8 @@ class TourForm
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
 
+                    self::externalImagePreview('hero_image', 'Текущее изображение (из репозитория)'),
+
                     ImageRepoPicker::make('hero_image_from_repo')
                         ->label('Или выберите из репозитория изображений')
                         ->live()
@@ -932,6 +940,8 @@ class TourForm
                                 ])
                                 ->maxSize(5120)
                                 ->required(),
+
+                            self::externalImagePreview('path', 'Текущее изображение'),
 
                             ImageRepoPicker::make('path_from_repo')
                                 ->label('Или выберите из репозитория')
@@ -1323,5 +1333,22 @@ class TourForm
             'shoe' => '👟 Shoe (legacy)',
             'clothing' => '👕 Clothing (legacy)',
         ];
+    }
+
+    private static function isExternalUrl(?string $value): bool
+    {
+        return $value && str_starts_with($value, 'http');
+    }
+
+    private static function externalImagePreview(string $field, string $label = 'Current image'): Placeholder
+    {
+        return Placeholder::make("{$field}_preview")
+            ->label($label)
+            ->content(fn (Get $get) => new HtmlString(
+                '<img src="' . e($get($field)) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" />'
+            ))
+            ->visible(fn (Get $get) => self::isExternalUrl($get($field)))
+            ->columnSpanFull()
+            ->dehydrated(false);
     }
 }
