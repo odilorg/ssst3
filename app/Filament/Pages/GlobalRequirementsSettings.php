@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\Tours\Schemas\TourForm;
 use App\Models\Setting;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -73,18 +74,8 @@ class GlobalRequirementsSettings extends Page implements HasForms
                             ->schema([
                                 Select::make('icon')
                                     ->label('Icon')
-                                    ->options([
-                                        'walking' => '🚶 Walking',
-                                        'tshirt' => '👕 Dress Code',
-                                        'money' => '💰 Money',
-                                        'camera' => '📷 Photography',
-                                        'sun' => '☀️ Weather',
-                                        'wheelchair' => '♿ Accessibility',
-                                        'info' => 'ℹ️ Info',
-                                        'clock' => '🕐 Time',
-                                        'utensils' => '🍴 Food',
-                                        'bag' => '🎒 Bag',
-                                    ])
+                                    ->options(TourForm::getRequirementIconOptions())
+                                    ->searchable()
                                     ->required(),
                                 TextInput::make('title')
                                     ->label('Title')
@@ -107,18 +98,8 @@ class GlobalRequirementsSettings extends Page implements HasForms
                             ->schema([
                                 Select::make('icon')
                                     ->label('Иконка')
-                                    ->options([
-                                        'walking' => '🚶 Ходьба',
-                                        'tshirt' => '👕 Дресс-код',
-                                        'money' => '💰 Деньги',
-                                        'camera' => '📷 Фотография',
-                                        'sun' => '☀️ Погода',
-                                        'wheelchair' => '♿ Доступность',
-                                        'info' => 'ℹ️ Информация',
-                                        'clock' => '🕐 Время',
-                                        'utensils' => '🍴 Еда',
-                                        'bag' => '🎒 Сумка',
-                                    ])
+                                    ->options(TourForm::getRequirementIconOptions())
+                                    ->searchable()
                                     ->required(),
                                 TextInput::make('title')
                                     ->label('Заголовок')
@@ -141,18 +122,8 @@ class GlobalRequirementsSettings extends Page implements HasForms
                             ->schema([
                                 Select::make('icon')
                                     ->label('Belgi')
-                                    ->options([
-                                        'walking' => '🚶 Yurish',
-                                        'tshirt' => '👕 Kiyim',
-                                        'money' => '💰 Pul',
-                                        'camera' => '📷 Fotosurat',
-                                        'sun' => '☀️ Ob-havo',
-                                        'wheelchair' => '♿ Kirish',
-                                        'info' => 'ℹ️ Malumot',
-                                        'clock' => '🕐 Vaqt',
-                                        'utensils' => '🍴 Taom',
-                                        'bag' => '🎒 Sumka',
-                                    ])
+                                    ->options(TourForm::getRequirementIconOptions())
+                                    ->searchable()
                                     ->required(),
                                 TextInput::make('title')
                                     ->label('Sarlavha')

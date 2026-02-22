@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\Tours\Schemas\TourForm;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -50,18 +51,7 @@ class GlobalRequirements extends Page implements HasForms
                     ->schema([
                         Select::make('icon')
                             ->label('Icon')
-                            ->options([
-                                'walking' => '🚶 Walking',
-                                'tshirt' => '👕 Clothing/Dress Code',
-                                'money' => '💰 Money/Cash',
-                                'camera' => '📷 Camera/Photography',
-                                'sun' => '☀️ Sun/Weather',
-                                'wheelchair' => '♿ Wheelchair/Accessibility',
-                                'info' => 'ℹ️ Information/General',
-                                'clock' => '🕐 Time/Duration',
-                                'utensils' => '🍴 Food/Meals',
-                                'bag' => '🎒 Luggage/Baggage',
-                            ])
+                            ->options(TourForm::getRequirementIconOptions())
                             ->required()
                             ->searchable()
                             ->columnSpanFull(),

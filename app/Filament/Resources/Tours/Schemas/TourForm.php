@@ -347,18 +347,7 @@ class TourForm
                             ->schema([
                                 Select::make('icon')
                                     ->label('Иконка')
-                                    ->options([
-                                        'walking' => '🚶 Walking',
-                                        'tshirt' => '👕 Clothing/Dress Code',
-                                        'money' => '💰 Money/Cash',
-                                        'camera' => '📷 Camera/Photography',
-                                        'sun' => '☀️ Sun/Weather',
-                                        'wheelchair' => '♿ Wheelchair/Accessibility',
-                                        'info' => 'ℹ️ Information/General',
-                                        'clock' => '🕐 Time/Duration',
-                                        'utensils' => '🍴 Food/Meals',
-                                        'bag' => '🎒 Luggage/Baggage',
-                                    ])
+                                    ->options(self::getRequirementIconOptions())
                                     ->required()
                                     ->searchable()
                                     ->columnSpanFull(),
@@ -975,18 +964,7 @@ class TourForm
                         ->schema([
                             Select::make('icon')
                                 ->label('Иконка')
-                                ->options([
-                                    'walking' => '🚶 Walking',
-                                    'tshirt' => '👕 Clothing/Dress Code',
-                                    'money' => '💰 Money/Cash',
-                                    'camera' => '📷 Camera/Photography',
-                                    'sun' => '☀️ Sun/Weather',
-                                    'wheelchair' => '♿ Wheelchair/Accessibility',
-                                    'info' => 'ℹ️ Information/General',
-                                    'clock' => '🕐 Time/Duration',
-                                    'utensils' => '🍴 Food/Meals',
-                                    'bag' => '🎒 Luggage/Baggage',
-                                ])
+                                ->options(self::getRequirementIconOptions())
                                 ->required()
                                 ->searchable()
                                 ->columnSpanFull(),
@@ -1232,6 +1210,104 @@ class TourForm
                 ->numeric()
                 ->default(0)
                 ->helperText('Меньше = выше'),
+        ];
+    }
+
+    /**
+     * Get icon options for requirement fields.
+     * Uses Font Awesome class names as values for unlimited flexibility.
+     * Old legacy keys (walking, tshirt, etc.) are mapped in the blade template.
+     */
+    public static function getRequirementIconOptions(): array
+    {
+        return [
+            // Activity & Movement
+            'fa-person-walking' => '🚶 Walking / Hiking',
+            'fa-person-hiking' => '🥾 Hiking (strenuous)',
+            'fa-person-running' => '🏃 Running / Active',
+            'fa-person-swimming' => '🏊 Swimming',
+            'fa-bicycle' => '🚲 Cycling',
+            'fa-horse' => '🐴 Horse Riding',
+            'fa-person-skiing' => '⛷️ Skiing',
+
+            // Clothing & Gear
+            'fa-shirt' => '👕 Clothing / Dress Code',
+            'fa-shoe-prints' => '👟 Footwear',
+            'fa-hat-cowboy' => '🤠 Hat / Headwear',
+            'fa-glasses' => '🕶️ Sunglasses',
+            'fa-mitten' => '🧤 Gloves / Warm Clothes',
+            'fa-vest' => '🦺 Safety Gear',
+
+            // Travel & Transport
+            'fa-suitcase' => '🧳 Luggage',
+            'fa-backpack' => '🎒 Backpack',
+            'fa-passport' => '🛂 Passport / ID',
+            'fa-plane' => '✈️ Flight',
+            'fa-bus' => '🚌 Bus / Transport',
+            'fa-car' => '🚗 Car / Driving',
+            'fa-train' => '🚆 Train',
+
+            // Weather & Nature
+            'fa-sun' => '☀️ Sun / Hot Weather',
+            'fa-cloud-rain' => '🌧️ Rain / Wet Weather',
+            'fa-snowflake' => '❄️ Cold / Winter',
+            'fa-wind' => '💨 Wind',
+            'fa-temperature-high' => '🌡️ Temperature',
+            'fa-mountain-sun' => '⛰️ Mountain / Altitude',
+            'fa-water' => '🌊 Water / Sea',
+            'fa-umbrella' => '☂️ Umbrella',
+
+            // Health & Safety
+            'fa-heart-pulse' => '❤️ Health / Fitness',
+            'fa-kit-medical' => '🩺 Medical / First Aid',
+            'fa-pills' => '💊 Medication',
+            'fa-syringe' => '💉 Vaccination',
+            'fa-shield-halved' => '🛡️ Insurance',
+            'fa-triangle-exclamation' => '⚠️ Warning / Caution',
+            'fa-ban-smoking' => '🚭 No Smoking',
+            'fa-wheelchair' => '♿ Accessibility',
+
+            // Food & Drink
+            'fa-utensils' => '🍴 Food / Meals',
+            'fa-mug-hot' => '☕ Drinks',
+            'fa-bottle-water' => '🧴 Water Bottle',
+            'fa-wine-glass' => '🍷 Alcohol',
+            'fa-apple-whole' => '🍎 Snacks',
+            'fa-wheat-awn' => '🌾 Dietary / Allergies',
+
+            // Money & Documents
+            'fa-money-bill-wave' => '💰 Money / Cash',
+            'fa-credit-card' => '💳 Credit Card',
+            'fa-receipt' => '🧾 Tickets / Vouchers',
+            'fa-file-contract' => '📄 Documents',
+            'fa-id-card' => '🪪 ID Card',
+
+            // Tech & Electronics
+            'fa-camera' => '📷 Camera / Photography',
+            'fa-mobile-screen' => '📱 Phone',
+            'fa-battery-full' => '🔋 Power Bank / Charger',
+            'fa-wifi' => '📶 WiFi / Internet',
+            'fa-headphones' => '🎧 Audio Guide',
+
+            // Time & Schedule
+            'fa-clock' => '🕐 Time / Duration',
+            'fa-calendar-days' => '📅 Schedule / Dates',
+            'fa-hourglass-half' => '⏳ Waiting Time',
+            'fa-bell' => '🔔 Meeting Time',
+
+            // General Info
+            'fa-circle-info' => 'ℹ️ Information / General',
+            'fa-circle-check' => '✅ Included',
+            'fa-circle-xmark' => '❌ Not Included / Prohibited',
+            'fa-lightbulb' => '💡 Tip / Advice',
+            'fa-star' => '⭐ Highlight',
+            'fa-flag' => '🚩 Important',
+            'fa-map-location-dot' => '📍 Meeting Point',
+            'fa-language' => '🗣️ Language',
+            'fa-users' => '👥 Group Size',
+            'fa-child' => '👶 Children / Age',
+            'fa-paw' => '🐾 Pets',
+            'fa-volume-xmark' => '🔇 Quiet / No Noise',
         ];
     }
 }

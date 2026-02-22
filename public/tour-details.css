@@ -978,6 +978,13 @@
   margin-top: 2px; /* Fine-tune alignment with bold text baseline */
 }
 
+/* Font Awesome icons in requirements list */
+.know-before-list li i.icon {
+  font-size: 1.125rem;
+  width: 20px;
+  text-align: center;
+}
+
 .know-before-list li strong {
   font-weight: 600;
   color: #1E1E1E;
