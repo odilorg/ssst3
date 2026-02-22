@@ -18,15 +18,30 @@
                 }
             } catch (\Throwable $e) {}
 
-            // For repeater items (path field), get the Livewire state directly
+            // For repeater items (path field), get from Livewire component data
             if (!$currentUrl && $targetField === 'path') {
                 try {
-                    // statePath = data.gallery_images.{uuid}.path_from_repo
-                    // We need: data.gallery_images.{uuid}.path
+                    // statePath example: data.gallery_images.{uuid}.path_from_repo
+                    // Replace last segment with target field name
                     $pathStatePath = preg_replace('/\.[^.]+$/', '.' . $targetField, $statePath);
-                    $currentUrl = data_get($field->getLivewire()->data, str_replace('data.', '', $pathStatePath));
-                    if (!$currentUrl || !is_string($currentUrl) || !str_starts_with($currentUrl, 'http')) {
-                        $currentUrl = null;
+                    $livewire = $field->getLivewire();
+
+                    // Try multiple data access methods
+                    // Method 1: Direct property access via data_get on component
+                    $val = data_get($livewire, $pathStatePath);
+
+                    // Method 2: Via the form mount data
+                    if (!$val || !is_string($val)) {
+                        $val = data_get($livewire->data ?? [], str_replace('data.', '', $pathStatePath));
+                    }
+
+                    // Method 3: Try without 'data.' prefix
+                    if (!$val || !is_string($val)) {
+                        $val = data_get($livewire, str_replace('data.', '', $pathStatePath));
+                    }
+
+                    if ($val && is_string($val) && str_starts_with($val, 'http')) {
+                        $currentUrl = $val;
                     }
                 } catch (\Throwable $e) {
                     $currentUrl = null;
@@ -241,6 +256,11 @@
                 </template>
             @endif
         </div>
+
+        {{-- Debug: show state path for troubleshooting --}}
+        @if($targetField === 'path')
+            <div class="text-xs text-gray-500 break-all">statePath: {{ $statePath }} | currentUrl: {{ $currentUrl ?? 'null' }}</div>
+        @endif
 
         {{-- Button --}}
         <button
