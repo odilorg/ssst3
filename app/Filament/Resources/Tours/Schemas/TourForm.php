@@ -1344,10 +1344,15 @@ class TourForm
     {
         return Placeholder::make("{$field}_preview")
             ->label($label)
-            ->content(fn (Get $get) => new HtmlString(
-                '<img src="' . e($get($field)) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" />'
-            ))
-            ->visible(fn (Get $get) => self::isExternalUrl($get($field)))
+            ->content(function (Get $get) use ($field): HtmlString {
+                $url = $get($field);
+                if ($url && str_starts_with($url, 'http')) {
+                    return new HtmlString(
+                        '<img src="' . e($url) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" loading="lazy" />'
+                    );
+                }
+                return new HtmlString('<span style="color:#9ca3af;">No external image</span>');
+            })
             ->columnSpanFull()
             ->dehydrated(false);
     }
