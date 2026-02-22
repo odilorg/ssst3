@@ -18,10 +18,58 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class TourForm
 {
+    /**
+     * Configure a FileUpload to preview external URLs (from image repository).
+     * Overrides hydration and file-info resolution so http:// values are kept
+     * in state and rendered as previews inside the upload component.
+     */
+    private static function withExternalUrlPreview(FileUpload $field): FileUpload
+    {
+        return $field
+            ->fetchFileInformation(false)
+            ->afterStateHydrated(static function (FileUpload $component, string|array|null $rawState): void {
+                // Keep external URLs in state; for local files let them pass through too
+                $component->rawState(
+                    array_filter(Arr::wrap($rawState), fn (string $file) => filled($file)),
+                );
+            })
+            ->getUploadedFileUsing(static function (FileUpload $component, string $file, string|array|null $storedFileNames): ?array {
+                // External URL — return it directly as the preview URL
+                if (str_starts_with($file, 'http://') || str_starts_with($file, 'https://')) {
+                    return [
+                        'name' => basename(parse_url($file, PHP_URL_PATH) ?: $file),
+                        'size' => 0,
+                        'type' => 'image/webp',
+                        'url' => $file,
+                    ];
+                }
+
+                // Local file — use disk storage (default behaviour)
+                $storage = $component->getDisk();
+
+                try {
+                    if (! $storage->exists($file)) {
+                        return null;
+                    }
+                } catch (\Throwable) {
+                    return null;
+                }
+
+                $url = $storage->url($file);
+
+                return [
+                    'name' => ($component->isMultiple() ? ($storedFileNames[$file] ?? null) : $storedFileNames) ?? basename($file),
+                    'size' => $storage->size($file),
+                    'type' => $storage->mimeType($file),
+                    'url' => $url,
+                ];
+            });
+    }
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -268,16 +316,17 @@ class TourForm
                 Section::make('Изображения')
                     ->description('Главное изображение и галерея')
                     ->schema([
-                        FileUpload::make('hero_image')
-                            ->label('Главное изображение')
-                            ->image()
-                            ->directory('tours/heroes')
-                            ->disk('public')
-                            ->visibility('public')
-                            ->imageEditor()
-                            ->columnSpanFull(),
+                        self::withExternalUrlPreview(
+                            FileUpload::make('hero_image')
+                                ->label('Главное изображение')
+                                ->image()
+                                ->directory('tours/heroes')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->imageEditor()
+                        )->columnSpanFull(),
 
-                        
+
                         ImageRepoPicker::make('hero_image_from_repo')
                             ->label('Или выберите из репозитория изображений')
                             ->targetField('hero_image')
@@ -289,21 +338,22 @@ class TourForm
                         Repeater::make('gallery_images')
                             ->label('Галерея изображений')
                             ->schema([
-                                FileUpload::make('path')
-                                    ->label('Изображение')
-                                    ->image()
-                                    ->directory('tours/gallery')
-                                    ->disk('public')
-                                    ->visibility('public')
-                                    ->imageEditor()
-                                    ->imageEditorAspectRatios([
-                                        null,
-                                        '16:9',
-                                        '4:3',
-                                        '1:1',
-                                    ])
-                                    ->maxSize(5120)
-                                    ->required(),
+                                self::withExternalUrlPreview(
+                                    FileUpload::make('path')
+                                        ->label('Изображение')
+                                        ->image()
+                                        ->directory('tours/gallery')
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->imageEditor()
+                                        ->imageEditorAspectRatios([
+                                            null,
+                                            '16:9',
+                                            '4:3',
+                                            '1:1',
+                                        ])
+                                        ->maxSize(5120)
+                                )->required(),
 
                                 ImageRepoPicker::make('path_from_repo')
                                     ->label('Или выберите из репозитория')
@@ -899,18 +949,19 @@ class TourForm
                 ->icon('heroicon-o-photo')
                 ->completedIcon('heroicon-s-check-circle')
                 ->schema([
-                    FileUpload::make('hero_image')
-                        ->label('Главное изображение (Hero)')
-                        ->image()
-                        ->directory('tours/heroes')
-                        ->disk('public')
-                        ->visibility('public')
-                        ->imageEditor()
-                        ->maxSize(5120)
-                        ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
-                        ->columnSpanFull(),
+                    self::withExternalUrlPreview(
+                        FileUpload::make('hero_image')
+                            ->label('Главное изображение (Hero)')
+                            ->image()
+                            ->directory('tours/heroes')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->imageEditor()
+                            ->maxSize(5120)
+                            ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
+                    )->columnSpanFull(),
 
-                    
+
                     ImageRepoPicker::make('hero_image_from_repo')
                         ->label('Или выберите из репозитория изображений')
                         ->targetField('hero_image')
@@ -922,21 +973,22 @@ class TourForm
                     Repeater::make('gallery_images')
                         ->label('Галерея изображений')
                         ->schema([
-                            FileUpload::make('path')
-                                ->label('Изображение')
-                                ->image()
-                                ->directory('tours/gallery')
-                                ->disk('public')
-                                ->visibility('public')
-                                ->imageEditor()
-                                ->imageEditorAspectRatios([
-                                    null,
-                                    '16:9',
-                                    '4:3',
-                                    '1:1',
-                                ])
-                                ->maxSize(5120)
-                                ->required(),
+                            self::withExternalUrlPreview(
+                                FileUpload::make('path')
+                                    ->label('Изображение')
+                                    ->image()
+                                    ->directory('tours/gallery')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        null,
+                                        '16:9',
+                                        '4:3',
+                                        '1:1',
+                                    ])
+                                    ->maxSize(5120)
+                            )->required(),
 
                             ImageRepoPicker::make('path_from_repo')
                                 ->label('Или выберите из репозитория')
