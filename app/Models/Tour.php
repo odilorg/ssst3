@@ -53,6 +53,7 @@ class Tour extends Model
 
         // Images
         'hero_image',
+        'hero_image_alt',
         'hero_image_webp',
         'hero_image_sizes',
         'image_processing_status',
