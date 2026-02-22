@@ -35,14 +35,16 @@ class TourForm
      * Only generates if: alt field is empty AND image source has changed.
      */
     private static function generateAltText(
-        ?string $imageState,
+        mixed $imageState,
         Set $set,
         Get $get,
         string $altField,
         string $sourceField,
         ?string $tourContext = null,
     ): void {
-        if (! $imageState || ! is_string($imageState)) {
+        // Resolve the image to a URL string
+        $imageUrl = self::resolveImageState($imageState);
+        if (! $imageUrl) {
             return;
         }
 
@@ -54,21 +56,48 @@ class TourForm
 
         // Guard: skip if same image source already processed
         $lastSource = $get($sourceField);
-        if ($lastSource === $imageState) {
+        if ($lastSource === $imageUrl) {
             return;
         }
 
         // Mark this source as being processed
-        $set($sourceField, $imageState);
+        $set($sourceField, $imageUrl);
 
         try {
-            $altText = app(ImageAltTextService::class)->generate($imageState, $tourContext);
+            $altText = app(ImageAltTextService::class)->generate($imageUrl, $tourContext);
             if (filled($altText)) {
                 $set($altField, $altText);
             }
         } catch (\Throwable) {
             // Non-blocking: leave alt empty for manual input
         }
+    }
+
+    /**
+     * Resolve FileUpload state to a usable URL/path string.
+     * Handles: TemporaryUploadedFile, stored path string, external URL string.
+     */
+    private static function resolveImageState(mixed $state): ?string
+    {
+        if (! $state) {
+            return null;
+        }
+
+        // Already a string (repo URL or stored path)
+        if (is_string($state)) {
+            return $state;
+        }
+
+        // Livewire TemporaryUploadedFile — get a temporary URL for the AI to fetch
+        if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            try {
+                return $state->temporaryUrl();
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**
