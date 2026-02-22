@@ -18,15 +18,19 @@
                 }
             } catch (\Throwable $e) {}
 
-            // For repeater items (path field), try container state
+            // For repeater items (path field), get the Livewire state directly
             if (!$currentUrl && $targetField === 'path') {
                 try {
-                    $parentState = $field->getContainer()->getState();
-                    $val = $parentState['path'] ?? null;
-                    if ($val && is_string($val) && str_starts_with($val, 'http')) {
-                        $currentUrl = $val;
+                    // statePath = data.gallery_images.{uuid}.path_from_repo
+                    // We need: data.gallery_images.{uuid}.path
+                    $pathStatePath = preg_replace('/\.[^.]+$/', '.' . $targetField, $statePath);
+                    $currentUrl = data_get($field->getLivewire()->data, str_replace('data.', '', $pathStatePath));
+                    if (!$currentUrl || !is_string($currentUrl) || !str_starts_with($currentUrl, 'http')) {
+                        $currentUrl = null;
                     }
-                } catch (\Throwable $e) {}
+                } catch (\Throwable $e) {
+                    $currentUrl = null;
+                }
             }
         }
     @endphp
