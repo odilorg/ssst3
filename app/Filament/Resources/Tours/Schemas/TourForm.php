@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Tours\Schemas;
 
 use App\Forms\Components\ImageRepoPicker;
+use App\Services\ImageAltTextService;
+use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\FileUpload;
@@ -28,6 +30,68 @@ class TourForm
      * Overrides hydration and file-info resolution so http:// values are kept
      * in state and rendered as previews inside the upload component.
      */
+    /**
+     * Generate AI alt text for an image, with guards to prevent duplicate/unwanted calls.
+     * Only generates if: alt field is empty AND image source has changed.
+     */
+    private static function generateAltText(
+        ?string $imageState,
+        Set $set,
+        Get $get,
+        string $altField,
+        string $sourceField,
+        ?string $tourContext = null,
+    ): void {
+        if (! $imageState || ! is_string($imageState)) {
+            return;
+        }
+
+        // Guard: don't overwrite user-typed alt text
+        $currentAlt = $get($altField);
+        if (filled($currentAlt)) {
+            return;
+        }
+
+        // Guard: skip if same image source already processed
+        $lastSource = $get($sourceField);
+        if ($lastSource === $imageState) {
+            return;
+        }
+
+        // Mark this source as being processed
+        $set($sourceField, $imageState);
+
+        try {
+            $altText = app(ImageAltTextService::class)->generate($imageState, $tourContext);
+            if (filled($altText)) {
+                $set($altField, $altText);
+            }
+        } catch (\Throwable) {
+            // Non-blocking: leave alt empty for manual input
+        }
+    }
+
+    /**
+     * Build tour context string from form state for AI prompt.
+     */
+    private static function getTourContext(Get $get): ?string
+    {
+        $title = $get('title') ?: $get('../../title') ?: null;
+        $city = null;
+
+        // Try to get city name from city_id
+        $cityId = $get('city_id') ?: $get('../../city_id') ?: null;
+        if ($cityId) {
+            $city = \App\Models\City::find($cityId)?->name;
+        }
+
+        if ($title && $city) {
+            return "{$title} in {$city}";
+        }
+
+        return $title ?: $city;
+    }
+
     private static function withExternalUrlPreview(FileUpload $field): FileUpload
     {
         return $field
@@ -324,14 +388,30 @@ class TourForm
                                 ->disk('public')
                                 ->visibility('public')
                                 ->imageEditor()
+                                ->live()
+                                ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                    self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
+                                })
                         )->columnSpanFull(),
 
+                        TextInput::make('hero_image_alt')
+                            ->label('Alt текст главного изображения')
+                            ->helperText('Автоматически генерируется ИИ при загрузке. Можно редактировать.')
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+
+                        Hidden::make('hero_image_alt_source')->dehydrated(false),
 
                         ImageRepoPicker::make('hero_image_from_repo')
                             ->label('Или выберите из репозитория изображений')
                             ->targetField('hero_image')
                             ->live()
-                            ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                if ($state) {
+                                    $set('hero_image', $state);
+                                    self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
+                                }
+                            })
                             ->dehydrated(false)
                             ->columnSpanFull(),
 
@@ -353,18 +433,29 @@ class TourForm
                                             '1:1',
                                         ])
                                         ->maxSize(5120)
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                            self::generateAltText($state, $set, $get, 'alt', 'alt_source', self::getTourContext($get));
+                                        })
                                 )->required(),
 
                                 ImageRepoPicker::make('path_from_repo')
                                     ->label('Или выберите из репозитория')
                                     ->targetField('path')
                                     ->live()
-                                    ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        if ($state) {
+                                            $set('path', $state);
+                                            self::generateAltText($state, $set, $get, 'alt', 'alt_source', self::getTourContext($get));
+                                        }
+                                    })
                                     ->dehydrated(false),
+
+                                Hidden::make('alt_source')->dehydrated(false),
 
                                 TextInput::make('alt')
                                     ->label('Alt текст')
-                                    ->helperText('Описание изображения для доступности и SEO')
+                                    ->helperText('Автоматически генерируется ИИ. Можно редактировать.')
                                     ->required(),
                             ])
                             ->columnSpanFull()
@@ -959,14 +1050,30 @@ class TourForm
                             ->imageEditor()
                             ->maxSize(5120)
                             ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
+                            })
                     )->columnSpanFull(),
 
+                    TextInput::make('hero_image_alt')
+                        ->label('Alt текст главного изображения')
+                        ->helperText('Автоматически генерируется ИИ при загрузке. Можно редактировать.')
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+
+                    Hidden::make('hero_image_alt_source')->dehydrated(false),
 
                     ImageRepoPicker::make('hero_image_from_repo')
                         ->label('Или выберите из репозитория изображений')
                         ->targetField('hero_image')
                         ->live()
-                        ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('hero_image', $state) : null)
+                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                            if ($state) {
+                                $set('hero_image', $state);
+                                self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
+                            }
+                        })
                         ->dehydrated(false)
                         ->columnSpanFull(),
 
@@ -988,18 +1095,29 @@ class TourForm
                                         '1:1',
                                     ])
                                     ->maxSize(5120)
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        self::generateAltText($state, $set, $get, 'alt', 'alt_source', self::getTourContext($get));
+                                    })
                             )->required(),
 
                             ImageRepoPicker::make('path_from_repo')
                                 ->label('Или выберите из репозитория')
                                 ->targetField('path')
                                 ->live()
-                                ->afterStateUpdated(fn ($state, Set $set) => $state ? $set('path', $state) : null)
+                                ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                    if ($state) {
+                                        $set('path', $state);
+                                        self::generateAltText($state, $set, $get, 'alt', 'alt_source', self::getTourContext($get));
+                                    }
+                                })
                                 ->dehydrated(false),
+
+                            Hidden::make('alt_source')->dehydrated(false),
 
                             TextInput::make('alt')
                                 ->label('Alt текст')
-                                ->helperText('Описание изображения для доступности и SEO')
+                                ->helperText('Автоматически генерируется ИИ. Можно редактировать.')
                                 ->required(),
                         ])
                         ->columnSpanFull()

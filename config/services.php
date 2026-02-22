@@ -75,4 +75,9 @@ return [
         'picker_secret' => env('IMAGE_REPO_PICKER_SECRET'),
     ],
 
+    'ai_alt_text' => [
+        'enabled' => env('AI_ALT_TEXT_ENABLED', false),
+        'api_key' => env('OPENAI_VISION_API_KEY'),
+    ],
+
 ];
