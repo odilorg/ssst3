@@ -1308,6 +1308,20 @@ class TourForm
             'fa-child' => '👶 Children / Age',
             'fa-paw' => '🐾 Pets',
             'fa-volume-xmark' => '🔇 Quiet / No Noise',
+
+            // Legacy keys (backward compatibility with existing data)
+            'walking' => '🚶 Walking (legacy)',
+            'tshirt' => '👕 Clothing (legacy)',
+            'money' => '💰 Money (legacy)',
+            'camera' => '📷 Camera (legacy)',
+            'sun' => '☀️ Sun (legacy)',
+            'wheelchair' => '♿ Accessibility (legacy)',
+            'info' => 'ℹ️ Info (legacy)',
+            'clock' => '🕐 Clock (legacy)',
+            'utensils' => '🍴 Food (legacy)',
+            'bag' => '🎒 Bag (legacy)',
+            'shoe' => '👟 Shoe (legacy)',
+            'clothing' => '👕 Clothing (legacy)',
         ];
     }
 }
