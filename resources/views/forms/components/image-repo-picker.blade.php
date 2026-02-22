@@ -18,30 +18,27 @@
                 }
             } catch (\Throwable $e) {}
 
-            // For repeater items (path field), get from Livewire component data
-            if (!$currentUrl && $targetField === 'path') {
+            // For repeater items (path field), map UUID key to array index
+            // statePath: data.gallery_images.{uuid}.path_from_repo
+            if (!$currentUrl && $targetField === 'path' && $record) {
                 try {
-                    // statePath example: data.gallery_images.{uuid}.path_from_repo
-                    // Replace last segment with target field name
-                    $pathStatePath = preg_replace('/\.[^.]+$/', '.' . $targetField, $statePath);
-                    $livewire = $field->getLivewire();
+                    if (preg_match('/gallery_images\.([^.]+)\./', $statePath, $m)) {
+                        $uuid = $m[1];
+                        $livewire = $field->getLivewire();
+                        // Get all repeater keys in order to find this UUID's position
+                        $allItems = data_get($livewire, 'data.gallery_images', []);
+                        $keys = is_array($allItems) ? array_keys($allItems) : [];
+                        $position = array_search($uuid, $keys);
 
-                    // Try multiple data access methods
-                    // Method 1: Direct property access via data_get on component
-                    $val = data_get($livewire, $pathStatePath);
-
-                    // Method 2: Via the form mount data
-                    if (!$val || !is_string($val)) {
-                        $val = data_get($livewire->data ?? [], str_replace('data.', '', $pathStatePath));
-                    }
-
-                    // Method 3: Try without 'data.' prefix
-                    if (!$val || !is_string($val)) {
-                        $val = data_get($livewire, str_replace('data.', '', $pathStatePath));
-                    }
-
-                    if ($val && is_string($val) && str_starts_with($val, 'http')) {
-                        $currentUrl = $val;
+                        if ($position !== false) {
+                            $galleryImages = $record->gallery_images ?? [];
+                            // gallery_images is a 0-indexed array on the model
+                            $item = array_values($galleryImages)[$position] ?? null;
+                            $val = $item['path'] ?? null;
+                            if ($val && is_string($val) && str_starts_with($val, 'http')) {
+                                $currentUrl = $val;
+                            }
+                        }
                     }
                 } catch (\Throwable $e) {
                     $currentUrl = null;
