@@ -279,7 +279,7 @@ class TourForm
                             ->imageEditor()
                             ->columnSpanFull(),
 
-                        self::externalImagePreview('hero_image', 'Текущее изображение (из репозитория)'),
+                        self::heroImagePreview(),
 
                         ImageRepoPicker::make('hero_image_from_repo')
                             ->label('Или выберите из репозитория изображений')
@@ -307,7 +307,7 @@ class TourForm
                                     ->maxSize(5120)
                                     ->required(),
 
-                                self::externalImagePreview('path', 'Текущее изображение'),
+                                self::galleryImagePreview(),
 
                                 ImageRepoPicker::make('path_from_repo')
                                     ->label('Или выберите из репозитория')
@@ -913,7 +913,7 @@ class TourForm
                         ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                         ->columnSpanFull(),
 
-                    self::externalImagePreview('hero_image', 'Текущее изображение (из репозитория)'),
+                    self::heroImagePreview(),
 
                     ImageRepoPicker::make('hero_image_from_repo')
                         ->label('Или выберите из репозитория изображений')
@@ -941,7 +941,7 @@ class TourForm
                                 ->maxSize(5120)
                                 ->required(),
 
-                            self::externalImagePreview('path', 'Текущее изображение'),
+                            self::galleryImagePreview(),
 
                             ImageRepoPicker::make('path_from_repo')
                                 ->label('Или выберите из репозитория')
@@ -1340,18 +1340,43 @@ class TourForm
         return $value && str_starts_with($value, 'http');
     }
 
-    private static function externalImagePreview(string $field, string $label = 'Current image'): Placeholder
+    private static function heroImagePreview(): Placeholder
     {
-        return Placeholder::make("{$field}_preview")
-            ->label($label)
-            ->content(function (Get $get) use ($field): HtmlString {
-                $url = $get($field);
+        return Placeholder::make('hero_image_preview')
+            ->label('Текущее изображение (из репозитория)')
+            ->content(function ($record): HtmlString {
+                $url = $record?->hero_image;
                 if ($url && str_starts_with($url, 'http')) {
                     return new HtmlString(
                         '<img src="' . e($url) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" loading="lazy" />'
                     );
                 }
-                return new HtmlString('<span style="color:#9ca3af;">No external image</span>');
+                return new HtmlString('');
+            })
+            ->visible(fn ($record) => self::isExternalUrl($record?->hero_image))
+            ->columnSpanFull()
+            ->dehydrated(false);
+    }
+
+    private static function galleryImagePreview(): Placeholder
+    {
+        return Placeholder::make('path_preview')
+            ->label('Текущее изображение')
+            ->content(function ($state, Get $get): HtmlString {
+                // Try multiple ways to get the URL
+                $url = $get('path');
+
+                // FileUpload may transform the value - try raw state
+                if (is_array($url)) {
+                    $url = array_values($url)[0] ?? null;
+                }
+
+                if ($url && is_string($url) && str_starts_with($url, 'http')) {
+                    return new HtmlString(
+                        '<img src="' . e($url) . '" style="max-width:300px;max-height:200px;border-radius:8px;border:1px solid #e5e7eb;" loading="lazy" />'
+                    );
+                }
+                return new HtmlString('');
             })
             ->columnSpanFull()
             ->dehydrated(false);
