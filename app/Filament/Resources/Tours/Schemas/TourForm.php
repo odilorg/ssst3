@@ -46,6 +46,7 @@ class TourForm
             'stateType' => get_debug_type($imageState),
             'stateValue' => is_string($imageState) ? $imageState : '(non-string)',
             'altField' => $altField,
+            'tourContext' => $tourContext,
         ]);
 
         // Resolve the image to a URL string

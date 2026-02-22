@@ -1,0 +1,108 @@
+{
+  "lastUpdated": "2026-02-01T18:30:00Z",
+  "currentTask": "Complete - Database Import & Cloudflare Tunnel Setup",
+  "completionStatus": "100% complete - Full database imported with Cloudflare Tunnel running permanently",
+  "filesBeingEdited": [],
+  "completedSections": {
+    "A": "Found old VPS database location: /domains/staging.jahongir-travel.uz",
+    "B": "Read .env file and extracted MySQL credentials",
+    "C": "Exported complete database from old VPS (1.5MB)",
+    "D": "Transferred database to new VPS via local machine",
+    "E": "Imported complete database into new VPS",
+    "F": "Verified 18 tours have complete data (descriptions, images, itineraries)",
+    "G": "Set up Cloudflare Tunnel as permanent systemd service",
+    "H": "Created documentation for future Claude instances"
+  },
+  "databaseState": {
+    "source": "Old VPS staging.jahongir-travel.uz database",
+    "tours": "18 total (complete data)",
+    "tour_examples": [
+      "silk-to-canvas-fergana-karakalpakstan",
+      "pottery-suzani-intensive-uzbekistan",
+      "ceramics-miniature-painting-uzbekistan",
+      "textile-immersion-silk-ikat-suzani-uzbekistan"
+    ],
+    "tour_data_completeness": {
+      "long_description": "3,613 chars (vs 62 before)",
+      "hero_image": "present (e.g., tours/heroes/01KFZEHAMHEPY2EC32DDZGFZ81.jpg)",
+      "highlights": "411 bytes JSON",
+      "included_items": "402 bytes JSON",
+      "itinerary_items": "7 items per tour"
+    },
+    "data_integrity": "✅ All tours have complete content"
+  },
+  "oldVPSAccess": {
+    "tunnelURL": "https://mighty-rarely-giant-cheapest.trycloudflare.com",
+    "sshCommand": "ssh -i /home/odil/projects/id_rsa -o ProxyCommand=\"cloudflared access ssh --hostname https://mighty-rarely-giant-cheapest.trycloudflare.com\" root@62.72.22.205",
+    "service": "cloudflared-tunnel.service (running, enabled)",
+    "status": "Permanent - auto-restarts on failure, starts on boot",
+    "security": "SSH key authentication required",
+    "note": "Tunnel URL changes after service restart or VPS reboot"
+  },
+  "databaseCredentials": {
+    "oldVPS": {
+      "type": "MySQL",
+      "host": "localhost",
+      "database": "travel_staging",
+      "username": "travel_user",
+      "password": "travel_staging_pass_2026",
+      "location": "/domains/staging.jahongir-travel.uz"
+    },
+    "newVPS": {
+      "type": "MySQL",
+      "host": "127.0.0.1",
+      "database": "travel_staging",
+      "username": "travel_user",
+      "password": "travel_staging_pass_2026",
+      "location": "/domains/staging.jahongir-travel.uz"
+    }
+  },
+  "backups": [
+    "Old VPS: /tmp/staging_complete_20260201_232449.sql (1.5MB)",
+    "New VPS: /domains/staging.jahongir-travel.uz/backups/before_complete_import_20260201_232544.sql (266KB)",
+    "Local: /tmp/staging_from_old_vps.sql (1.5MB)"
+  ],
+  "documentation": [
+    ".claude/OLD_VPS_ACCESS.md - Tunnel connection instructions for future Claude instances",
+    ".claude/TOUR_IMPORT_COMPLETE.md - Previous incomplete import documentation"
+  ],
+  "gitCommits": [
+    "afc0ba4 - fix(tours): migrate tour_type enum values",
+    "d5caa20 - fix(views): escape apostrophe in booking form"
+  ],
+  "vpsDetails": {
+    "oldVPS": {
+      "host": "62.72.22.205",
+      "hostname": "srv664135",
+      "port": 2222,
+      "access": "via Cloudflare Tunnel only (Hostinger blocking direct SSH)",
+      "projects": [
+        "/domains/staging.jahongir-travel.uz (source database)",
+        "/var/www/jahongir-dev",
+        "/var/www/jahongirnewapp",
+        "/domains/jahongir-travel.uz"
+      ]
+    },
+    "newVPS": {
+      "host": "161.97.129.31",
+      "path": "/domains/staging.jahongir-travel.uz",
+      "database": "travel_staging (imported)",
+      "url": "https://staging.jahongir-travel.uz"
+    }
+  },
+  "testingURLs": {
+    "admin": "https://staging.jahongir-travel.uz/admin",
+    "tours_listing": "https://staging.jahongir-travel.uz/tours",
+    "test_tour": "https://staging.jahongir-travel.uz/tours/ceramics-miniature-painting-uzbekistan"
+  },
+  "nextSteps": [
+    "✅ Database import complete - no further action needed",
+    "Optional: Test booking form on tour pages",
+    "Optional: Verify all 18 tours display correctly",
+    "Optional: Deploy to production when ready"
+  ],
+  "knownIssues": [],
+  "lastCommit": "d5caa20",
+  "uncommittedFiles": [],
+  "gitBranch": "feature/fix-tour-pricing-logic"
+}

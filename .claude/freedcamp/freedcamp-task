@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""
+Freedcamp Task Creator - Create QA tasks via API
+
+Usage:
+    freedcamp-task "Task title" [options]
+    freedcamp-task --list-tasks
+    freedcamp-task --list-users
+
+Options:
+    -d, --description TEXT    Task description (supports HTML)
+    -p, --priority 0-3        Priority: 0=none, 1=low, 2=medium, 3=high
+    -a, --assignee ID|NAME    Assign to user (default: tester)
+    --due YYYY-MM-DD          Due date
+    --list-tasks              List all tasks in project
+    --list-users              List all users in project
+"""
+
+import json
+import hashlib
+import hmac
+import time
+import urllib.request
+import urllib.parse
+import sys
+import argparse
+from pathlib import Path
+
+# Project-specific config for jahongir-travel-staging
+SCRIPT_DIR = Path(__file__).parent
+CONFIG_FILE = SCRIPT_DIR / 'config.json'
+# Use global credentials
+CREDENTIALS_FILE = Path.home() / '.config' / 'freedcamp' / 'credentials.json'
+
+def load_config():
+    """Load API credentials and project config"""
+    with open(CREDENTIALS_FILE) as f:
+        creds = json.load(f)
+    with open(CONFIG_FILE) as f:
+        config = json.load(f)
+    return creds, config
+
+def make_auth_params(api_key, api_secret):
+    """Generate secure authentication parameters"""
+    timestamp = str(int(time.time()))
+    message = api_key + timestamp
+    hash_value = hmac.new(api_secret.encode(), message.encode(), hashlib.sha1).hexdigest()
+    return {
+        'api_key': api_key,
+        'timestamp': timestamp,
+        'hash': hash_value
+    }
+
+def api_request(endpoint, method='GET', data=None):
+    """Make authenticated API request"""
+    creds, config = load_config()
+    auth = make_auth_params(creds['api_key'], creds['api_secret'])
+
+    base_url = 'https://freedcamp.com/api/v1'
+
+    if method == 'GET':
+        params = {**auth, **(data or {})}
+        url = f"{base_url}/{endpoint}?{urllib.parse.urlencode(params)}"
+        req = urllib.request.Request(url)
+    else:
+        # POST: Freedcamp expects data as JSON in a 'data' form parameter
+        url = f"{base_url}/{endpoint}?{urllib.parse.urlencode(auth)}"
+        post_data = urllib.parse.urlencode({'data': json.dumps(data)}).encode() if data else None
+        req = urllib.request.Request(url, data=post_data, method=method)
+        req.add_header('Content-Type', 'application/x-www-form-urlencoded')
+
+    try:
+        with urllib.request.urlopen(req) as response:
+            return json.loads(response.read().decode())
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode() if e.fp else ''
+        print(f"API Error {e.code}: {e.reason}")
+        print(f"Response: {error_body}")
+        sys.exit(1)
+
+def create_task(title, description=None, priority=2, assignee=None, due_date=None):
+    """Create a new task in Freedcamp"""
+    creds, config = load_config()
+
+    # Resolve assignee
+    if assignee is None:
+        assignee_id = config.get('default_assignee', '0')
+    elif assignee in config.get('users', {}):
+        assignee_id = config['users'][assignee]
+    else:
+        assignee_id = assignee
+
+    data = {
+        'title': title,
+        'project_id': config['project_id'],
+        'priority': str(priority),
+        'assigned_to_id': assignee_id,
+    }
+
+    if description:
+        data['description'] = description
+
+    if due_date:
+        data['due_date'] = due_date
+
+    result = api_request('tasks', method='POST', data=data)
+
+    if result.get('http_code') == 200:
+        tasks = result.get('data', {}).get('tasks', [])
+        if tasks:
+            task = tasks[0]
+            print(f"✅ Task created successfully!")
+            print(f"   ID: {task.get('id')}")
+            print(f"   Title: {task.get('title')}")
+            print(f"   Priority: {['None', 'Low', 'Medium', 'High'][int(task.get('priority', 0))]}")
+            if due_date:
+                print(f"   Due: {due_date}")
+            return task
+    else:
+        print(f"❌ Failed to create task: {result.get('msg')}")
+        return None
+
+def list_tasks():
+    """List all tasks in the project"""
+    creds, config = load_config()
+    result = api_request('tasks', data={'project_id': config['project_id']})
+
+    tasks = result.get('data', {}).get('tasks', [])
+    if not tasks:
+        print("No tasks found in project.")
+        return
+
+    print(f"\n📋 Tasks in {config.get('project_name', 'Project')}:\n")
+    for task in tasks:
+        status = '✅' if task.get('status') == 1 else '⬜'
+        priority_names = ['', '🔵', '🟡', '🔴']
+        priority = priority_names[int(task.get('priority', 0))]
+        print(f"  {status} {priority} [{task.get('id')}] {task.get('title')}")
+    print()
+
+def list_users():
+    """List all users in the project"""
+    creds, config = load_config()
+    result = api_request('users', data={'project_id': config['project_id']})
+
+    users = result.get('data', {}).get('users', [])
+    print(f"\n👥 Users in project:\n")
+    for user in users:
+        print(f"  ID: {user.get('user_id')}")
+        print(f"  Name: {user.get('first_name')} {user.get('last_name')}")
+        print(f"  Email: {user.get('email')}")
+        print()
+
+def main():
+    parser = argparse.ArgumentParser(description='Create Freedcamp tasks')
+    parser.add_argument('title', nargs='?', help='Task title')
+    parser.add_argument('-d', '--description', help='Task description')
+    parser.add_argument('-p', '--priority', type=int, default=2, choices=[0,1,2,3],
+                        help='Priority: 0=none, 1=low, 2=medium, 3=high')
+    parser.add_argument('-a', '--assignee', help='Assignee user ID or name')
+    parser.add_argument('--due', help='Due date (YYYY-MM-DD)')
+    parser.add_argument('--list-tasks', action='store_true', help='List all tasks')
+    parser.add_argument('--list-users', action='store_true', help='List all users')
+
+    args = parser.parse_args()
+
+    if args.list_tasks:
+        list_tasks()
+    elif args.list_users:
+        list_users()
+    elif args.title:
+        create_task(
+            title=args.title,
+            description=args.description,
+            priority=args.priority,
+            assignee=args.assignee,
+            due_date=args.due
+        )
+    else:
+        parser.print_help()
+
+if __name__ == '__main__':
+    main()

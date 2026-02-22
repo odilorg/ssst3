@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+"""
+Freedcamp Status Checker - Check testing progress and comments
+
+Usage:
+    freedcamp-status              # Show all tasks status
+    freedcamp-status --comments   # Show tasks with comments
+    freedcamp-status --bugs       # Show bug reports
+    freedcamp-status --completed  # Show completed tasks only
+"""
+
+import json
+import hashlib
+import hmac
+import time
+import urllib.request
+import argparse
+from pathlib import Path
+
+# Project-specific config for jahongir-travel-staging
+SCRIPT_DIR = Path(__file__).parent
+CREDENTIALS_FILE = Path.home() / '.config' / 'freedcamp' / 'credentials.json'
+CONFIG_FILE = SCRIPT_DIR / 'config.json'
+
+def load_config():
+    with open(CREDENTIALS_FILE) as f:
+        creds = json.load(f)
+    with open(CONFIG_FILE) as f:
+        config = json.load(f)
+    return creds, config
+
+def make_auth(creds):
+    timestamp = str(int(time.time()))
+    message = creds['api_key'] + timestamp
+    hash_value = hmac.new(creds['api_secret'].encode(), message.encode(), hashlib.sha1).hexdigest()
+    return f"api_key={creds['api_key']}&timestamp={timestamp}&hash={hash_value}"
+
+def get_tasks():
+    creds, config = load_config()
+    auth = make_auth(creds)
+    url = f"https://freedcamp.com/api/v1/tasks?project_id={config['project_id']}&{auth}"
+
+    with urllib.request.urlopen(url) as response:
+        return json.loads(response.read().decode())['data']['tasks']
+
+def get_comments(task_id):
+    creds, config = load_config()
+    auth = make_auth(creds)
+    url = f"https://freedcamp.com/api/v1/comments?item_id={task_id}&item_type=tasks&{auth}"
+
+    try:
+        with urllib.request.urlopen(url) as response:
+            return json.loads(response.read().decode())['data'].get('comments', [])
+    except:
+        return []
+
+def show_status():
+    tasks = get_tasks()
+
+    completed = [t for t in tasks if t.get('status') == 1]
+    open_tasks = [t for t in tasks if t.get('status') != 1]
+
+    print("\n" + "="*60)
+    print("📊 СТАТУС ТЕСТИРОВАНИЯ")
+    print("="*60)
+
+    # Progress bar
+    total = len(tasks)
+    done = len(completed)
+    pct = int(done/total*100) if total > 0 else 0
+    bar = '█' * (pct // 5) + '░' * (20 - pct // 5)
+    print(f"\n[{bar}] {pct}% ({done}/{total})")
+
+    # Open tasks by priority
+    print("\n📋 ОТКРЫТЫЕ ЗАДАЧИ:")
+    priority_names = {3: '🔴 Высокий', 2: '🟡 Средний', 1: '🔵 Низкий', 0: '⚪ Нет'}
+
+    for p in [3, 2, 1, 0]:
+        p_tasks = [t for t in open_tasks if int(t.get('priority', 0)) == p]
+        if p_tasks:
+            print(f"\n  {priority_names[p]}:")
+            for t in p_tasks:
+                print(f"    ⬜ {t['title'][:45]}")
+
+    # Completed
+    if completed:
+        print(f"\n✅ ВЫПОЛНЕНО ({len(completed)}):")
+        for t in completed:
+            print(f"    ✅ {t['title'][:45]}")
+
+    print("\n" + "="*60)
+
+def show_with_comments():
+    tasks = get_tasks()
+
+    print("\n" + "="*60)
+    print("💬 ЗАДАЧИ С КОММЕНТАРИЯМИ")
+    print("="*60)
+
+    found = False
+    for task in tasks:
+        comments = get_comments(task['id'])
+        if comments:
+            found = True
+            status = '✅' if task.get('status') == 1 else '⬜'
+            print(f"\n{status} {task['title']}")
+            print("-" * 40)
+            for c in comments[-3:]:  # Last 3 comments
+                author = c.get('user_name', 'Unknown')
+                text = c.get('description', '')[:200]
+                print(f"  💬 {author}: {text}")
+
+    if not found:
+        print("\nПока нет комментариев к задачам.")
+
+    print("\n" + "="*60)
+
+def show_bugs():
+    tasks = get_tasks()
+
+    print("\n" + "="*60)
+    print("🐛 НАЙДЕННЫЕ БАГИ")
+    print("="*60)
+
+    found = False
+    for task in tasks:
+        comments = get_comments(task['id'])
+        for c in comments:
+            text = c.get('description', '')
+            if '🐛' in text or 'БАГ' in text.upper() or 'BUG' in text.upper() or '❌' in text:
+                found = True
+                print(f"\n📍 В задаче: {task['title'][:40]}")
+                print(f"   {text[:300]}")
+                print("-" * 40)
+
+    # Also check for bug tasks
+    bug_tasks = [t for t in tasks if '🐛' in t['title'] or 'БАГ' in t['title'].upper()]
+    for t in bug_tasks:
+        found = True
+        status = '✅' if t.get('status') == 1 else '⬜'
+        print(f"\n{status} {t['title']}")
+
+    if not found:
+        print("\n✨ Багов пока не найдено!")
+
+    print("\n" + "="*60)
+
+def show_completed():
+    tasks = get_tasks()
+    completed = [t for t in tasks if t.get('status') == 1]
+
+    print("\n" + "="*60)
+    print("✅ ВЫПОЛНЕННЫЕ ЗАДАЧИ")
+    print("="*60)
+
+    if not completed:
+        print("\nПока нет выполненных задач.")
+    else:
+        for t in completed:
+            print(f"\n✅ {t['title']}")
+            comments = get_comments(t['id'])
+            if comments:
+                last = comments[-1]
+                print(f"   Результат: {last.get('description', '')[:150]}")
+
+    print("\n" + "="*60)
+
+def main():
+    parser = argparse.ArgumentParser(description='Check Freedcamp testing status')
+    parser.add_argument('--comments', action='store_true', help='Show tasks with comments')
+    parser.add_argument('--bugs', action='store_true', help='Show bug reports')
+    parser.add_argument('--completed', action='store_true', help='Show completed tasks')
+
+    args = parser.parse_args()
+
+    if args.comments:
+        show_with_comments()
+    elif args.bugs:
+        show_bugs()
+    elif args.completed:
+        show_completed()
+    else:
+        show_status()
+
+if __name__ == '__main__':
+    main()
