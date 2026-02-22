@@ -1444,7 +1444,7 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('tour-details.css') }}">
+<link rel="stylesheet" href="{{ asset('tour-details.css') }}?v={{ filemtime(public_path('tour-details.css')) }}">
 <link rel="stylesheet" href="{{ asset('css/gallery-lightbox.css') }}">
 <link rel="stylesheet" href="{{ asset('tour-details-gallery-addon.css') }}">
 <link rel="stylesheet" href="{{ asset('css/tour-reviews.css') }}">

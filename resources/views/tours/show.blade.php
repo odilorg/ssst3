@@ -154,8 +154,8 @@
   </style>
 
   <!-- Tour details stylesheet - guaranteed load -->
-  <link rel="preload" href="tour-details.css" as="style">
-  <link rel="stylesheet" href="tour-details.css">
+  <link rel="preload" href="{{ asset('tour-details.css') }}?v={{ filemtime(public_path('tour-details.css')) }}" as="style">
+  <link rel="stylesheet" href="{{ asset('tour-details.css') }}?v={{ filemtime(public_path('tour-details.css')) }}">
 
   <!-- Modern Minimalistic Button Design -->
   <style>
