@@ -57,13 +57,13 @@ class ImageAltTextService
         }
 
         $contextLine = $context
-            ? "Context: this image is from a tour called \"{$context}\". "
+            ? "This image is from \"{$context}\". Use the location name in your description. "
             : '';
 
-        $prompt = "Describe what's visible in this image naturally and concisely for use as HTML alt text. "
-            . "Include landmarks, architecture, or landscape only if clearly recognizable. "
-            . "If unsure about a specific place or landmark name, describe it generally — do not guess. "
-            . $contextLine
+        $prompt = $contextLine
+            . "Write concise HTML alt text for this image. "
+            . "Name the specific landmark, monument, or place if you can identify it from the context. "
+            . "If you cannot identify it, describe the scene with the city/location name from context. "
             . "Max 125 characters, plain text only, no quotes.";
 
         $payload = [
