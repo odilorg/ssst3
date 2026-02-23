@@ -419,6 +419,7 @@ class TourForm
                                 ->imageEditor()
                                 ->live()
                                 ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                    $set('hero_image_webp', null);
                                     self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
                                 })
                         )->columnSpanFull(),
@@ -438,6 +439,7 @@ class TourForm
                             ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                 if ($state) {
                                     $set('hero_image', $state);
+                                    $set('hero_image_webp', null);
                                     self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
                                 }
                             })
@@ -1081,6 +1083,7 @@ class TourForm
                             ->helperText('Рекомендуемый размер: 1200×675px. Макс. 5MB.')
                             ->live()
                             ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                $set('hero_image_webp', null);
                                 self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
                             })
                     )->columnSpanFull(),
@@ -1100,6 +1103,7 @@ class TourForm
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             if ($state) {
                                 $set('hero_image', $state);
+                                $set('hero_image_webp', null);
                                 self::generateAltText($state, $set, $get, 'hero_image_alt', 'hero_image_alt_source', self::getTourContext($get));
                             }
                         })
