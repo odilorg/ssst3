@@ -95,6 +95,8 @@ class SupplierRequestTest extends TestCase
             'booking_id'  => $booking->id,
             'date'        => now()->addDay()->toDateString(),
             'sort_order'  => 1,
+            'title'       => 'Day 1',
+            'type'        => 'day',
         ]);
         BookingItineraryItemAssignment::create([
             'booking_itinerary_item_id' => $item->id,
@@ -193,6 +195,8 @@ class SupplierRequestTest extends TestCase
             'booking_id' => $booking->id,
             'date'       => '2026-06-01',
             'sort_order' => 1,
+            'title'      => 'Day 1',
+            'type'       => 'day',
         ]);
         BookingItineraryItemAssignment::create([
             'booking_itinerary_item_id' => $item1->id,
@@ -206,6 +210,8 @@ class SupplierRequestTest extends TestCase
             'booking_id' => $booking->id,
             'date'       => '2026-06-03',
             'sort_order' => 1,
+            'title'      => 'Day 3',
+            'type'       => 'day',
         ]);
         BookingItineraryItemAssignment::create([
             'booking_itinerary_item_id' => $item2->id,
@@ -251,6 +257,8 @@ class SupplierRequestTest extends TestCase
             'booking_id' => $booking->id,
             'date'       => '2026-07-15',
             'sort_order' => 1,
+            'title'      => 'Day 1',
+            'type'       => 'day',
         ]);
         BookingItineraryItemAssignment::create([
             'booking_itinerary_item_id' => $item->id,
