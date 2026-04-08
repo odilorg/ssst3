@@ -77,8 +77,8 @@ class TranslateCityWithAI implements ShouldQueue, ShouldBeUnique
                 'target_locale' => $translation->locale,
                 'sections_translated' => array_keys($result['translations']),
                 'tokens_used' => $result['tokens_used'],
-                'cost_usd' => $translationService->estimateCost($result['tokens_used'], $result['tokens_used']),
-                'model' => config('ai-translation.deepseek.model', 'deepseek-chat'),
+                'cost_usd' => $translationService->estimateCost($result['tokens_input'] ?? 0, $result['tokens_output'] ?? 0),
+                'model' => $translationService->getModel(),
                 'status' => 'completed',
             ]);
 
@@ -112,9 +112,9 @@ class TranslateCityWithAI implements ShouldQueue, ShouldBeUnique
                         'source_locale' => 'en',
                         'target_locale' => $locale,
                         'sections_translated' => [],
-                        'tokens_used' => 0,
+                        'tokens_used' => $translationService->getSessionTokensUsed(),
                         'cost_usd' => 0,
-                        'model' => config('ai-translation.deepseek.model', 'deepseek-chat'),
+                        'model' => $translationService->getModel(),
                         'status' => 'failed',
                         'error_message' => $e->getMessage(),
                     ]);
@@ -123,12 +123,7 @@ class TranslateCityWithAI implements ShouldQueue, ShouldBeUnique
                 Log::warning('Failed to log city translation error', ['error' => $logException->getMessage()]);
             }
 
-            Notification::make()
-                ->danger()
-                ->title('City Translation Failed')
-                ->body("Failed to translate city. Error: {$e->getMessage()}")
-                ->sendToDatabase(\App\Models\User::find($this->userId));
-
+            // Notification sent only in failed() after all retries are exhausted.
             Log::error('City AI translation failed', [
                 'city_id' => $this->cityId,
                 'translation_id' => $this->translationId,

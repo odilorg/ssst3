@@ -17,9 +17,14 @@ use OpenAI;
 class TranslationService
 {
     protected $client;
-    protected $model;
-    protected $temperature;
-    protected $provider;
+    protected string $model;
+    protected float $temperature;
+    protected string $provider;
+
+    /** Accumulated input tokens across the current translate* call. */
+    protected int $sessionInputTokens = 0;
+    /** Accumulated output tokens across the current translate* call. */
+    protected int $sessionOutputTokens = 0;
 
     public function __construct()
     {
@@ -42,11 +47,35 @@ class TranslationService
             $this->model = config('ai-translation.openai.model', 'gpt-4-turbo');
         }
 
-        $this->temperature = config('ai-translation.openai.temperature', 0.3);
+        // Use the temperature configured for the active provider.
+        $this->temperature = (float) config("ai-translation.{$this->provider}.temperature",
+            config('ai-translation.openai.temperature', 0.3));
     }
 
     /**
-     * Translate a single field with retry logic for rate limits
+     * The actual model/provider being used — for accurate log entries.
+     */
+    public function getModel(): string
+    {
+        return $this->model;
+    }
+
+    /**
+     * Total tokens used in the current translate* session.
+     */
+    public function getSessionTokensUsed(): int
+    {
+        return $this->sessionInputTokens + $this->sessionOutputTokens;
+    }
+
+    private function resetSessionTokens(): void
+    {
+        $this->sessionInputTokens = 0;
+        $this->sessionOutputTokens = 0;
+    }
+
+    /**
+     * Translate a single field with retry logic for rate limits.
      */
     public function translateField(string $text, string $targetLocale, string $sourceLocale = 'en', string $section = 'content'): string
     {
@@ -55,26 +84,45 @@ class TranslationService
         }
 
         $systemPrompt = $this->getSystemPrompt($targetLocale);
-        $userPrompt = $this->getUserPrompt($text, $targetLocale, $sourceLocale, $section);
+        $userPrompt   = $this->getUserPrompt($text, $targetLocale, $sourceLocale, $section);
+
+        // Pass per-section max_tokens if configured.
+        $maxTokens = config("ai-translation.sections.{$section}.max_tokens");
+
+        $requestParams = [
+            'model'       => $this->model,
+            'messages'    => [
+                ['role' => 'system', 'content' => $systemPrompt],
+                ['role' => 'user',   'content' => $userPrompt],
+            ],
+            'temperature' => $this->temperature,
+        ];
+
+        if ($maxTokens) {
+            $requestParams['max_tokens'] = (int) $maxTokens;
+        }
 
         $maxRetries = 3;
         $retryDelay = 2; // seconds
 
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
-                $response = $this->client->chat()->create([
-                    'model' => $this->model,
-                    'messages' => [
-                        ['role' => 'system', 'content' => $systemPrompt],
-                        ['role' => 'user', 'content' => $userPrompt],
-                    ],
-                    'temperature' => $this->temperature,
-                ]);
+                $response = $this->client->chat()->create($requestParams);
 
-                // Add small delay between API calls to avoid rate limits
-                usleep(300000); // 300ms delay
+                // Accumulate actual token usage from the API response.
+                $this->sessionInputTokens  += $response->usage->promptTokens     ?? 0;
+                $this->sessionOutputTokens += $response->usage->completionTokens ?? 0;
 
-                return trim($response->choices[0]->message->content);
+                // Add small delay between API calls to avoid rate limits.
+                usleep(300000); // 300 ms
+
+                $content = trim($response->choices[0]->message->content);
+
+                // Guard: reject empty or meta-text responses.
+                $this->assertValidTranslation($content, $section);
+
+                return $content;
+
             } catch (\Exception $e) {
                 $isRateLimit = str_contains($e->getMessage(), 'rate limit') ||
                                str_contains($e->getMessage(), 'Rate limit') ||
@@ -83,17 +131,17 @@ class TranslationService
                 if ($isRateLimit && $attempt < $maxRetries) {
                     Log::warning('AI Translation rate limit hit, retrying...', [
                         'attempt' => $attempt,
-                        'delay' => $retryDelay * $attempt,
+                        'delay'   => $retryDelay * $attempt,
                     ]);
                     sleep($retryDelay * $attempt); // Exponential backoff
                     continue;
                 }
 
                 Log::error('AI Translation failed for field', [
-                    'section' => $section,
-                    'target_locale' => $targetLocale,
-                    'error' => $e->getMessage(),
-                    'attempt' => $attempt,
+                    'section'        => $section,
+                    'target_locale'  => $targetLocale,
+                    'error'          => $e->getMessage(),
+                    'attempt'        => $attempt,
                 ]);
                 throw $e;
             }
@@ -103,11 +151,37 @@ class TranslationService
     }
 
     /**
-     * Translate entire tour to target locale
+     * Reject empty or obvious meta-text AI responses to avoid storing garbage.
+     */
+    private function assertValidTranslation(string $content, string $section): void
+    {
+        if ($content === '') {
+            throw new \Exception("AI returned empty response for section '{$section}'");
+        }
+
+        // Only test short responses — long content is unlikely to be meta-text.
+        if (strlen($content) < 200) {
+            $lower = strtolower($content);
+            $metaPatterns = ["i'm sorry", "i cannot", "i can't", 'as an ai', 'as a language model', 'sure, here'];
+
+            foreach ($metaPatterns as $phrase) {
+                if (str_contains($lower, $phrase)) {
+                    throw new \Exception(
+                        "AI returned meta-text instead of translation for '{$section}': " . substr($content, 0, 100)
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Translate entire tour to target locale.
      */
     public function translateTour(Tour $tour, string $targetLocale, array $sectionsToTranslate = []): array
     {
-        $sourceLocale = 'en'; // Default source
+        $this->resetSessionTokens();
+
+        $sourceLocale      = 'en';
         $sourceTranslation = $tour->translations()->where('locale', $sourceLocale)->first();
 
         if (!$sourceTranslation) {
@@ -116,13 +190,11 @@ class TranslationService
 
         $sections = config('ai-translation.sections');
 
-        // If no sections specified, translate all
         if (empty($sectionsToTranslate)) {
             $sectionsToTranslate = array_keys($sections);
         }
 
         $translations = [];
-        $totalTokens = 0;
 
         foreach ($sectionsToTranslate as $field) {
             if (!isset($sections[$field])) {
@@ -131,29 +203,23 @@ class TranslationService
 
             $sourceValue = $sourceTranslation->{$field};
 
-            // Fallback to Tour model for JSON fields if translation doesn't have them
+            // Fallback to Tour model for JSON fields if translation doesn't have them.
             if (empty($sourceValue)) {
                 if ($field === 'requirements_json' && !empty($tour->requirements)) {
                     $sourceValue = $tour->requirements;
                 } elseif ($field === 'faq_json' && $tour->faqs && $tour->faqs->isNotEmpty()) {
-                    // Convert Eloquent Collection to array of arrays for translation
-                    $sourceValue = $tour->faqs->map(function($item) {
-                        return [
-                            'question' => $item->question_text ?? $item->question ?? '',
-                            'answer' => $item->answer_text ?? $item->answer ?? '',
-                        ];
-                    })->toArray();
+                    $sourceValue = $tour->faqs->map(fn ($item) => [
+                        'question' => $item->question_text ?? $item->question ?? '',
+                        'answer'   => $item->answer_text  ?? $item->answer   ?? '',
+                    ])->toArray();
                 } elseif ($field === 'highlights_json' && !empty($tour->highlights)) {
                     $sourceValue = $tour->highlights;
                 } elseif ($field === 'itinerary_json' && $tour->topLevelItems && $tour->topLevelItems->isNotEmpty()) {
-                    // Convert Eloquent Collection to array of arrays for translation
-                    $sourceValue = $tour->topLevelItems->map(function($item) {
-                        return [
-                            'title' => $item->title ?? '',
-                            'description' => $item->description ?? '',
-                            'duration_minutes' => $item->duration_minutes ?? null,
-                        ];
-                    })->toArray();
+                    $sourceValue = $tour->topLevelItems->map(fn ($item) => [
+                        'title'            => $item->title            ?? '',
+                        'description'      => $item->description      ?? '',
+                        'duration_minutes' => $item->duration_minutes ?? null,
+                    ])->toArray();
                 } elseif ($field === 'included_json' && !empty($tour->included_items)) {
                     $sourceValue = $tour->included_items;
                 } elseif ($field === 'excluded_json' && !empty($tour->excluded_items)) {
@@ -161,27 +227,28 @@ class TranslationService
                 }
             }
 
-            // Skip if still empty after fallback
             if (empty($sourceValue)) {
                 continue;
             }
 
-            // Handle JSON fields (highlights, itinerary, FAQ, etc.)
             if (isset($sections[$field]['is_json']) && $sections[$field]['is_json']) {
                 $translations[$field] = $this->translateJsonField($sourceValue, $targetLocale, $sourceLocale, $field);
+            } elseif ($field === 'slug') {
+                $translations[$field] = $this->generateSlug(
+                    $sourceTranslation->title ?? $tour->title,
+                    $targetLocale,
+                    $tour->id
+                );
             } else {
-                // Handle special case for slug
-                if ($field === 'slug') {
-                    $translations[$field] = $this->generateSlug($sourceTranslation->title ?? $tour->title, $targetLocale, $tour->id);
-                } else {
-                    $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
-                }
+                $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
             }
         }
 
         return [
-            'translations' => $translations,
-            'tokens_used' => $totalTokens,
+            'translations'   => $translations,
+            'tokens_used'    => $this->getSessionTokensUsed(),
+            'tokens_input'   => $this->sessionInputTokens,
+            'tokens_output'  => $this->sessionOutputTokens,
         ];
     }
 
@@ -198,7 +265,6 @@ class TranslationService
 
         foreach ($jsonData as $item) {
             if (is_array($item)) {
-                // Handle structured arrays (FAQs, itinerary, etc.)
                 $translatedItem = [];
                 foreach ($item as $key => $value) {
                     if (is_string($value) && !empty($value)) {
@@ -209,8 +275,6 @@ class TranslationService
                 }
                 $translated[] = $translatedItem;
             } elseif (is_string($item)) {
-                // Handle simple string arrays (highlights, included, excluded)
-                // Keep as simple strings, not wrapped in ['text' => ...]
                 $translated[] = $this->translateField($item, $targetLocale, $sourceLocale, $fieldName);
             }
         }
@@ -219,79 +283,72 @@ class TranslationService
     }
 
     /**
-     * Generate unique slug from translated title
+     * Generate unique slug from translated title.
      *
-     * Strategy:
-     * 1. Try slug from translated title
-     * 2. If empty (non-Latin scripts) → fallback to English slug
-     * 3. If still empty (symbols only) → fallback to "tour-{id}"
-     * 4. Ensure uniqueness within (locale, slug) by appending -{id} if needed
+     * Fallback chain:
+     * 1. Translate title → slug from that
+     * 2. If non-Latin script produces empty slug → fall back to English title slug
+     * 3. If still empty → guaranteed unique "tour-{id}-{locale}"
+     * 4. Append counter/id to ensure DB uniqueness
      *
-     * @param string $title English title
-     * @param string $locale Target locale
-     * @param int $tourId Tour ID for uniqueness guarantee
-     * @return string Unique slug for this locale
+     * The translation step is wrapped in try-catch so a translation API
+     * failure cannot propagate empty-slug poison into the database.
      */
     protected function generateSlug(string $title, string $locale, int $tourId): string
     {
-        // 1. Translate title first
-        $translatedTitle = $this->translateField($title, $locale, 'en', 'title');
-
-        // 2. Generate base slug from translated title
-        $baseSlug = Str::slug($translatedTitle);
-
-        // 3. Fallback to English slug for non-Latin scripts (ja, zh, ko, ar, etc.)
-        if (empty($baseSlug)) {
-            $baseSlug = Str::slug($title);
+        // Attempt to translate the title; fall back silently on any failure.
+        try {
+            $translatedTitle = $this->translateField($title, $locale, 'en', 'title');
+            $baseSlug        = Str::slug($translatedTitle);
+        } catch (\Exception $e) {
+            Log::warning('Slug title translation failed, using English fallback', [
+                'locale' => $locale,
+                'error'  => $e->getMessage(),
+            ]);
+            $baseSlug = '';
         }
 
-        // 4. Final fallback: if still empty (title is only symbols), use tour-{id}
+        // Non-Latin scripts (ja, zh, ko, ar, …) produce empty slugs from Str::slug.
         if (empty($baseSlug)) {
-            $baseSlug = "tour-{$tourId}";
+            $baseSlug = Str::slug($title); // English title
         }
 
-        // 5. Ensure uniqueness within (locale, slug)
-        // Check if this slug already exists for this locale (excluding current tour)
-        $slug = $baseSlug;
+        // Last resort: deterministic, locale-scoped, guaranteed non-empty.
+        if (empty($baseSlug)) {
+            $baseSlug = "tour-{$tourId}-{$locale}";
+        }
+
+        // Ensure uniqueness within (locale, slug), excluding the current tour.
+        $slug    = $baseSlug;
         $counter = 2;
 
         while (TourTranslation::where('locale', $locale)
             ->where('slug', $slug)
             ->where('tour_id', '!=', $tourId)
             ->exists()) {
-            // Collision detected - append counter or tour_id
-            if ($counter <= 10) {
-                // Try pretty slugs first: base-2, base-3, etc.
-                $slug = "{$baseSlug}-{$counter}";
-                $counter++;
-            } else {
-                // After 10 attempts, just use tour_id for guaranteed uniqueness
-                $slug = "{$baseSlug}-{$tourId}";
-                break;
-            }
+            $slug = $counter <= 10
+                ? "{$baseSlug}-{$counter}"
+                : "{$baseSlug}-{$tourId}-{$locale}"; // guaranteed unique after 10 attempts
+            $counter++;
         }
 
         return $slug;
     }
 
     /**
-     * Translate entire blog post to target locale
+     * Translate entire blog post to target locale.
      */
     public function translateBlogPost(BlogPost $blogPost, string $targetLocale, ?int $translationId = null): array
     {
-        $sourceLocale = 'en';
+        $this->resetSessionTokens();
+
+        $sourceLocale      = 'en';
         $sourceTranslation = $blogPost->translations()->where('locale', $sourceLocale)->first();
 
-        // Use EN translation row if exists, otherwise fall back to blog post's own fields
-        $source = $sourceTranslation ?? $blogPost;
-
+        $source       = $sourceTranslation ?? $blogPost;
         $translations = [];
-        $totalTokens = 0;
 
-        // Translate text fields
-        $fields = ['title', 'excerpt', 'content', 'seo_title', 'seo_description'];
-
-        foreach ($fields as $field) {
+        foreach (['title', 'excerpt', 'content', 'seo_title', 'seo_description'] as $field) {
             $sourceValue = $source->{$field};
 
             if (empty($sourceValue)) {
@@ -303,7 +360,6 @@ class TranslationService
 
         $englishTitle = $source->title ?? $blogPost->title;
 
-        // Generate slug with non-Latin fallback
         $translations['slug'] = $this->generateBlogPostSlug(
             $translations['title'] ?? $englishTitle,
             $englishTitle,
@@ -313,18 +369,15 @@ class TranslationService
         );
 
         return [
-            'translations' => $translations,
-            'tokens_used' => $totalTokens,
+            'translations'  => $translations,
+            'tokens_used'   => $this->getSessionTokensUsed(),
+            'tokens_input'  => $this->sessionInputTokens,
+            'tokens_output' => $this->sessionOutputTokens,
         ];
     }
 
     /**
      * Generate unique blog post slug with non-Latin fallback.
-     *
-     * 1. Str::slug(translated title)
-     * 2. If empty (non-Latin) → Str::slug(English title)
-     * 3. If still empty → blog-post-{id}
-     * 4. Ensure unique in BlogPostTranslation (ignoring current row)
      */
     protected function generateBlogPostSlug(string $translatedTitle, string $englishTitle, string $locale, int $blogPostId, ?int $translationId = null): string
     {
@@ -335,48 +388,45 @@ class TranslationService
         }
 
         if (empty($baseSlug)) {
-            $baseSlug = "blog-post-{$blogPostId}";
+            $baseSlug = "blog-post-{$blogPostId}-{$locale}";
         }
 
-        $slug = $baseSlug;
+        $slug    = $baseSlug;
         $counter = 2;
 
         while (BlogPostTranslation::where('locale', $locale)
             ->where('slug', $slug)
             ->when($translationId, fn ($q) => $q->where('id', '!=', $translationId))
             ->exists()) {
-            if ($counter <= 10) {
-                $slug = "{$baseSlug}-{$counter}";
-                $counter++;
-            } else {
-                $slug = "{$baseSlug}-{$blogPostId}";
-                break;
-            }
+            $slug = $counter <= 10
+                ? "{$baseSlug}-{$counter}"
+                : "{$baseSlug}-{$blogPostId}-{$locale}";
+            $counter++;
         }
 
         return $slug;
     }
 
     /**
-     * Get system prompt for translation
+     * Get system prompt for translation.
      */
     protected function getSystemPrompt(string $locale): string
     {
-        $localeNames = config('ai-translation.locale_names', []);
+        $localeNames  = config('ai-translation.locale_names', []);
         $languageName = $localeNames[$locale] ?? $locale;
 
         return str_replace('{locale}', $languageName, config('ai-translation.prompts.system'));
     }
 
     /**
-     * Get user prompt for translation
+     * Get user prompt for translation.
      */
     protected function getUserPrompt(string $content, string $targetLocale, string $sourceLocale, string $section): string
     {
-        $localeNames = config('ai-translation.locale_names', []);
+        $localeNames    = config('ai-translation.locale_names', []);
         $targetLanguage = $localeNames[$targetLocale] ?? $targetLocale;
         $sourceLanguage = $localeNames[$sourceLocale] ?? $sourceLocale;
-        $sectionLabel = config("ai-translation.sections.{$section}.label", $section);
+        $sectionLabel   = config("ai-translation.sections.{$section}.label", $section);
 
         $template = config('ai-translation.prompts.user_template');
 
@@ -388,21 +438,22 @@ class TranslationService
     }
 
     /**
-     * Estimate translation cost
+     * Estimate translation cost from actual input/output token counts.
      */
     public function estimateCost(int $inputTokens, int $outputTokens): float
     {
-        $costs = config('ai-translation.cost_per_1k_tokens');
+        $costs     = config('ai-translation.cost_per_1k_tokens');
+        // Use gpt-4-turbo as explicit fallback so unknown models don't silently under-estimate.
         $modelCost = $costs[$this->model] ?? $costs['gpt-4-turbo'];
 
-        $inputCost = ($inputTokens / 1000) * $modelCost['input'];
+        $inputCost  = ($inputTokens  / 1000) * $modelCost['input'];
         $outputCost = ($outputTokens / 1000) * $modelCost['output'];
 
         return round($inputCost + $outputCost, 4);
     }
 
     /**
-     * Rough token count estimate (4 chars ≈ 1 token)
+     * Rough token count estimate (4 chars ≈ 1 token).
      */
     public function estimateTokens(string $text): int
     {
@@ -410,20 +461,19 @@ class TranslationService
     }
 
     /**
-     * Translate entire city to target locale
+     * Translate entire city to target locale.
      */
     public function translateCity(City $city, string $targetLocale): array
     {
-        $sourceLocale = 'en';
+        $this->resetSessionTokens();
+
+        $sourceLocale      = 'en';
         $sourceTranslation = $city->translations()->where('locale', $sourceLocale)->first();
 
-        // Use EN translation row if exists, otherwise fall back to city's own fields
-        $source = $sourceTranslation ?? $city;
-
+        $source       = $sourceTranslation ?? $city;
         $translations = [];
-        $fields = ['name', 'tagline', 'short_description', 'description', 'seo_title', 'seo_description'];
 
-        foreach ($fields as $field) {
+        foreach (['name', 'tagline', 'short_description', 'description', 'seo_title', 'seo_description'] as $field) {
             $sourceValue = $source->{$field};
 
             if (empty($sourceValue)) {
@@ -433,8 +483,8 @@ class TranslationService
             $translations[$field] = $this->translateField($sourceValue, $targetLocale, $sourceLocale, $field);
         }
 
-        // Generate slug
         $englishName = $source->name ?? $city->name;
+
         $translations['slug'] = $this->generateCitySlug(
             $translations['name'] ?? $englishName,
             $englishName,
@@ -443,8 +493,10 @@ class TranslationService
         );
 
         return [
-            'translations' => $translations,
-            'tokens_used' => 0,
+            'translations'  => $translations,
+            'tokens_used'   => $this->getSessionTokensUsed(),
+            'tokens_input'  => $this->sessionInputTokens,
+            'tokens_output' => $this->sessionOutputTokens,
         ];
     }
 
@@ -460,23 +512,20 @@ class TranslationService
         }
 
         if (empty($baseSlug)) {
-            $baseSlug = "city-{$cityId}";
+            $baseSlug = "city-{$cityId}-{$locale}";
         }
 
-        $slug = $baseSlug;
+        $slug    = $baseSlug;
         $counter = 2;
 
         while (CityTranslation::where('locale', $locale)
             ->where('slug', $slug)
             ->where('city_id', '!=', $cityId)
             ->exists()) {
-            if ($counter <= 10) {
-                $slug = "{$baseSlug}-{$counter}";
-                $counter++;
-            } else {
-                $slug = "{$baseSlug}-{$cityId}";
-                break;
-            }
+            $slug = $counter <= 10
+                ? "{$baseSlug}-{$counter}"
+                : "{$baseSlug}-{$cityId}-{$locale}";
+            $counter++;
         }
 
         return $slug;
@@ -488,7 +537,7 @@ class TranslationService
     public function checkRateLimits(int $userId): void
     {
         $maxPerHour = config('ai-translation.rate_limit.max_per_hour', 10);
-        $maxPerDay = config('ai-translation.rate_limit.max_per_day', 50);
+        $maxPerDay  = config('ai-translation.rate_limit.max_per_day', 50);
 
         $hourlyCount = TranslationLog::where('user_id', $userId)
             ->where('created_at', '>=', now()->subHour())
@@ -512,7 +561,7 @@ class TranslationService
      */
     public function checkCostLimits(): void
     {
-        $dailyLimit = config('ai-translation.cost_limits.daily_usd', 10.00);
+        $dailyLimit   = config('ai-translation.cost_limits.daily_usd', 10.00);
         $monthlyLimit = config('ai-translation.cost_limits.monthly_usd', 100.00);
 
         $dailyCost = TranslationLog::getTotalCost('day');
@@ -531,25 +580,21 @@ class TranslationService
      */
     public function estimateCostForContent(string $content): float
     {
-        $inputTokens = $this->estimateTokens($content);
-        // Output roughly equals input for translations
-        $outputTokens = $inputTokens;
+        $inputTokens  = $this->estimateTokens($content);
+        $outputTokens = $inputTokens; // Output roughly equals input for translations
 
         return $this->estimateCost($inputTokens, $outputTokens);
     }
 
     /**
-     * Validate API key
+     * Validate API key.
      */
     public function validateApiKey(): bool
     {
         try {
-            // Test with a simple request
             $response = $this->client->chat()->create([
-                'model' => $this->model,
-                'messages' => [
-                    ['role' => 'user', 'content' => 'Test'],
-                ],
+                'model'      => $this->model,
+                'messages'   => [['role' => 'user', 'content' => 'Test']],
                 'max_tokens' => 5,
             ]);
 

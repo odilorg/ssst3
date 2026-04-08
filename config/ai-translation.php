@@ -38,6 +38,7 @@ return [
     'deepseek' => [
         'model' => env('DEEPSEEK_MODEL', 'deepseek-chat'),
         'base_uri' => 'https://api.deepseek.com',
+        'temperature' => 0.3,
     ],
 
     /*
