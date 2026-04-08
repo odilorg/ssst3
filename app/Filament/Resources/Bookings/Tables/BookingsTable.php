@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bookings\Tables;
 
+use App\Filament\Actions\GeneratePaymentLinkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -117,6 +118,8 @@ class BookingsTable
             ])
             ->recordActions([
                 EditAction::make(),
+
+        GeneratePaymentLinkAction::make(),
 
         Action::make('estimate')
             ->label('Смета')

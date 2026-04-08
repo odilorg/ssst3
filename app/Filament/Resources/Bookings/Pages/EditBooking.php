@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources\Bookings\Pages;
 
-use App\Filament\Actions\GeneratePaymentLinkAction;
 use App\Filament\Resources\Bookings\BookingResource;
 use App\Filament\Resources\Bookings\Widgets\BookingCostWidget;
-use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -16,12 +14,6 @@ class EditBooking extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('pay_link_test')
-                ->label('Generate Payment Link')
-                ->icon('heroicon-o-link')
-                ->color('success')
-                ->visible(true)
-                ->action(fn () => null),
             DeleteAction::make(),
         ];
     }

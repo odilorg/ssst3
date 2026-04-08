@@ -23,6 +23,7 @@ class GeneratePaymentLinkAction
             ->label('Generate Payment Link')
             ->icon('heroicon-o-link')
             ->color('success')
+            ->authorize(fn () => true)
             ->modalHeading('Generate Octobank Payment Link')
             ->modalWidth('lg')
             // Static form — no record access at definition time (Filament v4)
