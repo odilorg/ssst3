@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             // Drop denormalized customer fields - using customer relationship instead
-            $table->dropColumn([
-                'customer_name',
-                'customer_email',
-                'customer_phone',
-                'customer_country',
-            ]);
+            // Guard: columns may not exist in fresh installs (already omitted from base migration)
+            $toDrop = array_filter(
+                ['customer_name', 'customer_email', 'customer_phone', 'customer_country'],
+                fn ($col) => Schema::hasColumn('bookings', $col)
+            );
+            if (!empty($toDrop)) {
+                $table->dropColumn(array_values($toDrop));
+            }
         });
     }
 
