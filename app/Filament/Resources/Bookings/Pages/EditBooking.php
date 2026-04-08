@@ -20,6 +20,7 @@ class EditBooking extends EditRecord
                 ->label('Generate Payment Link')
                 ->icon('heroicon-o-link')
                 ->color('success')
+                ->visible(true)
                 ->action(fn () => null),
             DeleteAction::make(),
         ];
