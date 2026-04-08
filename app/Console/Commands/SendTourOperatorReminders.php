@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Mail\TourOperatorReminderMail;
 use App\Models\Booking;
 use App\Models\TourOperatorReminder;
+use App\Services\TelegramNotificationService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -135,7 +135,7 @@ class SendTourOperatorReminders extends Command
         Mail::to($recipientEmail)->send(new TourOperatorReminderMail($booking, $type));
         $reminder->update(['email_sent' => true]);
 
-        $this->sendTelegramNotification($booking, $type);
+        app(TelegramNotificationService::class)->sendTourOperatorReminder($booking, $type);
         $reminder->markTelegramSent();
 
         $reminder->markAsSent();
@@ -148,71 +148,4 @@ class SendTourOperatorReminders extends Command
         ]);
     }
 
-    private function sendTelegramNotification(Booking $booking, string $type): void
-    {
-        $chatId = config('services.telegram.tour_operator_chat_id');
-        $botToken = config('services.telegram.bot_token');
-
-        if (!$chatId || !$botToken) {
-            Log::warning('Telegram not configured for tour operator reminders');
-            return;
-        }
-
-        $daysUntil = $booking->daysUntilTour();
-        $emoji = match($type) {
-            '7_days' => '📅',
-            '3_days' => '⚠️',
-            '1_day' => '🚨',
-            default => '📋',
-        };
-
-        $urgency = match($type) {
-            '7_days' => 'TOUR IN 7 DAYS',
-            '3_days' => 'TOUR IN 3 DAYS',
-            '1_day' => 'TOUR TOMORROW',
-            default => 'UPCOMING TOUR',
-        };
-
-        $customer = $booking->customer;
-        $tour = $booking->tour;
-
-        $passengerStatus = $booking->passenger_details_submitted_at ? '✅' : '⚠️ MISSING';
-        $paymentStatus = $booking->payment_status === 'paid' ? '✅ Paid' : "⚠️ {$booking->payment_status}";
-
-        $message = "{$emoji} <b>{$urgency}</b>\n\n";
-        $message .= "<b>Booking:</b> #{$booking->reference}\n";
-        $message .= "<b>Tour:</b> " . ($tour?->title ?? 'N/A') . "\n";
-        $message .= "<b>Date:</b> {$booking->start_date->format('M j, Y')} (in {$daysUntil} days)\n";
-        $message .= "<b>Guests:</b> {$booking->pax_total}\n\n";
-        $message .= "👤 <b>Customer:</b>\n";
-        $message .= ($customer?->name ?? 'N/A') . "\n";
-        $message .= "📧 " . ($customer?->email ?? 'N/A') . "\n";
-        $message .= "📱 " . ($customer?->phone ?? 'N/A') . "\n\n";
-        $message .= "📋 <b>Status:</b>\n";
-        $message .= "• Passenger details: {$passengerStatus}\n";
-        $message .= "• Payment: {$paymentStatus}\n";
-        $message .= "• Driver: " . ($booking->driver_name ?: "⚠️ NOT ASSIGNED") . "\n";
-        $message .= "• Guide: " . ($booking->guide_name ?: "⚠️ NOT ASSIGNED") . "\n";
-
-        if ($booking->special_requests) {
-            $message .= "\n📝 <b>Special requests:</b>\n{$booking->special_requests}\n";
-        }
-
-        $adminUrl = config('app.url') . '/admin/bookings/' . $booking->id;
-        $message .= "\n<a href=\"{$adminUrl}\">View in Admin</a>";
-
-        try {
-            Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                'chat_id' => $chatId,
-                'text' => $message,
-                'parse_mode' => 'HTML',
-                'disable_web_page_preview' => true,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Telegram notification failed', [
-                'booking_id' => $booking->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
-    }
 }
