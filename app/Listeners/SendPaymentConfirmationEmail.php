@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\PaymentSucceeded;
 use App\Mail\BalancePaymentReceived;
+use App\Services\TelegramNotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -52,6 +53,17 @@ class SendPaymentConfirmationEmail implements ShouldQueue
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to send payment confirmation email', [
+                'booking_id' => $booking->id,
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Notify admin on Telegram — separate try/catch so email failure doesn't suppress Telegram and vice versa
+        try {
+            app(TelegramNotificationService::class)->sendPaymentSucceeded($payment);
+        } catch (\Exception $e) {
+            Log::error('Failed to send payment Telegram notification', [
                 'booking_id' => $booking->id,
                 'payment_id' => $payment->id,
                 'error' => $e->getMessage(),
