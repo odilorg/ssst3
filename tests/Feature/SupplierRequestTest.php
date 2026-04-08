@@ -185,8 +185,8 @@ class SupplierRequestTest extends TestCase
 
         $restaurant = $this->makeRestaurant('Multi-Day Restaurant', 'Main Square');
 
-        $lunch  = MealType::create(['name' => 'Lunch',  'restaurant_id' => $restaurant->id]);
-        $dinner = MealType::create(['name' => 'Dinner', 'restaurant_id' => $restaurant->id]);
+        $lunch  = MealType::create(['name' => 'Lunch',  'restaurant_id' => $restaurant->id, 'price' => 0]);
+        $dinner = MealType::create(['name' => 'Dinner', 'restaurant_id' => $restaurant->id, 'price' => 0]);
 
         // Day 1
         $item1 = BookingItineraryItem::create([
@@ -245,7 +245,7 @@ class SupplierRequestTest extends TestCase
 
         $restaurant = $this->makeRestaurant('Solo Restaurant', 'Side Street 5');
 
-        $breakfast = MealType::create(['name' => 'Breakfast', 'restaurant_id' => $restaurant->id]);
+        $breakfast = MealType::create(['name' => 'Breakfast', 'restaurant_id' => $restaurant->id, 'price' => 0]);
 
         $item = BookingItineraryItem::create([
             'booking_id' => $booking->id,
