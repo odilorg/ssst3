@@ -8,6 +8,7 @@ use App\Models\Hotel;
 use App\Models\Transport;
 use App\Models\Guide;
 use App\Models\Restaurant;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
@@ -68,6 +69,25 @@ class SupplierRequestService
                 $supplier = $assignment->assignable;
 
                 if (!$supplier) continue;
+
+                // Skip if a pending request already exists for this booking + supplier.
+                // Prevents duplicates when the action is triggered multiple times.
+                $existing = SupplierRequest::where('booking_id', $booking->id)
+                    ->where('supplier_type', $supplierType)
+                    ->where('supplier_id', $supplier->id)
+                    ->where('status', 'pending')
+                    ->first();
+
+                if ($existing) {
+                    Log::info('SupplierRequestService: skipped duplicate', [
+                        'booking_id'    => $booking->id,
+                        'supplier_type' => $supplierType,
+                        'supplier_id'   => $supplier->id,
+                        'existing_id'   => $existing->id,
+                    ]);
+                    $requests[] = $existing;
+                    continue;
+                }
 
                 $requestData = $this->buildRequestData($booking, $assignment, $supplierType);
 

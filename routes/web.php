@@ -121,8 +121,9 @@ Route::post('/tours/{slug}/reviews', [\App\Http\Controllers\ReviewController::cl
 Route::post('/reviews/{review}/flag', [\App\Http\Controllers\ReviewController::class, 'flag'])
     ->name('reviews.flag');
 
-// Printable booking estimate route
+// Printable booking estimate route — admin only
 Route::get('/booking/{booking}/estimate/print', function (Booking $booking) {
+    abort_unless(auth()->check() && auth()->user()->can('viewEstimate', $booking), 403);
     $pricingService = app(PricingService::class);
 
     // Get all itinerary items for this booking, ordered by date and sort_order
@@ -406,8 +407,10 @@ Route::post('/booking/{booking}/generate-requests', function (Booking $booking) 
     }
 })->name('booking.generate.requests');
 
-// Download individual supplier request PDF
+// Download individual supplier request PDF — admin only
 Route::get('/supplier-request/{request}/download', function (\App\Models\SupplierRequest $request) {
+    abort_unless(auth()->check() && auth()->user()->can('download', $request), 403);
+
     if (!$request->pdf_path) {
         abort(404, 'PDF файл не найден');
     }
