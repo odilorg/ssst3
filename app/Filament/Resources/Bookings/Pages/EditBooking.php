@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bookings\Pages;
 
+use App\Filament\Actions\GeneratePaymentLinkAction;
 use App\Filament\Resources\Bookings\BookingResource;
 use App\Filament\Resources\Bookings\Widgets\BookingCostWidget;
 use Filament\Actions\DeleteAction;
@@ -14,6 +15,7 @@ class EditBooking extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            GeneratePaymentLinkAction::make(),
             DeleteAction::make(),
         ];
     }

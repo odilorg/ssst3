@@ -5,8 +5,9 @@ namespace App\Filament\Resources\Bookings;
 use App\Filament\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Resources\Bookings\Pages\ListBookings;
-use App\Filament\Resources\Bookings\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\Bookings\RelationManagers\AssignmentsRelationManager;
+use App\Filament\Resources\Bookings\RelationManagers\ItemsRelationManager;
+use App\Filament\Resources\Bookings\RelationManagers\OctobankPaymentsRelationManager;
 use App\Filament\Resources\Bookings\RelationManagers\SupplierRequestsRelationManager;
 use App\Filament\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Resources\Bookings\Tables\BookingsTable;
@@ -70,6 +71,7 @@ class BookingResource extends Resource
         return [
             ItemsRelationManager::class,
             SupplierRequestsRelationManager::class,
+            OctobankPaymentsRelationManager::class,
         ];
     }
 

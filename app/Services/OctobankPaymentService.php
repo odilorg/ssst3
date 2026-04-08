@@ -206,6 +206,149 @@ class OctobankPaymentService
     }
 
     /**
+     * Generate a payment link from the admin panel.
+     *
+     * Unlike the guest-facing initializePayment(), this method:
+     * - Works in USD (converts to UZS internally, snapshots both values)
+     * - Defaults amount to the booking's outstanding USD balance
+     * - Rejects amounts that are zero, negative, or exceed total_price
+     * - Blocks creation when a non-terminal link already exists for the booking
+     * - Persists amount_usd, fx_rate_used, purpose, generated_by, expires_at
+     *
+     * @param Booking $booking       The booking to charge.
+     * @param float|null $amountUsd  Amount in USD. Null → outstanding balance.
+     * @param string $purpose        'deposit' | 'balance' | 'custom'
+     * @param int|null $generatedBy  Filament user ID who generated the link.
+     * @param array $options         Extra options forwarded to buildPaymentRequest().
+     *
+     * @throws Exception  If amount is invalid, a link is already active, or the FX rate is unavailable.
+     */
+    public function initializeAdminPaymentLink(
+        Booking $booking,
+        ?float $amountUsd,
+        string $purpose = 'balance',
+        ?int $generatedBy = null,
+        array $options = []
+    ): OctobankPayment {
+        // --- 1. Resolve default amount ---
+        if ($amountUsd === null) {
+            $paid = (float) ($booking->deposit_amount ?? 0);
+            $amountUsd = max(0, (float) $booking->total_price - $paid);
+        }
+
+        // --- 2. Validate amount bounds ---
+        if ($amountUsd <= 0) {
+            throw new Exception('Payment amount must be greater than zero.');
+        }
+
+        $ceiling = (float) $booking->total_price;
+        if ($ceiling > 0 && $amountUsd > $ceiling) {
+            throw new Exception(
+                sprintf(
+                    'Amount $%.2f exceeds booking total $%.2f.',
+                    $amountUsd,
+                    $ceiling
+                )
+            );
+        }
+
+        // --- 3. Block duplicate active links ---
+        $activeLinkExists = OctobankPayment::where('booking_id', $booking->id)
+            ->whereIn('status', [OctobankPayment::STATUS_CREATED, OctobankPayment::STATUS_WAITING])
+            ->exists();
+
+        if ($activeLinkExists) {
+            throw new Exception(
+                'This booking already has an active payment link. ' .
+                'Cancel or wait for the existing link to expire before generating a new one.'
+            );
+        }
+
+        // --- 4. Snapshot FX rate and convert to UZS ---
+        // throwIfStale=true: refuse to generate a link with a rate older than 24 h.
+        $fxRate = $this->getExchangeRate(throwIfStale: true);
+        $amountUzs = round($amountUsd * $fxRate);
+
+        // --- 5. Resolve link TTL and expiry timestamp ---
+        $ttlMinutes = (int) config('services.octobank.ttl', 15);
+        $expiresAt = now()->addMinutes($ttlMinutes);
+
+        // --- 6. Build description from purpose if not provided ---
+        $tourTitle = optional($booking->tour)->title ?? 'Tour';
+        $description = $options['description'] ?? match ($purpose) {
+            'deposit' => "Deposit payment — {$tourTitle}",
+            'balance' => "Balance payment — {$tourTitle}",
+            default   => "Payment — {$tourTitle}",
+        };
+
+        $shopTransactionId = OctobankPayment::generateShopTransactionId();
+
+        $payment = OctobankPayment::create([
+            'booking_id'             => $booking->id,
+            'octo_shop_transaction_id' => $shopTransactionId,
+            'amount'                 => $amountUzs,
+            'amount_usd'             => $amountUsd,
+            'fx_rate_used'           => $fxRate,
+            'currency'               => 'UZS',
+            'description'            => $description,
+            'purpose'                => $purpose,
+            'generated_by'           => $generatedBy,
+            'expires_at'             => $expiresAt,
+            'status'                 => OctobankPayment::STATUS_CREATED,
+            'ip_address'             => request()->ip(),
+            'user_agent'             => request()->userAgent(),
+        ]);
+
+        try {
+            $requestPayload = $this->buildPaymentRequest($payment, $booking, $options);
+            $payment->update(['request_payload' => $requestPayload]);
+
+            $response = Http::withHeaders(['Content-Type' => 'application/json'])
+                ->post($this->apiUrl . '/prepare_payment', $requestPayload);
+
+            $responseData = $response->json();
+            $payment->update(['response_payload' => $responseData]);
+
+            if (!isset($responseData['data']['octo_pay_url'])) {
+                $errorMessage = $responseData['error_message'] ?? $responseData['message'] ?? 'No octo_pay_url in response';
+                $payment->markAsFailed($responseData['error'] ?? 'API_ERROR', $errorMessage);
+
+                Log::error('Admin Octobank payment link generation failed', [
+                    'payment_id' => $payment->id,
+                    'booking_id' => $booking->id,
+                    'response'   => $responseData,
+                ]);
+
+                throw new Exception('Payment link generation failed: ' . $errorMessage);
+            }
+
+            $payment->update([
+                'octo_payment_uuid' => $responseData['data']['octo_payment_UUID'] ?? null,
+                'octo_payment_url'  => $responseData['data']['octo_pay_url'],
+                'status'            => OctobankPayment::STATUS_WAITING,
+            ]);
+
+            Log::info('Admin payment link generated', [
+                'payment_id'   => $payment->id,
+                'booking_id'   => $booking->id,
+                'amount_usd'   => $amountUsd,
+                'amount_uzs'   => $amountUzs,
+                'fx_rate'      => $fxRate,
+                'purpose'      => $purpose,
+                'generated_by' => $generatedBy,
+                'expires_at'   => $expiresAt->toDateTimeString(),
+            ]);
+        } catch (Exception $e) {
+            if ($payment->status === OctobankPayment::STATUS_CREATED) {
+                $payment->markAsFailed('EXCEPTION', $e->getMessage());
+            }
+            throw $e;
+        }
+
+        return $payment;
+    }
+
+    /**
      * Build the payment request payload
      *
      * WARNING: This payload contains octo_secret which is required by Octobank's API spec.

@@ -16,8 +16,13 @@ class OctobankPayment extends Model
         'octo_payment_uuid',
         'octo_shop_transaction_id',
         'amount',
+        'amount_usd',
+        'fx_rate_used',
         'currency',
         'description',
+        'purpose',
+        'generated_by',
+        'expires_at',
         'status',
         'octo_payment_url',
         'payment_method',
@@ -40,12 +45,15 @@ class OctobankPayment extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'amount_usd' => 'decimal:2',
+        'fx_rate_used' => 'decimal:4',
         'refunded_amount' => 'decimal:2',
         'webhook_payload' => 'array',
         'request_payload' => 'array',
         'response_payload' => 'array',
         'webhook_received_at' => 'datetime',
         'card_token_expires_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     // Status constants

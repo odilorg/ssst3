@@ -120,6 +120,11 @@ class Booking extends Model
         return $this->belongsTo(Tour::class);
     }
 
+    public function octobankPayments()
+    {
+        return $this->hasMany(OctobankPayment::class)->latest();
+    }
+
     public function departure()
     {
         return $this->belongsTo(TourDeparture::class, 'departure_id');
