@@ -86,6 +86,7 @@ class SupplierRequestTest extends TestCase
         $restaurant = Restaurant::create([
             'name'    => 'Samarkand Cafe',
             'address' => 'Test Street 1',
+            'phone'   => '',
         ]);
 
         // Pre-create the first pending request (as Phase 1 dedup code expects)
@@ -189,6 +190,7 @@ class SupplierRequestTest extends TestCase
         $restaurant = Restaurant::create([
             'name'    => 'Multi-Day Restaurant',
             'address' => 'Main Square',
+            'phone'   => '',
         ]);
 
         $lunch  = MealType::create(['name' => 'Lunch',  'restaurant_id' => $restaurant->id]);
@@ -252,6 +254,7 @@ class SupplierRequestTest extends TestCase
         $restaurant = Restaurant::create([
             'name'    => 'Solo Restaurant',
             'address' => 'Side Street 5',
+            'phone'   => '',
         ]);
 
         $breakfast = MealType::create(['name' => 'Breakfast', 'restaurant_id' => $restaurant->id]);
