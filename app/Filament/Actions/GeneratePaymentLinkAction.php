@@ -11,7 +11,6 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
@@ -113,7 +112,7 @@ class GeneratePaymentLinkAction
                         ->success()
                         ->persistent()
                         ->actions([
-                            NotificationAction::make('open')
+                            Action::make('open')
                                 ->label('Open Link')
                                 ->url($payment->octo_payment_url)
                                 ->openUrlInNewTab(),
