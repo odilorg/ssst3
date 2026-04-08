@@ -124,53 +124,6 @@ Route::post('/reviews/{review}/flag', [\App\Http\Controllers\ReviewController::c
 Route::get('/booking/{booking}/estimate/print', [BookingEstimateController::class, 'show'])
     ->name('booking.estimate.print');
 
-// Generate supplier requests for a booking
-Route::post('/booking/{booking}/generate-requests', function (Booking $booking) {
-    try {
-        $requestService = app(SupplierRequestService::class);
-        
-        // Generate requests for all assigned suppliers
-        $requests = $requestService->generateRequestsForBooking($booking);
-        
-        if (empty($requests)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Нет назначенных поставщиков для генерации заявок'
-            ], 400);
-        }
-        
-        // Prepare response data
-        $responseData = [];
-        foreach ($requests as $request) {
-            $responseData[] = [
-                'id' => $request->id,
-                'supplier_type' => $request->supplier_type,
-                'supplier_type_label' => $request->supplier_type_label,
-                'supplier_type_icon' => $request->supplier_type_icon,
-                'supplier_name' => $request->supplier?->name ?? 'Неизвестный поставщик',
-                'status' => $request->status,
-                'status_label' => $request->status_label,
-                'expires_at' => $request->expires_at?->format('d.m.Y H:i'),
-                'pdf_url' => $requestService->getDownloadUrl($request->pdf_path),
-                'pdf_path' => $request->pdf_path,
-            ];
-        }
-        
-        return response()->json([
-            'success' => true,
-            'message' => "Сгенерировано " . count($requests) . " заявок",
-            'requests' => $responseData
-        ]);
-        
-    } catch (\Exception $e) {
-        \Log::error("Failed to generate supplier requests: " . $e->getMessage());
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Ошибка при генерации заявок: ' . $e->getMessage()
-        ], 500);
-    }
-})->name('booking.generate.requests');
 
 // Download individual supplier request PDF — admin only
 Route::get('/supplier-request/{request}/download', function (\App\Models\SupplierRequest $request) {

@@ -478,27 +478,76 @@ class SupplierRequestService
     }
     
     /**
-     * Build restaurant-specific request data
+     * Build restaurant-specific request data.
+     *
+     * Collects ALL meals for this restaurant across every itinerary day so that
+     * a restaurant used on multiple days (e.g. breakfast + dinner on separate days)
+     * is represented fully in the PDF — not just the first occurrence.
      */
     private function buildRestaurantRequestData(Booking $booking, $assignment)
     {
         $restaurant = $assignment->assignable;
-        $mealType = $assignment->mealType;  // Use eager loaded relationship
 
-        // Get the specific date for this meal from the itinerary item
-        $itineraryItem = $assignment->bookingItineraryItem;
-        $mealDate = $itineraryItem?->date?->format('d.m.Y') ?? 'Не указано';
+        // Fetch every itinerary item for this booking that has this restaurant assigned.
+        $restaurantItems = $booking->itineraryItems()
+            ->whereHas('assignments', function ($q) use ($restaurant) {
+                $q->where('assignable_type', Restaurant::class)
+                  ->where('assignable_id', $restaurant->id);
+            })
+            ->with(['assignments' => function ($q) use ($restaurant) {
+                $q->where('assignable_type', Restaurant::class)
+                  ->where('assignable_id', $restaurant->id)
+                  ->with('mealType');
+            }])
+            ->orderBy('date')
+            ->get();
+
+        $meals = [];
+        $specialRequirements = null;
+
+        foreach ($restaurantItems as $item) {
+            foreach ($item->assignments as $assign) {
+                $meals[] = [
+                    'date'      => $item->date?->format('d.m.Y') ?? 'Не указано',
+                    'meal_type' => $assign->mealType?->name ?? 'Не указан',
+                    'meal_time' => $this->formatTime($assign->start_time) ?? 'Не указано',
+                ];
+
+                // Prefer the first non-empty notes found
+                if ($specialRequirements === null && !empty($assign->notes)) {
+                    $specialRequirements = $assign->notes;
+                }
+            }
+        }
+
+        // Fallback if the query returns nothing (e.g. during tests with pre-loaded data)
+        if (empty($meals)) {
+            $itineraryItem = $assignment->bookingItineraryItem;
+            $meals[] = [
+                'date'      => $itineraryItem?->date?->format('d.m.Y') ?? 'Не указано',
+                'meal_type' => $assignment->mealType?->name ?? 'Не указан',
+                'meal_time' => $this->formatTime($assignment->start_time) ?? 'Не указано',
+            ];
+            $specialRequirements = $assignment->notes ?? null;
+        }
+
+        $firstMeal = $meals[0];
+        $lastMeal  = end($meals);
 
         return [
-            'restaurant_name' => $restaurant->name,
-            'restaurant_address' => $restaurant->address,
-            'meal_type' => $mealType?->name ?? 'Не указан',
-            'meal_time' => $this->formatTime($assignment->start_time) ?? 'Не указано',
-            'group_size' => $booking->pax_total,
-            'special_requirements' => $assignment->notes ?? 'Нет особых требований',
+            'restaurant_name'      => $restaurant->name,
+            'restaurant_address'   => $restaurant->address,
+            // Full meals schedule — used by template to render a per-day table
+            'meals'                => $meals,
+            'multiple_meals'       => count($meals) > 1,
+            // Backward-compat single-meal fields (used in simple/single-day layout)
+            'meal_type'            => $firstMeal['meal_type'],
+            'meal_time'            => $firstMeal['meal_time'],
+            'start_date'           => $firstMeal['date'],
+            'end_date'             => $lastMeal['date'],
+            'group_size'           => $booking->pax_total,
+            'special_requirements' => $specialRequirements ?? 'Нет особых требований',
             'dietary_requirements' => 'Уточнить при подтверждении',
-            'start_date' => $mealDate,  // Override baseData with actual meal date
-            'end_date' => $mealDate,    // Same day service for restaurants
         ];
     }
     
