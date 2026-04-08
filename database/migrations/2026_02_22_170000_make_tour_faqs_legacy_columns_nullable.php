@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tour_faqs', function (Blueprint $table) {
-            $table->text('question_old')->nullable()->default(null)->change();
-            $table->text('answer_old')->nullable()->default(null)->change();
+            // question_old/answer_old only exist in instances that ran a prior
+            // renameColumn migration. Guard so fresh installs are not broken.
+            if (Schema::hasColumn('tour_faqs', 'question_old')) {
+                $table->text('question_old')->nullable()->default(null)->change();
+            }
+            if (Schema::hasColumn('tour_faqs', 'answer_old')) {
+                $table->text('answer_old')->nullable()->default(null)->change();
+            }
         });
     }
 
