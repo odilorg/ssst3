@@ -133,15 +133,9 @@ return new class extends Migration
                 $table->string('slug')->nullable(false)->change();
 
                 // Check if unique constraint doesn't already exist
-                $sm = Schema::getConnection()->getDoctrineSchemaManager();
-                $indexesFound = $sm->listTableIndexes('tours');
-                $hasUniqueSlug = false;
-                foreach ($indexesFound as $index) {
-                    if ($index->isUnique() && in_array('slug', $index->getColumns())) {
-                        $hasUniqueSlug = true;
-                        break;
-                    }
-                }
+                $hasUniqueSlug = collect(Schema::getIndexes('tours'))->contains(
+                    fn ($idx) => !empty($idx['unique']) && in_array('slug', $idx['columns'])
+                );
 
                 if (!$hasUniqueSlug) {
                     $table->unique('slug');
