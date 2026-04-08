@@ -83,11 +83,7 @@ class SupplierRequestTest extends TestCase
     public function test_duplicate_pending_request_is_not_created_on_second_generation(): void
     {
         $booking    = Booking::factory()->create();
-        $restaurant = Restaurant::create([
-            'name'    => 'Samarkand Cafe',
-            'address' => 'Test Street 1',
-            'phone'   => '',
-        ]);
+        $restaurant = $this->makeRestaurant('Samarkand Cafe', 'Test Street 1');
 
         // Pre-create the first pending request (as Phase 1 dedup code expects)
         SupplierRequest::createForSupplier($booking, 'restaurant', $restaurant->id, [
@@ -187,11 +183,7 @@ class SupplierRequestTest extends TestCase
     {
         $booking = Booking::factory()->create(['pax_total' => 4]);
 
-        $restaurant = Restaurant::create([
-            'name'    => 'Multi-Day Restaurant',
-            'address' => 'Main Square',
-            'phone'   => '',
-        ]);
+        $restaurant = $this->makeRestaurant('Multi-Day Restaurant', 'Main Square');
 
         $lunch  = MealType::create(['name' => 'Lunch',  'restaurant_id' => $restaurant->id]);
         $dinner = MealType::create(['name' => 'Dinner', 'restaurant_id' => $restaurant->id]);
@@ -251,11 +243,7 @@ class SupplierRequestTest extends TestCase
     {
         $booking = Booking::factory()->create(['pax_total' => 2]);
 
-        $restaurant = Restaurant::create([
-            'name'    => 'Solo Restaurant',
-            'address' => 'Side Street 5',
-            'phone'   => '',
-        ]);
+        $restaurant = $this->makeRestaurant('Solo Restaurant', 'Side Street 5');
 
         $breakfast = MealType::create(['name' => 'Breakfast', 'restaurant_id' => $restaurant->id]);
 
@@ -292,6 +280,19 @@ class SupplierRequestTest extends TestCase
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
+
+    private function makeRestaurant(string $name, string $address = 'Test Address'): Restaurant
+    {
+        $city = \App\Models\City::create(['name' => 'Test City', 'slug' => 'test-city-' . uniqid()]);
+        $company = \App\Models\Company::create(['name' => 'Test Company']);
+        return Restaurant::create([
+            'name'       => $name,
+            'address'    => $address,
+            'phone'      => '',
+            'city_id'    => $city->id,
+            'company_id' => $company->id,
+        ]);
+    }
 
     private function makeSupplierRequest(Booking $booking, array $overrides = []): SupplierRequest
     {
