@@ -30,42 +30,41 @@ class GeneratePaymentLinkAction
             ->color('success')
             ->modalHeading('Generate Octobank Payment Link')
             ->modalWidth('lg')
-            ->form(function ($livewire) {
-                /** @var Booking $booking */
-                $booking = $livewire->record->load(['customer', 'tour']);
+            // Filament v4: record is injected from the page's model
+            ->form(function (Booking $record): array {
+                $booking = $record->loadMissing(['customer', 'tour']);
 
-                $totalUsd = (float) $booking->total_price;
-                $depositUsd = (float) ($booking->deposit_amount ?? 0);
+                $totalUsd      = (float) $booking->total_price;
+                $depositUsd    = (float) ($booking->deposit_amount ?? 0);
                 $outstandingUsd = max(0, $totalUsd - $depositUsd);
 
                 $activeLinkExists = OctobankPayment::where('booking_id', $booking->id)
                     ->whereIn('status', [OctobankPayment::STATUS_CREATED, OctobankPayment::STATUS_WAITING])
                     ->exists();
 
-                $components = [];
+                $customer   = $booking->customer;
+                $tour       = $booking->tour;
+                $summary    = implode(' · ', array_filter([
+                    $customer?->name,
+                    $tour?->title,
+                    $booking->start_date?->format('d M Y'),
+                    $booking->pax_total ? "{$booking->pax_total} pax" : null,
+                    $totalUsd > 0 ? "Total: \${$totalUsd}" : null,
+                    $depositUsd > 0 ? "Paid: \${$depositUsd}" : null,
+                    "Due: \${$outstandingUsd}",
+                ]));
 
-                // Booking summary (readonly)
-                $components[] = Placeholder::make('booking_summary')
-                    ->label('Booking Summary')
-                    ->content(function () use ($booking, $totalUsd, $depositUsd, $outstandingUsd) {
-                        $customer = $booking->customer;
-                        $tour = $booking->tour;
-                        return implode(' · ', array_filter([
-                            $customer?->name,
-                            $tour?->title,
-                            $booking->start_date?->format('d M Y'),
-                            $booking->pax_total ? "{$booking->pax_total} pax" : null,
-                            $totalUsd > 0 ? "Total: \${$totalUsd}" : null,
-                            $depositUsd > 0 ? "Paid: \${$depositUsd}" : null,
-                            "Due: \${$outstandingUsd}",
-                        ]));
-                    })
-                    ->columnSpanFull();
+                $components = [
+                    Placeholder::make('booking_summary')
+                        ->label('Booking Summary')
+                        ->content($summary)
+                        ->columnSpanFull(),
+                ];
 
                 if ($activeLinkExists) {
                     $components[] = Placeholder::make('active_link_warning')
                         ->label('')
-                        ->content('⚠️ An active payment link already exists for this booking. Cancel it first, or wait for it to expire before generating a new one.')
+                        ->content('⚠️ An active payment link already exists for this booking. Wait for it to expire before generating a new one.')
                         ->columnSpanFull();
                 }
 
@@ -93,19 +92,15 @@ class GeneratePaymentLinkAction
 
                 $components[] = Textarea::make('description')
                     ->label('Description (shown to payer)')
-                    ->default(function () use ($booking) {
-                        return optional($booking->tour)->title
-                            ? "Payment for {$booking->tour->title}"
-                            : 'Tour payment';
-                    })
+                    ->default($tour?->title ? "Payment for {$tour->title}" : 'Tour payment')
                     ->rows(2)
                     ->maxLength(255);
 
                 return $components;
             })
-            ->action(function (array $data, $livewire) {
-                /** @var Booking $booking */
-                $booking = $livewire->record->load(['customer', 'tour']);
+            // Filament v4: record + data injected; halt via exception
+            ->action(function (array $data, Booking $record): void {
+                $booking = $record->loadMissing(['customer', 'tour']);
 
                 /** @var OctobankPaymentService $service */
                 $service = app(OctobankPaymentService::class);
@@ -116,9 +111,7 @@ class GeneratePaymentLinkAction
                         amountUsd:   (float) $data['amount_usd'],
                         purpose:     $data['purpose'],
                         generatedBy: Auth::id(),
-                        options: [
-                            'description' => $data['description'] ?? null,
-                        ]
+                        options:     ['description' => $data['description'] ?? null],
                     );
 
                     Notification::make()
@@ -134,9 +127,6 @@ class GeneratePaymentLinkAction
                         ])
                         ->send();
 
-                    // Refresh the page so the relation manager shows the new link
-                    $livewire->dispatch('$refresh');
-
                 } catch (Exception $e) {
                     Notification::make()
                         ->title('Failed to generate payment link')
@@ -145,8 +135,8 @@ class GeneratePaymentLinkAction
                         ->persistent()
                         ->send();
 
-                    // Halt the action without closing the modal so admin can correct input
-                    $livewire->halt();
+                    // Filament v4: throw to halt and keep modal open
+                    throw $e;
                 }
             })
             ->modalSubmitActionLabel('Generate Link');
