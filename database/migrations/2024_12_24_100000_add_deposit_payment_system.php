@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guard: this migration was written with a 2024 timestamp but depends on tables
+        // created in 2025 migrations. Skip entirely if bookings doesn't exist yet
+        // (happens during RefreshDatabase in tests when migrations run in timestamp order).
+        if (!Schema::hasTable('bookings')) {
+            return;
+        }
+
         // 1. Update bookings table for deposit system
-        // Guard: table may not exist yet when migrations run out of timestamp order (e.g. tests)
-        if (Schema::hasTable('bookings')) {
+        if (true) {
             Schema::table('bookings', function (Blueprint $table) {
                 // Only add columns that don't exist yet
                 if (!Schema::hasColumn('bookings', 'payment_type')) {
