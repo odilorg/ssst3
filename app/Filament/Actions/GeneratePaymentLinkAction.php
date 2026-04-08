@@ -17,11 +17,6 @@ use Illuminate\Support\Facades\Auth;
 
 class GeneratePaymentLinkAction
 {
-    /**
-     * Returns a configured Filament Action for generating an Octobank payment link.
-     *
-     * Intended for use in EditBooking::getHeaderActions() only.
-     */
     public static function make(): Action
     {
         return Action::make('generate_payment_link')
@@ -30,45 +25,14 @@ class GeneratePaymentLinkAction
             ->color('success')
             ->modalHeading('Generate Octobank Payment Link')
             ->modalWidth('lg')
-            // Filament v4: record is injected from the page's model
-            ->form(function (Booking $record): array {
-                $booking = $record->loadMissing(['customer', 'tour']);
+            // Static form — no record access at definition time (Filament v4)
+            ->form([
+                Placeholder::make('booking_summary')
+                    ->label('Booking Summary')
+                    ->content('Loading…')
+                    ->columnSpanFull(),
 
-                $totalUsd      = (float) $booking->total_price;
-                $depositUsd    = (float) ($booking->deposit_amount ?? 0);
-                $outstandingUsd = max(0, $totalUsd - $depositUsd);
-
-                $activeLinkExists = OctobankPayment::where('booking_id', $booking->id)
-                    ->whereIn('status', [OctobankPayment::STATUS_CREATED, OctobankPayment::STATUS_WAITING])
-                    ->exists();
-
-                $customer   = $booking->customer;
-                $tour       = $booking->tour;
-                $summary    = implode(' · ', array_filter([
-                    $customer?->name,
-                    $tour?->title,
-                    $booking->start_date?->format('d M Y'),
-                    $booking->pax_total ? "{$booking->pax_total} pax" : null,
-                    $totalUsd > 0 ? "Total: \${$totalUsd}" : null,
-                    $depositUsd > 0 ? "Paid: \${$depositUsd}" : null,
-                    "Due: \${$outstandingUsd}",
-                ]));
-
-                $components = [
-                    Placeholder::make('booking_summary')
-                        ->label('Booking Summary')
-                        ->content($summary)
-                        ->columnSpanFull(),
-                ];
-
-                if ($activeLinkExists) {
-                    $components[] = Placeholder::make('active_link_warning')
-                        ->label('')
-                        ->content('⚠️ An active payment link already exists for this booking. Wait for it to expire before generating a new one.')
-                        ->columnSpanFull();
-                }
-
-                $components[] = Select::make('purpose')
+                Select::make('purpose')
                     ->label('Payment Purpose')
                     ->options([
                         'deposit'      => 'Deposit',
@@ -76,38 +40,66 @@ class GeneratePaymentLinkAction
                         'full_payment' => 'Full Payment',
                         'custom'       => 'Custom Amount',
                     ])
-                    ->default($depositUsd > 0 ? 'balance' : 'deposit')
                     ->required()
-                    ->live();
+                    ->live(),
 
-                $components[] = TextInput::make('amount_usd')
+                TextInput::make('amount_usd')
                     ->label('Amount (USD)')
                     ->numeric()
                     ->minValue(0.01)
-                    ->maxValue($totalUsd > 0 ? $totalUsd : null)
-                    ->default(round($outstandingUsd, 2))
                     ->prefix('$')
-                    ->required()
-                    ->helperText("Outstanding balance: \${$outstandingUsd}");
+                    ->required(),
 
-                $components[] = Textarea::make('description')
+                Textarea::make('description')
                     ->label('Description (shown to payer)')
-                    ->default($tour?->title ? "Payment for {$tour->title}" : 'Tour payment')
                     ->rows(2)
-                    ->maxLength(255);
+                    ->maxLength(255),
+            ])
+            // Populate defaults from the record — Filament v4 fillForm pattern
+            ->fillForm(function (Booking $record): array {
+                $record->loadMissing(['customer', 'tour']);
 
-                return $components;
+                $totalUsd       = (float) $record->total_price;
+                $depositUsd     = (float) ($record->deposit_amount ?? 0);
+                $outstandingUsd = max(0, $totalUsd - $depositUsd);
+
+                $customer = $record->customer;
+                $tour     = $record->tour;
+
+                $summary = implode(' · ', array_filter([
+                    $customer?->name,
+                    $tour?->title,
+                    $record->start_date?->format('d M Y'),
+                    $record->pax_total ? "{$record->pax_total} pax" : null,
+                    $totalUsd > 0 ? "Total: \${$totalUsd}" : null,
+                    $depositUsd > 0 ? "Paid: \${$depositUsd}" : null,
+                    "Due: \${$outstandingUsd}",
+                ]));
+
+                $hasActiveLink = OctobankPayment::where('booking_id', $record->id)
+                    ->whereIn('status', [OctobankPayment::STATUS_CREATED, OctobankPayment::STATUS_WAITING])
+                    ->exists();
+
+                if ($hasActiveLink) {
+                    $summary .= ' — ⚠️ Active link exists! Wait for it to expire first.';
+                }
+
+                return [
+                    'booking_summary' => $summary,
+                    'purpose'         => $depositUsd > 0 ? 'balance' : 'deposit',
+                    'amount_usd'      => round($outstandingUsd, 2),
+                    'description'     => $tour?->title ? "Payment for {$tour->title}" : 'Tour payment',
+                ];
             })
-            // Filament v4: record + data injected; halt via exception
             ->action(function (array $data, Booking $record): void {
-                $booking = $record->loadMissing(['customer', 'tour']);
+                $record->loadMissing(['customer', 'tour']);
 
                 /** @var OctobankPaymentService $service */
                 $service = app(OctobankPaymentService::class);
 
                 try {
                     $payment = $service->initializeAdminPaymentLink(
-                        booking:     $booking,
+                        booking:     $record,
                         amountUsd:   (float) $data['amount_usd'],
                         purpose:     $data['purpose'],
                         generatedBy: Auth::id(),
@@ -135,7 +127,6 @@ class GeneratePaymentLinkAction
                         ->persistent()
                         ->send();
 
-                    // Filament v4: throw to halt and keep modal open
                     throw $e;
                 }
             })
