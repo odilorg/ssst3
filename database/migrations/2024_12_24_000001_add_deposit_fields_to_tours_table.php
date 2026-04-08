@@ -14,14 +14,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guard: table may not exist yet if migrations run out of order (e.g. tests)
+        if (!Schema::hasTable('tours') || Schema::hasColumn('tours', 'deposit_required')) {
+            return;
+        }
+
         Schema::table('tours', function (Blueprint $table) {
             // Whether deposit/advance payment is required for this tour
             $table->boolean('deposit_required')->default(false)->after('show_price');
-            
+
             // Deposit percentage (e.g., 20 for 20%)
             // If null, use company default setting
             $table->decimal('deposit_percentage', 5, 2)->nullable()->after('deposit_required');
-            
+
             // Optional: minimum deposit amount in USD (overrides percentage if higher)
             $table->decimal('deposit_min_amount', 10, 2)->nullable()->after('deposit_percentage');
         });
@@ -32,6 +37,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!Schema::hasTable('tours')) {
+            return;
+        }
+
         Schema::table('tours', function (Blueprint $table) {
             $table->dropColumn(['deposit_required', 'deposit_percentage', 'deposit_min_amount']);
         });
