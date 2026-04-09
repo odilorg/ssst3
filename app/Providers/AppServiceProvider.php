@@ -22,7 +22,10 @@ use App\Observers\TourObserver;
 use App\Observers\TransportObserver;
 use App\Observers\TransportInstancePriceObserver;
 use App\Models\OctobankPayment;
+use App\Models\SupplierRequest;
+use App\Policies\BookingPolicy;
 use App\Policies\OctobankPaymentPolicy;
+use App\Policies\SupplierRequestPolicy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -63,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Register policies
         Gate::policy(OctobankPayment::class, OctobankPaymentPolicy::class);
+        Gate::policy(Booking::class, BookingPolicy::class);
+        Gate::policy(SupplierRequest::class, SupplierRequestPolicy::class);
 
         // Event listeners are auto-discovered by Laravel 11+ (no manual registration needed)
 

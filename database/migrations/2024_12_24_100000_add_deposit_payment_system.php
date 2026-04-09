@@ -11,25 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guard: this migration was written with a 2024 timestamp but depends on tables
+        // created in 2025 migrations. Skip entirely if bookings doesn't exist yet
+        // (happens during RefreshDatabase in tests when migrations run in timestamp order).
+        if (!Schema::hasTable('bookings')) {
+            return;
+        }
+
         // 1. Update bookings table for deposit system
-        Schema::table('bookings', function (Blueprint $table) {
-            // Only add columns that don't exist yet
-            if (!Schema::hasColumn('bookings', 'payment_type')) {
-                $table->enum('payment_type', ['deposit', 'full', 'flexible'])->default('deposit')->after('total_price');
-            }
-            if (!Schema::hasColumn('bookings', 'deposit_percentage')) {
-                $table->decimal('deposit_percentage', 5, 2)->default(30.00)->after('total_price');
-            }
-            if (!Schema::hasColumn('bookings', 'balance_paid_at')) {
-                $table->timestamp('balance_paid_at')->nullable()->after('balance_due_date');
-            }
-            if (!Schema::hasColumn('bookings', 'discount_amount')) {
-                $table->decimal('discount_amount', 10, 2)->default(0.00)->after('balance_due_date');
-            }
-            if (!Schema::hasColumn('bookings', 'discount_reason')) {
-                $table->string('discount_reason')->nullable()->after('discount_amount');
-            }
-        });
+        if (true) {
+            Schema::table('bookings', function (Blueprint $table) {
+                // Only add columns that don't exist yet
+                if (!Schema::hasColumn('bookings', 'payment_type')) {
+                    $table->enum('payment_type', ['deposit', 'full', 'flexible'])->default('deposit')->after('total_price');
+                }
+                if (!Schema::hasColumn('bookings', 'deposit_percentage')) {
+                    $table->decimal('deposit_percentage', 5, 2)->default(30.00)->after('total_price');
+                }
+                if (!Schema::hasColumn('bookings', 'balance_paid_at')) {
+                    $table->timestamp('balance_paid_at')->nullable()->after('balance_due_date');
+                }
+                if (!Schema::hasColumn('bookings', 'discount_amount')) {
+                    $table->decimal('discount_amount', 10, 2)->default(0.00)->after('balance_due_date');
+                }
+                if (!Schema::hasColumn('bookings', 'discount_reason')) {
+                    $table->string('discount_reason')->nullable()->after('discount_amount');
+                }
+            });
+        }
 
         // 2. Create payment_transactions table
         if (!Schema::hasTable('payment_transactions')) {

@@ -59,6 +59,33 @@ Schedule::command("reminders:tour-operator")
     ->appendOutputTo(storage_path("logs/tour-operator-reminders.log"));
 
 // ============================================
+// SUPPLIER REQUEST EXPIRATION
+// Marks pending requests as expired when their 48h window has passed.
+// Records are kept for audit — only the status changes.
+// ============================================
+
+Schedule::call(function () {
+    $expired = \App\Models\SupplierRequest::where('status', 'pending')
+        ->where('expires_at', '<', now())
+        ->get();
+
+    foreach ($expired as $request) {
+        $request->update(['status' => 'expired']);
+    }
+
+    if ($expired->isNotEmpty()) {
+        \Illuminate\Support\Facades\Log::info('Supplier requests expired', [
+            'count' => $expired->count(),
+            'ids'   => $expired->pluck('id')->toArray(),
+        ]);
+    }
+})
+->dailyAt('02:00')
+->timezone('Asia/Tashkent')
+->appendOutputTo(storage_path('logs/supplier-request-expiry.log'))
+->name('supplier-requests:expire');
+
+// ============================================
 // QUEUE HEALTH: FAILED JOB ALERTING
 // ============================================
 

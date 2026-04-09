@@ -13,14 +13,22 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             // Booking type (private or group)
-            $table->enum('type', ['private', 'group'])->default('private')->after('tour_id');
+            if (!Schema::hasColumn('bookings', 'type')) {
+                $table->enum('type', ['private', 'group'])->default('private')->after('tour_id');
+            }
 
             // Group departure reference (nullable for private bookings)
-            $table->foreignId('group_departure_id')->nullable()->after('type')->constrained('tour_departures')->onDelete('set null');
+            if (!Schema::hasColumn('bookings', 'group_departure_id')) {
+                $table->foreignId('group_departure_id')->nullable()->after('type')->constrained('tour_departures')->onDelete('set null');
+            }
 
             // Pricing breakdown
-            $table->decimal('price_per_person', 10, 2)->nullable()->after('total_price');
-            $table->unsignedSmallInteger('guests_count')->default(1)->after('pax_total');
+            if (!Schema::hasColumn('bookings', 'price_per_person')) {
+                $table->decimal('price_per_person', 10, 2)->nullable()->after('total_price');
+            }
+            if (!Schema::hasColumn('bookings', 'guests_count')) {
+                $table->unsignedSmallInteger('guests_count')->default(1)->after('pax_total');
+            }
         });
     }
 

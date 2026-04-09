@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class SupplierRequest extends Model
 {
@@ -36,14 +36,38 @@ class SupplierRequest extends Model
         return $this->belongsTo(Booking::class);
     }
 
-    public function supplier()
+    /**
+     * Resolve the supplier model on demand.
+     * Not a real Eloquent relation — cannot be eager-loaded.
+     * Use supplier_name in lists/tables to avoid N+1.
+     */
+    public function getSupplierAttribute(): ?Model
     {
         return match($this->supplier_type) {
-            'hotel' => $this->belongsTo(Hotel::class, 'supplier_id'),
-            'transport' => $this->belongsTo(Transport::class, 'supplier_id'),
-            'guide' => $this->belongsTo(Guide::class, 'supplier_id'),
-            'restaurant' => $this->belongsTo(Restaurant::class, 'supplier_id'),
-            default => null,
+            'hotel'      => Hotel::find($this->supplier_id),
+            'transport'  => Transport::find($this->supplier_id),
+            'guide'      => Guide::find($this->supplier_id),
+            'restaurant' => Restaurant::find($this->supplier_id),
+            default      => null,
+        };
+    }
+
+    /**
+     * Human-readable supplier name for display in tables and notifications.
+     * Transport uses transportType.type to match the "vehicle class" display convention.
+     */
+    public function getSupplierNameAttribute(): string
+    {
+        return match($this->supplier_type) {
+            'hotel'      => Hotel::find($this->supplier_id)?->name
+                            ?? 'Неизвестный поставщик',
+            'transport'  => Transport::with('transportType')->find($this->supplier_id)?->transportType?->type
+                            ?? 'Неизвестный поставщик',
+            'guide'      => Guide::find($this->supplier_id)?->name
+                            ?? 'Неизвестный поставщик',
+            'restaurant' => Restaurant::find($this->supplier_id)?->name
+                            ?? 'Неизвестный поставщик',
+            default      => 'Неизвестный поставщик',
         };
     }
 

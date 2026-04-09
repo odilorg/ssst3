@@ -177,20 +177,45 @@
 
     <!-- Meal Details -->
     <div class="section-header">3. Детали питания / Meal Details:</div>
-    <table>
-        <tr>
-            <th style="width: 180px">Тип питания<br>Meal Type</th>
-            <td class="highlight">{{ $requestData['meal_type'] }}</td>
-            <th style="width: 180px">Время<br>Time</th>
-            <td class="highlight">{{ $requestData['meal_time'] }}</td>
-        </tr>
-        <tr>
-            <th>Размер группы<br>Group Size</th>
-            <td class="highlight">{{ $requestData['group_size'] ?? $requestData['pax_total'] }} человек</td>
-            <th>Дата<br>Date</th>
-            <td class="highlight">{{ $requestData['start_date'] }}</td>
-        </tr>
-    </table>
+    @if(!empty($requestData['multiple_meals']) && $requestData['multiple_meals'])
+        {{-- Multiple meals across different days --}}
+        <table>
+            <tr>
+                <th style="width: 130px">Дата / Date</th>
+                <th style="width: 150px">Тип питания / Meal Type</th>
+                <th>Время / Time</th>
+            </tr>
+            @foreach($requestData['meals'] as $meal)
+            <tr>
+                <td class="highlight">{{ $meal['date'] }}</td>
+                <td class="highlight">{{ $meal['meal_type'] }}</td>
+                <td class="highlight">{{ $meal['meal_time'] }}</td>
+            </tr>
+            @endforeach
+        </table>
+        <table>
+            <tr>
+                <th style="width: 180px">Размер группы<br>Group Size</th>
+                <td class="highlight" colspan="3">{{ $requestData['group_size'] ?? $requestData['pax_total'] }} человек</td>
+            </tr>
+        </table>
+    @else
+        {{-- Single meal --}}
+        <table>
+            <tr>
+                <th style="width: 180px">Тип питания<br>Meal Type</th>
+                <td class="highlight">{{ $requestData['meal_type'] }}</td>
+                <th style="width: 180px">Время<br>Time</th>
+                <td class="highlight">{{ $requestData['meal_time'] }}</td>
+            </tr>
+            <tr>
+                <th>Размер группы<br>Group Size</th>
+                <td class="highlight">{{ $requestData['group_size'] ?? $requestData['pax_total'] }} человек</td>
+                <th>Дата<br>Date</th>
+                <td class="highlight">{{ $requestData['start_date'] }}</td>
+            </tr>
+        </table>
+    @endif
 
     <!-- Service Period -->
     <div class="section-header">4. Период обслуживания / Service Period:</div>

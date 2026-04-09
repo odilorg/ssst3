@@ -159,13 +159,13 @@
     <table>
         <tr>
             <th>1. Страна<br>Country</th>
-            <td class="highlight">{{ $booking->country ?? 'JAPAN' }}</td>
+            <td class="highlight">{{ $booking->country ?? '—' }}</td>
             <th>кол-во<br>qty</th>
             <td class="highlight">{{ $requestData['pax_total'] }}</td>
             <th>им.г.<br>ref.</th>
             <td class="highlight">{{ $requestData['booking_reference'] }}</td>
             <th>откуда<br>from</th>
-            <td class="highlight">{{ $booking->source_city ?? 'TY-528' }}</td>
+            <td class="highlight">{{ $booking->source_city ?? '—' }}</td>
         </tr>
     </table>
 
@@ -179,7 +179,7 @@
                 <td>дата заезда / Date of arrival</td>
                 <td class="highlight">{{ $stay['check_in'] }}</td>
                 <td>время / time</td>
-                <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
+                <td class="highlight">{{ $booking->arrival_time ?? '—' }}</td>
                 <td>(сутки)<br>(days)</td>
                 <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
                     {{ $stay['nights'] }}
@@ -190,7 +190,7 @@
                 <td>дата выезда / Date of departure</td>
                 <td class="highlight">{{ $stay['check_out'] }}</td>
                 <td>время / time</td>
-                <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
+                <td class="highlight">{{ $booking->departure_time ?? '—' }}</td>
                 <td>(days)</td>
             </tr>
             @if(!empty($stay['rooms']))
@@ -219,7 +219,7 @@
                 <td>дата заезда / Date of arrival</td>
                 <td class="highlight">{{ $requestData['check_in'] }}</td>
                 <td>время / time</td>
-                <td class="highlight">{{ $booking->arrival_time ?? '16:30' }}</td>
+                <td class="highlight">{{ $booking->arrival_time ?? '—' }}</td>
                 <td>(сутки)<br>(days)</td>
                 <td class="highlight" rowspan="2" style="font-size: 16pt; text-align: center; vertical-align: middle;">
                     {{ $requestData['nights'] }}
@@ -230,7 +230,7 @@
                 <td>дата выезда / Date of departure</td>
                 <td class="highlight">{{ $requestData['check_out'] }}</td>
                 <td>время / time</td>
-                <td class="highlight">{{ $booking->departure_time ?? '6:10' }}</td>
+                <td class="highlight">{{ $booking->departure_time ?? '—' }}</td>
                 <td>(days)</td>
             </tr>
             @if($stay && !empty($stay['rooms']))

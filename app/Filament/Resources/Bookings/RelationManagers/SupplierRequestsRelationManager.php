@@ -50,15 +50,7 @@ class SupplierRequestsRelationManager extends RelationManager
 
                 TextColumn::make('supplier_name')
                     ->label('Поставщик')
-                    ->getStateUsing(function ($record) {
-                        return match($record->supplier_type) {
-                            'hotel' => \App\Models\Hotel::find($record->supplier_id)?->name ?? 'Неизвестный поставщик',
-                            'transport' => \App\Models\Transport::find($record->supplier_id)?->transportType?->type ?? 'Неизвестный поставщик',
-                            'guide' => \App\Models\Guide::find($record->supplier_id)?->name ?? 'Неизвестный поставщик',
-                            'restaurant' => \App\Models\Restaurant::find($record->supplier_id)?->name ?? 'Неизвестный поставщик',
-                            default => 'Неизвестный поставщик'
-                        };
-                    })
+                    ->getStateUsing(fn ($record) => $record->supplier_name)
                     ->searchable(),
 
                 BadgeColumn::make('status')

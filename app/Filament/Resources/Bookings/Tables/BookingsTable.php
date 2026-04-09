@@ -159,13 +159,7 @@ class BookingsTable
                             'supplier_type_label' => $request->supplier_type_label,
                             'supplier_type_icon' => $request->supplier_type_icon,
                             'supplier_id' => $request->supplier_id,
-                            'supplier_name' => match($request->supplier_type) {
-                                'hotel' => \App\Models\Hotel::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
-                                'transport' => \App\Models\Transport::find($request->supplier_id)?->transportType?->type ?? 'Неизвестный поставщик',
-                                'guide' => \App\Models\Guide::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
-                                'restaurant' => \App\Models\Restaurant::find($request->supplier_id)?->name ?? 'Неизвестный поставщик',
-                                default => 'Неизвестный поставщик'
-                            },
+                            'supplier_name' => $request->supplier_name,
                             'status' => $request->status,
                             'status_label' => $request->status_label,
                             'expires_at' => $request->expires_at?->format('d.m.Y H:i'),

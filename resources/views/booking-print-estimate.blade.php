@@ -191,6 +191,31 @@
             flex: 1;
             font-weight: 500;
             color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .contract-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
+            letter-spacing: 0.03em;
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
         }
 
         .item-details {
@@ -469,7 +494,7 @@
                                 <div class="day-date">{{ $day['formatted_date'] }}</div>
                             </div>
                             <div class="day-total">
-                                <div class="day-total-amount">${{ number_format($day['day_total'], 2) }}</div>
+                                <div class="day-total-amount">{{ $currency }} {{ number_format($day['day_total'], 2) }}</div>
                                 <div class="day-total-label">Итого за день</div>
                             </div>
                         </div>
@@ -484,7 +509,7 @@
                                         {{ $category['category_name'] }}
                                     </h4>
                                     <div style="display: flex; align-items: center; gap: 15px;">
-                                        <span class="category-subtotal">${{ number_format($category['subtotal'], 2) }}</span>
+                                        <span class="category-subtotal">{{ $currency }} {{ number_format($category['subtotal'], 2) }}</span>
                                         <span class="collapse-icon" id="icon-{{ $dayIndex }}-{{ $categoryKey }}">▼</span>
                                     </div>
                                 </div>
@@ -494,11 +519,19 @@
                                     <div class="category-items">
                                         @foreach($category['items'] as $item)
                                             <div class="item-row">
-                                                <div class="item-name">{{ $item['name'] }}</div>
+                                                <div class="item-name">
+                                                    {{ $item['name'] }}
+                                                    @if($item['has_contract'])
+                                                        <span class="contract-badge" title="Контрактная цена">К</span>
+                                                    @endif
+                                                    @if($item['savings'] > 0)
+                                                        <span class="savings-badge" title="Экономия {{ $item['savings_percentage'] }}%">−{{ $item['savings_percentage'] }}%</span>
+                                                    @endif
+                                                </div>
                                                 <div class="item-details">
                                                     <div class="item-quantity">{{ $item['quantity'] }}</div>
-                                                    <div class="item-unit-price">${{ number_format($item['unit_price'], 2) }}</div>
-                                                    <div class="item-total-price">${{ number_format($item['total_price'], 2) }}</div>
+                                                    <div class="item-unit-price">{{ $currency }} {{ number_format($item['unit_price'], 2) }}</div>
+                                                    <div class="item-total-price">{{ $currency }} {{ number_format($item['total_price'], 2) }}</div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -525,7 +558,7 @@
                         <div class="summary-item">
                             <div class="summary-icon">{{ $summary['category_icon'] }}</div>
                             <div class="summary-category">{{ $summary['category_name'] }}</div>
-                            <div class="summary-amount">${{ number_format($summary['total'], 2) }}</div>
+                            <div class="summary-amount">{{ $currency }} {{ number_format($summary['total'], 2) }}</div>
                             <div class="summary-percentage">{{ $summary['percentage'] }}%</div>
                         </div>
                     @endforeach
@@ -535,9 +568,9 @@
 
         <!-- Total Cost -->
         <div class="total-section">
-            <div class="total-amount">${{ number_format($totalCost, 2) }}</div>
+            <div class="total-amount">{{ $currency }} {{ number_format($totalCost, 2) }}</div>
             <div class="total-label">Общая стоимость тура</div>
-            <div class="total-disclaimer">Все цены указаны в долларах США (USD)</div>
+            <div class="total-disclaimer">Все цены указаны в {{ $currency }}</div>
         </div>
 
         <!-- Footer -->
