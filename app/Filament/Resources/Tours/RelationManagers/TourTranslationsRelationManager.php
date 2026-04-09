@@ -332,11 +332,11 @@ class TourTranslationsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('locale')
                     ->label('Язык')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'en' => '🇬🇧 EN',
-                        'ru' => '🇷🇺 RU',
-                        'fr' => '🇫🇷 FR',
-                        default => $state,
+                    ->formatStateUsing(function (string $state): string {
+                        $info = config('multilang.locale_names.' . $state);
+                        return $info
+                            ? ($info['flag'] ?? '') . ' ' . strtoupper($state)
+                            : strtoupper($state);
                     })
                     ->sortable()
                     ->width(80),

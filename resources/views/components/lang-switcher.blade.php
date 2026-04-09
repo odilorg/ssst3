@@ -20,26 +20,31 @@
     $currentLocale = $currentLocale ?? app()->getLocale();
     $localeNames = $localeNames ?? config('multilang.locale_names', []);
 
-    // Dynamic locale detection: on tour pages, show only languages with translations
-    $supportedLocales = $supportedLocales ?? null;
-    if (!$supportedLocales) {
-        $route = request()->route();
-        $routeName = $route?->getName();
-        if ($routeName && in_array($routeName, ['tours.show', 'localized.tours.show'])) {
-            $tourSlug = $route->parameter('slug');
-            if ($tourSlug) {
-                $tourId = \App\Models\TourTranslation::where('slug', $tourSlug)->value('tour_id')
-                    ?? \App\Models\Tour::where('slug', $tourSlug)->value('id');
-                if ($tourId) {
-                    $supportedLocales = \App\Models\TourTranslation::where('tour_id', $tourId)
-                        ->whereNotNull('slug')
-                        ->where('slug', '!=', '')
-                        ->pluck('locale')
-                        ->toArray();
-                }
+    // Dynamic locale detection: on tour pages, always query the specific tour's translations.
+    // The middleware shares $supportedLocales (global locales) via View::share, but that includes
+    // locales that have no translation for this specific tour — clicking them redirects to English.
+    $route = request()->route();
+    $routeName = $route?->getName();
+
+    if ($routeName && in_array($routeName, ['tours.show', 'localized.tours.show'])) {
+        // Tour page: detect only locales that actually have a translation for this tour.
+        $tourSlug = $route->parameter('slug');
+        $supportedLocales = null;
+        if ($tourSlug) {
+            $tourId = \App\Models\TourTranslation::where('slug', $tourSlug)->value('tour_id')
+                ?? \App\Models\Tour::where('slug', $tourSlug)->value('id');
+            if ($tourId) {
+                $supportedLocales = \App\Models\TourTranslation::where('tour_id', $tourId)
+                    ->whereNotNull('slug')
+                    ->where('slug', '!=', '')
+                    ->pluck('locale')
+                    ->toArray();
             }
         }
         $supportedLocales = $supportedLocales ?: \App\Http\Middleware\SetLocaleFromRoute::getGlobalLocales();
+    } else {
+        // Non-tour pages: use globally shared locales (set by middleware) or compute global ones.
+        $supportedLocales = $supportedLocales ?? \App\Http\Middleware\SetLocaleFromRoute::getGlobalLocales();
     }
 
     // Get current path and build URLs for each locale
